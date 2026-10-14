@@ -37,7 +37,7 @@ type TabKey = "all" | Region | "vuln";
 const TAB_KEYS: TabKey[] = ["all", ...REGIONS, "vuln"];
 
 const useStyles = makeStyles({
-  provider: {
+  page: {
     minHeight: "100vh",
     backgroundColor: tokens.colorNeutralBackground2,
   },
@@ -179,105 +179,109 @@ export default function App() {
   };
 
   return (
-    <FluentProvider theme={dark ? darkTheme : lightTheme} className={s.provider}>
-      <div className={s.shell}>
-        <header className={s.header}>
-          <div>
-            <Title2 as="h1">Security Glance</Title2>
-            <Caption1 className={s.subtitle}>국제 · 일본 · 한국 보안 이슈를 한눈에. 요약과 태그는 AI가 만들었어요.</Caption1>
+    // FluentProvider의 className은 툴팁·팝오버 포털에도 복사된다. 배경·높이 같은 레이아웃 스타일을
+    // 여기에 두면 포털마다 화면을 덮는 불투명한 판이 생기므로 반드시 안쪽 div에 둔다.
+    <FluentProvider theme={dark ? darkTheme : lightTheme}>
+      <div className={s.page}>
+        <div className={s.shell}>
+          <header className={s.header}>
+            <div>
+              <Title2 as="h1">Security Glance</Title2>
+              <Caption1 className={s.subtitle}>국제 · 일본 · 한국 보안 이슈를 한눈에. 요약과 태그는 AI가 만들었어요.</Caption1>
+            </div>
+            {meta?.updatedAt && (
+              <Popover withArrow>
+                <PopoverTrigger disableButtonEnhancement>
+                  <Button appearance="subtle" size="small" icon={<InfoRegular />}>
+                    <span className={s.updated}>
+                      {relativeTime(meta.updatedAt)} 갱신
+                      {failedSources.length > 0 && <CounterBadge count={failedSources.length} color="danger" size="small" />}
+                    </span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverSurface aria-label="수집 상태">
+                  <div className={s.sources}>
+                    <Body1>
+                      <b>마지막 수집</b> {fullDateTime(meta.updatedAt)}
+                    </Body1>
+                    {meta.sources.map((src) => (
+                      <div key={src.id} className={s.sourceRow}>
+                        {src.ok ? <CheckmarkCircleRegular className={s.ok} /> : <DismissCircleRegular className={s.bad} />}
+                        <Caption1>
+                          [{REGION_LABEL[src.region]}] {src.name} {src.ok ? `· ${src.items}건` : `· ${src.error ?? "실패"}`}
+                        </Caption1>
+                      </div>
+                    ))}
+                  </div>
+                </PopoverSurface>
+              </Popover>
+            )}
+          </header>
+
+          <div className={s.stats}>
+            <div className={s.stat}>
+              <Caption1 className={s.statLabel}>최근 24시간 기사</Caption1>
+              <Subtitle1>{stats.today}</Subtitle1>
+            </div>
+            <div className={s.stat}>
+              <Caption1 className={s.statLabel}>이번 주 랜섬웨어 기사</Caption1>
+              <Subtitle1>{stats.ransomware}</Subtitle1>
+            </div>
+            <div className={s.stat}>
+              <Caption1 className={s.statLabel}>이번 주 KEV 추가</Caption1>
+              <Subtitle1>{stats.kevWeek}</Subtitle1>
+            </div>
+            <div className={s.stat}>
+              <Caption1 className={s.statLabel}>CVSS 9.0+ 신규 (14일)</Caption1>
+              <Subtitle1>{stats.critical}</Subtitle1>
+            </div>
           </div>
-          {meta?.updatedAt && (
-            <Popover withArrow>
-              <PopoverTrigger disableButtonEnhancement>
-                <Button appearance="subtle" size="small" icon={<InfoRegular />}>
-                  <span className={s.updated}>
-                    {relativeTime(meta.updatedAt)} 갱신
-                    {failedSources.length > 0 && <CounterBadge count={failedSources.length} color="danger" size="small" />}
-                  </span>
-                </Button>
-              </PopoverTrigger>
-              <PopoverSurface aria-label="수집 상태">
-                <div className={s.sources}>
-                  <Body1>
-                    <b>마지막 수집</b> {fullDateTime(meta.updatedAt)}
-                  </Body1>
-                  {meta.sources.map((src) => (
-                    <div key={src.id} className={s.sourceRow}>
-                      {src.ok ? <CheckmarkCircleRegular className={s.ok} /> : <DismissCircleRegular className={s.bad} />}
-                      <Caption1>
-                        [{REGION_LABEL[src.region]}] {src.name} {src.ok ? `· ${src.items}건` : `· ${src.error ?? "실패"}`}
-                      </Caption1>
-                    </div>
-                  ))}
-                </div>
-              </PopoverSurface>
-            </Popover>
+
+          <div className={s.tabs}>
+            <TabList selectedValue={tab} onTabSelect={(_, d) => setTab(d.value as TabKey)}>
+              <Tab value="all">전체 {news ? `(${news.length})` : ""}</Tab>
+              {REGIONS.map((r) => (
+                <Tab key={r} value={r}>
+                  {REGION_LABEL[r]} {news ? `(${counts[r]})` : ""}
+                </Tab>
+              ))}
+              <Tab value="vuln">취약점</Tab>
+            </TabList>
+          </div>
+
+          {failedSources.length > 0 && tab !== "vuln" && (
+            <MessageBar intent="warning" style={{ marginBottom: 12 }}>
+              <MessageBarBody>
+                이번 수집에서 {failedSources.map((x) => x.name).join(", ")} 소스를 읽지 못했어요. 다음 수집 때 다시 시도해요.
+              </MessageBarBody>
+            </MessageBar>
           )}
-        </header>
 
-        <div className={s.stats}>
-          <div className={s.stat}>
-            <Caption1 className={s.statLabel}>최근 24시간 기사</Caption1>
-            <Subtitle1>{stats.today}</Subtitle1>
-          </div>
-          <div className={s.stat}>
-            <Caption1 className={s.statLabel}>이번 주 랜섬웨어 기사</Caption1>
-            <Subtitle1>{stats.ransomware}</Subtitle1>
-          </div>
-          <div className={s.stat}>
-            <Caption1 className={s.statLabel}>이번 주 KEV 추가</Caption1>
-            <Subtitle1>{stats.kevWeek}</Subtitle1>
-          </div>
-          <div className={s.stat}>
-            <Caption1 className={s.statLabel}>CVSS 9.0+ 신규 (14일)</Caption1>
-            <Subtitle1>{stats.critical}</Subtitle1>
-          </div>
+          {news === null ? (
+            <div className={s.center}>
+              <Spinner label="불러오는 중" />
+            </div>
+          ) : tab === "vuln" ? (
+            <VulnView data={vulns} news={news} query={vulnQuery} setQuery={setVulnQuery} onNews={goNews} />
+          ) : news.length === 0 ? (
+            <div className={s.center}>
+              <Text>아직 수집된 기사가 없어요. 첫 수집이 끝나면 여기에 나타나요.</Text>
+            </div>
+          ) : (
+            <NewsView
+              items={regionItems}
+              filters={filters}
+              setFilters={setFilters}
+              epss={vulns?.mentioned ?? {}}
+              onCve={goCve}
+            />
+          )}
+
+          <Caption1 className={s.footer}>
+            기사 저작권은 각 언론사와 기관에 있어요. 이 사이트는 제목, 링크, AI 요약만 보여줘요. 요약에는 오류가 있을 수 있으니 중요한
+            내용은 원문을 확인하세요. 취약점 데이터: CISA KEV, NVD, FIRST EPSS.
+          </Caption1>
         </div>
-
-        <div className={s.tabs}>
-          <TabList selectedValue={tab} onTabSelect={(_, d) => setTab(d.value as TabKey)}>
-            <Tab value="all">전체 {news ? `(${news.length})` : ""}</Tab>
-            {REGIONS.map((r) => (
-              <Tab key={r} value={r}>
-                {REGION_LABEL[r]} {news ? `(${counts[r]})` : ""}
-              </Tab>
-            ))}
-            <Tab value="vuln">취약점</Tab>
-          </TabList>
-        </div>
-
-        {failedSources.length > 0 && tab !== "vuln" && (
-          <MessageBar intent="warning" style={{ marginBottom: 12 }}>
-            <MessageBarBody>
-              이번 수집에서 {failedSources.map((x) => x.name).join(", ")} 소스를 읽지 못했어요. 다음 수집 때 다시 시도해요.
-            </MessageBarBody>
-          </MessageBar>
-        )}
-
-        {news === null ? (
-          <div className={s.center}>
-            <Spinner label="불러오는 중" />
-          </div>
-        ) : tab === "vuln" ? (
-          <VulnView data={vulns} news={news} query={vulnQuery} setQuery={setVulnQuery} onNews={goNews} />
-        ) : news.length === 0 ? (
-          <div className={s.center}>
-            <Text>아직 수집된 기사가 없어요. 첫 수집이 끝나면 여기에 나타나요.</Text>
-          </div>
-        ) : (
-          <NewsView
-            items={regionItems}
-            filters={filters}
-            setFilters={setFilters}
-            epss={vulns?.mentioned ?? {}}
-            onCve={goCve}
-          />
-        )}
-
-        <Caption1 className={s.footer}>
-          기사 저작권은 각 언론사와 기관에 있어요. 이 사이트는 제목, 링크, AI 요약만 보여줘요. 요약에는 오류가 있을 수 있으니 중요한
-          내용은 원문을 확인하세요. 취약점 데이터: CISA KEV, NVD, FIRST EPSS.
-        </Caption1>
       </div>
     </FluentProvider>
   );

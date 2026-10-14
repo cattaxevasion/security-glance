@@ -32,6 +32,7 @@ export const SECTORS = [
   "교육",
   "IT·클라우드",
   "유통·서비스",
+  "에너지·기반시설",
   "개인",
 ] as const;
 
