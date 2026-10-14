@@ -38,6 +38,7 @@ jobs:
         run: npm run collect
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_WORKSPACE_ID: ${{ secrets.ANTHROPIC_WORKSPACE_ID }}
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
           MAX_NEW_PER_RUN: ${{ inputs.limit || '80' }}
 

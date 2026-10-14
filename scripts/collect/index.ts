@@ -72,10 +72,10 @@ async function runNews(meta: Meta): Promise<NewsItem[]> {
 
   const stats: RunStats = { candidates: queue.length, added: 0, notSecurity: 0, failed: 0, deferred: queue.length - batch.length };
   const added: NewsItem[] = [];
-  let authFailed = false;
+  let configFailed = false;
 
   await mapLimit(batch, CONCURRENCY, async ([id, raw]) => {
-    if (authFailed) return;
+    if (configFailed) return;
     try {
       const body = await extractArticle(raw.url);
       const item = await summarize(raw, body);
@@ -92,9 +92,14 @@ async function runNews(meta: Meta): Promise<NewsItem[]> {
       console.log(`  +  [${item.basis}] ${item.titleKo.slice(0, 60)}`);
       if (dry) console.log(JSON.stringify(item, null, 2));
     } catch (e) {
-      if (e instanceof Anthropic.AuthenticationError) {
-        authFailed = true;
-        console.error("Anthropic 인증 실패: ANTHROPIC_API_KEY를 확인하세요. 요약을 중단합니다.");
+      // 키·권한·요청 형식 문제는 기사 탓이 아니므로 실패로 세지 않고 이번 실행의 요약을 멈춘다
+      if (
+        e instanceof Anthropic.AuthenticationError ||
+        e instanceof Anthropic.PermissionDeniedError ||
+        e instanceof Anthropic.BadRequestError
+      ) {
+        if (!configFailed) console.error(`Anthropic 설정 오류로 요약을 중단합니다: ${e.message}`);
+        configFailed = true;
         return;
       }
       state.failures[id] = (state.failures[id] ?? 0) + 1;

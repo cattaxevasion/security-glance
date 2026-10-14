@@ -20,6 +20,7 @@ npm run collect -- news --limit 10 --dry   # 새 기사 10건만 요약해서 �
 | 환경변수 | 필수 | 설명 |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | 기사 요약에 필요 | 없으면 요약을 건너뛰고 취약점만 갱신 |
+| `ANTHROPIC_WORKSPACE_ID` | 조건부 | 워크스페이스에 묶이지 않은 키를 쓸 때 필요 (`wrkspc_...`) |
 | `NVD_API_KEY` | 선택 | 없으면 NVD 요청을 천천히 보낸다 |
 | `SUMMARY_MODEL` | 선택 | 기본 `claude-haiku-5-5` |
 | `MAX_NEW_PER_RUN` | 선택 | 한 번에 요약할 새 기사 수, 기본 80 |

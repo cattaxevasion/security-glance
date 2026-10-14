@@ -48,7 +48,9 @@ export class SummaryRefused extends Error {}
 
 /** 보안과 무관한 기사면 null. */
 export async function summarize(raw: RawItem, body: string | null): Promise<NewsItem | null> {
-  client ??= new Anthropic();
+  // 워크스페이스에 묶이지 않은 키는 요청마다 워크스페이스 ID 헤더가 필요하다
+  const workspace = process.env.ANTHROPIC_WORKSPACE_ID;
+  client ??= new Anthropic(workspace ? { defaultHeaders: { "anthropic-workspace-id": workspace } } : {});
 
   const basis: Basis = body ? "본문" : raw.snippet ? "요지" : "제목";
   const content = body ?? raw.snippet;
