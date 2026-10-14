@@ -1305,16 +1305,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-93388",
-   "published": "2026-10-14T02:17:01.720",
-   "description": "The Printcart Store (PCDesigner / NB Designer) plugin for WooCommerce is vulnerable to unauthenticated arbitrary file upload leading to remote code execution in all versions up to, and including, 2.9.1 The nbdesigner_copy_image_from_url AJAX action is registered for logged-out callers (wp_ajax_nopriv_), and its Google Drive branch rebuilds the destination filename from the raw, attacker-supplied gapi[name] parameter — bypassing the jpg/jpeg/png/gif allow-list applied on the other branch — and writes the fetched bytes to a web-accessible directory (wp-content/uploads/nbdesigner/temp/). This makes it possible for unauthenticated attackers to write a .php file to a web-served, PHP-executing location and, by supplying their own Google Drive file and OAuth token as the content source, execute arbitrary code on the server. The required save-design nonce is handed to anonymous callers by the nbd_check_use_logged_in endpoint, so it presents no barrier.",
-   "cvss": 9.8,
-   "severity": "CRITICAL",
-   "epss": 0.00854,
-   "epssPercentile": 0.57406,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-76285",
    "published": "2026-10-07T21:17:20.250",
    "description": "Improper Adherence to Coding Standards. Splunk addressed multiple internally identified vulnerabilities in Splunk Enterprise versions 10.4.3, 10.2.7, 10.0.10, and 9.4.15. The vulnerabilities are grouped by Common Weakness Enumeration (CWE), with one Common Vulnerabilities and Exposures (CVE) identifier assigned to each group. See Details for more information.",
@@ -1412,6 +1402,36 @@
    "severity": "CRITICAL",
    "epss": 0.00429,
    "epssPercentile": 0.35518,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101983",
+   "published": "2026-10-14T18:17:13.293",
+   "description": "A Stack-based Buffer Overflow vulnerability in the httpd process of Juniper Networks Junos OS and Junos OS Evolved allows an unauthenticated network attacker to cause remote code execution and denial of service via a J-Web virtual-domain configured.",
+   "cvss": 9.3,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101982",
+   "published": "2026-10-14T18:17:13.120",
+   "description": "A Stack-based Buffer Overflow vulnerability in the routing protocol daemon (rpd)  of Juniper Networks Junos OS and Junos OS Evolved allows a configured BGP/EVPN peer to cause root code execution on Junos OS or an rpd crash on Junos OS Evolved via protocol-valid route advertisements for an EVPN-VPWS service.",
+   "cvss": 9.3,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101954",
+   "published": "2026-10-14T18:17:11.277",
+   "description": "An Improper Authentication vulnerability in the J-Web management interface and its NETCONF session handling of Juniper Networks Junos OS and Junos OS Evolved allows an unauthenticated network attacker to obtain root-level device configuration access and take over the device via a reachable J-Web HTTP or HTTPS service when web management is enabled.",
+   "cvss": 9.3,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
    "inKev": false
   },
   {
@@ -1555,29 +1575,9 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-110649",
-   "published": "2026-10-14T15:17:18.650",
-   "description": "Stills before 25.24.2 contains an OS command injection vulnerability that allows attackers to execute shell commands by supplying crafted media file paths. Attackers can name a media file with $(...) or backticks to execute operating system commands with Node.js process privileges when ffmpeg, ffprobe, gifsicle, or convert runs.",
-   "cvss": 9.3,
-   "severity": "CRITICAL",
-   "epss": null,
-   "epssPercentile": null,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-110645",
    "published": "2026-10-14T15:17:18.090",
    "description": "Video-stitch before 2.0.0-beta.1 contains an OS command injection vulnerability that allows attackers to execute commands by supplying file names interpolated unquoted into shell-executed ffmpeg command lines. Attackers who influence file names passed to concat(), cut(), or merge() can inject shell metacharacters to run commands with the Node.js process privileges.",
-   "cvss": 9.3,
-   "severity": "CRITICAL",
-   "epss": null,
-   "epssPercentile": null,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-110644",
-   "published": "2026-10-14T15:17:17.940",
-   "description": "nodejs-whisper through 0.3.1 contains an OS command injection vulnerability in convertToWavType() that allows attackers to execute commands by supplying crafted audio file paths. Attackers can provide file names containing $() command substitution or closing quotes, which are interpolated into an ffmpeg command run via shelljs exec(), executing OS commands with Node.js process privileges.",
    "cvss": 9.3,
    "severity": "CRITICAL",
    "epss": null,
@@ -1598,16 +1598,6 @@
    "id": "CVE-2026-110640",
    "published": "2026-10-14T15:17:17.277",
    "description": "Whisper-node through 1.1.1 contains an OS command injection vulnerability that allows attackers to execute commands by supplying crafted filePath or whisperOptions.language values to whisper(). Attackers can inject shell metacharacters or $() substitution into the command string built by createCppCommand() and run via shelljs exec() to execute commands with Node.js process privileges.",
-   "cvss": 9.3,
-   "severity": "CRITICAL",
-   "epss": null,
-   "epssPercentile": null,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-110639",
-   "published": "2026-10-14T15:17:17.130",
-   "description": "@mborne/extract before 0.2.1 contains an OS command injection vulnerability that allows attackers to execute commands by supplying shell metacharacters in archivePath or targetDir options. Attackers controlling these values passed to extract() can inject commands into unquoted shelljs exec() strings in the unzip, 7z, tar-bz2 and gz extractors, running them with Node.js process privileges.",
    "cvss": 9.3,
    "severity": "CRITICAL",
    "epss": null,
@@ -1638,26 +1628,6 @@
    "id": "CVE-2026-110635",
    "published": "2026-10-14T15:17:16.560",
    "description": "webp-converter before 3.0.0 contains an OS command injection vulnerability in src/webpconverter.js helpers that run libwebp binaries via execFile with shell enabled. Attackers controlling file names or option strings passed to cwebp, dwebp, gwebp, or webpmux functions can inject shell metacharacters to execute OS commands as the Node.js process.",
-   "cvss": 9.3,
-   "severity": "CRITICAL",
-   "epss": null,
-   "epssPercentile": null,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-110634",
-   "published": "2026-10-14T15:17:16.417",
-   "description": "git-diff before 2.0.7 contains an OS command injection vulnerability that allows attackers to execute shell commands by supplying crafted strings to the gitDiff API. Attackers who control a diffed document string can embed $(cmd) or backtick substitutions that shelljs.exec evaluates, running commands with Node.js process privileges.",
-   "cvss": 9.3,
-   "severity": "CRITICAL",
-   "epss": null,
-   "epssPercentile": null,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-110612",
-   "published": "2026-10-14T15:17:13.187",
-   "description": "vlife through 2.0.1 contains an authentication bypass vulnerability that allows unauthenticated attackers to forge JWTs using the hardcoded HS256 signing key in TokenUtil. Attackers can sign a token with superUser=true and arbitrary groupIds claims to gain super administrator access to any URL on vlife instances.",
    "cvss": 9.3,
    "severity": "CRITICAL",
    "epss": null,
@@ -2165,6 +2135,46 @@
    "inKev": false
   },
   {
+   "id": "CVE-2026-88164",
+   "published": "2026-10-14T18:19:30.300",
+   "description": "Missing authorization in Microsoft Office SharePoint allows an authorized attacker to elevate privileges over a network.",
+   "cvss": 8.8,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-86848",
+   "published": "2026-10-14T18:19:19.223",
+   "description": "A flaw was found in DPDK lib/vhost vhost-crypto. The indirect-descriptor snapshot double-fetches a guest descriptor next index, allowing a malicious guest to cause an out-of-bounds access in the host backend.",
+   "cvss": 8.8,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-86567",
+   "published": "2026-10-14T18:19:18.390",
+   "description": "A flaw was found in DPDK lib/vhost. The VDUSE handler fails to invalidate vring pointers when the IOTLB is invalidated, leading to use-after-unmap.",
+   "cvss": 8.8,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-86461",
+   "published": "2026-10-14T18:19:17.623",
+   "description": "The FV Flowplayer Video Player plugin for WordPress is vulnerable to Limited Arbitrary File Upload in all versions up to, and including, 7.5.54.7212 via the check_mimetype function. This is due to incomplete file type validation in the check_mimetype function — while some extension checking is present, it can be bypassed, allowing attacker-supplied remote file content to be written with insufficient extension enforcement and no MIME check or WordPress upload helper. This makes it possible for authenticated attackers, with subscriber-level access and above, to upload files that may be executable, which makes remote code execution possible. Exploitation requires the plugin's 'profile videos on bio' option to be enabled, as this causes the nonce to be emitted on the subscriber-accessible profile page; without this setting, authenticated users below Editor cannot obtain the required nonce.",
+   "cvss": 8.8,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
    "id": "CVE-2026-101966",
    "published": "2026-10-14T17:17:48.943",
    "description": "A Use of Externally-Controlled Format String vulnerability in the jti-dialoutd of Juniper Networks Junos OS Evolved allows an authenticated network attacker to cause persistent telemetry dial-out denial of service via a crafted analytics sensor resource submitted through gNMI listener.",
@@ -2235,16 +2245,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-52903",
-   "published": "2026-10-12T13:17:32.757",
-   "description": "A deserialization of untrusted data vulnerability was found in ManageIQ. The YamlLoadAliases module overrides YAML.safe_load to silently fall back to YAML.unsafe_load in production when a Psych::DisallowedClass error occurs. An authenticated attacker with dialog import access can exploit this to achieve remote code execution by uploading a crafted YAML payload that triggers the fallback and deserializes arbitrary Ruby objects.\n\nRed Hat CloudForms, which was based on ManageIQ, has reached End of Life and is no longer supported. No errata or patches will be issued. This CVE is being assigned for the benefit of the ManageIQ community and downstream consumers.",
-   "cvss": 8.8,
-   "severity": "HIGH",
-   "epss": 0.00447,
-   "epssPercentile": 0.37255,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-93675",
    "published": "2026-10-07T01:16:35.320",
    "description": "IBM Langflow OSS 1.0.0 through 1.12.2 could allow a remote attacker to execute arbitrary code due to an expected dependency confusion.",
@@ -2272,6 +2272,96 @@
    "severity": "HIGH",
    "epss": 0.00684,
    "epssPercentile": 0.51459,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102077",
+   "published": "2026-10-14T18:17:13.460",
+   "description": "An Improper Check for Unusual or Exceptional Conditions vulnerability in the Packet Forwarding Engine (PFE) of Juniper Networks Junos OS on MX Series with SPC3 allows an unauthenticated, network-based attacker to cause a Denial-of-Service (DoS).\n\n\n\nOn MX Series with SPC3 line-card and source NAT configuration, when a specific malformed IPv6 packet is received, it is not dropped but instead a session is created and NAT resources are allocated. Continued receipt of such packets will eventually lead to session or resource exhaustion, which will impact all traffic through the device. To recover the device needs to be rebooted.\nTo monitor session usage, use the following:\n\nshow services sessions summary\n\nTo monitor source NAT resource usage, use the following: \n\nshow services nat pool\n\nThis issue affects Junos OS on MX Series with SPC3:\n\n  *  All versions before 23.2R2-S4;\n  *  23.4 versions before 23.4R2-S5;\n  *  24.2 versions before 24.2R2.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101981",
+   "published": "2026-10-14T18:17:12.963",
+   "description": "A Stack-based Buffer Overflow vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows an unauthenticated adjacent LDP peer to cause an rpd crash or execute arbitrary code via a malformed LDP Label Mapping message.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101979",
+   "published": "2026-10-14T18:17:12.803",
+   "description": "A Stack-based Buffer Overflow vulnerability in the authd Juniper Networks Junos OS and Junos OS Evolved allows a network attacker with SNMP read access to execute code with root privileges or cause a denial of service via a specific SNMP packet, when SNMP and AAA are enabled.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101976",
+   "published": "2026-10-14T18:17:12.640",
+   "description": "An Out-of-bounds Write vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows an eBGP peer which has not negotiated four-octet-AS capability sending a specifically malformed BGP update to cause a Denial-of-Service (DoS).",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101963",
+   "published": "2026-10-14T18:17:11.970",
+   "description": "An Incorrect Calculation vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos EVO allows a remote BGP EVPN neighbor to cause an rpd crash when SRv6 EVPN multihoming is configured.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101962",
+   "published": "2026-10-14T18:17:11.777",
+   "description": "An Improper Handling of Length Parameter Inconsistency vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows an attacker sending a specifically malformed BGP EVPN multicast update which is attempted to be readvertised to cause an rpd crash.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101961",
+   "published": "2026-10-14T18:17:11.610",
+   "description": "A NULL Pointer Dereference vulnerability in the routing-policy nexthop-ECMP matcher of Juniper Networks Junos OS and Junos OS Evolved allows a configured eBGP peer to cause a routing-daemon denial of service via a specific BGP packet received while a nexthop-ecmp qualifier is attached to a BGP import policy.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101952",
+   "published": "2026-10-14T18:17:11.110",
+   "description": "An Improper Validation of Consistency within Input vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows a configured BGP ISO-VPN peer to cause an rpd crash by sending a specific ISO-VPN update which is then processed by BMP route monitoring or NSR.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101949",
+   "published": "2026-10-14T18:17:10.933",
+   "description": "A NULL Pointer Dereference vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows an unauthenticated remote BGP neighbor to cause a denial of service via a VPN-flowspec BGP update if it is readvertised and BMP post-policy RIB-out monitoring is configured.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
    "inKev": false
   },
   {
@@ -3005,16 +3095,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-109228",
-   "published": "2026-10-12T14:17:12.087",
-   "description": "SGLang through 0.5.21 contains a resource budget bypass vulnerability that allows remote attackers to override GLM-V video processing limits by supplying fps, max_frames, max_tokens_per_frame and max_image_tokens in the video_url object. Attackers can set these values arbitrarily high so glm4v.py decodes every frame of high-resolution video at full size, exhausting worker memory and denying service.",
-   "cvss": 8.7,
-   "severity": "HIGH",
-   "epss": 0.00493,
-   "epssPercentile": 0.40842,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-109227",
    "published": "2026-10-12T14:17:11.923",
    "description": "SGLang through 0.5.21 contains an unbounded memory allocation vulnerability in preprocess_video in qwen_vl.py that decodes frames at full source resolution before applying max_pixels limits. Remote attackers can submit high-resolution videos to /v1/chat/completions on Qwen-VL deployments, and concurrent requests exhaust worker memory causing denial of service.",
@@ -3022,16 +3102,6 @@
    "severity": "HIGH",
    "epss": 0.00422,
    "epssPercentile": 0.3493,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-109205",
-   "published": "2026-10-12T14:17:11.277",
-   "description": "LogicalDOC Community Edition through 9.3 contains an unauthenticated file upload vulnerability in the UploadServlet that allows remote attackers to write files to disk without a session. Attackers can repeatedly send multipart requests with unlimited file parts to /upload, persisting files in uncleaned temporary directories and exhausting server disk space.",
-   "cvss": 8.7,
-   "severity": "HIGH",
-   "epss": 0.00422,
-   "epssPercentile": 0.34929,
    "inKev": false
   },
   {
@@ -3182,16 +3252,6 @@
    "severity": "HIGH",
    "epss": 0.00685,
    "epssPercentile": 0.51499,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-103474",
-   "published": "2026-09-30T18:18:17.647",
-   "description": "yii2-starter-kit through 4.2.0 fails to validate file types in the backend storage upload actions, allowing authenticated managers to upload PHP files. Attackers with manager role can upload PHP scripts to the web-accessible storage directory and request them to execute arbitrary code on the server.",
-   "cvss": 8.7,
-   "severity": "HIGH",
-   "epss": 0.00388,
-   "epssPercentile": 0.31229,
    "inKev": false
   },
   {
@@ -3415,16 +3475,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-108894",
-   "published": "2026-10-12T14:17:09.897",
-   "description": "A security flaw has been discovered in Linksys E1700 1.0.0.4.003. Impacted is the function addStaticRoute of the file /goform/addStaticRoute of the component Static Route Handler. Performing a manipulation of the argument staticRoute_IP_setting/staticRoute_Netmask_setting/staticRoute_Gateway_setting/staticRoute_Metric_setting results in os command injection. Remote exploitation of the attack is possible. The exploit has been released to the public and may be used for attacks. The vendor was contacted early about this disclosure but did not respond in any way.",
-   "cvss": 8.6,
-   "severity": "HIGH",
-   "epss": 0.02157,
-   "epssPercentile": 0.81823,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-108718",
    "published": "2026-10-11T13:17:15.020",
    "description": "Rill 0.77.0 through 0.90.5 contains a missing authorization vulnerability in the admin OAuth server that issues authorization codes to dynamically registered clients without user consent. Attackers can register a client with the long_lived_access_token scope and lure a user to an authorization link, obtaining a non-expiring API token with the user's full permissions.",
@@ -3615,16 +3665,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-86476",
-   "published": "2026-10-14T10:17:56.850",
-   "description": "A flaw was found in gst-plugins-base. A heap buffer overflow can be triggered when processing video buffers whose attached GstVideoMeta metadata declares plane strides and offsets that exceed the actual backing memory allocation. The metadata is not range-checked during deserialization, and the video frame mapping code does not verify that the declared plane geometry fits within the buffer before allowing consumers to read or write video data. A local attacker who controls the sending side of a GStreamer inter-process IPC pipeline can deliver a crafted buffer carrying fabricated strides, causing the receiving process to read or write beyond heap boundaries. Successful exploitation can cause a denial of service or potentially allow code execution within the affected process.",
-   "cvss": 8.4,
-   "severity": "HIGH",
-   "epss": 0.00209,
-   "epssPercentile": 0.10406,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-109961",
    "published": "2026-10-13T14:17:35.407",
    "description": "Froxlor 0.10.0 before 2.3.14 contains a newline injection vulnerability that allows authenticated customers to inject arbitrary entries into the root-owned NSS group database via the unvalidated additional_members parameter of the Ftps.add API. Attackers can embed newline characters that the REBUILD_NSSUSERS cron writes unsanitized into /var/lib/extrausers/group, creating privileged group entries for local privilege escalation.",
@@ -3695,16 +3735,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-86565",
-   "published": "2026-10-14T17:20:05.770",
-   "description": "A flaw was found in DPDK lib/vhost. A guest can desynchronize virtqueue size from inflight descriptor table size, causing an out-of-bounds write in the host vhost process.",
-   "cvss": 8.2,
-   "severity": "HIGH",
-   "epss": null,
-   "epssPercentile": null,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-93905",
    "published": "2026-10-13T21:19:57.863",
    "description": "IBM WebSphere Application Server - Liberty 17.0.0.3 through 26.0.0.10 could allow an unauthenticated remote attacker to corrupt the persisted status of batch job instances.",
@@ -3752,26 +3782,6 @@
    "severity": "HIGH",
    "epss": 0.00261,
    "epssPercentile": 0.16708,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-104909",
-   "published": "2026-10-14T08:17:03.443",
-   "description": "The Mang Board plugin for WordPress is vulnerable to Local File Inclusion in all versions up to, and including, 2.4.3 via the '<mode>_type (e.g. foo_type)' parameter parameter. This makes it possible for unauthenticated attackers to include and execute arbitrary .php files on the server, allowing the execution of any PHP code in those files. This can be used to bypass access controls, obtain sensitive data, or achieve code execution in cases where .php file types can be uploaded and included. Exploitation is trivial via an unauthenticated POST to any page rendering a public [mb_board] shortcode, as no nonce or capability check is enforced on the shortcode render path; on servers with a standard PHP installation, pearcmd.php can be leveraged to write and then include an attacker-controlled payload file in a single request.",
-   "cvss": 8.1,
-   "severity": "HIGH",
-   "epss": 0.01007,
-   "epssPercentile": 0.62258,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-17092",
-   "published": "2026-10-14T02:16:59.783",
-   "description": "The Directorist: AI-Powered Business Directory, Listings & Classified Ads plugin for WordPress is vulnerable to authorization bypass in all versions up to, and including, 8.10.2.1. This is due to the plugin not properly verifying that a user is authorized to perform an action. This makes it possible for authenticated attackers, with subscriber-level access and above, to delete arbitrary business directory listings, including those owned by other users and posts in publish, draft, or private status. The nonces guarding the endpoint do not constitute an authorization barrier because both directorist_nonce and atbdp_nonce_js are exposed to all logged-in users via wp_localize_script.",
-   "cvss": 8.1,
-   "severity": "HIGH",
-   "epss": 0.00539,
-   "epssPercentile": 0.44028,
    "inKev": false
   },
   {
@@ -3832,16 +3842,6 @@
    "severity": "HIGH",
    "epss": 0.00728,
    "epssPercentile": 0.53145,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-86563",
-   "published": "2026-10-14T17:20:05.600",
-   "description": "A flaw was found in DPDK lib/vhost. A double-offset bug in vhost log mapping calculation can lead to incorrect memory access.",
-   "cvss": 7.8,
-   "severity": "HIGH",
-   "epss": null,
-   "epssPercentile": null,
    "inKev": false
   },
   {
@@ -3978,26 +3978,6 @@
    "id": "CVE-2026-110623",
    "published": "2026-10-14T15:17:14.833",
    "description": "Papermerge Core through 3.5.3 contains a missing authorization vulnerability in the shared nodes API that allows authenticated users to share other users' documents by supplying arbitrary node UUIDs. Attackers can call POST /shared-nodes or PATCH /shared-nodes/access/{node_id} to grant themselves any role, then read, modify, or delete victims' documents and revoke existing shares.",
-   "cvss": 7.7,
-   "severity": "HIGH",
-   "epss": null,
-   "epssPercentile": null,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-110622",
-   "published": "2026-10-14T15:17:14.697",
-   "description": "Papermerge Core through 3.5.3 contains a missing authorization vulnerability that allows authenticated users to manipulate other users' pages because page management and OCR endpoints skip has_node_perm checks. Attackers knowing page UUIDs can call /pages/, /pages/move, or /pages/extract to rotate, delete, or extract victims' pages, and trigger OCR via /tasks/ocr.",
-   "cvss": 7.7,
-   "severity": "HIGH",
-   "epss": null,
-   "epssPercentile": null,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2025-71433",
-   "published": "2026-10-14T15:17:00.837",
-   "description": "Kaneo before 2.1.6 contains a missing authorization vulnerability that allows authenticated users to access other workspaces by supplying project, task, label or workspace identifiers to API routes lacking membership checks. Attackers who obtain identifiers, for example from shared project links, can read projects and tasks, modify or delete tasks, labels and comments, and search workspace contents.",
    "cvss": 7.7,
    "severity": "HIGH",
    "epss": null,
@@ -4255,16 +4235,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-104749",
-   "published": "2026-10-14T02:16:56.223",
-   "description": "The Bit integrations – Form Integration, Webhook, Spreadsheets, CRM, LMS & Email Automation plugin for WordPress is vulnerable to Privilege Escalation via Log Re-execution in all versions up to, and including, 2.10.6 The vulnerability exists because `IntegrationHandler::executeWithCapture()` stores raw, attacker-controlled field values — including `user_pass` and `user_email` — verbatim into `wp_btcbi_log.field_data` on anonymous front-end requests with no capability check, and `LogHandler::reexecute()` feeds that stored payload back through `Flow::execute()` inside the replaying administrator's session without validating the identity that originally produced the data, causing `RegistrationController::updateUser()` to resolve the target user ID to the administrator and write the attacker-supplied password via `wp_update_user()`. This makes it possible for unauthenticated attackers to overwrite the administrator's password and fully take over the administrator account. Exploitation requires that an administrator has configured a flow mapping a user-supplied form field to the `user_pass` parameter of the WP User Registration \"Update User\" action, and that the administrator subsequently clicks \"Re-execute\" on the failure log row produced by the anonymous submission from the plugin's log screen.",
-   "cvss": 7.5,
-   "severity": "HIGH",
-   "epss": 0.0054,
-   "epssPercentile": 0.44097,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-103423",
    "published": "2026-10-14T02:16:54.710",
    "description": "The Booking Package plugin for WordPress is vulnerable to authorization bypass in all versions up to, and including, 1.7.29 This is due to the plugin not properly verifying that a user is authorized to perform an action. This makes it possible for unauthenticated attackers to retrieve personally identifiable information for every booked customer stored in the booking_package_booked_customers table, including names, email addresses, phone numbers, physical addresses, and cancellation tokens. The nonce nominally protecting the endpoint is a public CSRF token emitted in the localized booking_package JavaScript object on any page rendering the [booking_package] shortcode or widget, making it trivially harvestable by unauthenticated visitors and providing no effective authentication barrier.",
@@ -4307,16 +4277,6 @@
   {
    "id": "CVE-2026-103297",
    "published": "2026-10-13T22:17:24.057",
-   "description": "CAI Content Credentials is affected by an Improper Verification of Cryptographic Signature vulnerability that could result in a Security feature bypass. An attacker could leverage this vulnerability to bypass security measures and gain unauthorized write access. Exploitation of this issue does not require user interaction.",
-   "cvss": 7.5,
-   "severity": "HIGH",
-   "epss": 0.00459,
-   "epssPercentile": 0.38233,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-103296",
-   "published": "2026-10-13T22:17:23.940",
    "description": "CAI Content Credentials is affected by an Improper Verification of Cryptographic Signature vulnerability that could result in a Security feature bypass. An attacker could leverage this vulnerability to bypass security measures and gain unauthorized write access. Exploitation of this issue does not require user interaction.",
    "cvss": 7.5,
    "severity": "HIGH",
@@ -4385,16 +4345,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-100119",
-   "published": "2026-10-13T22:17:11.050",
-   "description": "CAI Content Credentials is affected by an Improper Input Validation vulnerability that could result in a Security feature bypass. An attacker could leverage this vulnerability to bypass security measures and gain unauthorized write access. Exploitation of this issue does not require user interaction.",
-   "cvss": 7.5,
-   "severity": "HIGH",
-   "epss": 0.00498,
-   "epssPercentile": 0.41179,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-100118",
    "published": "2026-10-13T22:17:10.870",
    "description": "CAI Content Credentials is affected by an Improper Certificate Validation vulnerability that could result in a Security feature bypass. An attacker could leverage this vulnerability to bypass security measures and gain unauthorized write access. Exploitation of this issue does not require user interaction.",
@@ -4417,16 +4367,6 @@
   {
    "id": "CVE-2026-100115",
    "published": "2026-10-13T22:17:10.417",
-   "description": "CAI Content Credentials is affected by an Improper Access Control vulnerability that could result in a Security feature bypass. An attacker could leverage this vulnerability to bypass security measures and gain unauthorized write access. Exploitation of this issue does not require user interaction.",
-   "cvss": 7.5,
-   "severity": "HIGH",
-   "epss": 0.00459,
-   "epssPercentile": 0.38228,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-100114",
-   "published": "2026-10-13T22:17:10.290",
    "description": "CAI Content Credentials is affected by an Improper Access Control vulnerability that could result in a Security feature bypass. An attacker could leverage this vulnerability to bypass security measures and gain unauthorized write access. Exploitation of this issue does not require user interaction.",
    "cvss": 7.5,
    "severity": "HIGH",
@@ -4532,16 +4472,6 @@
    "severity": "HIGH",
    "epss": 0.00344,
    "epssPercentile": 0.26272,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-100163",
-   "published": "2026-10-14T08:17:02.257",
-   "description": "The Appointment Booking Plugin – LatePoint | Calendar & Scheduling for WordPress plugin for WordPress is vulnerable to Authentication Bypass in versions up to, and including, 5.7.2 via the OsCustomerHelper::create_wp_user_for_customer() helper reached from the public process_step_customer() booking step. When the 'Use WordPress users as customers' option is enabled, the helper falls back from email_exists() to username_exists( $customer->email ), which matches any WordPress user whose user_login equals the victim customer's email even when that user's user_email is completely different, and links that WordPress user's ID into the victim's LatePoint customer row (only privileged roles are excluded; Subscriber is allowed). This makes it possible for authenticated attackers, with Subscriber-level access and above, to take over another customer's LatePoint account — accessing their bookings, service, agent, and calendar data, and having the victim customer's email overwritten with the attacker's on next login — by holding a Subscriber account whose user_login equals the victim's email and submitting an unauthenticated public booking step registration request.",
-   "cvss": 7.4,
-   "severity": "HIGH",
-   "epss": 0.00444,
-   "epssPercentile": 0.36994,
    "inKev": false
   },
   {
@@ -4702,16 +4632,6 @@
    "severity": "HIGH",
    "epss": 0.00365,
    "epssPercentile": 0.28667,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-94377",
-   "published": "2026-10-14T04:18:55.297",
-   "description": "The Verified Reviews (Avis Vérifiés) plugin for WordPress is vulnerable to Stored Cross-Site Scripting via the 'moderation' parameter in all versions up to, and including, 2.4.6 due to insufficient input sanitization and output escaping. This makes it possible for unauthenticated attackers to inject arbitrary web scripts in pages that will execute whenever a user accesses an injected page. The authentication bypass is possible because ntav_check_data() uses loose != comparisons for signature verification, allowing a JSON body with boolean true values for idWebsite and sign to pass all checks on any configured installation.",
-   "cvss": 7.2,
-   "severity": "HIGH",
-   "epss": 0.00392,
-   "epssPercentile": 0.31582,
    "inKev": false
   },
   {
@@ -5065,16 +4985,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-108798",
-   "published": "2026-10-12T04:16:48.903",
-   "description": "A vulnerability was found in ZKTeco BioTime 9.5.6 Build 20260130.3206. This issue affects some unknown processing. The manipulation results in use of hard-coded cryptographic key\r . The attack may be launched remotely. The vendor was contacted early about this disclosure but did not respond in any way.",
-   "cvss": 6.9,
-   "severity": "MEDIUM",
-   "epss": 0.00278,
-   "epssPercentile": 0.18861,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-78022",
    "published": "2026-10-09T09:17:09.550",
    "description": "Dell Secure Connect Gateway (SCG) Policy Manager, versions prior to 5.34.00.16, contains a Not Failing Securely ('Failing Open') vulnerability. A low privileged attacker with remote access could potentially exploit this vulnerability, leading to Protection mechanism bypass.",
@@ -5402,26 +5312,6 @@
    "severity": "MEDIUM",
    "epss": 0.00393,
    "epssPercentile": 0.31808,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-108818",
-   "published": "2026-10-12T09:16:43.473",
-   "description": "A vulnerability was identified in agno-agi agno up to 2.7.3/3.0.6. This affects the function get_authentication_dependency of the file auth.py. Such manipulation of the argument security_key leads to missing authentication. The attack may be launched remotely. The exploit is publicly available and might be used. The project was informed of the problem early through an issue report but has not responded yet.",
-   "cvss": 5.5,
-   "severity": "MEDIUM",
-   "epss": 0.00531,
-   "epssPercentile": 0.43547,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-108806",
-   "published": "2026-10-12T06:16:59.877",
-   "description": "A vulnerability has been found in krupalshah EmployeeRecruitmentSystem up to 922ff6d208278282e7c8e36d70d9ae356adec9fe. Affected by this issue is the function mysql_query of the file source/authprocessing.php of the component Forgot Password Handler. Such manipulation of the argument fpemail leads to sql injection. The attack can be launched remotely. The exploit has been disclosed to the public and may be used. This product does not use versioning. This is why information about affected and unaffected releases are unavailable. The vendor was contacted early about this disclosure but did not respond in any way. This vulnerability only affects products that are no longer supported by the maintainer.",
-   "cvss": 5.5,
-   "severity": "MEDIUM",
-   "epss": 0.00254,
-   "epssPercentile": 0.15754,
    "inKev": false
   },
   {
