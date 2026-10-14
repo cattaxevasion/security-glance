@@ -3245,6 +3245,16 @@
    "inKev": false
   },
   {
+   "id": "CVE-2026-110144",
+   "published": "2026-10-13T22:17:34.203",
+   "description": "Incorrect authorization in Mojo in Google Chrome on on Windows prior to 155.0.8059.79 allowed a local attacker to potentially execute arbitrary code outside the sandbox via a local program. (Chromium security severity: High)",
+   "cvss": 8.6,
+   "severity": "HIGH",
+   "epss": 0.00118,
+   "epssPercentile": 0.01608,
+   "inKev": false
+  },
+  {
    "id": "CVE-2026-63174",
    "published": "2026-10-13T20:17:32.217",
    "description": "Omnispace Agora Project before 26.10.0 contains a broken access control vulnerability that allows a space administrator to assign users into spaces outside their authority because the spaceAffectList affectation was performed without verifying the caller's rights to the target space. Attackers can exploit the missing readRight() check in the import flow's join INSERT to break tenant isolation and manipulate user-space assignments across unauthorized spaces.",
