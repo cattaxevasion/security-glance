@@ -1,15 +1,15 @@
 {
- "updatedAt": "2026-10-14T17:16:18.544Z",
+ "updatedAt": "2026-10-14T17:21:10.583Z",
  "lastRun": {
-  "candidates": 277,
-  "added": 75,
-  "notSecurity": 5,
+  "candidates": 197,
+  "added": 72,
+  "notSecurity": 8,
   "failed": 0,
-  "deferred": 197
+  "deferred": 117
  },
- "newsCount": 150,
+ "newsCount": 222,
  "kevCount": 94,
- "cveCount": 373,
+ "cveCount": 432,
  "sources": [
   {
    "id": "bleepingcomputer",

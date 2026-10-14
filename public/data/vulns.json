@@ -1245,13 +1245,13 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-110130",
-   "published": "2026-10-13T19:18:43.397",
-   "description": "Dockhand before 1.0.45 contains an authentication bypass in which the global auth hook skips authentication for any path ending in a static-asset extension such as .js, including /api/* routes, and the user-mutation handlers fail open for unauthenticated callers. Unauthenticated remote attackers can send a PUT request to /api/users/<id>.js to reset the admin's or any user's password and take over the account.",
-   "cvss": 10,
+   "id": "CVE-2026-76519",
+   "published": "2026-10-14T17:19:10.747",
+   "description": "A vulnerability in the Advanced Malware Protection (AMP) feature of Cisco Secure Email Gateway could allow an unauthenticated, remote attacker to write arbitrary files on the underlying operating system.\r\n\r\nThis vulnerability is due to improper handling of email attachments when the file reputation service is enabled. An attacker could exploit this vulnerability by sending an email that contains a crafted attachment through an affected device. A successful exploit could allow the attacker to write arbitrary files and execute commands with&nbsp;root privileges on the underlying operating system.",
+   "cvss": 9.8,
    "severity": "CRITICAL",
-   "epss": 0.00559,
-   "epssPercentile": 0.45226,
+   "epss": null,
+   "epssPercentile": null,
    "inKev": false
   },
   {
@@ -1415,24 +1415,134 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-102490",
-   "published": "2026-09-30T17:16:40.707",
-   "description": "Zammad packages built with packager.io (DEB and RPM) could have allowed a local attacker who already had file system write privileges as the unprivileged zammad service account to escalate to full root privileges on the host. Service processes began running as root and executed files that were owned and writable by the zammad account before dropping their identity to that account. An attacker holding that foothold could have escalated within seconds, because the affected services were restarted automatically whenever they stopped; no administrator interaction was required. Only installations from the DEB and RPM packages were affected — installations from source or the official container images were not. All released packaged versions were affected.",
-   "cvss": 9.4,
+   "id": "CVE-2026-33796",
+   "published": "2026-10-14T17:18:28.320",
+   "description": "A Stack-based Buffer Overflow vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows a configured external BGP neighbor to execute arbitrary commands with root privileges via BMP route monitoring.",
+   "cvss": 9.3,
    "severity": "CRITICAL",
-   "epss": 0.0055,
-   "epssPercentile": 0.44672,
-   "inKev": true
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
   },
   {
-   "id": "CVE-2026-102489",
-   "published": "2026-09-30T17:16:40.550",
-   "description": "Zammad versions 6.3.0 to 6.5.4 are vulnerable a session hijack vulnerability that leads to remote code execution as the zammad user. The bug is also present in version 7.0.0 to version 7.1.2, but not exploitable due to changes in the underlying framework.",
-   "cvss": 9.4,
+   "id": "CVE-2026-33792",
+   "published": "2026-10-14T17:18:27.933",
+   "description": "A Stack-based Buffer Overflow vulnerability in the srxpfe process of Juniper Networks Junos OS on SRX Series allows an unauthenticated network attacker to execute code as root or cause a denial of service via a crafted packet received on a configured GRE tunnel.",
+   "cvss": 9.3,
    "severity": "CRITICAL",
-   "epss": 0.01255,
-   "epssPercentile": 0.68916,
-   "inKev": true
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-109439",
+   "published": "2026-10-14T17:18:23.253",
+   "description": "Lantronix XPress-DR and XPress-DR-I (CoBos-family) firmware through 8.1.0.0 contains a missing authentication vulnerability that allows remote attackers to read and persistently overwrite device configuration by sending crafted frames to the unauthenticated UDP configuration protocol on port 30718. Attackers can send a type 0xF8 query to read live configuration data and a type 0xFD frame with exactly 0x78 body bytes to rewrite the device IP address and serial-channel forwarding records, causing changes to commit to EEPROM and persist across reboots. The XPress-DR product series reached end-of-life/end-of-support in February 2025.",
+   "cvss": 9.3,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102182",
+   "published": "2026-10-14T17:18:06.080",
+   "description": "A Stack-based Buffer Overflow vulnerability in the kmd component of Juniper Networks Junos OS on MX Series allows an unauthenticated network attacker to execute code as root via specific IKE certificate-based packets.\n\nThis issue affects Junos OS on MX Series:\n\n\n  *  All versions before 21.2R3-S11;\n  *  from 21.4 before 21.4R3-S12;\n  *  from 22.2 before 22.2R3-S8;\n  *  from 22.3 before 22.3R3-S5;\n  *  from 22.4 before 22.4R3-S9;",
+   "cvss": 9.3,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102178",
+   "published": "2026-10-14T17:18:05.610",
+   "description": "A Stack-based Buffer Overflow vulnerability in the BGP routing daemon of Juniper Networks Junos OS and Junos OS Evolved allows a configured BGP flowspec peer to cause routing-engine compromise or a routing-daemon denial of service via flowspec route re-advertisement when BGP update-threading is enabled.",
+   "cvss": 9.3,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102175",
+   "published": "2026-10-14T17:18:05.147",
+   "description": "A Heap-based Buffer Overflow vulnerability in the sdxd service-deployment daemon of Juniper Networks Junos OS and Junos OS Evolved allows a remote unauthenticated attacker who can control or intercept the configured SDX/SRC server connection to execute code as root or cause denial of service via a crafted frame received over the service-deployment TCP connection.",
+   "cvss": 9.3,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102031",
+   "published": "2026-10-14T17:17:56.617",
+   "description": "An OS Command Injection vulnerability in TACACS of Juniper Networks Junos OS Evolved allows a low-privileged TACACS+-authenticated user to execute commands with root privileges when periodic TACACS+ authorization-refresh is enabled.",
+   "cvss": 9.3,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101990",
+   "published": "2026-10-14T17:17:51.587",
+   "description": "A Stack-based Buffer Overflow vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows a remote configured BGP peer to cause an rpd crash, or on Junos OS remote code-execution, via sending a flow-spec update which is selected for re-advertisement.",
+   "cvss": 9.3,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101986",
+   "published": "2026-10-14T17:17:50.953",
+   "description": "An  Improper Authentication vulnerability in J-Web of Juniper Networks Junos OS and Junos OS Evolved allows an unauthenticated network attacker to bypass J-Web authentication and execute CGI content with elevated privileges via a crafted HTTP request.",
+   "cvss": 9.3,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101980",
+   "published": "2026-10-14T17:17:50.503",
+   "description": "An Integer Underflow vulnerability in the kernel of Juniper Networks Junos OS with Extended Echo configured allows an unauthenticated, network-based attacker to cause a denial of service by a kernel crash.",
+   "cvss": 9.3,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101967",
+   "published": "2026-10-14T17:17:49.100",
+   "description": "An OS Command Injection vulnerability in the bootzd zero-touch provisioning daemon of Juniper Networks Junos OS Evolved allows an unauthenticated attacker on the management LAN to execute commands as root via crafted DHCP response.",
+   "cvss": 9.3,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101956",
+   "published": "2026-10-14T17:17:48.353",
+   "description": "An Improper Authentication vulnerability in the J-Web web management component of Juniper Networks Junos OS allows an unauthenticated remote attacker to execute arbitrary Junos commands with root privileges via the exposed J-Web web interface.",
+   "cvss": 9.3,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101950",
+   "published": "2026-10-14T17:17:47.877",
+   "description": "A Heap-based Buffer Overflow vulnerability in the SVR component of Juniper Networks Junos OS on SRX Series allows an unauthenticated network attacker to cause a denial of service and potentially compromise confidentiality and integrity via malformed IPv4 packets reaching an interface configured for Secure Vector Routing.",
+   "cvss": 9.3,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
   },
   {
    "id": "CVE-2026-110650",
@@ -1565,26 +1675,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-49950",
-   "published": "2026-10-13T21:17:39.007",
-   "description": "Xorbits Xoscar through 0.11.2 contains an unauthenticated deserialization vulnerability that allows remote attackers to execute arbitrary code by sending crafted data over the actor-pool TCP channel. Attackers can exploit SocketChannel.recv() passing unvalidated data to cloudpickle.loads(), which triggers pickle __reduce__ gadget execution before message type validation, achieving remote code execution as the server process which commonly runs as root on GPU nodes.",
-   "cvss": 9.3,
-   "severity": "CRITICAL",
-   "epss": 0.00625,
-   "epssPercentile": 0.48727,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-83662",
-   "published": "2026-10-13T20:18:11.500",
-   "description": "Adobe Experience Manager is affected by a reflected Cross-Site Scripting (XSS) vulnerability. An attacker could exploit this vulnerability to inject malicious scripts into a web page, potentially gaining elevated access or control over the victim's account or session. Exploitation of this issue requires user interaction in that a victim must visit a maliciously crafted URL or interact with a compromised web page. Scope is changed.",
-   "cvss": 9.3,
-   "severity": "CRITICAL",
-   "epss": 0.00717,
-   "epssPercentile": 0.52735,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-63146",
    "published": "2026-10-13T20:17:30.210",
    "description": "Omnispace Agora Project before 26.10.0 contains a code injection vulnerability where unescaped, attacker-controlled values are written into the config.inc.php configuration file during installation through File::updateConfigFile() and DbInstall::dbControl(), combined with an SQL injection issue enabled by PDO::ATTR_EMULATE_PREPARES supporting stacked queries. Attackers can exploit the SQL injection to re-trigger the installer and inject arbitrary PHP code into config.inc.php, achieving unauthenticated remote code execution on the underlying system.",
@@ -1592,16 +1682,6 @@
    "severity": "CRITICAL",
    "epss": 0.00658,
    "epssPercentile": 0.50318,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-106630",
-   "published": "2026-10-13T20:17:16.627",
-   "description": "Adobe Experience Manager is affected by a stored Cross-Site Scripting (XSS) vulnerability that could be abused by an attacker to inject malicious scripts into vulnerable form fields. Malicious JavaScript may be executed in a victim's browser when they browse to the page containing the vulnerable field, potentially gaining elevated access or control over the victim's account or session. Scope is changed.",
-   "cvss": 9.3,
-   "severity": "CRITICAL",
-   "epss": 0.00684,
-   "epssPercentile": 0.51484,
    "inKev": false
   },
   {
@@ -1705,16 +1785,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-108860",
-   "published": "2026-10-11T14:17:05.933",
-   "description": "BotSharp through 5.2.0 contains an authentication bypass vulnerability that allows unauthenticated remote attackers to forge bearer tokens using the hard-coded Jwt:Key in WebStarter appsettings.json. Attackers can sign tokens with the committed HMAC secret and fixed botsharp issuer and audience to impersonate any known user, including administrators, on Authorize-protected API routes.",
-   "cvss": 9.3,
-   "severity": "CRITICAL",
-   "epss": 0.00476,
-   "epssPercentile": 0.39605,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-108707",
    "published": "2026-10-11T02:16:39.477",
    "description": "Wukong_HRM through commit 186115e contains an authentication bypass vulnerability in ParamAspect that allows unauthenticated attackers to call every HRM API endpoint by omitting the AUTH-TOKEN header. Attackers gain HR administrator access to read payslips, salary history and employee personal data, download attachments, and modify or delete company-wide HR records.",
@@ -1735,16 +1805,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-107779",
-   "published": "2026-10-08T21:17:52.790",
-   "description": "Dromara Skyeye through commit 003549ae5615bd114ba5bb8ddf6a8e8ead97c321 contains a missing authentication vulnerability in bundled xxl-job-admin JobInfoController endpoints annotated with @PermissionLimit(limit = false). Unauthenticated attackers can POST GLUE_SHELL, GLUE_PYTHON, or GLUE_POWERSHELL jobs with attacker-supplied glueSource to /jobinfo/addAndStart, executing commands on the executor host or stopping and deleting jobs.",
-   "cvss": 9.3,
-   "severity": "CRITICAL",
-   "epss": 0.0054,
-   "epssPercentile": 0.44046,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-92414",
    "published": "2026-10-07T16:19:12.900",
    "description": ": Session Fixation / Session Reuse across Users vulnerability in Apache Jackrabbit.\n\n\n\nJackrabbit WebDAV server attaches a cached authenticated session on any Lock-Token/TransactionId/SubscriptionId/If-header field token match with\n\nno credential check.\n\n\n\nThis issue affects Apache Jackrabbit: from 2.23.0 through 2.23.5, from 2.22.0 through 2.22.4, from 2.20.0 through 2.20.17.\n\n\n\n\n\n\n\n\n\n\n\n\nUsers are recommended to upgrade to versions 2.23.6, 2.22.5, or 2.20.18 which fix the issue.",
@@ -1752,6 +1812,86 @@
    "severity": "CRITICAL",
    "epss": 0.00725,
    "epssPercentile": 0.5301,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-33789",
+   "published": "2026-10-14T17:18:27.763",
+   "description": "A Stack-based Buffer Overflow vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows an unauthenticated BGP peer to cause a denial of service and potential root-level command execution via crafted BGP route updates when the BGP Monitoring Protocol (BMP) is enabled.",
+   "cvss": 9.2,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102084",
+   "published": "2026-10-14T17:18:04.310",
+   "description": "An Improper Validation of Syntactic Correctness of Input vulnerability in the VPN daemon of Juniper Networks Junos OS on SRX Series allows an authenticated, network-based attacker to take complete control of the device.\n\nIf an SRX device configured for AutoDiscovery VPN (ADVPN) receives a message from a peer that contains one or more specifically malformed attributes, this will cause a buffer overflow, which can allow remote code execution and therefore allow an attacker to take complete control of the device. To be able to carry out this attack an attacker must either have acquired the shared secret to impersonate a peer or have compromised an existing one, so this attack is considerably difficult.\n\nThis issue affects Junos OS on SRX Series:\n\n\n  *  All versions before 23.2R2-S7.7;\n  *  from 23.4 before 23.4R2-S7;\n  *  from 24.2 before 24.2R2-S4;\n  *  from 24.4 before 24.4R2-S3;\n  *  from 25.2 before 25.2R2;\n  *  from 25.4 before 25.4R1-S3.",
+   "cvss": 9.2,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102070",
+   "published": "2026-10-14T17:18:02.953",
+   "description": "A Reachable Assertion vulnerability in the Two-Way Active Measurement Protocol (TWAMP) client of Juniper Networks Junos OS allows an unauthenticated network-based attacker to cause rmopd service disruption via a specific TCP packet.",
+   "cvss": 9.2,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102068",
+   "published": "2026-10-14T17:18:02.647",
+   "description": "A Stack-based Buffer Overflow vulnerability in the kernel of Juniper Networks Junos OS Evolved allows an unauthenticated remote attacker to trigger a kernel panic via a crafted TCP packet when key-chain authentication is used for BGP or LDP.",
+   "cvss": 9.2,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102062",
+   "published": "2026-10-14T17:18:01.737",
+   "description": "An Use of Externally-Controlled Format String vulnerability in the ipfd daemon of Juniper Networks Junos OS on SRX Series allows an unauthenticated network-based attacker to execute code with root privileges via a compromised or impersonated configured HTTPS feed server.",
+   "cvss": 9.2,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102037",
+   "published": "2026-10-14T17:17:57.867",
+   "description": "An XML Injection vulnerability in the Unified Threat Management daemon (utmd) of Juniper Networks Junos OS on SRX Series devices allows an unauthenticated network attacker to commit arbitrary device configuration with root privileges via a malicious response from a configured custom URL-feed server.",
+   "cvss": 9.2,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101997",
+   "published": "2026-10-14T17:17:52.740",
+   "description": "An Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability in ipfd of Juniper Networks Junos OS on SRX Series allows an unauthenticated network-based attacker to execute code with root privileges via a configured Security Intelligence feed connection.",
+   "cvss": 9.2,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101955",
+   "published": "2026-10-14T17:17:48.200",
+   "description": "A Stack-based Buffer Overflow vulnerability in the UTM Anti-Spam SBL of Juniper Networks Junos OS on SRX series allows an unauthenticated remote attacker to cause arbitrary code execution or a denial of service via a injected malformed DNS packet when Anti-Spam SBL inspection is enabled.",
+   "cvss": 9.2,
+   "severity": "CRITICAL",
+   "epss": null,
+   "epssPercentile": null,
    "inKev": false
   },
   {
@@ -1818,16 +1958,6 @@
    "id": "CVE-2026-110616",
    "published": "2026-10-14T15:17:13.767",
    "description": "NullHub through 2026.5.29 contains a missing authentication vulnerability that allows unauthenticated attackers to access the /api/* management API because the auth_token field defaults to null and is never assigned. Attackers sending requests without Authorization or Origin headers to non-loopback listeners can control agent instances, rewrite configurations including provider credentials, and manage cron jobs and MCP servers.",
-   "cvss": 9.2,
-   "severity": "CRITICAL",
-   "epss": null,
-   "epssPercentile": null,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2020-37281",
-   "published": "2026-10-14T15:16:59.370",
-   "description": "Gravitee API Management through 4.12.22 contains an authentication bypass vulnerability that allows unauthenticated remote attackers to impersonate any user by forging JWTs signed with the shipped default jwt.secret. Attackers knowing an existing user ID can sign an HS256 token with that subject and present it as a bearer token to the Management API, impersonating administrators to gain full platform control.",
    "cvss": 9.2,
    "severity": "CRITICAL",
    "epss": null,
@@ -1912,16 +2042,6 @@
    "severity": "CRITICAL",
    "epss": 0.00328,
    "epssPercentile": 0.24174,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-63149",
-   "published": "2026-10-13T20:17:30.617",
-   "description": "Omnispace Agora Project before 26.10.0 contains an insecure randomness vulnerability that allows attackers to predict temporary or default account passwords generated by Txt::defaultPassword() using PHP's uniqid() function based on server time in microseconds. Attackers who observe or approximate the account creation time can compute the predictable password and take over the account before the legitimate user logs in.",
-   "cvss": 9.1,
-   "severity": "CRITICAL",
-   "epss": 0.00365,
-   "epssPercentile": 0.28642,
    "inKev": false
   },
   {
@@ -2045,6 +2165,16 @@
    "inKev": false
   },
   {
+   "id": "CVE-2026-101966",
+   "published": "2026-10-14T17:17:48.943",
+   "description": "A Use of Externally-Controlled Format String vulnerability in the jti-dialoutd of Juniper Networks Junos OS Evolved allows an authenticated network attacker to cause persistent telemetry dial-out denial of service via a crafted analytics sensor resource submitted through gNMI listener.",
+   "cvss": 8.8,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
    "id": "CVE-2026-70580",
    "published": "2026-10-13T19:19:51.270",
    "description": "Missing authentication for critical function in Windows Credential Guard allows an authorized attacker to perform spoofing locally.",
@@ -2115,26 +2245,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-108865",
-   "published": "2026-10-11T14:17:06.640",
-   "description": "AmoyLab Unla through 0.10.0 contains an authentication bypass vulnerability that allows unauthenticated attackers to obtain valid access tokens because the OAuth2 server never authenticates a resource owner. Attackers can register a client, request a code from /authorize, and exchange it at /token to access OAuth2-protected MCP prefixes, proxied upstream APIs and injected credentials.",
-   "cvss": 8.8,
-   "severity": "HIGH",
-   "epss": 0.00324,
-   "epssPercentile": 0.23751,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-107701",
-   "published": "2026-10-08T19:17:02.403",
-   "description": "dot-access through 1.0.0 contains a prototype pollution vulnerability that allows attackers to modify Object.prototype by supplying a crafted dotted path to set(). Attackers controlling the path, such as through user-supplied field names, can use __proto__ segments to inject properties into all objects, altering authorization flags and option defaults or crashing the process.",
-   "cvss": 8.8,
-   "severity": "HIGH",
-   "epss": 0.00325,
-   "epssPercentile": 0.2393,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-93675",
    "published": "2026-10-07T01:16:35.320",
    "description": "IBM Langflow OSS 1.0.0 through 1.12.2 could allow a remote attacker to execute arbitrary code due to an expected dependency confusion.",
@@ -2162,6 +2272,526 @@
    "severity": "HIGH",
    "epss": 0.00684,
    "epssPercentile": 0.51459,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-33798",
+   "published": "2026-10-14T17:18:28.477",
+   "description": "A Stack-based Buffer Overflow vulnerability in the srxpfe of Juniper Networks Junos OS and Junos OS Evolved on the SRX Series allows an L2-adjacent attacker to execute arbitrary code as root via high-availability fabric traffic.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-33795",
+   "published": "2026-10-14T17:18:28.123",
+   "description": "A Numeric Truncation Error vulnerability in the rpd process of Juniper Networks Junos OS and Junos OS Evolved allows an unauthenticated network-based attacker to cause a denial of service via a BGP Prefix-SID route advertisement that is subsequently re-advertised.\n\nThis issue does not affect versions of Junos OS prior to 20.4R1.\nThis issue does not affect versions of Junos OS Evolved prior to 20.4R1-EVO",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-103994",
+   "published": "2026-10-14T17:18:13.613",
+   "description": "A Heap-based Buffer Overflow vulnerability in the VXLAN Gateway Daemon (vgd) of Juniper Networks Junos OS allows a malicious or compromised SDN-controller to cause a complete outage of the OVSDB control plane and possibly remote code execution.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102185",
+   "published": "2026-10-14T17:18:06.547",
+   "description": "A Loop with Unreachable Exit Condition ('Infinite Loop') vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows a remote network attacker to cause a denial of service via EVPN multihoming with preference-based designated-forwarder election.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102184",
+   "published": "2026-10-14T17:18:06.390",
+   "description": "An Improper Validation of Specified Quantity in Input vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos Evolved platforms allows a configured EVPN signaling peer to cause an rpd crash via a malformed SRv6 structure carried in an EVPN route update. The result is a denial of service affecting routing adjacencies.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102183",
+   "published": "2026-10-14T17:18:06.220",
+   "description": "An Improper Validation of Specified Quantity in Input vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows a configured BGP EVPN peer to cause an rpd crash via a specifically malformed NLRI.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102180",
+   "published": "2026-10-14T17:18:05.923",
+   "description": "A Stack-based Buffer Overflow vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows an attacker with access to a configured BGP peering session to cause a denial of service by sending a crafted BGP route attribute, which is processed while a BGP RIB streaming telemetry subscription is active.\n\nThis issue does not affect Junos OS versions prior to 22.1R1.\nThis issue does not affect Junos OS Evolved versions prior to 22.1R1-EVO.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102179",
+   "published": "2026-10-14T17:18:05.767",
+   "description": "An Out-of-bounds Write vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows an attacker with access to a configured BGP EVPN peer to cause a denial of service via BGP EVPN route processing when the l2vpn-evpn RIB telemetry sensor is subscribed. Successful exploitation can crash rpd and interrupt routing protocols until the daemon restarts and reconverges.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102176",
+   "published": "2026-10-14T17:18:05.303",
+   "description": "A Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') vulnerability in the SDK service process of Juniper Networks Junos OS allows an unauthenticated network attacker to cause a denial of service or compromise the Routing Engine by sending specific packets when the SDK service and a JDAF routing instance are enabled.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102174",
+   "published": "2026-10-14T17:18:04.990",
+   "description": "A Stack-based Buffer Overflow vulnerability in the iked IKE key-management daemon of Juniper Networks Junos OS on the SRX Series allows an authenticated remote-access VPN client to execute code with root privileges or cause denial of service via the remote-access VPN authentication and JIMS identity-publishing path.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102081",
+   "published": "2026-10-14T17:18:03.863",
+   "description": "A Missing Release of Memory after Effective Lifetime vulnerability in the packet forwarding engine (PFE) of Juniper Networks Junos OS on SRX Series allows an unauthenticated, network-based attacker to cause a complete Denial-of-Service (DoS).\n\n\n\nOn SRX4000 Series, and SRX5000 Series with SPC3, and MX Series with SPC3, when one or more specific application services like ALGs, IDP/DPI, APPID, SECINTEL, AAMW or AppQoE are configured, a high connections per second churn will cause PFE memory to leak. If the memory is exhausted traffic processing will be impacted.\n\nUse the CLI command show security monitoring to monitor the memory utilization of the PFEs on the FPCs.\n\nThis issue affects Junos OS on SRX Series and MX Series:\n\n\n  *  23.4 versions from 23.4R2-S3 before 23.4R2-S7;\n  *  24.2 versions from 24.2R2 before 24.2R2-S3;\n  *  24.4 versions before 24.4R2-S3;\n  *  25.2 versions before 25.2R1-S2, 25.2R2.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102069",
+   "published": "2026-10-14T17:18:02.800",
+   "description": "A Stack-based Buffer Overflow vulnerability in the dot1x daemon of Juniper Networks Junos OS devices operating as Junos Fusion Aggregation Devices allows an adjacent attacker acting as the configured ICCP peer to cause a denial of service and potentially execute code as root via. The issue is triggered when dot1x synchronization is enabled for the required Fusion satellite topology.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102065",
+   "published": "2026-10-14T17:18:02.173",
+   "description": "An Improper Validation of Specified Quantity in Input vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows a remote unauthenticated BGP peer to cause an rpd crash via a malformed BGP-signaled SRv6 service route when SRv6 dynamic tunnels are enabled.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102064",
+   "published": "2026-10-14T17:18:02.017",
+   "description": "A Reachable Assertion vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows an attacker to cause rpd crash via malformed BGP MCAST-VPN updates from a configured eBGP peer.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102061",
+   "published": "2026-10-14T17:18:01.580",
+   "description": "A Stack-based Buffer Overflow vulnerability in the phone-home daemon (phcd) of Juniper Networks Junos OS and Junos OS Evolved allows an adjacent unauthenticated attacker to execute arbitrary code as root via a crafted DHCP SZTP bootstrap message.\n\nThis issue only affects platforms that support Secure-ZTP.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102059",
+   "published": "2026-10-14T17:18:01.253",
+   "description": "An Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection') vulnerability in the phone-home daemon (phcd) of Juniper Networks Junos OS and Junos OS Evolved on EX Series, SRX Series, and QFX Series allows an adjacent unauthenticated attacker to execute arbitrary commands with root privileges via a rogue DHCP server.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102057",
+   "published": "2026-10-14T17:18:00.937",
+   "description": "A Stack-based Buffer Overflow vulnerability in the jdhcpd process of Juniper Networks Junos OS allows an unauthenticated adjacent attacker to cause a denial of service via a DHCP client response. The issue affects DHCP client operation and can interrupt related DHCP, relay, and zero-touch-provisioning services.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102055",
+   "published": "2026-10-14T17:18:00.590",
+   "description": "A Stack-based Buffer Overflow vulnerability in the cfmd process of Juniper Networks Junos OS on MX Series and Junos OS Evolved on PTX Series platforms allows an unauthenticated adjacent-network attacker to execute arbitrary code as root or cause denial of service via a specific CFM Message sent to a configured down-MEP with enhanced CFM mode enabled.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102052",
+   "published": "2026-10-14T17:18:00.113",
+   "description": "A Stack-based Buffer Overflow vulnerability in the jdhcpd process of Juniper Networks Junos OS and Junos OS Evolved platforms allows an adjacent unauthenticated attacker to cause denial of service or execute arbitrary code with root privileges via a malformed DHCPv4 server response when the DHCPv4 local-client feature is used.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102050",
+   "published": "2026-10-14T17:17:59.737",
+   "description": "A Stack-based Buffer Overflow vulnerability in the l2cpd daemon of Juniper Networks Junos OS and Junos OS Evolved allows an unauthenticated adjacent attacker to cause a denial of service in Layer 2 control-plane processing via LLDP packets received on an interface configured for LLDP. Repeated triggering may disrupt LLDP and other Layer 2 control protocols across the device.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102049",
+   "published": "2026-10-14T17:17:59.560",
+   "description": "A Stack-based Buffer Overflow vulnerability in the l2cpd process of Juniper Networks Junos OS and Junos OS Evolved allows an adjacent unauthenticated attacker to cause a denial of service or execute arbitrary code with root privileges via LLDP traffic received on an interface with Unified Access Policy enabled.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102046",
+   "published": "2026-10-14T17:17:59.093",
+   "description": "A Loop with Unreachable Exit Condition ('Infinite Loop') vulnerability in netsctp.ko of Juniper Networks Junos OS on MX Series allows an unauthenticated network attacker to cause a denial of service via crafted SCTP network traffic.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102044",
+   "published": "2026-10-14T17:17:58.797",
+   "description": "A Reachable Assertion vulnerability in the rpd process of Juniper Networks Junos OS and Junos OS Evolved allows a configured BGP-LS peer to cause a denial of service via a BGP-LS update.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102036",
+   "published": "2026-10-14T17:17:57.717",
+   "description": "An Integer Overflow or Wraparound vulnerability in the l2ald process of Juniper Networks Junos OS and Junos OS Evolved allows a configured EVPN BGP peer to cause a denial of service via EVPN Type-2 MAC/IP routes.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102030",
+   "published": "2026-10-14T17:17:56.460",
+   "description": "An Incomplete Cleanup vulnerability in the rpd process of Juniper Networks Junos OS and Junos OS Evolved allows a configured MVPN neighbor to cause a denial of service via a BGP MVPN update when an inter‑region segmented VRF with 'protocols mvpn inter-region-template' is configured.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102029",
+   "published": "2026-10-14T17:17:56.303",
+   "description": "A NULL Pointer Dereference vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows an unauthenticated configured MSDP peer or adjacent PIM sender to cause a denial of service via an MSDP or PIM policy that uses AS-path expansion.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102028",
+   "published": "2026-10-14T17:17:56.137",
+   "description": "A NULL Pointer Dereference vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows a remote BGP peer to cause a denial of service when multiple UPDATEs occur over a single TCP session with 'bgp family l2vpn auto-discovery-only' configured.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102027",
+   "published": "2026-10-14T17:17:55.973",
+   "description": "An Incorrect Calculation of Buffer Size vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows a configured eBGP neighbor to cause an rpd crash via BGP labeled-unicast UPDATEs when the affected multipath features are enabled.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102026",
+   "published": "2026-10-14T17:17:55.793",
+   "description": "An Improper Control of a Resource Through its Lifetime vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows an adjacent eBGP peer to cause a routing-daemon crash via a BGP route update when RIB sharding is enabled.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102025",
+   "published": "2026-10-14T17:17:55.627",
+   "description": "A Mismatched Memory Management Routines vulnerability in the routing protocol daemon (rpd) process of Juniper Networks Junos OS and Junos OS Evolved allows an authenticated network-based attacker to cause a denial of service via a BGP route update when extended next-hop tunneling and SRv6 service processing are used.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102024",
+   "published": "2026-10-14T17:17:55.463",
+   "description": "An Integer Overflow or Wraparound vulnerability in the routing daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows an authenticated BGP peer to cause a denial of service via BGP route updates when extended-nexthop-tunnel is enabled.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102023",
+   "published": "2026-10-14T17:17:55.320",
+   "description": "A Reachable Assertion vulnerability in fwstatsd of Juniper Networks Junos OS Evolved allows an authenticated network attacker to cause a denial of service via an SNMP firewall-counter MIB query when at least one firewall counter is configured.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102022",
+   "published": "2026-10-14T17:17:55.177",
+   "description": "A Reachable Assertion vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows an attacker with access to a configured BGP-LS peer to cause an rpd crash via a crafted BGP-LS Link NLRI advertisements.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102020",
+   "published": "2026-10-14T17:17:54.873",
+   "description": "A Reachable Assertion vulnerability in the rpd process of Juniper Networks Junos OS and Junos OS Evolved allows an authenticated network-based attacker to cause a denial of service via BGP-LS routing updates.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102016",
+   "published": "2026-10-14T17:17:54.170",
+   "description": "An Improper Validation of Specified Quantity in Input vulnerability in the rpd process of Juniper Networks Junos OS and Junos OS Evolved allows a configured BGP MVPN peer to cause a denial of service via a BGP MVPN signaling update.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102015",
+   "published": "2026-10-14T17:17:53.993",
+   "description": "A Heap-based Buffer Overflow vulnerability in the secure-dot1xd process of Juniper Networks on Junos OS and Junos OS Evolved allows an unauthenticated adjacent network attacker to execute code as root or cause a denial of service via an EAPOL frame sent to an 802.1X-authenticated interface.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102014",
+   "published": "2026-10-14T17:17:53.693",
+   "description": "A Stack-based Buffer Overflow vulnerability in the authd process of Juniper Networks Junos OS allows an attacker able to influence a configured RADIUS server to cause authd to crash or execute code with root privileges via a malicious RADIUS response.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102012",
+   "published": "2026-10-14T17:17:53.370",
+   "description": "A Reachable Assertion vulnerability in the na-grpcd process of Juniper Networks Junos OS Evolved allows a remote unauthenticated attacker to cause a denial of service via a gRPC telemetry subscription request.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101978",
+   "published": "2026-10-14T17:17:50.350",
+   "description": "An OS Command Injection vulnerability in the bootzd zero-touch provisioning daemon of Juniper Networks Junos OS Evolved on PTX Series allows an unauthenticated attacker on the management LAN to execute commands as root via a crafted gRPC response.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101977",
+   "published": "2026-10-14T17:17:50.190",
+   "description": "A NULL Pointer Dereference vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows a configured eBGP peer to cause a persistent routing-daemon denial of service via a specific BGP packet when ephemeral configuration is used.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101973",
+   "published": "2026-10-14T17:17:49.900",
+   "description": "A NULL Pointer Dereference vulnerability in the pkid component of Juniper Networks Junos OS allows an unauthenticated remote attacker to cause a denial of service via a malformed packet received during CMP enrollment or automatic certificate re-enrollment.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101965",
+   "published": "2026-10-14T17:17:48.803",
+   "description": "An Use of Externally-Controlled Format String vulnerability in the gRPC daemon of Juniper Networks Junos OS Evolved allows an authenticated network attacker to cause telemetry-service disruption, information disclosure, or potential root-level code execution via a crafted message to the gNMI service.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101957",
+   "published": "2026-10-14T17:17:48.493",
+   "description": "An Improper Initialization vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows a remote BGP peer to cause an rpd crash via an LLGR-stale route update readvertised to a configured non-LLGR peer group.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101951",
+   "published": "2026-10-14T17:17:48.030",
+   "description": "An Improper Validation of Consistency within Input vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows a network-adjacent configured BGP peer to cause a denial of service by sending a specifically malformed BGP MCAST-TREE update and this NLRI is then attempted to be readvertised.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101948",
+   "published": "2026-10-14T17:17:47.727",
+   "description": "A NULL Pointer Dereference vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows a remote unauthenticated BGP peer to cause a denial of service via a specific BGP FlowSpec update received by an affected BGP session.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101945",
+   "published": "2026-10-14T17:17:47.410",
+   "description": "An Integer Overflow or Wraparound vulnerability in the rpd process of Juniper Networks Junos OS and Junos OS Evolved allows a remote attacker with an established EVPN BGP peering relationship to cause a denial of service via EVPN BGP route processing. The issue affects EVPN-enabled routing instances and can disrupt control-plane adjacencies.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101944",
+   "published": "2026-10-14T17:17:47.247",
+   "description": "An Integer Overflow or Wraparound vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows an attacker to cause a denial of service via specially crafted EVPN route updates from an accepted EVPN BGP peer.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101943",
+   "published": "2026-10-14T17:17:47.090",
+   "description": "An Improper Input Validation vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows an unauthenticated network-based attacker to cause a denial of service via a crafted BGP EVPN update message.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101942",
+   "published": "2026-10-14T17:17:46.930",
+   "description": "An Improper Handling of Length Parameter Inconsistency vulnerability in the routing protocol daemon (rpd) process of Juniper Networks Junos OS and Junos OS Evolved allows an unauthenticated network-based attacker to cause a denial of service via a malformed EVPN Type-3 or Type-4 route received from a configured EVPN peer and processed during re-advertisement.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101941",
+   "published": "2026-10-14T17:17:46.720",
+   "description": "A NULL Pointer Dereference vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows a configured BGP neighbor to cause a denial of service via a BGP route update when specific routing-policy resolution-map and policy event-tracing configuration is enabled.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101940",
+   "published": "2026-10-14T17:17:46.543",
+   "description": "A NULL Pointer Dereference vulnerability in the rpd routing daemon of Juniper Networks Junos OS and Junos OS Evolved allows an unauthenticated configured BGP peer to cause a denial of service via a BGP UPDATE when ISO-VPN and egress-protection configuration is enabled.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101939",
+   "published": "2026-10-14T17:17:46.387",
+   "description": "A NULL Pointer Dereference vulnerability in the routing protocol daemon (RPD) of Juniper Networks Junos OS and Junos OS Evolved allows a configured peer sending a BGP UPDATE to cause a denial of service when an import policy with `then source-based-forwarding next-hop next-table <X>` is configured to reference a routing table that does not exist.",
+   "cvss": 8.7,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
    "inKev": false
   },
   {
@@ -2225,16 +2855,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-63154",
-   "published": "2026-10-13T20:17:31.010",
-   "description": "Omnispace Agora Project before 26.10.0 contains a SQL identifier injection vulnerability that allows a space administrator to escalate privileges by supplying caller-controlled agoraFields[] names as unvalidated SQL column identifiers during the user import flow. Attackers can inject privileged column names such as generalAdmin or use backtick-injection techniques to set administrative flags and escalate to general administrator privileges.",
-   "cvss": 8.7,
-   "severity": "HIGH",
-   "epss": 0.00433,
-   "epssPercentile": 0.36045,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-95631",
    "published": "2026-10-13T19:21:44.693",
    "description": "Adobe Commerce is affected by an Improper Input Validation vulnerability that could result in arbitrary code execution in the context of the current user. An attacker with high privileges could exploit this vulnerability to execute arbitrary code. Exploitation of this issue does not require user interaction. Scope is changed.",
@@ -2255,16 +2875,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-110238",
-   "published": "2026-10-13T19:18:49.063",
-   "description": "Rapyd Admin from 9.0.0 before 9.20.0 contains an authorization bypass vulnerability that allows authenticated company members with the default customer role to modify or delete arbitrary user accounts through the UsersModalEditEmbed Livewire component. Attackers can dispatch editUser or deleteUser with predictable sequential user ids to reset owner or super admin passwords, promote themselves to owner, and delete users.",
-   "cvss": 8.7,
-   "severity": "HIGH",
-   "epss": 0.0046,
-   "epssPercentile": 0.38246,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-110215",
    "published": "2026-10-13T19:18:45.640",
    "description": "youlai-boot through 2.21.1 contains a missing authorization vulnerability that allows authenticated users to assign arbitrary menu and button permissions to roles via PUT /api/v1/roles/{roleId}/menus. Low-privileged users such as the GUEST test account can grant all permissions to their own role, refreshing the Redis permission cache to gain administrator-equivalent access.",
@@ -2272,16 +2882,6 @@
    "severity": "HIGH",
    "epss": 0.00411,
    "epssPercentile": 0.33649,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-110207",
-   "published": "2026-10-13T19:18:44.337",
-   "description": "Wukong AICRM through 20260610 contains a missing authorization vulnerability that allows any authenticated user to call user, role, department and agent administration APIs because no administrator check exists. Attackers can send POST requests to /managerUser/updateUser to reset the admin account's password and assign themselves the \"all\" role, achieving full administrator account takeover.",
-   "cvss": 8.7,
-   "severity": "HIGH",
-   "epss": 0.00448,
-   "epssPercentile": 0.37353,
    "inKev": false
   },
   {
@@ -2595,6 +3195,26 @@
    "inKev": false
   },
   {
+   "id": "CVE-2026-101927",
+   "published": "2026-10-14T17:17:45.583",
+   "description": "A Heap-based Buffer Overflow vulnerability in eventd of Juniper Networks Junos OS and Junos OS Evolved on all platforms allows an unprivileged local attacker to cause a denial of service (DoS) or achieve privilege escalation to root via crafted IPC event messages.",
+   "cvss": 8.6,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-100236",
+   "published": "2026-10-14T17:17:44.833",
+   "description": "A flaw was found in the DPDK GSO library. When software GSO copies packet headers into a new mbuf, it does not check that the header fits in the source first segment or in the destination buffer, and a header longer than the configured GSO segment size can underflow the payload-size calculation. A remote or guest-supplied packet processed with software GSO can trigger an out-of-bounds read or write.",
+   "cvss": 8.6,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
    "id": "CVE-2026-110618",
    "published": "2026-10-14T15:17:14.053",
    "description": "SmsForwarder through 3.5.0 contains a missing authentication vulnerability in its AndServer HTTP server that allows unauthenticated network attackers to invoke remote-control APIs. Attackers can call the default-enabled endpoints to read SMS, call logs and contacts, send SMS, and export or overwrite configuration via the clone API.",
@@ -2835,6 +3455,16 @@
    "inKev": false
   },
   {
+   "id": "CVE-2026-102079",
+   "published": "2026-10-14T17:18:03.560",
+   "description": "An OS command injection vulnerability in the CLI of Juniper Networks Junos OS allows a local, low privileged attacker to take complete control of the device.\n\nA specific 'request csds' command doesn't sanitize user provided input so that it can be interpreted as a command. This allows unintended command execution with root privileges, which can lead to unauthorized system access or modification.\n\n\n\n\n\nThis issue affects Junos OS:\n\n\n  *  24.4 versions before 24.4R2-S4;\n  *  25.2 versions before 25.2R2-S1;\n  *  25.4 versions before 25.4R1-S3;\n\n\n\n\n\n\nThis issue does not affect Junos OS releases before 24.4R1.",
+   "cvss": 8.5,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
    "id": "CVE-2026-110648",
    "published": "2026-10-14T15:17:18.510",
    "description": "@offactory/compress-fonts before 1.1.1 contains an OS command injection vulnerability that allows attackers to execute shell commands by supplying font files with crafted names. Font paths are interpolated unquoted into a FontForge command run through child_process.execSync, so shell metacharacters in file names execute commands with the Node.js process privileges.",
@@ -2985,16 +3615,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-110233",
-   "published": "2026-10-13T19:18:48.327",
-   "description": "Rovr through 0.10.3 on Windows contains an OS command injection vulnerability that allows attackers to execute commands by crafting malicious file names. Attackers can deliver a file named with shell metacharacters like & alongside a payload, which runs with user privileges when the file is opened through open_file.",
-   "cvss": 8.4,
-   "severity": "HIGH",
-   "epss": 0.01146,
-   "epssPercentile": 0.66112,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-109961",
    "published": "2026-10-13T14:17:35.407",
    "description": "Froxlor 0.10.0 before 2.3.14 contains a newline injection vulnerability that allows authenticated customers to inject arbitrary entries into the root-owned NSS group database via the unvalidated additional_members parameter of the Ftps.add API. Attackers can embed newline characters that the REBUILD_NSSUSERS cron writes unsanitized into /var/lib/extrausers/group, creating privileged group entries for local privilege escalation.",
@@ -3062,6 +3682,16 @@
    "severity": "HIGH",
    "epss": 0.00303,
    "epssPercentile": 0.21486,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-86565",
+   "published": "2026-10-14T17:20:05.770",
+   "description": "A flaw was found in DPDK lib/vhost. A guest can desynchronize virtqueue size from inflight descriptor table size, causing an out-of-bounds write in the host vhost process.",
+   "cvss": 8.2,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
    "inKev": false
   },
   {
@@ -3195,6 +3825,26 @@
    "inKev": false
   },
   {
+   "id": "CVE-2026-86563",
+   "published": "2026-10-14T17:20:05.600",
+   "description": "A flaw was found in DPDK lib/vhost. A double-offset bug in vhost log mapping calculation can lead to incorrect memory access.",
+   "cvss": 7.8,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-86562",
+   "published": "2026-10-14T17:20:05.420",
+   "description": "A flaw was found in DPDK lib/vhost. A TOCTOU double-fetch of control-queue descriptors allows a heap buffer overflow with attacker-controlled content in the VDUSE control-queue handler.",
+   "cvss": 7.8,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
    "id": "CVE-2026-90954",
    "published": "2026-10-14T10:17:57.297",
    "description": "A flaw was found in BusyBox's dpkg-deb archive extraction. The ar archive handler flushes deferred symlinks after each archive member, unlike the tar, cpio, and unzip handlers which flush once after the last member. A specially crafted .deb archive with two data.tar members can exploit this ordering: the first member declares a symlink pointing to an absolute path (e.g., '/'), which is deferred as unsafe but flushed after the first member. The second member declares a regular file whose path traverses the now-live symlink, resulting in a file being written outside the intended extraction directory. This could allow an attacker to write arbitrary files to arbitrary locations when a user extracts a crafted .deb package.",
@@ -3222,16 +3872,6 @@
    "severity": "HIGH",
    "epss": 0.00169,
    "epssPercentile": 0.05804,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-103839",
-   "published": "2026-10-13T20:17:10.227",
-   "description": "Substance3D - Stager is affected by an out-of-bounds write vulnerability that could result in arbitrary code execution in the context of the current user. Exploitation of this issue requires user interaction in that a victim must open a malicious file.",
-   "cvss": 7.8,
-   "severity": "HIGH",
-   "epss": 0.00148,
-   "epssPercentile": 0.03555,
    "inKev": false
   },
   {
@@ -3272,16 +3912,6 @@
    "severity": "HIGH",
    "epss": 0.00148,
    "epssPercentile": 0.03553,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-103834",
-   "published": "2026-10-13T20:17:09.650",
-   "description": "Substance3D - Stager is affected by an out-of-bounds write vulnerability that could result in arbitrary code execution in the context of the current user. Exploitation of this issue requires user interaction in that a victim must open a malicious file.",
-   "cvss": 7.8,
-   "severity": "HIGH",
-   "epss": 0.00148,
-   "epssPercentile": 0.03554,
    "inKev": false
   },
   {
@@ -3392,16 +4022,6 @@
    "severity": "HIGH",
    "epss": 0.00427,
    "epssPercentile": 0.3532,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-110202",
-   "published": "2026-10-13T19:18:43.543",
-   "description": "Roo Code through 3.54.0 contains a command approval bypass vulnerability in getCommandDecision() that allows attackers to auto-approve denied shell commands by prefixing them with a bare >& redirect. Attackers using indirect prompt injection can make the allowlist match a redirect target like echo while the shell runs the denied command on the developer machine.",
-   "cvss": 7.7,
-   "severity": "HIGH",
-   "epss": 0.00316,
-   "epssPercentile": 0.22812,
    "inKev": false
   },
   {
@@ -3555,6 +4175,16 @@
    "inKev": false
   },
   {
+   "id": "CVE-2026-15102",
+   "published": "2026-10-14T17:18:26.670",
+   "description": "ADP Desktop SDK contains a vulnerability where sensitive information is transmitted in clear text. Exploitation of this vulnerability can lead to unauthorized access to Autodesk services.",
+   "cvss": 7.5,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
    "id": "CVE-2026-110284",
    "published": "2026-10-14T08:17:05.747",
    "description": "The LifterLMS – WP LMS for eLearning, Online Courses, & Quizzes plugin for WordPress is vulnerable to Local File Inclusion in versions up to, and including, 10.3.1 via attacker-controlled attributes of the [lifterlms_checkout] shortcode. This is due to the llms_get_template() helper performing extract() on the shortcode attribute array before resolving the template path, which allows the attacker-supplied 'template_name' and 'default_path' shortcode attributes to overwrite the function's local parameters and ultimately control the path passed to a PHP include. This makes it possible for authenticated attackers, with Instructor-level access and above, to include and execute arbitrary files on the server, that can be used to bypass access controls, obtain sensitive data, or achieve code execution in cases where files with safe extensions containing attacker-controlled content can be uploaded and included.",
@@ -3705,16 +4335,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-100124",
-   "published": "2026-10-13T22:17:11.663",
-   "description": "CAI Content Credentials is affected by an Improper Input Validation vulnerability that could result in a Security feature bypass. An attacker could leverage this vulnerability to bypass security measures and gain unauthorized write access. Exploitation of this issue does not require user interaction.",
-   "cvss": 7.5,
-   "severity": "HIGH",
-   "epss": 0.00613,
-   "epssPercentile": 0.48145,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-100123",
    "published": "2026-10-13T22:17:11.543",
    "description": "CAI Content Credentials is affected by an Improper Certificate Validation vulnerability that could result in a Security feature bypass. An attacker could leverage this vulnerability to bypass security measures and gain unauthorized write access. Exploitation of this issue does not require user interaction.",
@@ -3825,16 +4445,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-105442",
-   "published": "2026-10-13T21:17:26.913",
-   "description": "IBM WebSphere Application Server 8.5, and 9.0 and IBM WebSphere Application Server - Liberty 17.0.0.3 through 26.0.0.10 Liberty could allow a remote attacker to cause a denial of service caused by an insecure deserialization in the messaging service.",
-   "cvss": 7.5,
-   "severity": "HIGH",
-   "epss": 0.00395,
-   "epssPercentile": 0.3197,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-92876",
    "published": "2026-10-12T22:17:05.947",
    "description": "IBM Maximo Application Suite - IoT Component 9.2.0, 9.1.0, and 9.0.0 could allow a remote attacker to cause a denial of service due to uncontrolled recursion.",
@@ -3925,16 +4535,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-95695",
-   "published": "2026-10-13T21:19:59.413",
-   "description": "IBM WebSphere Application Server - Liberty 20.0.0.12 through 26.0.0.10 could allow a remote attacker to bypass security restrictions due to incorrect authorization.",
-   "cvss": 7.4,
-   "severity": "HIGH",
-   "epss": 0.0033,
-   "epssPercentile": 0.24451,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-84418",
    "published": "2026-10-12T23:17:45.013",
    "description": "IBM DataStage on Cloud Pak for Data 5.4.0.0 can allow a man-in-the-middle attacker to present a forged TLS certificate, intercept the connection, and capture the IAM bearer Authorization header automatically attached by the session adapter. The captured token grants full platform-scope tenant API access, enabling the attacker to read and manipulate the victim's DataStage projects, flows, assets, and pipeline definitions. This is client-side SDK code running on the user's own machine, so exploitation requires an external network interceptor rather than a co-tenant in the shared cluster.",
@@ -4022,6 +4622,16 @@
    "severity": "HIGH",
    "epss": 0.00216,
    "epssPercentile": 0.1123,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102177",
+   "published": "2026-10-14T17:18:05.453",
+   "description": "An Out-of-bounds Write vulnerability in the routing protocol daemon (rpd) of Juniper Networks Junos OS and Junos OS Evolved allows an adjacent unauthenticated attacker to cause a denial of service when IS-IS link protection and backup-selection are configured.",
+   "cvss": 7.2,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
    "inKev": false
   },
   {
@@ -4165,26 +4775,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-108902",
-   "published": "2026-10-11T15:16:56.337",
-   "description": "pH7Builder (pH7 Social Dating CMS) before 18.5.0 contains a path traversal vulnerability in the picture module deletePhoto() action that allows authenticated members to delete arbitrary files. Attackers can supply ../ sequences in the POST picture_link parameter to remove other members' photos or configuration and cache files, causing content loss and denial of service.",
-   "cvss": 7.2,
-   "severity": "HIGH",
-   "epss": 0.00375,
-   "epssPercentile": 0.29771,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-108760",
-   "published": "2026-10-11T13:17:21.310",
-   "description": "LlamaFarm through 0.0.34 contains an insecure default configuration that binds its unauthenticated FastAPI server to 0.0.0.0 on port 14345, while the lf CLI silently discards HOST overrides. Network-adjacent attackers can call the project and dataset management API to read stored provider API keys, modify projects, trigger ingestion, and irreversibly delete projects.",
-   "cvss": 7.2,
-   "severity": "HIGH",
-   "epss": 0.00242,
-   "epssPercentile": 0.1423,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-93875",
    "published": "2026-10-02T14:17:11.850",
    "description": "The JetAppointment plugin for WordPress is vulnerable to Stored Cross-Site Scripting via the 'friendlyTime' parameter in all versions up to, and including, 2.5.2.1 due to insufficient input sanitization and output escaping. This makes it possible for unauthenticated attackers to inject arbitrary web scripts in pages that will execute whenever a user accesses an injected page. The injected payload is stored in the wp_jet_appointments_meta table via the unauthenticated jet_engine_form_booking_submit endpoint and executes in the administrator's browser when the appointment details popup is opened in the WordPress admin panel.",
@@ -4192,6 +4782,26 @@
    "severity": "HIGH",
    "epss": 0.0019,
    "epssPercentile": 0.0809,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-102056",
+   "published": "2026-10-14T17:18:00.753",
+   "description": "An Out-of-bounds Read vulnerability in the cfmd process of Juniper Networks Junos OS and Junos OS Evolved allows an unauthenticated adjacent-network attacker to crash the daemon and disclose limited process memory via a specific CFM Message sent to a configured interface.",
+   "cvss": 7.1,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
+   "id": "CVE-2026-101994",
+   "published": "2026-10-14T17:17:52.233",
+   "description": "An Improper Handling of Length Parameter Inconsistency vulnerability in the \n\nl2ald \n\ndaemon of Juniper Networks Junos OS and Junos OS Evolved allows an attacker who can control or impersonate a configured MC-LAG ICCP peer to disclose process heap memory or cause a denial of service via a malformed ICCP message.",
+   "cvss": 7.1,
+   "severity": "HIGH",
+   "epss": null,
+   "epssPercentile": null,
    "inKev": false
   },
   {
@@ -4222,16 +4832,6 @@
    "severity": "HIGH",
    "epss": 0.00207,
    "epssPercentile": 0.10074,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-110084",
-   "published": "2026-10-13T20:17:27.217",
-   "description": "Adobe Experience Manager is affected by an XML Injection (aka Blind XPath Injection) vulnerability that could result in a Security feature bypass. A low-privileged attacker could leverage this vulnerability to bypass security measures and gain unauthorized read and limited write access. Exploitation of this issue does not require user interaction.",
-   "cvss": 7.1,
-   "severity": "HIGH",
-   "epss": 0.0044,
-   "epssPercentile": 0.36612,
    "inKev": false
   },
   {
@@ -4445,16 +5045,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-110599",
-   "published": "2026-10-14T15:17:11.247",
-   "description": "L-SMASH through 2.14.5 contains a double free vulnerability in hevc_setup_first_summary() and h264_setup_first_summary() in importer/nalu_imp.c that frees borrowed codec-specific objects on error paths. Attackers can supply a crafted Annex-B elementary stream lacking a parseable SPS to lsmash_read_file() or the boxdumper, remuxer, or muxer tools, causing use-after-free, heap corruption, and crashes.",
-   "cvss": 6.9,
-   "severity": "MEDIUM",
-   "epss": null,
-   "epssPercentile": null,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-110025",
    "published": "2026-10-13T16:17:19.800",
    "description": "A flaw has been found in slackero phpwcms up to 1.9.49/1.12.3. This issue affects some unknown processing of the file include/inc_front/content/cnt23.article.inc.php of the component Extension Check. This manipulation of the argument POST_name causes unrestricted upload. The attack can be initiated remotely. Upgrading to version 1.9.50 and 1.12.4 is capable of addressing this issue. Patch name: 118c978430f5a9668b30535f6e592c7ae8df711f/f4c136b467565b2d16ebe2b8276b9a03547a9a69/8571cb47df8d66804d1eb88ae3d1ab4fb513e1e7. Upgrading the affected component is recommended.",
@@ -4655,6 +5245,16 @@
    "inKev": false
   },
   {
+   "id": "CVE-2016-15060",
+   "published": "2026-10-14T17:17:33.643",
+   "description": "A vulnerability was found in PCMan FTP Server up to 2.0.7. This affects an unknown function of the component PORT Command Handler. The manipulation results in buffer overflow. The attack can be launched remotely. The exploit has been made public and could be used.",
+   "cvss": 5.5,
+   "severity": "MEDIUM",
+   "epss": null,
+   "epssPercentile": null,
+   "inKev": false
+  },
+  {
    "id": "CVE-2026-109607",
    "published": "2026-10-13T17:17:29.700",
    "description": "A flaw has been found in SourceCodester Online Exam System 1.0. Affected is an unknown function of the file adminpanel/admin/query/loginExe.php of the component Login Endpoint. This manipulation of the argument username/pass causes sql injection. It is possible to initiate the attack remotely. The exploit has been published and may be used.",
@@ -4842,16 +5442,6 @@
    "severity": "MEDIUM",
    "epss": 0.00288,
    "epssPercentile": 0.19901,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-103241",
-   "published": "2026-09-30T17:16:42.570",
-   "description": "A flaw has been found in vllm-project vLLM up to 0.26.0. This vulnerability affects unknown code of the file rust/src/parser/src/unified/gemma4.rs of the component Gemma4UnifiedParser. Executing a manipulation can lead to denial of service. The attack may be launched remotely. The exploit has been published and may be used. Upgrading to version 0.29.1rc0 is able to resolve this issue. This patch is called 3439bad37e68ba9755a46f4f6b44a4aeaf1f60a9. Upgrading the affected component is advised.",
-   "cvss": 5.5,
-   "severity": "MEDIUM",
-   "epss": 0.00714,
-   "epssPercentile": 0.52626,
    "inKev": false
   },
   {
@@ -5359,6 +5949,142 @@
   "CVE-2026-85954": {
    "epss": 0.00202,
    "percentile": 0.09401
+  },
+  "CVE-2026-85706": {
+   "epss": 0.92956,
+   "percentile": 0.99833
+  },
+  "CVE-2026-109390": {
+   "epss": 0.0161,
+   "percentile": 0.75442
+  },
+  "CVE-2025-41450": {
+   "epss": 0.0035,
+   "percentile": 0.26924
+  },
+  "CVE-2025-41451": {
+   "epss": 0.00961,
+   "percentile": 0.60744
+  },
+  "CVE-2025-41452": {
+   "epss": 0.00268,
+   "percentile": 0.176
+  },
+  "CVE-2026-96012": {
+   "epss": 0.00509,
+   "percentile": 0.41974
+  },
+  "CVE-2026-19547": {
+   "epss": 0.00159,
+   "percentile": 0.04591
+  },
+  "CVE-2026-81839": {
+   "epss": 0.00231,
+   "percentile": 0.12914
+  },
+  "CVE-2026-96893": {
+   "epss": 0.00545,
+   "percentile": 0.44362
+  },
+  "CVE-2026-5954": {
+   "epss": 0.00162,
+   "percentile": 0.04895
+  },
+  "CVE-2026-6567": {
+   "epss": 0.00193,
+   "percentile": 0.08338
+  },
+  "CVE-2026-7767": {
+   "epss": 0.00234,
+   "percentile": 0.1323
+  },
+  "CVE-2026-14210": {
+   "epss": 0.0019,
+   "percentile": 0.08019
+  },
+  "CVE-2026-14552": {
+   "epss": 0.00193,
+   "percentile": 0.08341
+  },
+  "CVE-2026-16275": {
+   "epss": 0.00231,
+   "percentile": 0.12955
+  },
+  "CVE-2026-78335": {
+   "epss": 0.00162,
+   "percentile": 0.04894
+  },
+  "CVE-2026-84284": {
+   "epss": 0.00231,
+   "percentile": 0.12954
+  },
+  "CVE-2026-85529": {
+   "epss": 0.00231,
+   "percentile": 0.12954
+  },
+  "CVE-2026-92528": {
+   "epss": 0.00131,
+   "percentile": 0.02418
+  },
+  "CVE-2026-100755": {
+   "epss": 0.00085,
+   "percentile": 0.00279
+  },
+  "CVE-2026-101168": {
+   "epss": 0.00164,
+   "percentile": 0.05243
+  },
+  "CVE-2026-104661": {
+   "epss": 0.00192,
+   "percentile": 0.08281
+  },
+  "CVE-2026-105458": {
+   "epss": 0.00193,
+   "percentile": 0.08324
+  },
+  "CVE-2026-9268": {
+   "epss": 0.0021,
+   "percentile": 0.10453
+  },
+  "CVE-2026-82632": {
+   "epss": 0.00179,
+   "percentile": 0.06937
+  },
+  "CVE-2026-100104": {
+   "epss": 0.00188,
+   "percentile": 0.07816
+  },
+  "CVE-2026-103549": {
+   "epss": 0.00222,
+   "percentile": 0.11897
+  },
+  "CVE-2026-102255": {
+   "epss": 0.00477,
+   "percentile": 0.39642
+  },
+  "CVE-2026-102256": {
+   "epss": 0.00494,
+   "percentile": 0.40909
+  },
+  "CVE-2026-102257": {
+   "epss": 0.00652,
+   "percentile": 0.50042
+  },
+  "CVE-2026-72898": {
+   "epss": 0.19048,
+   "percentile": 0.97272
+  },
+  "CVE-2026-21589": {
+   "epss": 0.02777,
+   "percentile": 0.86097
+  },
+  "CVE-2026-85097": {
+   "epss": 0.00312,
+   "percentile": 0.22407
+  },
+  "CVE-2026-107406": {
+   "epss": 0.00471,
+   "percentile": 0.39209
   }
  }
 }
