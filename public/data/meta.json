@@ -1,13 +1,13 @@
 {
- "updatedAt": "2026-10-14T17:12:58.750Z",
+ "updatedAt": "2026-10-14T17:16:18.544Z",
  "lastRun": {
-  "candidates": 357,
+  "candidates": 277,
   "added": 75,
   "notSecurity": 5,
   "failed": 0,
-  "deferred": 277
+  "deferred": 197
  },
- "newsCount": 75,
+ "newsCount": 150,
  "kevCount": 94,
  "cveCount": 373,
  "sources": [

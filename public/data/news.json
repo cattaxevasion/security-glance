@@ -2832,5 +2832,2851 @@
    ]
   },
   "basis": "본문"
+ },
+ {
+  "id": "f4d492f7411b6226",
+  "url": "https://www.boannews.com/news/articleView.html?idxno=146386",
+  "title": "XBOW, 크롬 연쇄 취약점 발견... 구글 버그바운티 25만달러 수상",
+  "titleKo": "XBOW, 크롬 연쇄 취약점 발견... 구글 버그바운티 25만달러 수상",
+  "sourceId": "boannews",
+  "sourceName": "보안뉴스",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-14T04:44:38.000Z",
+  "collectedAt": "2026-10-14T17:14:59.095Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "엑스보우(XBOW)가 AI 에이전트와 보안 연구원의 협업으로 윈도우용 크롬의 풀체인 익스플로잇을 구현해 구글 크롬 취약점 보상 프로그램에서 25만달러를 받았다.",
+   "V8 엔진 버그, WebP 디코더 버그(CVE-2026-85045), 크래시패드 버그(CVE-2026-78952)를 엮어 두 겹의 샌드박스를 뚫고 샌드박스 밖에서 코드를 실행했다.",
+   "구글이 패치를 배포했고 세 버그의 분석 보고서가 공개됐으며, 실제 공격에 악용된 사례는 확인되지 않았다."
+  ],
+  "socPoint": "윈도우 크롬 버전이 구글 패치 이후 최신인지 점검하고, 크롬 프로세스가 비정상적으로 자식 프로세스나 외부 실행을 만드는 행위와 WebP 이미지를 여는 직후의 이상 종료(크래시) 로그를 EDR로 확인합니다.",
+  "attackTypes": [
+   "취약점 악용",
+   "제로데이"
+  ],
+  "sectors": [],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [
+    "CVE-2026-85045",
+    "CVE-2026-78952"
+   ],
+   "actors": [],
+   "orgs": [
+    "엑스보우(XBOW)",
+    "구글",
+    "오픈AI"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "b7b1929554c442d8",
+  "url": "https://thehackernews.com/2026/10/microsoft-patches-record-1413-flaws.html",
+  "title": "Microsoft Patches Record 1,413 Flaws, Including Exploited Windows Shell Bug",
+  "titleKo": "마이크로소프트, 악용된 윈도우 셸 취약점 포함 1,413개 취약점 패치 공개",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-14T04:34:43.000Z",
+  "collectedAt": "2026-10-14T17:14:58.861Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "마이크로소프트가 월간 패치 화요일에 역대 최다인 1,413개 취약점에 대한 패치를 배포했습니다.",
+   "윈도우 셸 명령 주입 취약점(CVE-2026-96951, CVSS 8.8)은 실제 악용이 확인되어 MOTW 보호를 우회할 수 있으며, 공격자는 악성 파일이나 링크를 통해 사용자를 유도할 수 있습니다.",
+   "CISA는 이 취약점을 KEV 카탈로그에 등록하고 연방기관에 2026년 10월 16일까지 패치 적용을 요구했습니다. 공격 주체와 피해 범위는 아직 확인되지 않았습니다."
+  ],
+  "socPoint": "엔드포인트에서 Mark of the Web(Zone.Identifier 스트림)이 제거되었거나 우회된 흔적이 있는 파일의 실행 로그, 그리고 이메일·메신저로 전달된 특수 제작 파일이 셸을 통해 실행되는 프로세스 생성 이벤트(부모 프로세스가 explorer.exe 등인지)를 확인해야 합니다.",
+  "attackTypes": [
+   "취약점 악용",
+   "제로데이"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-96951",
+    "CVE-2026-108398",
+    "CVE-2026-92707",
+    "CVE-2026-21413"
+   ],
+   "actors": [],
+   "orgs": [
+    "Microsoft",
+    "Windows",
+    ".NET Framework",
+    "Action1",
+    "CISA"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "6afd50886facc90d",
+  "url": "https://www.security-next.com/191410",
+  "title": "Fortinet、アドバイザリ11件を公開 - 「FortiSandbox」「FortiSIEM」にクリティカル",
+  "titleKo": "Fortinet, 아드바이저리 11건 공개 - FortiSandbox·FortiSIEM 크리티컬",
+  "sourceId": "securitynext",
+  "sourceName": "Security NEXT",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-14T04:03:15.000Z",
+  "collectedAt": "2026-10-14T17:14:56.765Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "Fortinet이 2026년 10월 13일 패치 화요일에 보안 어드바이저리 11건을 공개하고 CVE 기준 14개 취약점을 밝혔다.",
+   "FortiSIEM의 경로 순회 취약점 CVE-2026-106173은 인증 없이 조작된 패킷으로 코드나 명령 실행이 가능할 수 있다.",
+   "FortiSandbox의 웹 관리 인터페이스 인증 우회 취약점 CVE-2026-107656도 크리티컬로, FortiSandbox PaaS 일부 버전에도 영향이 있다고 한다."
+  ],
+  "socPoint": "FortiSIEM과 FortiSandbox 관리 인터페이스에 대한 비정상 HTTP 요청과 경로 순회 패턴, 인증 없이 발생한 관리 페이지 접근 로그를 확인하고, 해당 장비의 패치 적용 여부를 점검합니다.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-106173",
+    "CVE-2026-107656"
+   ],
+   "actors": [],
+   "orgs": [
+    "Fortinet",
+    "FortiSIEM",
+    "FortiSandbox",
+    "FortiSandbox PaaS"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "01f040e30563d83e",
+  "url": "https://www.boannews.com/news/articleView.html?idxno=146375",
+  "title": "오픈AI, 임원 회의실 도청 혐의로 직원 체포",
+  "titleKo": "오픈AI, 임원 회의실 도청 혐의로 직원 체포",
+  "sourceId": "boannews",
+  "sourceName": "보안뉴스",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-14T03:30:00.000Z",
+  "collectedAt": "2026-10-14T17:14:59.052Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "FBI가 오픈AI 샌프란시스코 사무실 임원 회의실에 몰래 녹음 장치를 설치한 혐의로 제품팀 직원 알포잔을 체포했다.",
+   "장치는 TV 뒤 USB 단자에 꽂혀 있었고, 암호화와 음성 감시, 데이터 반출 기능을 갖춘 것으로 회사는 설명했다.",
+   "회사는 해당 직원을 해고하고 사건을 FBI에 넘겼으며, 현재까지 모델 가중치나 고객 데이터 유출 정황은 없다고 밝혔다."
+  ],
+  "socPoint": "사무실 내 USB 장치 연결 이력과 비인가 장치 탐지 로그, 임원 회의실 출입 및 카메라 기록을 함께 확인해 물리적 도청 흔적을 찾아야 합니다.",
+  "attackTypes": [
+   "내부자"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "체포·수사",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "압둘라흐만 알포잔"
+   ],
+   "orgs": [
+    "오픈AI",
+    "FBI",
+    "북부지검"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "b9c21dcad116fd3e",
+  "url": "https://www.security-next.com/191394",
+  "title": "MS、月例更新で1400件以上の脆弱性に対応 - 一部悪用も",
+  "titleKo": "MS, 월간 업데이트로 1400여 건 이상의 취약점 대응 - 일부는 악용 확인",
+  "sourceId": "securitynext",
+  "sourceName": "Security NEXT",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-14T02:38:53.000Z",
+  "collectedAt": "2026-10-14T17:15:00.643Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "마이크로소프트가 2026년 10월 월간 보안 업데이트를 공개하며 1400건이 넘는 취약점을 수정했다.",
+   "새로 공개된 CVE 1407건 중 315건은 원격 코드 실행, 673건은 권한 상승이 우려된다고 분류됐다.",
+   "긴급(Critical) 78건과 중요(Important) 1329건이 포함되며, 일부 취약점은 이미 실제 공격에 악용이 확인됐다."
+  ],
+  "socPoint": "엔드포인트와 서버에서 2026년 10월 Microsoft 보안 업데이트 적용 여부를 점검하고, 악용이 확인된 취약점 관련 프로세스 권한 상승 및 원격 코드 실행 징후(비정상 자식 프로세스, 신규 서비스 생성)를 EDR 로그로 확인합니다.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "마이크로소프트"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "e55033231eaa5410",
+  "url": "https://www.boannews.com/news/articleView.html?idxno=146384",
+  "title": "[Global Security TOP 100] 김동기 핀텔 대표이사 “도시 데이터를 ‘판단과 실행’으로 연결하는 AI 시티 프론티어”",
+  "titleKo": "[Global Security TOP 100] 김동기 핀텔 대표이사 “도시 데이터를 ‘판단과 실행’으로 연결하는 AI 시티 프론티어”",
+  "sourceId": "boannews",
+  "sourceName": "보안뉴스",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-14T02:36:33.000Z",
+  "collectedAt": "2026-10-14T17:15:03.834Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "AI 소프트웨어 기업 핀텔이 통합 플랫폼 PREVAX를 앞세워 공공·국방 분야 수주와 조달 등록 성과를 냈다고 밝혔다.",
+   "자체 개발한 AI 영상분석 알고리즘과 다중객체 추적 기술(PMOT)을 바탕으로 인천공항, 공군, 해병대 등 국가중요시설 사업을 수주하거나 실증 중이다.",
+   "공공시장 실증 경험을 바탕으로 B2GBC 사업 다각화와 해외 시장 공략을 2027년 목표로 추진한다는 계획이다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "핀텔",
+    "인천공항",
+    "공군",
+    "해병대",
+    "조달청"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "fbcc6b1475e37cea",
+  "url": "https://www.jpcert.or.jp/at/2026/at260031.html",
+  "title": "注意喚起: 2026年10月マイクロソフトセキュリティ更新プログラムに関する注意喚起 (公開)",
+  "titleKo": "2026년 10월 마이크로소프트 보안 업데이트에 관한 주의 환기 (공개)",
+  "sourceId": "jpcert",
+  "sourceName": "JPCERT/CC",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-14T02:25:00.000Z",
+  "collectedAt": "2026-10-14T17:15:02.974Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "JPCERT/CC가 2026년 10월 마이크로소프트 월례 보안 업데이트에 대한 주의 환기를 공개했습니다.",
+   "이번 업데이트는 원격 코드 실행과 보안 기능 우회를 가능하게 하는 취약점들을 수정합니다.",
+   "마이크로소프트는 CVE-2026-96951 Windows 셸 보안 기능 우회 취약점이 실제 악용되고 있다고 공표했으며, 최신 업데이트 적용을 권고합니다."
+  ],
+  "socPoint": "Windows 엔드포인트에서 CVE-2026-96951 관련 셸 보안 기능 우회 시도가 의심되는 프로세스 실행 이력과 패치 적용 현황을 함께 점검하세요.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-96951"
+   ],
+   "actors": [],
+   "orgs": [
+    "마이크로소프트",
+    "JPCERT/CC",
+    "Windows"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "5dff253c6a8c6661",
+  "url": "https://www.boannews.com/news/articleView.html?idxno=146385",
+  "title": "[카드뉴스] \"정부 청사 정문이 왜 열렸나\"… 스캐너 클라우드 털려 뚫린 '위조 신분증' 실태",
+  "titleKo": "[카드뉴스] \"정부 청사 정문이 왜 열렸나\"… 스캐너 클라우드 털려 뚫린 '위조 신분증' 실태",
+  "sourceId": "boannews",
+  "sourceName": "보안뉴스",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-14T02:22:07.000Z",
+  "collectedAt": "2026-10-14T17:15:03.469Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "정부 청사 정문의 신분증 스캐너와 연동된 외주 클라우드가 침해되어 출입 통제 게이트가 무력화된 사고가 보도됐다.",
+   "외부 검증 서버에서 신분증 원본 데이터가 탈취되었고, 이를 활용한 위조 신분증으로 출입이 허용된 것으로 설명된다.",
+   "기사는 신분증 이미지 단일 검증에서 벗어나 클라우드 의존성을 줄이고 오프라인 로컬 망 기반 다중 생체 교차 검증을 도입할 것을 제안한다."
+  ],
+  "socPoint": "출입통제 게이트와 신분증 스캐너의 외부 클라우드 검증 요청·응답 로그를 확인하고, 비정상적인 대량 조회나 미등록 단말의 접속 패턴을 탐지해야 합니다.",
+  "attackTypes": [
+   "정보유출",
+   "공급망"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "보안뉴스"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "a1571926fd625933",
+  "url": "https://www.boannews.com/news/articleView.html?idxno=146380",
+  "title": "[김혁준의 실전형 K-시큐리티] AI 시대 CISO, ‘광역 방어’ 위한 비즈니스 가시성 확보해야",
+  "titleKo": "[김혁준의 실전형 K-시큐리티] AI 시대 CISO, '광역 방어'를 위한 비즈니스 가시성 확보해야",
+  "sourceId": "boannews",
+  "sourceName": "보안뉴스",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-14T02:00:00.000Z",
+  "collectedAt": "2026-10-14T17:15:04.783Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "신한은행을 시작으로 KB국민·하나·부산은행 등에서 고객 및 직원 정보 유출이 잇따랐으며, 공격은 외부 노출된 주변 업무 채널에서 시작됐다.",
+   "공격자는 본인 확인을 우회한 모바일 조회 서비스에서 고객번호를 얻은 뒤 연결된 다른 조회 서비스로 옮겨가는 연쇄 침투 방식을 썼다.",
+   "신한은행 기준 약 2만5000명의 개인신용정보가 유출됐고 공격은 최소 15시간 이어졌다. 필자는 개별 시스템 점검을 넘어 서비스 간 연결을 보는 광역 방어로의 전환을 주장한다."
+  ],
+  "socPoint": "대출모집인용 등 모바일 조회 서비스에서 짧은 시간 많은 고객번호 조회가 발생하고, 같은 출처에서 다른 조회 서비스로 연속 요청이 넘어가는 로그 흐름을 하나의 공격 체인으로 연결해 살펴볼 것.",
+  "attackTypes": [
+   "취약점 악용",
+   "정보유출",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "금융"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "신한은행",
+    "KB국민은행",
+    "하나은행",
+    "부산은행",
+    "우리은행"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "cb3154f35431b494",
+  "url": "https://thehackernews.com/2026/10/openai-employee-arrested-for-allegedly.html",
+  "title": "OpenAI Employee Arrested for Allegedly Planting Hidden Recorder in Executive Conference Room",
+  "titleKo": "OpenAI 직원, 경영진 회의실에 숨겨진 녹음 장치 설치 혐의로 체포",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-14T01:59:25.000Z",
+  "collectedAt": "2026-10-14T17:15:06.820Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "OpenAI 직원 Abdulrahman Alfozan이 샌프란시스코 사무실 경영진 회의실에 몰래 녹음 장치를 설치한 혐의로 체포되었고, 회사는 그를 해고했다.",
+   "장치는 USB 포트를 통해 TV 뒤에 숨겨졌으며, 사전에 건물 구조와 회의실 일정을 수집하고 AI 챗봇으로 장치 제작과 암호화, 모니터링 회피 방법을 조사한 정황이 있다.",
+   "OpenAI는 모델 가중치, 소스코드, 고객 데이터에 접근하거나 유출한 흔적은 현재까지 확인되지 않았다고 밝혔고, FBI에 사건을 넘겼다."
+  ],
+  "socPoint": "사무실 CCTV와 출입 기록에서 권한 없는 구역 접근 이력을 확인하고, 사내 생산성 도구와 AI 서비스 계정의 장치 설계·녹음 관련 프롬프트 사용 이력, 회의실 주변 미확인 무선 장치(MAC 주소 기준) 탐지를 살펴볼 필요가 있다.",
+  "attackTypes": [
+   "내부자"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "체포·수사",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "Abdulrahman Alfozan"
+   ],
+   "orgs": [
+    "OpenAI",
+    "FBI",
+    "U.S. Department of Justice",
+    "Meta",
+    "Nash"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "8097d037a8d19740",
+  "url": "https://www.boannews.com/news/articleView.html?idxno=146381",
+  "title": "휴먼인텍, 장정맥 인식 출입통제 ‘팜키’ 라인업 확대... 스마트 락커 ‘팜락’ 공개",
+  "titleKo": "휴먼인텍, 장정맥 인식 출입통제 '팜키' 라인업 확대... 스마트 락커 '팜락' 공개",
+  "sourceId": "boannews",
+  "sourceName": "보안뉴스",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-14T01:51:30.000Z",
+  "collectedAt": "2026-10-14T17:15:06.772Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "휴먼인텍이 손바닥 정맥 인식 출입통제 시스템 '팜키' 신규 모델과 장정맥 기반 스마트 락커 '팜락'을 공개했다.",
+   "장정맥 패턴은 체내에 있어 외부 노출 생체정보보다 위조와 복제가 어렵다고 회사는 설명하며, 혈류 감지로 사진이나 모형을 이용한 부정 인증에도 대응한다고 밝혔다.",
+   "인증 속도는 0.3초 이내, 타인수락률은 0.000001% 수준이라고 주장했으며, 피해 규모나 실제 도입 사례는 본문에 나오지 않는다."
+  ],
+  "socPoint": "장정맥 인증 장비(팜키, 팜락)의 인증 실패 로그와 다수 사용자 동시 인증 이력을 확인하고, 사진·모형 기반 부정 인증 시도 패턴을 점검하면 됩니다.",
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "휴먼인텍",
+    "팜키",
+    "팜락"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "38d62c87077309f4",
+  "url": "https://www.boannews.com/news/articleView.html?idxno=146379",
+  "title": "“시간을 암호 키로 쓴다”... KAIST, 키와 시간 모두 맞아야 해독 가능한 반도체 암호화 기술 개발",
+  "titleKo": "“시간을 암호 키로 쓴다”... KAIST, 키와 시간 모두 맞아야 해독 가능한 반도체 암호화 기술 개발",
+  "sourceId": "boannews",
+  "sourceName": "보안뉴스",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-14T01:09:31.000Z",
+  "collectedAt": "2026-10-14T17:15:06.979Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "KAIST 김경민 교수 연구팀이 정해진 시간에만 정보를 읽을 수 있는 반도체 기반 암호화 기술을 개발했다고 밝혔다.",
+   "이중 상태 산화물 트랜지스터(DUPOT)에서 오래 유지되는 기억은 기준을 설정하고 시간에 따라 변하는 기억은 정보가 드러나는 시점을 조절한다.",
+   "시간 지연과 시간 제한 방식을 시연했으며, 이미 읽거나 복사한 정보는 회수할 수 없다는 한계가 있다. 실제 적용은 연구 단계다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "KAIST",
+    "한국연구재단",
+    "어드밴스드 머터리얼즈"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "6cb04bac960ab89f",
+  "url": "https://www.boannews.com/news/articleView.html?idxno=146334",
+  "title": "구글 개발자 사이트 원격코드실행 결함에 포상금 9만달러",
+  "titleKo": "구글 개발자 사이트 원격코드실행 결함에 포상금 9만달러",
+  "sourceId": "boannews",
+  "sourceName": "보안뉴스",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-14T01:00:00.000Z",
+  "collectedAt": "2026-10-14T17:15:08.594Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "구글 개발자 문서 사이트가 공유하는 플랫폼 DevSite에서 구글 계정 없이 서버 코드를 실행할 수 있는 결함이 드러났다.",
+   "플라스크 세션 쿠키에 OAuth 클라이언트 시크릿이 담겨 노출됐고, 이 시크릿이 서명 키로도 쓰여 세션을 위조한 뒤 pickle.loads()로 임의 코드가 실행될 수 있었다.",
+   "구글은 10월 7일 결함을 고치고 제보자에게 9만달러를 지급했으며, 시크릿 교체와 세션 무효화를 진행했다. 실제 악용 여부는 확인되지 않았다."
+  ],
+  "socPoint": "구글 개발자 사이트 OAuth 로그인 엔드포인트로 들어오는 요청과 응답 쿠키 값을 점검하고, 웹 서버 로그에서 세션 쿠키 위조 흔적이나 pickle 역직렬화 관련 비정상 프로세스 생성 여부를 확인하라.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "Simon Koeck"
+   ],
+   "orgs": [
+    "Google",
+    "DevSite",
+    "Firebase",
+    "Android"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "d4fdc93b5bcc7b32",
+  "url": "https://www.boannews.com/news/articleView.html?idxno=146369",
+  "title": "트루엔, 초고화질 AI 홈캠 ‘이글루 S8 PRO’ 출시",
+  "titleKo": "트루엔, 초고화질 AI 홈캠 ‘이글루 S8 PRO’ 출시",
+  "sourceId": "boannews",
+  "sourceName": "보안뉴스",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-14T00:12:20.000Z",
+  "collectedAt": "2026-10-14T17:15:10.932Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "트루엔이 AI 돌봄 기능을 갖춘 홈카메라 ‘이글루 S8 PRO’를 26일 출시한다고 발표했다.",
+   "중국산 IP 카메라 해킹 우려에 대응해 펌웨어, 앱, 클라우드 서버를 국내에서 자체 개발했고 WPA3, AES256, SRTP, RTMPS를 적용했다.",
+   "렌즈를 물리적으로 가리는 차단 구조와 개인정보보호위 PbD 인증을 내세웠으며, 출고가와 판매 일정은 추후 공개될 예정이다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [
+   "개인"
+  ],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "트루엔",
+    "이글루(EGLOO) S8 PRO"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "28a6b8a53065f292",
+  "url": "https://www.boho.or.kr/kr/bbs/view.do?searchCnd=&bbsId=B0000133&searchWrd=&menuNo=205020&pageIndex=1&categoryCode=&nttId=72214",
+  "title": "Ivanti 제품 보안 업데이트 권고",
+  "titleKo": "Ivanti 제품 보안 업데이트 권고",
+  "sourceId": "krcert",
+  "sourceName": "KISA 보호나라",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-14T00:00:00.000Z",
+  "collectedAt": "2026-10-14T17:15:15.378Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "Ivanti가 Connect Secure에서 발생한 인증 우회(Authentication Bypass by Spoofing) 취약점 CVE-2026-104935에 대한 보안 업데이트를 발표했습니다.",
+   "스푸핑을 이용해 인증을 우회할 수 있는 취약점으로, 원문에는 구체적인 공격 사례나 악용 여부가 나와 있지 않습니다.",
+   "영향을 받는 버전 사용자는 제품별 해결 버전으로 업데이트해야 하며, 자세한 내용은 원문 참고 사이트에서 확인할 수 있습니다."
+  ],
+  "socPoint": "Ivanti Connect Secure의 VPN 로그인 로그에서 인증 우회 의심 패턴(비정상 세션 생성, 인증 없이 발급된 세션)과 업데이트 전 버전 사용 여부를 확인하세요.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-104935"
+   ],
+   "actors": [],
+   "orgs": [
+    "Ivanti",
+    "Ivanti Connect Secure"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "fd77bdc55cad7f1e",
+  "url": "https://www.boho.or.kr/kr/bbs/view.do?searchCnd=&bbsId=B0000133&searchWrd=&menuNo=205020&pageIndex=1&categoryCode=&nttId=72215",
+  "title": "GitLab 제품 보안 업데이트 권고",
+  "titleKo": "GitLab 제품 보안 업데이트 권고",
+  "sourceId": "krcert",
+  "sourceName": "KISA 보호나라",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-14T00:00:00.000Z",
+  "collectedAt": "2026-10-14T17:15:15.455Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "GitLab이 CE/EE 및 AI Gateway 제품의 취약점 5건(CVE-2026-97229 등)을 해결한 보안 업데이트를 발표하고 사용자에게 최신 버전 업데이트를 권고했습니다.",
+   "취약점은 정수 오버플로, 크로스사이트 스크립팅, 부적절한 권한 부여, 정규식 문제, 템플릿 엔진 특수문자 무력화 미흡 등으로 공개되었습니다.",
+   "영향을 받는 버전별로 해결 버전이 제시되어 있으며, 자세한 내용은 참고 사이트에서 확인해야 합니다."
+  ],
+  "socPoint": "GitLab 서버의 버전 정보를 점검해 19.2.8, 19.3.5, 19.4.2 등 해결 버전 미만 여부를 확인하고, 웹 접근 로그에서 비정상적인 스크립트 삽입 요청이나 권한 우회 시도 패턴을 살펴보세요.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-97229",
+    "CVE-2026-92883",
+    "CVE-2026-16301",
+    "CVE-2026-14814",
+    "CVE-2026-90970"
+   ],
+   "actors": [],
+   "orgs": [
+    "GitLab",
+    "GitLab CE/EE",
+    "GitLab AI Gateway"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "6fe045fde07c620d",
+  "url": "https://www.security-next.com/191386",
+  "title": "IvantiのVPN製品に脆弱性 - 未修正ブランチでゼロデイ攻撃",
+  "titleKo": "Ivanti VPN 제품 취약점, 미수정 브랜치에서 제로데이 공격 확인",
+  "sourceId": "securitynext",
+  "sourceName": "Security NEXT",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:39:48.000Z",
+  "collectedAt": "2026-10-14T17:15:16.947Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "Ivanti 원격 접속 제품 Ivanti Connect Secure에 인증 우회 취약점(CVE-2026-104935)이 공개되었습니다.",
+   "인증 없이 원격에서 임의 명령을 실행할 수 있으며, 일부 고객 환경에서 이미 악용이 확인되었습니다.",
+   "25.1.2.2, 25.1.1.1, 22.8R2.4 등 브랜치의 이전 버전이 영향을 받으며, 25.1.3.0에서 수정되었습니다."
+  ],
+  "socPoint": "Ivanti Connect Secure의 웹 인증 및 세션 로그에서 인증 없이 발생한 비정상 요청과 명령 실행 흔적, 그리고 신규 또는 비정상 프로세스 생성 여부를 확인해야 합니다.",
+  "attackTypes": [
+   "취약점 악용",
+   "제로데이"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-104935"
+   ],
+   "actors": [],
+   "orgs": [
+    "Ivanti",
+    "Ivanti Connect Secure"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "83d130e7ba9f7dd1",
+  "url": "https://krebsonsecurity.com/2026/10/microsoft-patches-more-than-1400-security-flaws/",
+  "title": "Microsoft Patches More Than 1,400 Security Flaws",
+  "titleKo": "마이크로소프트, 1,400개 이상의 보안 취약점 패치",
+  "sourceId": "krebs",
+  "sourceName": "Krebs on Security",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T23:24:53.000Z",
+  "collectedAt": "2026-10-14T17:15:15.665Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "마이크로소프트가 윈도우 등 자사 소프트웨어의 취약점 1,400여 건을 한꺼번에 패치했다.",
+   "이번 달 패치 규모는 9월 기록(약 1,000건)을 넘어섰으며, 마이크로소프트는 대량 취약점 발견에 대규모 언어 모델(LLM)을 활용했다고 밝혔다.",
+   "이번 패치 중 이미 악용이 확인된 제로데이 취약점은 1건이며, 최소 78건이 심각도 '중요'로 분류됐다."
+  ],
+  "socPoint": "Windows 10·11 및 일부 서버에서 Windows Shell 보안 기능 우회(CVE-2026-96951) 악용 징후를 점검하고, 엔드포인트와 서버의 패치 적용 현황과 Windows Shell 관련 비정상 프로세스 실행 로그를 확인해야 합니다.",
+  "attackTypes": [
+   "취약점 악용",
+   "제로데이"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-96951",
+    "CVE-2026-108398"
+   ],
+   "actors": [],
+   "orgs": [
+    "Microsoft",
+    "Windows",
+    "CISA",
+    "Tenable",
+    "Fortra"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "1d30e28c997d3d5e",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/14/56453.html",
+  "title": "セキュリティは壁を高くする時代から 攻撃基盤そのものに働きかける時代へ ほか [Scan PREMIUM Monthly Executive Summary 2026年9月度]",
+  "titleKo": "보안은 벽을 높이는 시대에서 공격 기반 자체에 작용하는 시대로 ほか [Scan PREMIUM Monthly Executive Summary 2026년 9월호]",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:15:03.000Z",
+  "collectedAt": "2026-10-14T17:15:20.936Z",
+  "regions": [
+   "JP",
+   "INTL"
+  ],
+  "summary": [
+   "2026년 9월 월간 요약은 외교 발언이 친러 해커티비스트의 DDoS 등 사이버 공격 촉발 요인이 되는 흐름과 AI 악용의 확산을 다룬다.",
+   "친러 그룹 NoName057(16)은 일본의 우크라이나 지원과 NATO 연계를 명분으로 #OpJapan DDoS 캠페인을 재개해 정부, 운송, 물류 등을 노렸다.",
+   "현재까지 대규모 서비스 중단이나 정보 유출은 확인되지 않았으며, Anthropic 보고서는 AI가 감시·무기 개발 등에 악용된 사례를 제시했다."
+  ],
+  "socPoint": "DDoS 대응을 위해 인터넷 회선과 WAF, CDN의 트래픽 급증 및 요청 빈도 이상 징후를 모니터링하고, IoT 카메라 등 외부 노출 장비의 비정상 접속 로그를 확인하십시오.",
+  "attackTypes": [
+   "DDoS"
+  ],
+  "sectors": [
+   "정부·공공",
+   "유통·서비스"
+  ],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "NoName057(16)",
+    "Team1914",
+    "Shadow Clawz 404"
+   ],
+   "orgs": [
+    "Anthropic",
+    "サイント"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "8c3d0d076c7d388d",
+  "url": "https://www.security-next.com/191382",
+  "title": "ブラウザ「Chrome」にアップデート - 脆弱性37件に対応",
+  "titleKo": "Chrome 업데이트 발표 - 취약점 37건 수정",
+  "sourceId": "securitynext",
+  "sourceName": "Security NEXT",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:05:52.000Z",
+  "collectedAt": "2026-10-14T17:15:20.471Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "구글이 Chrome 155.0.8059.80/79 보안 업데이트를 공개하고 취약점 37건을 수정했다.",
+   "치명적(Critical) 7건은 ANGLE의 버퍼 오버플로우와 Browser, PDF, Network, Core, SVG, Media 등의 해제 후 메모리 사용(Use After Free) 취약점이다.",
+   "High 29건과 Medium 1건도 함께 수정됐으며, 업데이트는 수일에서 수주에 걸쳐 순차 배포될 예정이다."
+  ],
+  "socPoint": "Chrome 버전과 자산 인벤토리를 대조해 155.0.8059.80 미만 브라우저를 식별하고, 엔드포인트 EDR에서 브라우저 프로세스의 비정상 자식 프로세스 생성 여부를 모니터링하는 것이 좋습니다.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-110136",
+    "CVE-2026-110148",
+    "CVE-2026-110149",
+    "CVE-2026-110151",
+    "CVE-2026-110152",
+    "CVE-2026-110161",
+    "CVE-2026-110165",
+    "CVE-2026-110137",
+    "CVE-2026-110138",
+    "CVE-2026-110139",
+    "CVE-2026-110140",
+    "CVE-2026-110141",
+    "CVE-2026-110143",
+    "CVE-2026-110144",
+    "CVE-2026-110145",
+    "CVE-2026-110146",
+    "CVE-2026-110147",
+    "CVE-2026-110150",
+    "CVE-2026-110153",
+    "CVE-2026-110154",
+    "CVE-2026-110155",
+    "CVE-2026-110156",
+    "CVE-2026-110157",
+    "CVE-2026-110158",
+    "CVE-2026-110159",
+    "CVE-2026-110160",
+    "CVE-2026-110162",
+    "CVE-2026-110163",
+    "CVE-2026-110164",
+    "CVE-2026-110166",
+    "CVE-2026-110167",
+    "CVE-2026-110168",
+    "CVE-2026-110169",
+    "CVE-2026-110170",
+    "CVE-2026-110171",
+    "CVE-2026-110172",
+    "CVE-2026-110142"
+   ],
+   "actors": [],
+   "orgs": [
+    "Google",
+    "Google Chrome"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "1432b7ffaf4bba23",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/14/56452.html",
+  "title": "内定者 96 名のアドレス流出 ～ 江戸川区「採用内定式」開催案内のメール誤送信",
+  "titleKo": "내정자 96명 주소 유출 ～ 에도가와구 '채용 내정식' 안내 메일 오발송",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:05:15.000Z",
+  "collectedAt": "2026-10-14T17:15:19.878Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "도쿄도 에도가와구가 채용 내정식 안내 메일을 BCC가 아닌 수신자 칸에 입력해 보내면서 내정자 96명의 메일 주소가 서로에게 노출됐다.",
+   "원인은 담당자의 단순 입력 실수이며 외부 공격은 확인되지 않았다. 구는 9월 21일 오후 오발송을 인지했다.",
+   "구는 9월 22일 내정자 전원에게 사과와 삭제 요청 메일을 보냈고, 앞으로 BCC 발송과 복수 확인을 철저히 하겠다고 밝혔다."
+  ],
+  "socPoint": null,
+  "attackTypes": [
+   "정보유출"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "東京都江戸川区"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "bf50d59cc174c704",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/14/56451.html",
+  "title": "上司に報告せず発覚遅れる ～ 大阪市立美術館でメール誤送信",
+  "titleKo": "상사에게 보고하지 않아 발각이 늦어진 사건 ～ 오사카시립미술관 이메일 오발송",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:05:13.000Z",
+  "collectedAt": "2026-10-14T17:15:20.284Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "오사카시립미술관 직원이 강좌 신청 회신 메일을 보내면서 실수로 다른 수강생이 포함된 그룹 메일 주소를 입력해 30명의 이름과 이메일 주소가 노출됐다.",
+   "담당자가 사고를 상사에게 보고하지 않아 수신자의 문의로 6일 뒤인 9월 16일에야 개인정보 유출로 확인됐다.",
+   "미술관은 대상자에게 사과와 메일 삭제를 요청했고 나머지 25명에게도 순차적으로 사과하고 있으며, 시는 복무 규율 연수와 재발 방지를 추진한다고 밝혔다."
+  ],
+  "socPoint": null,
+  "attackTypes": [
+   "정보유출"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "오사카시립미술관",
+    "대阪市博物館機構",
+    "오사카시"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "a47310a2a5f01130",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/14/56450.html",
+  "title": "ConoHa WING byGMO に不正アクセス、不正プログラムを設置",
+  "titleKo": "ConoHa WING byGMO에 불정 접근, 악성 프로그램 설치",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:05:11.000Z",
+  "collectedAt": "2026-10-14T17:15:23.538Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "GMO인터넷은 레ンタルサーバ 서비스 ConoHa WING byGMO의 일부 고객 Web서버 영역에 제3자가 무단 접근해 악성 프로그램을 심은 사실을 발표했다.",
+   "9월 3일부터 접근이 시작됐으며, 회사는 9월 16일 이를 탐지하고 9월 18일 원인과 영향 범위를 파악해 악성 프로그램을 제거했다.",
+   "영향 범위는 일부 수용 호스트의 고객 426건 Web서버 영역에 저장된 데이터이며, 해당 고객에게는 이메일로 개별 안내했다."
+  ],
+  "socPoint": "공유 호스팅 Web서버의 웹 루트에 새로 생성되거나 변경된 스크립트 파일, 비정상적인 외부 통신, 웹 서버 접근 로그의 비정상 요청 패턴을 확인해야 합니다.",
+  "attackTypes": [
+   "악성코드",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "GMO인터넷",
+    "ConoHa WING byGMO"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "2cbd66604755bb6b",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/14/56449.html",
+  "title": "第一興商の委託先 日本コロムビアグループでマルウェア感染、約 8,724,000 件の情報が漏えいしたおそれを否定できず",
+  "titleKo": "다이이치코쇼 위탁사 니뽄콜럼비아 그룹 말웨어 감염, 약 872만 4천 건 개인정보 유출 우려 부정 못 해",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:05:10.000Z",
+  "collectedAt": "2026-10-14T17:15:24.534Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "다이이치코쇼가 개인정보 처리를 맡긴 니뽄콜럼비아 그룹(NCG)의 직원 PC 1대가 10월 1~2일 말웨어에 감염됐다.",
+   "해당 PC에는 위탁 업무 관련 고객 개인정보가 일시 저장돼 있었으며, 감염 경위와 세부 수법은 기사에 나오지 않는다.",
+   "유출 우려 건수는 약 872만 4천 건(고객 약 863만 1천 건, 직원 약 9만 3천 건)이며, 불법 사용 징후를 감시하고 원인 조사와 위탁 관리 점검을 진행 중이다."
+  ],
+  "socPoint": "위탁사 단말의 말웨어 감염 흔적(EDR 경보, 비정상 프로세스, 외부 C2 통신)과 해당 단말에서 대용량 고객 데이터 파일이 외부로 전송된 로그를 확인해야 한다.",
+  "attackTypes": [
+   "악성코드",
+   "정보유출"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "다이이치코쇼(第一興商)",
+    "니뽄콜럼비아 그룹(NCG)"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "8a0bafea8f706a70",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/14/56448.html",
+  "title": "ローソンのメールサーバから不審な英文メール送信",
+  "titleKo": "로손 메일 서버에서 의심스러운 영문 메일 대량 발송",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:05:08.000Z",
+  "collectedAt": "2026-10-14T17:15:23.867Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "로손은 자사 메일 서버가 제3자에게 불법 이용되어 2025년 9월 25일부터 27일까지 외부로 의심스러운 영문 메일이 발송된 사실을 발표했습니다.",
+   "발송 건수는 약 70만 건으로 대부분 해외 주소로 갔으며 일부 국내 주소도 확인되었습니다. 메일은 금전 획득을 암시하며 연락이나 개인정보 제공을 요구하는 내용입니다.",
+   "현재까지 개인정보 유출, 데이터센터 침입, 데이터 변조, 악성코드 감염은 확인되지 않았습니다. 회사는 9월 27일 설정 변경과 통신 제한을 시행했고 원인 조사와 영구 대책을 진행 중입니다."
+  ],
+  "socPoint": "메일 서버의 SMTP 발신 로그에서 짧은 시간에 대량 발송된 외부 수신자 기록과 'Mutual Benefit' 또는 'RE' 제목의 메일을 확인하고, 비정상 계정이나 외부 IP의 인증 로그를 함께 봐야 합니다.",
+  "attackTypes": [
+   "계정 탈취"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "로손",
+    "ScanNetSecurity"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "45bf4d6022ce9a7c",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/14/56447.html",
+  "title": "日本原子力研究開発機構が運用している研究支援サイトに不正アクセス、顔写真付公的身分証明証 200 件が漏えい",
+  "titleKo": "일본원자력연구개발기구가 운영하는 연구지원 사이트에 불법 접근, 얼굴사진 포함 공적 신분증 200건 유출",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:05:07.000Z",
+  "collectedAt": "2026-10-14T17:15:24.745Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "일본원자력연구개발기구(JAEA)가 클라우드 기반에서 운영하는 연구지원 사이트에 외부인이 불법 접근해 파일 2,419건을 다운로드했다.",
+   "공격 수법과 초기 침입 경로는 기사에 명시되지 않았다. 9월 25일 외부 접근을 차단하고 조사를 진행 중이다.",
+   "유출 대상은 2026년 5월 이후 등록된 파일 367건(175명분)으로, 신분증 사진 200건과 건강진단 결과 등이 포함됐다. 기구는 대상자에게 개별 통보와 사과를 진행한다."
+  ],
+  "socPoint": "연구지원 사이트가 올라간 클라우드 스토리지의 접근 로그에서 9월 25일 전후 외부 IP의 대량 파일 다운로드 패턴과 비정상 인증 기록을 확인하고, 해당 기간 외부 공유 링크 설정 변경 여부를 점검해야 합니다.",
+  "attackTypes": [
+   "정보유출"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "일본원자력연구개발기구(JAEA)",
+    "원자력科学研究所 JRR-3 연구지원 사이트"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "d9550df6ea781681",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/14/56446.html",
+  "title": "ブックオフグループホールディングス子会社に不正アクセス、最大 約 643 万件の会員データが漏えい",
+  "titleKo": "ブックオフグループホールディングス 子会社에 不正アクセス, 최대 약 643만 건의 회원 데이터 유출",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:05:05.000Z",
+  "collectedAt": "2026-10-14T17:15:27.003Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "북오프그룹홀딩스 자회사의 회원 관리 시스템에 제3자가 2026년 10월 6일 불법 접근한 사실이 확인되었다.",
+   "조사 결과 외부에서 회원 정보가 취득된 것으로 밝혀졌으며, 공격 수법의 세부 내용은 공개되지 않았다.",
+   "유출 가능성이 있는 회원 데이터는 최대 약 643만 건이며, 대상 고객에게 순차적으로 개별 연락을 할 예정이다."
+  ],
+  "socPoint": "회원 관리 시스템의 외부 접속 로그와 공격 원점 IP 통신을 확인하고, 비정상 대량 조회나 데이터 추출 흔적을 점검해야 한다.",
+  "attackTypes": [
+   "정보유출"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "ブックオフグループホールディングス",
+    "ScanNetSecurity"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "092d20976ab81715",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/14/56445.html",
+  "title": "AI エージェントの安全活用へ、Okta や AWS、Google Cloud ら「Blueprint Alliance」結成",
+  "titleKo": "AI 에이전트의 안전한 활용을 위해 Okta, AWS, Google Cloud 등이 'Blueprint Alliance' 결성",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:05:04.000Z",
+  "collectedAt": "2026-10-14T17:15:27.858Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "Okta가 9월 22일 AI 에이전트 보호를 위한 공통 아키텍처 추진을 위해 Blueprint Alliance를 결성했다고 발표했다.",
+   "AI 에이전트가 여러 플랫폼과 SaaS, 인프라에 걸쳐 동작하면서 그림자 AI 에이전트, 자격증명의 신뢰 경계 이탈, 의도 범위를 넘는 실행 같은 아이덴티티 공백이 문제로 지적됐다.",
+   "AWS, CrowdStrike, Google Cloud, Zscaler 등 11개 벤더가 참여했고, MCP·OCSF·SSF·CAEP 기반 시그널 공유와 레퍼런스 통합 공개를 추진한다."
+  ],
+  "socPoint": "AI 에이전트의 인증 로그와 세션 활동, 자격증명 사용 이력을 수집해 허용 범위를 벗어난 실행이나 등록되지 않은 에이전트(그림자 AI) 신규 생성을 탐지한다.",
+  "attackTypes": [],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Okta",
+    "Amazon Web Services",
+    "CrowdStrike",
+    "Databricks",
+    "Docker"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "1cf8e406daaf4811",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/14/56444.html",
+  "title": "10月1日 能動的サイバー防御関連法施行",
+  "titleKo": "10월 1일 능동적 사이버 방어 관련법 시행",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:05:02.000Z",
+  "collectedAt": "2026-10-14T17:15:28.187Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "자민당은 10월 7일, 능동적 사이버 방어 관련법이 10월 1일부터 시행되었다고 발표했다.",
+   "중요 인프라 사업자는 사이버 공격 피해 시 정부에 보고가 의무화되며, 정부는 분석 결과를 피드백해 기업 보안 강화에 활용한다.",
+   "정부는 통신사와 협력해 공격 서버를 탐지하며 독립기관 점검을 받고, 경찰·자위대의 공격 서버 무력화도 독립기관 점검으로 적정성을 확보한다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "정책·법규",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "자유민주당",
+    "ScanNetSecurity"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "1058f72067319311",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/14/56443.html",
+  "title": "防衛省、「サイバーコンテスト」過去問を体験できる特設ページ公開",
+  "titleKo": "防衛省, 「サイバーコンテスト」 과거 문제를 체험할 수 있는 특설 페이지 공개",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:00:17.000Z",
+  "collectedAt": "2026-10-14T17:15:28.597Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "방위성이 10월 1일 과거 「방위성 사이버 콘테스트」에서 출제한 문제를 체험할 수 있는 특설 페이지를 열었다.",
+   "콘테스트는 네트워크, 프로그래밍, 암호 등 정보보안 분야 문제를 제한 시간 내에 푸는 방식이다.",
+   "특설 페이지에는 공개 가능한 문제 4개가 실려 있고, 필요한 지식과 방위성·자위대 사이버 분야와의 관련성도 설명한다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "防衛省"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "f5f39aab3f290a7d",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/14/56442.html",
+  "title": "AI とデータの新リスクに対応 ～ プルーフポイント、自律型エージェントを保護する新システム発表",
+  "titleKo": "AI와 데이터의 새로운 리스크 대응 — 프루프포인트, 자율형 에이전트를 보호하는 새 시스템 발표",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:00:13.000Z",
+  "collectedAt": "2026-10-14T17:15:29.321Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "프루프포인트 일본법인이 AI와 데이터를 하나의 리스크로 보고 보호하는 'Proofpoint Agentic Data and AI Security system'을 발표했다.",
+   "AI 에이전트가 의도에 맞는 데이터에만 접근하도록 제어하며, 기존 비즈니스 정책을 실행 시점 통제로 바꾸고 새 위험을 지속적으로 찾아낸다.",
+   "세 가지 에이전트(탐지, 조사, 대응 최적화)가 기능하며 주요 기능과 Semantic Business Policies, Agentic Insights는 2026년 말 제공 예정이다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "프루프포인트",
+    "Proofpoint Agentic Data and AI Security system",
+    "Proofpoint Knowledge Graph"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "0f41a60ff33946e3",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/14/56441.html",
+  "title": "10 / 21 ～ 23 開催「Security Days Fall 2026 Tokyo」にエーアイセキュリティラボ出展・登壇",
+  "titleKo": "エーアイセキュリティラボ, 10월 21~23일 'Security Days Fall 2026 Tokyo'에 출展·강연",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:00:10.000Z",
+  "collectedAt": "2026-10-14T17:15:31.149Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "엔에이아이세큐리티랩(エーアイセキュリティラボ)이 2026년 10월 21~23일 도쿄에서 열리는 'Security Days Fall 2026 Tokyo'에 출展 및 강연 참가를 발표했습니다.",
+   "생성형 AI 기반 취약점 진단 도구 AeyeScan을 부스에서 체험할 수 있으며, 10월 22일 AI 시대의 정기 취약점 진단 운영 방안을 다룬 강연이 예정되어 있습니다.",
+   "행사는 무료(사전 등록제)이며 피해 사례나 탐지 관련 정보는 포함되지 않은 홍보성 소식입니다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "エーアイセキュリティラボ",
+    "AeyeScan",
+    "ナノオプト・メディア",
+    "Security Days"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "db88c1f12ec1f35c",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/14/56440.html",
+  "title": "大阪・福岡・東京・名古屋で開催される「Security Days」に HENNGE が出展・登壇 ～ SCS 対策やランサムウェア防御",
+  "titleKo": "HENNGE, 오사카·후쿠오카·도쿄·나고야에서 열리는 「Security Days」에 출전·登壇 — SCS 대책과 랜섬웨어 방어",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:00:08.000Z",
+  "collectedAt": "2026-10-14T17:15:31.857Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "HENNGE가 10월 오사카·후쿠오카·도쿄·나고야에서 열리는 사이버보안 전시·세미나 행사 Security Days에 출전하고 강연한다고 발표했다.",
+   "강연 주제는 SCS 평가제도 대응, 안전한 패스워드 관리와 메시 네트워크를 통한 랜섬웨어 방어, 자율형 AI 위협과 소규모 정보시스템 보호, 패스워드 관리 허점과 측면 이동 차단 등이다.",
+   "행사는 사전등록제 무료이며, 기사에는 피해나 공격 사례가 없고 제품·행사 홍보 내용만 확인된다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "HENNGE",
+    "株式会社ナノオプト・メディア",
+    "Security Days"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "2e0be1dfbf95c780",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/14/56439.html",
+  "title": "公式 SNS の偽アカウント「大学入試セソター」に注意呼びかけ",
+  "titleKo": "공식 SNS 가짜 계정 '대학입시센터' 주의 호소",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T23:00:03.000Z",
+  "collectedAt": "2026-10-14T17:15:37.485Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "일본 대학입시센터의 공식 SNS를 사칭한 가짜 계정에 대해 주의가 요구되고 있습니다.",
+   "기사 제목만 확인되어 가짜 계정의 구체적인 수법이나 유포된 내용은 알 수 없습니다.",
+   "피해 규모와 대응 현황은 확인되지 않았으며, 확인된 범위는 여기까지입니다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "大学入試センター"
+   ]
+  },
+  "basis": "제목"
+ },
+ {
+  "id": "43de5f29bcbd6f3a",
+  "url": "https://www.boannews.com/news/articleView.html?idxno=146331",
+  "title": "러시아어권 해커, 클로드 코드로 우크라이나 기관 털어",
+  "titleKo": "러시아어권 해커, 클로드 코드로 우크라이나 기관 털어",
+  "sourceId": "boannews",
+  "sourceName": "보안뉴스",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-13T23:00:00.000Z",
+  "collectedAt": "2026-10-14T17:15:34.568Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "러시아어권 해킹 조직이 앤트로픽의 AI 코딩 도구 클로드 코드를 활용해 전 세계 웹사이트를 공격하고 우크라이나 기관에서 개인 기록 62만8000건 이상을 빼낸 것으로 SOC레이더가 추정했다.",
+   "공격자의 리눅스 작업 PC 폴더가 인터넷에 노출되어 수법이 드러났고, 워드프레스 취약점(wp2shell)과 서포트보드 플러그인 SQL 주입 결함(CVE-2026-4815)이 자동화 공격에 쓰였다.",
+   "공격은 7월부터 현재까지 이어지고 있으며, 모델은 일부 공격 요청을 거부했지만 세션을 바꾸는 방식으로 우회가 시도됐다. 폴란드, 중국, 네덜란드 피해도 확인됐다."
+  ],
+  "socPoint": "워드프레스 관리자 화면 접근 기록과 신규 관리자 계정, WSO 웹셸 생성 흔적, 웹서버 로그의 wp2shell·SQL 주입 요청 패턴, 인터넷에 노출된 레디스 서버의 ~/.ssh/authorized_keys 변경 여부를 확인한다.",
+  "attackTypes": [
+   "취약점 악용",
+   "정보유출",
+   "악성코드"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [
+    "CVE-2026-63030",
+    "CVE-2026-60137",
+    "CVE-2026-4815"
+   ],
+   "actors": [
+    "CyberXero",
+    "masterblack"
+   ],
+   "orgs": [
+    "SOC레이더",
+    "앤트로픽",
+    "Support Board",
+    "PentAGI",
+    "Cobalt Strike"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "ff21bb8aab0186af",
+  "url": "https://www.bleepingcomputer.com/news/artificial-intelligence/openai-engineer-arrested-for-allegedly-planting-spy-device-in-office/",
+  "title": "OpenAI engineer arrested for allegedly planting spy device in office",
+  "titleKo": "OpenAI 엔지니어, 사무실에 도청 장치를 설치한 혐의로 체포",
+  "sourceId": "bleepingcomputer",
+  "sourceName": "BleepingComputer",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T22:33:02.000Z",
+  "collectedAt": "2026-10-14T17:15:34.797Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "OpenAI 샌프란시스코 사무실 임원 회의실에 도청 장치를 몰래 설치한 혐의로 사우디 출신 엔지니어 Abdulrahman Alfozan이 체포되었습니다.",
+   "USB 포트에 연결된 도청 장치가 9월 30일 발견되었고, 관련 채팅봇 계정으로 장치 제작과 은닉 방법을 질의한 기록이 있다고 DOJ는 밝혔습니다.",
+   "OpenAI는 해당 직원을 해고하고 FBI에 신고했으며, 모델 가중치나 고객 데이터 유출 징후는 현재까지 없다고 밝혔습니다."
+  ],
+  "socPoint": "사무실 회의실 주변 장비와 USB 연결 기록, 직원의 내부 시설 접근 로그, 그리고 생성형 AI 서비스에서 장치 제작이나 은닉 관련 질의가 있었는지 확인하는 것이 필요합니다.",
+  "attackTypes": [
+   "내부자"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "체포·수사",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "Abdulrahman Alfozan"
+   ],
+   "orgs": [
+    "OpenAI",
+    "U.S. Department of Justice",
+    "FBI"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "5d5d52d490fee0fa",
+  "url": "https://www.bleepingcomputer.com/news/security/ghostscript-flaw-lets-hackers-hijack-servers-via-pdf-uploads/",
+  "title": "Ghostscript flaw lets hackers hijack servers via PDF uploads",
+  "titleKo": "Ghostscript 취약점으로 PDF 업로드를 통해 서버를 장악할 수 있는 문제",
+  "sourceId": "bleepingcomputer",
+  "sourceName": "BleepingComputer",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T21:33:26.000Z",
+  "collectedAt": "2026-10-14T17:15:37.484Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "Ghostscript 인터프리터·렌더링 엔진에서 원격 코드 실행이 가능한 치명적 힙 버퍼 오버플로 취약점(CVE-2026-39919)이 공개되었습니다.",
+   "특수 제작된 PDF의 JPEG 2000 이미지가 저비트 샘플과 컴포넌트 해상도 불일치를 잘못 처리하게 해, 256바이트 버퍼에 1,024바이트를 기록하는 방식입니다.",
+   "Wordfence는 WordPress에서 인증 없이 원격 코드 실행이 가능하다고 밝혔으며, 제작사 Artifex는 10.08.0에서 수정했고 실제 악용 사례는 아직 확인되지 않았습니다."
+  ],
+  "socPoint": "웹 서버의 PDF 썸네일·미리보기 처리 시 ImageMagick이 Ghostscript를 호출하는 프로세스 생성 이력과 자식 프로세스 행위, 그리고 업로드된 PDF의 JPEG 2000 이미지 관련 비정상 파일을 확인하세요.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-39919"
+   ],
+   "actors": [],
+   "orgs": [
+    "Ghostscript",
+    "Artifex",
+    "WordPress",
+    "Wordfence",
+    "ImageMagick"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "1a0763123a1d11fa",
+  "url": "https://www.bleepingcomputer.com/news/security/anthropic-warns-self-replicating-ai-could-spread-to-your-smart-devices/",
+  "title": "Anthropic warns self-replicating AI could spread to your smart devices",
+  "titleKo": "Anthropic, 자기복제 AI가 스마트 기기로 퍼질 수 있다고 경고",
+  "sourceId": "bleepingcomputer",
+  "sourceName": "BleepingComputer",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T21:16:34.000Z",
+  "collectedAt": "2026-10-14T17:15:37.755Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "Anthropic은 소형 AI 모델이 Android TV 박스, 스마트 오븐 같은 소비자 IoT 기기에서 자기복제하는 분산 봇넷을 만들 수 있다고 경고했습니다.",
+   "실험에서 모델은 낯선 기기를 식별해 네트워크에 연결하고 AI 모델 실행을 준비했으며, 인증 없이 열린 ADB 접근이 있는 제한된 환경을 사용했습니다.",
+   "실제 IoT 장비에서 완전 자율 자기복제 웜이 동작하는 것은 입증되지 않았고, 2026년 말까지 30B 이하 모델이 그 능력에 도달할 수 있다고 예측했습니다."
+  ],
+  "socPoint": "IoT 기기에서 대용량 모델 파일 전송, 기기 간(device-to-device) 비정상 트래픽, ADB 포트(5555) 외부 노출과 무단 연결 로그를 함께 모니터링해야 합니다.",
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Anthropic",
+    "Google DeepMind"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "21edffe120823d4e",
+  "url": "https://www.bleepingcomputer.com/news/microsoft/microsoft-october-2026-patch-tuesday-fixes-1-411-flaws-3-zero-days/",
+  "title": "Microsoft October 2026 Patch Tuesday fixes 1,411 flaws, 3 zero-days",
+  "titleKo": "마이크로소프트 2026년 10월 패치 화요일, 1,411개 취약점 수정 및 제로데이 3건",
+  "sourceId": "bleepingcomputer",
+  "sourceName": "BleepingComputer",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T19:56:09.000Z",
+  "collectedAt": "2026-10-14T17:15:41.237Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "마이크로소프트가 2026년 10월 패치 화요일 보안 업데이트에서 기록적인 1,411개 취약점을 수정했다.",
+   "이 중 1건은 실제 공격에 악용된 제로데이로, Mark of the Web 보안 기능을 우회하는 Windows Shell 명령 주입 결함이다.",
+   "공개된 제로데이 2건은 .NET Framework의 WDAC 우회 및 MessagePack-CSharp 서비스 거부 취약점이며, 공격 세부 내용은 확인되지 않았다."
+  ],
+  "socPoint": "Windows 및 .NET 관련 프로세스의 비정상 실행, 신뢰되지 않은 .NET 어셈블리 로드 이벤트, WDAC 차단 로그와 Mark of the Web 우회를 시도한 파일 실행 흔적을 함께 확인해야 합니다.",
+  "attackTypes": [
+   "취약점 악용",
+   "제로데이"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-70161",
+    "CVE-2026-70174",
+    "CVE-2026-70162",
+    "CVE-2026-92707",
+    "CVE-2026-87697",
+    "CVE-2026-96959",
+    "CVE-2026-96960",
+    "CVE-2026-96957",
+    "CVE-2026-96958",
+    "CVE-2026-96234",
+    "CVE-2026-96238",
+    "CVE-2026-96235",
+    "CVE-2026-96237",
+    "CVE-2026-96231",
+    "CVE-2026-96224",
+    "CVE-2026-70165",
+    "CVE-2026-96229",
+    "CVE-2026-96225",
+    "CVE-2026-70197",
+    "CVE-2026-70190",
+    "CVE-2026-58280",
+    "CVE-2026-69651",
+    "CVE-2026-84008"
+   ],
+   "actors": [],
+   "orgs": [
+    "Microsoft",
+    ".NET Framework",
+    "Windows Shell",
+    "MessagePack-CSharp",
+    "Google Project Zero"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "04ab1973266f3414",
+  "url": "https://www.bleepingcomputer.com/news/microsoft/microsoft-releases-windows-10-kb5126657-extended-security-update/",
+  "title": "Microsoft releases Windows 10 KB5126657 extended security update",
+  "titleKo": "마이크로소프트, Windows 10 KB5126657 확장 보안 업데이트 배포",
+  "sourceId": "bleepingcomputer",
+  "sourceName": "BleepingComputer",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T19:47:30.000Z",
+  "collectedAt": "2026-10-14T17:15:41.184Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "마이크로소프트가 Windows 10 확장 보안 업데이트 KB5126657을 배포했습니다. 2026년 10월 패치 화요일 수정 사항이 포함되었습니다.",
+   "10월 패치 화요일에는 1,411개의 취약점이 수정되었으며, 그중 악용이 확인된 제로데이 취약점 1개가 포함되었습니다.",
+   "이 업데이트는 ESU 프로그램 가입자와 Windows 10 Enterprise LTSC 사용자가 Windows Update에서 설치할 수 있습니다. 9월 업데이트의 USB 오디오 문제는 일부만 해결되었습니다."
+  ],
+  "socPoint": "Windows Update 설치 이력(이벤트 ID 19 등)과 ReFS 감사 로그를 확인해 업데이트 적용 여부와 외장 저장장치 접근 기록을 점검하세요.",
+  "attackTypes": [
+   "취약점 악용",
+   "제로데이"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Microsoft",
+    "Windows 10",
+    "Windows 10 Enterprise LTSC"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "07ca9e611f68c327",
+  "url": "https://www.bleepingcomputer.com/news/microsoft/microsoft-windows-11-24h2-home-and-pro-reached-end-of-support/",
+  "title": "Microsoft: Windows 11 24H2 Home and Pro reached end of support",
+  "titleKo": "Microsoft: Windows 11 24H2 Home 및 Pro 지원 종료",
+  "sourceId": "bleepingcomputer",
+  "sourceName": "BleepingComputer",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T19:04:38.000Z",
+  "collectedAt": "2026-10-14T17:15:40.649Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "Microsoft는 Windows 11 24H2 Home 및 Pro 에디션이 지원 종료되었다고 발표했습니다.",
+   "이 에디션은 월간 보안 업데이트와 미리 보기 업데이트를 더 이상 받지 못하며, 2026년 10월 보안 업데이트가 마지막입니다.",
+   "Enterprise와 Education 에디션은 2027년 10월 12일까지 주요 지원을 받으며, Microsoft는 Windows 11 26H2로의 업그레이드를 권장합니다."
+  ],
+  "socPoint": "지원 종료된 24H2 Home/Pro 자산 목록을 자산 관리 도구(CMDB)나 엔드포인트 관리 콘솔에서 확인하고, 업그레이드 전까지 해당 장비의 EDR 텔레메트리와 취약점 스캔 결과를 중점 모니터링합니다.",
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "정책·법규",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Microsoft",
+    "Windows 11 24H2 Home",
+    "Windows 11 24H2 Pro",
+    "Windows 11 26H2"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "d9ed76a64d3ea742",
+  "url": "https://thehackernews.com/2026/10/anthropic-warns-small-ai-models-could.html",
+  "title": "Anthropic Warns Small AI Models Could Soon Form Self-Propagating IoT Botnets",
+  "titleKo": "Anthropic, 소형 AI 모델이 곧 자기 복제형 IoT 봇넷을 만들 수 있다고 경고",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T18:20:57.000Z",
+  "collectedAt": "2026-10-14T17:15:42.679Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "Anthropic은 소형 AI 모델이 수개월 내 스마트 오븐, 저가 안드로이드 TV 박스 같은 IoT 기기에서 스스로 복제하는 능력을 갖출 수 있다고 경고했습니다.",
+   "AI 웜은 호스트 기기를 침해해 모델 가중치를 함께 복사하고 기기의 연산 자원으로 추론을 실행하며, 여러 기기에 모델을 나눠 돌리는 분산 구조가 거론됩니다.",
+   "다만 현재 완전한 자기 복제 시스템은 아직 없고, Anthropic은 11개 오픈웨이트 모델 테스트에서 일부 모델만 제한적으로 전파에 성공했다고 밝혔습니다. 실제 피해 사례는 보고되지 않았습니다."
+  ],
+  "socPoint": "IoT 기기와 호스트에서 비정상적인 외부 모델 가중치 파일(대용량 다운로드) 전송, 인증되지 않은 SSH·ADB 접속 시도, 기기의 GPU·CPU 사용률이 지속적으로 높아지는 현상, 그리고 AI 서비스 API 키의 비정상적 대량 호출 패턴을 모니터링합니다.",
+  "attackTypes": [],
+  "sectors": [
+   "IT·클라우드",
+   "통신"
+  ],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Anthropic",
+    "Alibaba",
+    "DeepSeek",
+    "Google",
+    "Meta"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "db0de8b1cf1562b3",
+  "url": "https://www.bleepingcomputer.com/news/security/uk-housing-ombudsman-service-investigates-security-incident/",
+  "title": "UK Housing Ombudsman Service investigates 'security incident'",
+  "titleKo": "영국 주택 옴부즈맨 서비스, '보안 사고' 조사 중",
+  "sourceId": "bleepingcomputer",
+  "sourceName": "BleepingComputer",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T18:19:44.000Z",
+  "collectedAt": "2026-10-14T17:15:43.930Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "영국 주택 옴부즈맨 서비스(Housing Ombudsman Service)가 화요일 사례 관리 시스템에 영향을 준 제3자 IT 보안 사고를 조사 중이다.",
+   "사고 원인과 공격 수법은 공개되지 않았으며, 서비스는 시스템 복구 전까지 신규 민원 접수를 제한하고 전화와 이메일로 접수하도록 안내했다.",
+   "서비스는 사고가 격리됐다고 밝혔고 개인정보 영향 여부를 확인 중이다. 정보감독청(ICO)에 통보했으며 이용자에게 의심스러운 연락에 주의하라고 권고했다."
+  ],
+  "socPoint": "외부 공급업체 연동 구간의 접속 로그와 이상 접근 기록을 확인하고, 해당 기관 도메인을 사칭한 피싱·스캠 메일이나 문자 유입 여부를 모니터링해야 합니다.",
+  "attackTypes": [],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Housing Ombudsman Service",
+    "Information Commissioner's Office (ICO)",
+    "Companies House"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "8187d0f2ac60bf6f",
+  "url": "https://thehackernews.com/2026/10/docker-fixes-critical-two-year-old-hub.html",
+  "title": "Docker Fixes Critical Two-Year-Old Hub Flaw That Let One User Push Images as Another",
+  "titleKo": "Docker, 한 사용자가 다른 사용자로 이미지를 푸시할 수 있게 한 2년 묵은 치명적 Hub 취약점 수정",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T18:03:18.000Z",
+  "collectedAt": "2026-10-14T17:15:45.361Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "Docker Hub에서 개인 계정을 조직으로 전환하는 기능의 결함으로, 한 사용자가 다른 사용자 명의로 이미지를 push, pull, 삭제할 수 있었습니다.",
+   "전환 시 개인 액세스 토큰이 지정된 소유자에게 넘어가고 토큰 소유자 정보만 바뀌는 방식이었으며, 소유자에게 확인이나 알림은 없었습니다.",
+   "Docker는 9월 30일 수정했고 악용 흔적은 없다고 밝혔습니다. 약 304,000건의 토큰 사용 push를 점검했고, 영향받은 사용자에게 통지 후 토큰을 비활성화했습니다."
+  ],
+  "socPoint": "Docker Hub 레지스트리 로그에서 PAT 사용 기록과 계정 유형 전환(개인에서 조직으로) 이력을 확인하고, 본인이 만들지 않았거나 이름이 불분명한 토큰 및 가입한 적 없는 조직이 있는지 점검하세요.",
+  "attackTypes": [
+   "계정 탈취",
+   "취약점 악용"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-105445"
+   ],
+   "actors": [],
+   "orgs": [
+    "Docker",
+    "Docker Hub",
+    "mptrdev.com"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "30c48aec6fa791e3",
+  "url": "https://www.bleepingcomputer.com/news/microsoft/windows-11-kb5127648-and-kb5126653-cumulative-updates-released/",
+  "title": "Windows 11 KB5127648 & KB5126653 cumulative updates released",
+  "titleKo": "Windows 11 KB5127648 및 KB5126653 누적 업데이트 배포",
+  "sourceId": "bleepingcomputer",
+  "sourceName": "BleepingComputer",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T17:49:38.000Z",
+  "collectedAt": "2026-10-14T17:15:44.532Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "마이크로소프트가 Windows 11 26H2, 25H2, 24H2, 23H2 버전에 대한 누적 업데이트 KB5127648과 KB5126653을 배포했습니다.",
+   "2026년 10월 Patch Tuesday 보안 패치로, 이전 달에 발견된 수백 건의 취약점을 수정하며 기능 개선과 버그 수정도 포함합니다.",
+   "본문에서는 업데이트를 필수 설치 대상으로 소개했고, 설치 경로(설정 > Windows 업데이트, Microsoft Update Catalog)를 안내했습니다. 개별 취약점 목록과 피해 사례는 확인되지 않습니다."
+  ],
+  "socPoint": "엔드포인트에서 KB5127648·KB5126653 설치 여부와 빌드 번호를 점검하고, 업데이트 미적용 자산을 WSUS·Intune 보고서로 식별하는 것이 좋습니다.",
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Microsoft",
+    "Windows 11"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "fb99d329a170ccdf",
+  "url": "https://thehackernews.com/2026/10/attacker-chains-three-ivanti-connect.html",
+  "title": "Attacker Chains Three Ivanti Connect Secure Zero-Days for Root Access, Only Two Patched So Far",
+  "titleKo": "공격자, Ivanti Connect Secure 제로데이 3개 연쇄 악용해 root 권한 획득…현재 2개만 패치됨",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T17:33:11.000Z",
+  "collectedAt": "2026-10-14T17:15:47.508Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "Volexity는 VPN 장비 Ivanti Connect Secure의 제로데이 취약점 3개를 연쇄 악용한 공격을 확인했다고 발표했다.",
+   "인증 우회와 원격 코드 실행 취약점(CVE-2026-104935)으로 cgi-server 권한 명령을 실행하고, 권한 상승 취약점으로 root 권한을 얻는 구조다.",
+   "Ivanti는 2개 취약점만 패치했고 권한 상승 취약점 수정은 아직 대기 중이다. 확인된 피해는 1개 고객사 사례이며 Ivanti는 제한적 악용을 인정했다."
+  ],
+  "socPoint": "Connect Secure 장비의 웹 접근 로그에서 /dana-na/auth/url_default/welcome.cgi 대량 요청과 X-DSCGI-PATH 헤더 불일치를 확인하고, /data/.icscap/ 디렉터리와 IP 108.165.147.64 통신, LDAP 자격증명 도용 및 패스워드 스프레이 흔적을 함께 점검한다.",
+  "attackTypes": [
+   "제로데이",
+   "취약점 악용",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-104935",
+    "CVE-2026-106042",
+    "CVE-2026-109412"
+   ],
+   "actors": [
+    "UTA0576"
+   ],
+   "orgs": [
+    "Ivanti",
+    "Volexity",
+    "CISA",
+    "Connect Secure",
+    "Xtraction"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "6e56ced53da56dc2",
+  "url": "https://thehackernews.com/2026/10/sap-discloses-critical-cvss-10-flaw-in.html",
+  "title": "SAP Discloses Critical CVSS 10 Flaw in Cloud SDK for Python Allowing OAuth2 Credential Theft",
+  "titleKo": "SAP, 파이썬용 Cloud SDK에서 OAuth2 자격증명 탈취를 허용하는 CVSS 10 취약점 공개",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T17:28:50.000Z",
+  "collectedAt": "2026-10-14T17:15:47.593Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "SAP가 Python용 Cloud SDK의 CVSS 10.0 취약점(CVE-2026-89111)을 공개했으며, 멀티테넌트 앱의 OAuth2 클라이언트 자격증명이 공격자 서버로 전송될 수 있습니다.",
+   "테넌트 서브도메인 검증이 일부 릴리스에서 빠져 있어 SSRF가 발생합니다. 0.36.1, 0.36.2와 0.53.0~0.55.0 릴리스가 이에 해당하며, 0.45.2 수정 이후에도 검증이 누락된 사례가 확인되었습니다.",
+   "공격 악용 사례는 보고되지 않았습니다. 0.55.1 이상 또는 0.45.2~0.52.2 버전으로 업그레이드하거나, 등록된 테넌트 목록과 대조하는 조치가 권고됩니다."
+  ],
+  "socPoint": "애플리케이션의 SDK 호출 로그와 BTP 대상 토큰 요청에서 테넌트 서브도메인에 URL 구분자가 포함되거나 등록되지 않은 외부 호스트로 토큰 요청이 나가는지 확인하십시오.",
+  "attackTypes": [
+   "취약점 악용",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-89111"
+   ],
+   "actors": [],
+   "orgs": [
+    "SAP",
+    "SAP Business Technology Platform",
+    "Cloud SDK for Python"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "1728782a1e6c5132",
+  "url": "https://www.bleepingcomputer.com/news/security/tfg-london-cyberattack-disrupts-systems-at-hobbs-and-whistles-retailers/",
+  "title": "TFG London cyberattack disrupts systems at Hobbs and Whistles retailers",
+  "titleKo": "TFG London 사이버공격으로 Hobbs·Whistles 등 리테일 브랜드 시스템 장애 발생",
+  "sourceId": "bleepingcomputer",
+  "sourceName": "BleepingComputer",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T16:44:18.000Z",
+  "collectedAt": "2026-10-14T17:15:47.865Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "TFG London이 Phase Eight, Hobbs, Whistles 브랜드가 쓰는 IT 시스템에 영향을 준 사이버 침해 사고를 공개했습니다.",
+   "회사는 10월 11일 공격을 탐지해 대응 계획을 가동했고, 일부 IT 시스템은 아직 사용할 수 없으나 매장은 영업 중입니다.",
+   "고객 정보 유출 여부는 조사 중이며 확인되면 영향받은 개인이나 기관에 통지할 예정입니다. 공개된 공격 주체 주장은 확인되지 않았습니다."
+  ],
+  "socPoint": "TFG London 계열 브랜드 고객 계정의 비정상 로그인과 피싱·사칭 문자, 이메일 유입 여부를 확인하고, 내부 계정의 비정상 인증 및 IT 시스템 장애 시점 전후의 관리자 권한 사용 로그를 점검해야 합니다.",
+  "attackTypes": [],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "TFG London",
+    "The Foschini Group",
+    "Phase Eight",
+    "Hobbs",
+    "Whistles"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "908729f8a347a132",
+  "url": "https://piyolog.hatenadiary.jp/entry/2026/10/14/014350",
+  "title": "防災情報配信サービス「SpeeCAN RAIDEN」への不正アクセスについてまとめてみた",
+  "titleKo": "방재 정보 배신 서비스 'SpeeCAN RAIDEN' 불법 접근 사건 정리",
+  "sourceId": "piyolog",
+  "sourceName": "piyolog",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T16:43:50.000Z",
+  "collectedAt": "2026-10-14T17:15:49.407Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "운영사 아르카디아는 2026년 10월 11일 SpeeCAN RAIDEN에 대한 제3자의 불법 접근을 확인하고, 13일 두 서비스를 긴급 정지했다고 공표했습니다.",
+   "유출 가능성이 있는 정보는 이름, 메일 주소, 전화·FAX 번호, 발송 이력 본문 등 연락처 데이터이며, 결제 정보는 취급하지 않아 대상이 아니라고 밝혔습니다.",
+   "메일 주소 약 313만 건 등이 추정 최대치로 제시되었고 조사는 계속 중입니다. 전국 자치체들이 방재 메일 중단과 가짜 메일 주의를 공지했습니다."
+  ],
+  "socPoint": "SpeeCAN RAIDEN 발송 서버와 관련 도메인(raiden.ktaiwork.jp, s2.ktaiwork.jp 등)의 접근 로그를 확인하고, 발신 메일의 송신 주소에 해당 도메인이 포함된 피싱 메일 유입 여부를 모니터링해야 합니다.",
+  "attackTypes": [
+   "정보유출",
+   "피싱",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "정부·공공",
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "아르카디아",
+    "SpeeCAN RAIDEN",
+    "횡수시",
+    "정부 및 지방자치단체"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "3770e65c491fe5df",
+  "url": "https://thehackernews.com/2026/10/github-tightens-npm-publishing-after.html",
+  "title": "GitHub Tightens npm Publishing After Flaw Left 1,500+ Packages Vulnerable to Hijacking",
+  "titleKo": "GitHub, 취약점으로 1,500개 이상 npm 패키지 탈취 위험 발생 후 npm 배포 절차 강화",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T16:18:18.000Z",
+  "collectedAt": "2026-10-14T17:15:52.112Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "GitHub가 검증되지 않은 npm 신뢰된 배포(trusted publishing) 설정을 생성 후 48시간 뒤 만료되도록 변경했습니다.",
+   "Bloom Security는 저장소 이름(slug)만 확인하는 방식의 결함을 발견했습니다. 공격자가 버려진 slug를 재점유해 피해 패키지에 악성 버전을 배포할 수 있습니다.",
+   "보안업체는 취약 패키지 1,500개 이상, 누적 다운로드 1,000만 회 이상을 확인했고, 패키지 관리자는 바인딩을 점검하고 불필요한 설정을 삭제해야 합니다."
+  ],
+  "socPoint": "npm 레지스트리의 publish 이벤트에서 예상치 못한 배포자, 저장소 이름 변경·삭제 이후 발생한 배포, GitHub OIDC 토큰의 repository 클레임과 저장소 ID 불일치를 확인하세요.",
+  "attackTypes": [
+   "공급망",
+   "취약점 악용"
+  ],
+  "sectors": [
+   "IT·클라우드",
+   "개인"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "GitHub",
+    "npm",
+    "Bloom Security",
+    "Microsoft"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "de5dfbeb3e65c3a0",
+  "url": "https://www.ipa.go.jp/security/security-alert/2026/1014-ms.html",
+  "title": "Microsoft 製品の脆弱性対策について(2026年10月)",
+  "titleKo": "Microsoft 제품 취약점 대응에 관하여(2026년 10월)",
+  "sourceId": "ipa",
+  "sourceName": "IPA",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T15:00:00.000Z",
+  "collectedAt": "2026-10-14T17:15:50.800Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "2026년 10월 14일 일본 시간 기준 Microsoft 제품의 보안 업데이트가 공개되었습니다.",
+   "CVE-2026-96951은 Windows 셸 보안 기능 우회 취약점으로, Microsoft가 실제 악용을 확인했다고 밝혔습니다.",
+   "이 취약점을 악용하면 애플리케이션 비정상 종료나 공격자에 의한 PC 제어 등의 피해가 생길 수 있어 즉시 업데이트 적용이 권고됩니다."
+  ],
+  "socPoint": "Windows 업데이트 적용 현황(KB 설치 이력)을 점검하고, 셸 보안 기능 우회와 관련된 비정상 프로세스 실행이나 셸 관련 이벤트 로그를 확인하세요.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-96951"
+   ],
+   "actors": [],
+   "orgs": [
+    "Microsoft",
+    "IPA",
+    "Windows"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "26d899a3642e2e3d",
+  "url": "https://www.security-next.com/190650",
+  "title": "フィッシング攻撃の報告数が増加 - 悪用URLは減少",
+  "titleKo": "피싱 공격 신고 건수 증가, 악용 URL은 감소",
+  "sourceId": "securitynext",
+  "sourceName": "Security NEXT",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T14:35:47.000Z",
+  "collectedAt": "2026-10-14T17:15:51.926Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "2026년 8월 피싱 공격 신고가 8만 2338건으로 전월 대비 약 24.5% 늘며 4개월 만에 증가로 돌아섰다.",
+   "카테고리별로는 EC 관련이 약 43.3%로 가장 많았고, 신용카드·신용판매 관련 약 29.0%, 항공 관련 약 13.3%가 뒤를 이었다.",
+   "악용된 URL은 3만 9800건으로 약 8.0% 줄었지만, amazonaws.com 호스트명을 그대로 쓴 사례가 전체의 약 17.0%를 차지했다."
+  ],
+  "socPoint": "프록시·웹 로그에서 amazonaws.com 하위 도메인 접속과 동일 호스트에 쿼리 파라미터만 바뀌는 URL 패턴을 탐지하고, 해당 URL로 이동한 사용자의 인증 요청과 EC·카드·항공 관련 위장 페이지 접근 이력을 함께 확인합니다.",
+  "attackTypes": [
+   "피싱"
+  ],
+  "sectors": [
+   "유통·서비스",
+   "통신"
+  ],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "フィッシング対策協議会",
+    "Amazon Web Services"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "72f7b5ab09bf8eee",
+  "url": "https://www.security-next.com/191371",
+  "title": "自治体など利用する一斉同報サービスに不正侵入 - 影響を調査",
+  "titleKo": "지자체 등이 쓰는 일괄 발송 서비스에 부정 침입 - 영향 조사 중",
+  "sourceId": "securitynext",
+  "sourceName": "Security NEXT",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T13:54:25.000Z",
+  "collectedAt": "2026-10-14T17:15:52.457Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "아르카디아가 운영하는 일괄 발송 서비스 SpeeCAN RAIDEN이 침해되어 개인정보가 유출되었을 가능성이 확인되었다.",
+   "10월 11일 불审 挙動이 확인된 뒤 외부 침입 경로를 특定해 13일 일부 환경을 중단했으며, 공격 수법은 기사에 명시되지 않았다.",
+   "등록된 연락처, 담당자·계약자 정보, 발송 이력 본문 등이 유출되었을 수 있으며, 피해 규모와 조사 결과는 아직 발표되지 않았다."
+  ],
+  "socPoint": "SpeeCAN RAIDEN 서비스의 외부 접속 로그와 관리자 계정 로그인 이력, 2026년 10월 11일 전후 비정상 API 호출 및 대량 데이터 조회·내보내기 행위를 확인하라.",
+  "attackTypes": [
+   "정보유출"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "아르카디아",
+    "SpeeCAN RAIDEN",
+    "ライデン・スクール",
+    "J-ALERT"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "2a08f00e6eb31fa9",
+  "url": "https://www.dailysecu.com/news/articleView.html?idxno=208861",
+  "title": "방산 협력사 해킹에 기술자료 유출…로그 없어 피해 확인도 어려워",
+  "titleKo": "방산 협력사 해킹에 기술자료 유출…로그 없어 피해 확인도 어려워",
+  "sourceId": "dailysecu",
+  "sourceName": "데일리시큐",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-13T13:25:55.000Z",
+  "collectedAt": "2026-10-14T17:15:55.950Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "국회 국방위 유용원 의원이 방위사업청 자료를 공개해 2024년 이후 방산 자료 유출 중 사이버 공격 사례가 41건이었다고 밝혔다.",
+   "협력사 해킹으로 재밍·방향탐지 등 무기체계 기술자료와 군위성통신체계 소프트웨어 산출명세서가 유출된 사례가 확인됐다.",
+   "2021년 이후 유출 신고 15건은 로그 미보존 등으로 실제 유출 여부를 확인하지 못했으며, 방사청은 협력사까지 포함한 보안 점검을 강조했다."
+  ],
+  "socPoint": "방산 협력사의 접근 로그, 대용량 외부 전송 기록, 기술자료 접근권한 변경 이력을 수집·보존하고 비정상 접근 여부를 확인해야 합니다.",
+  "attackTypes": [
+   "취약점 악용",
+   "정보유출"
+  ],
+  "sectors": [
+   "정부·공공",
+   "제조"
+  ],
+  "nature": "정책·법규",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "방위사업청",
+    "LIG D&A",
+    "국회 국방위원회"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "7051b2ffd8cf7dea",
+  "url": "https://www.itmedia.co.jp/news/article/2610/13/2000002233/",
+  "title": "キャッシュレスサービス「IDARE」、約13万人の個人情報漏えい 残高や取引履歴なども",
+  "titleKo": "캐시리스 서비스 'IDARE', 약 13만 명 개인정보 유출…잔액·거래내역도 포함",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T13:25:15.000Z",
+  "collectedAt": "2026-10-14T17:15:56.148Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "프리페이드 캐시리스 서비스 IDARE를 운영하는 Fivot이 제3자의 불정 접근으로 이용자 개인정보가 유출됐다고 발표했다.",
+   "고객지원 등에 쓰던 외부 소프트웨어의 취약점이 악용돼 8월 10일부터 9월 27일 사이 여러 차례 데이터베이스 정보가 탈취됐다.",
+   "대상은 탈퇴 회원을 포함한 12만 9,659명이며, 연락처·잔액·거래내역 등이 포함됐다. 경로 차단과 인증정보 갱신을 마쳤고 10월 13일 기준 악용 거래는 확인되지 않았다."
+  ],
+  "socPoint": "외부 고객지원 소프트웨어 서버의 DB 조회 로그와 비정상적인 대량 조회 패턴, 해당 시기(8월 10일~9월 27일) 외부 접속 기록을 점검하고, IDARE 계정에서 로그인 후 비정상 잔액 변동이나 거래내역 조회가 있었는지 확인합니다.",
+  "attackTypes": [
+   "취약점 악용",
+   "정보유출"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Fivot",
+    "IDARE"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "2fd581d2b9b4e293",
+  "url": "https://thehackernews.com/2026/10/xandr-fined-record-86-million-for.html",
+  "title": "Xandr Fined a Record €8.6 Million for Relaying Grindr Data Revealing Sexual Orientation",
+  "titleKo": "Xandr, Grindr 성적 지향 데이터 중계 혐의로 기록적인 860만 유로 과징금",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T13:12:32.000Z",
+  "collectedAt": "2026-10-14T17:15:55.766Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "노르웨이 개인정보보호청(DPA)이 Microsoft 산하 광고 업체 Xandr에 860만 유로의 과징금을 부과했다.",
+   "Xandr는 2018년 7월~2020년 4월 Grindr 이용자의 성적 지향 등 민감정보를 동의 없이 실시간 입찰(RTB)을 통해 수많은 광고 업체에 중계했다.",
+   "Xandr는 이의를 제기할 수 있으며 Microsoft는 결정을 검토 중이다. 같은 기간 AT&T 관련 데이터 유출 집단소송은 1억 7,700만 달러 합의가 최종 승인됐다."
+  ],
+  "socPoint": "광고 입찰 연동 트래픽에서 Grindr 앱 실행 시 제3자 광고 도메인으로 향하는 대량 데이터 전송과 식별자·민감 파라미터 포함 여부를 점검하는 것이 도움이 됩니다.",
+  "attackTypes": [],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "정책·법규",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Xandr",
+    "Microsoft",
+    "Grindr",
+    "Norwegian Data Protection Authority",
+    "noyb"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "b0504d72893243e4",
+  "url": "https://www.dailysecu.com/news/articleView.html?idxno=208860",
+  "title": "국세청 해킹 시도 9개월간 7만3,283건…지난해 연간의 7.6배",
+  "titleKo": "국세청 해킹 시도 9개월간 7만3,283건…지난해 연간의 7.6배",
+  "sourceId": "dailysecu",
+  "sourceName": "데일리시큐",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-13T13:09:37.000Z",
+  "collectedAt": "2026-10-14T17:15:56.167Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "국회 재정경제기획위원회 이종욱 의원이 국세청 자료를 근거로, 올해 1~9월 외부 해킹 시도가 7만3,283건이라고 밝혔다.",
+   "지난해 연간 9,643건의 약 7.6배 규모이며, 시도 유형 중 정보유출 시도가 46.0%(3만3,673건)로 가장 많다.",
+   "국세청은 사이버 공격 시도는 있었으나 침해 사례는 없다고 밝혔고, 급증 원인은 아직 확인되지 않았다."
+  ],
+  "socPoint": "국세청 외부 접속 로그와 웹방화벽·IDS 탐지 기록에서 정보유출 시도, 정보수집(스캐닝), 홈페이지 변조, 권한 획득 시도 등 유형별 추이와 반복 출발지를 비교 분석할 필요가 있다.",
+  "attackTypes": [
+   "정보유출",
+   "취약점 악용"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "국세청"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "dc40bab2df7d9ac7",
+  "url": "https://www.dailysecu.com/news/articleView.html?idxno=208859",
+  "title": "박성훈 의원, 개인정보 유출 신고 579건 중 현장조사 33건… “유출 대응 재점검해야”",
+  "titleKo": "박성훈 의원, 개인정보 유출 신고 579건 중 현장조사 33건… \"유출 대응 재점검해야\"",
+  "sourceId": "dailysecu",
+  "sourceName": "데일리시큐",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-13T12:01:05.000Z",
+  "collectedAt": "2026-10-14T17:15:58.907Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "올해 1~8월 개인정보 유출 신고가 579건으로 지난해 연간 447건을 넘어섰다.",
+   "신고 사건 중 9월 말까지 현장조사가 실시된 것은 33건(5.7%)이며, 나머지는 서면조사 중심으로 진행되는 것으로 보인다.",
+   "개인정보위는 규모와 시급성에 따라 현장조사를 순차 진행한다고 밝혔고, 서면조사 진행·종결 현황과 첫 조치까지 걸린 시간은 공개 보도로 확인되지 않는다."
+  ],
+  "socPoint": null,
+  "attackTypes": [
+   "정보유출"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "정책·법규",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "개인정보보호위원회",
+    "국회 정무위원회",
+    "국민의힘"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "cd473945c5d8743c",
+  "url": "https://thehackernews.com/2026/10/webinar-how-to-stop-ai-driven-privilege.html",
+  "title": "[Webinar] How to Stop AI-Driven Privilege Escalation With Runtime Identity Controls",
+  "titleKo": "AI 기반 권한 상승을 막는 런타임 ID 통제 방법 (웨비나 안내)",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T11:57:06.000Z",
+  "collectedAt": "2026-10-14T17:15:59.429Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "AI 기반 공격이 탈취된 계정으로 권한을 빠르게 올리는 위험을 소개하며, 이를 알리는 웨비나를 홍보하는 기사입니다.",
+   "기존 ID 보안은 접근 권한 부여에 치중해, 신뢰된 계정이 탈취된 뒤의 행위를 통제하지 못한다고 지적합니다.",
+   "구체적인 사건이나 피해 사례는 없으며, 실시간으로 접근을 평가하는 런타임 ID 보안 개념을 소개합니다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "The Hacker News"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "da1edf159090d7cf",
+  "url": "https://www.dailysecu.com/news/articleView.html?idxno=208858",
+  "title": "시스코 “AI 위협 대응 막는 건 조직 단절”…국내 기업 80% 보안사고 경험",
+  "titleKo": "시스코 “AI 위협 대응 막는 건 조직 단절”…국내 기업 80% 보안사고 경험",
+  "sourceId": "dailysecu",
+  "sourceName": "데일리시큐",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-13T11:37:03.000Z",
+  "collectedAt": "2026-10-14T17:15:58.915Z",
+  "regions": [
+   "KR",
+   "INTL"
+  ],
+  "summary": [
+   "시스코가 전 세계 30개국 보안 전문가 8,000명 대상 '릴렌트리스 디펜스 보고서'를 공개했다.",
+   "국내 응답 조직의 80%가 최근 1년간 사업에 실질적 영향을 준 보안 사고를 겪었고, 사고 3건 중 1건 이상이 AI 활용 공격과 연관됐다.",
+   "국내 방어 역량은 100점 만점에 58점(전 세계 64점)이며, 보안·네트워크·IT팀의 정보 공유는 24%에 그쳤다. 협업과 데이터 접근성 개선이 주요 과제로 제시됐다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "시스코",
+    "시스코코리아",
+    "데일리시큐"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "6cdf01bf83a3c25f",
+  "url": "https://www.dailysecu.com/news/articleView.html?idxno=208857",
+  "title": "송경희 개인정보위원장 “금융·공공 유출 엄정 조사”…피해구제 강화 추진",
+  "titleKo": "송경희 개인정보위원장 “금융·공공 유출 엄정 조사”…피해구제 강화 추진",
+  "sourceId": "dailysecu",
+  "sourceName": "데일리시큐",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-13T11:12:29.000Z",
+  "collectedAt": "2026-10-14T17:16:00.371Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "송경희 개인정보보호위원장이 금융권과 공공기관의 개인정보 유출 사고에 대한 조사와 대응을 강화하겠다고 국회 국정감사에서 밝혔다.",
+   "중요 사건에 전담 조사단을 구성하고, 조사 비협조에는 이행강제금, 증거 은닉·폐기에는 과징금을 신설하는 방안을 추진한다.",
+   "공공기관은 자체 점검을 받고 약 1,700개 고위험 시스템과 공급망까지 점검 범위가 확대된다. 법정 손해배상 개선과 피해회복 기금은 법 개정안 처리가 필요한 추진 과제다."
+  ],
+  "socPoint": "개인정보 유출 사고 조사 시 대상 기관의 접근 로그, 대량 데이터 조회·다운로드 이력, 클라우드·수탁사 연동 계정의 비정상 접근 행위를 함께 확인하는 것이 필요하다.",
+  "attackTypes": [
+   "정보유출"
+  ],
+  "sectors": [
+   "정부·공공",
+   "금융"
+  ],
+  "nature": "정책·법규",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "개인정보보호위원회",
+    "국회 정무위원회"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "8f63a0f3f0541bc2",
+  "url": "https://thehackernews.com/2026/10/lg-smart-tvs-vulnerable-to-pre-auth.html",
+  "title": "LG Smart TVs Vulnerable to Pre-Auth Root Takeover From Local Network",
+  "titleKo": "LG 스마트TV, 로컬 네트워크에서 인증 전 루트 권한 탈취 가능",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T11:09:10.000Z",
+  "collectedAt": "2026-10-14T17:16:02.528Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "SSD Secure Disclosure 공지에 따르면 LG webOS의 취약점 3개를 연결하면 같은 로컬 네트워크의 공격자가 PIN 없이 TV의 루트 권한을 얻을 수 있습니다.",
+   "포트 3001의 페어링 서비스에서 테스트 인증서로 서명된 매니페스트를 재생해 권한 키를 얻고, 내장 앱을 통해 시스템 로깅 서비스 pmlogd에 셸 명령을 주입합니다.",
+   "테스트된 모델은 32LQ636BPSA, 27TQ600SW이며 LG가 패치를 배포했습니다. 악용 사례는 보고되지 않았고 CVE 번호는 아직 할당되지 않았습니다."
+  ],
+  "socPoint": "TV의 포트 3001 연결 로그와 같은 세그먼트 내 비정상 페어링 요청, 내장 앱(sync-demo, cmp-client) 비정상 실행이나 외부 URL 이동, pmlogd에 전달된 셸 메타문자 포함 로그를 확인하세요.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [
+   "제조",
+   "개인"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "LG",
+    "webOS",
+    "SSD Secure Disclosure",
+    "TyphoonPWN 2026"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "dbbdfe4e43169dc1",
+  "url": "https://www.dailysecu.com/news/articleView.html?idxno=208856",
+  "title": "한국정보보호학회, ‘AI x RMF 워크숍’ 22일 개최…AI 보안·신뢰성 검증 논의",
+  "titleKo": "한국정보보호학회, ‘AI x RMF 워크숍’ 22일 개최…AI 보안·신뢰성 검증 논의",
+  "sourceId": "dailysecu",
+  "sourceName": "데일리시큐",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-13T10:53:24.000Z",
+  "collectedAt": "2026-10-14T17:16:02.188Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "한국정보보호학회가 10월 22일 삼성SDS 캠퍼스에서 '2026 KIISC 제6회 AI x RMF 워크숍'을 온·오프라인으로 개최한다.",
+   "워크숍은 AI 시스템의 보안성, 안전성, 신뢰성, 사이버 복원력을 지속 검증하는 방안을 다루며 AI 거버넌스, AI-BOM, AI 보안관제센터 등을 포함한다.",
+   "이번 기사는 행사 안내이며 실제 사건이나 피해 정보는 없고, 사전등록은 10월 20일까지 학회 홈페이지에서 가능하다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "한국정보보호학회",
+    "삼성SDS",
+    "AWS Korea",
+    "네이버클라우드",
+    "샌즈랩"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "302530343dab63e8",
+  "url": "https://thehackernews.com/2026/10/product-walkthrough-bitdefender-ai.html",
+  "title": "Product Walkthrough: Bitdefender AI Visibility and Control",
+  "titleKo": "제품 둘러보기: Bitdefender AI 가시성 및 제어",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T10:30:00.000Z",
+  "collectedAt": "2026-10-14T17:16:04.484Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "Bitdefender가 GravityZone AI Visibility and Control(AIVC)을 소개하며, 브라우저·개발 환경·로컬 실행·외부 연결 등 기존 소프트웨어 인벤토리에 잡히지 않는 AI 사용 노출을 찾는 방법을 설명합니다.",
+   "AIVC는 엔드포인트의 AI 소프트웨어 존재와 구성 메타데이터를 수집하며, 프롬프트나 파일 내용은 검사하지 않습니다. 50개 이상의 AI 에이전트와 7만 개 이상의 스킬을 인식합니다.",
+   "본문은 제품 기능 설명 중심이며 실제 침해 사건은 다루지 않습니다. MCP 서버처럼 설정 파일로만 추가되는 연결도 AI Services에서 확인할 수 있다고 소개합니다."
+  ],
+  "socPoint": "엔드포인트의 AI 관련 설정 파일과 MCP 서버 구성 항목, 브라우저에서 접속하는 AI 서비스 도메인 및 승인되지 않은 AI 도구 사용 여부를 함께 확인합니다.",
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Bitdefender",
+    "GravityZone",
+    "The Hacker News"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "42ffd25ee0567bd2",
+  "url": "https://www.security-next.com/191361",
+  "title": "解析される「スマホアプリ」 - 接続先サーバの脆弱性や設定ミスが標的に",
+  "titleKo": "스마트폰 앱 분석으로 노리는 접속 서버 취약점과 설정 오류",
+  "sourceId": "securitynext",
+  "sourceName": "Security NEXT",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-13T10:25:45.000Z",
+  "collectedAt": "2026-10-14T17:16:06.071Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "일본 NICT가 스마트폰 앱을 활용한 회원 서비스의 잇따른 정보 유출 원인 중 하나로 'A2B 공격'을 지목하고 주의를 당부했다.",
+   "공개된 Android 앱을 공격자가 분석해 접속 서버를 특정하고, 서버의 취약점이나 API·인증·권한 관리 미흡을 노린다.",
+   "앱 자체에 취약점이 없어도 백엔드 서버 침입이나 정보 탈취로 이어질 수 있어, 서버 취약점 점검과 침해 여부 조사가 권고된다."
+  ],
+  "socPoint": "Android 앱 역분석 흔적을 막기 어려우므로, API 서버의 인증 실패·비정상 엔드포인트 호출·대량 요청 로그와 접속 IP 패턴을 점검하고 인증·인가 우회 시도를 탐지해야 합니다.",
+  "attackTypes": [
+   "취약점 악용",
+   "정보유출"
+  ],
+  "sectors": [
+   "IT·클라우드",
+   "유통·서비스"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "情報通信研究機構(NICT)",
+    "Security NEXT"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "5f0b07064faf391c",
+  "url": "https://www.dailysecu.com/news/articleView.html?idxno=208854",
+  "title": "[정보보안 연재소설-로그아웃되지 않는 밤] 제51화 ‘사장님의 이름으로’",
+  "titleKo": "[정보보안 연재소설-로그아웃되지 않는 밤] 제51화 ‘사장님의 이름으로’",
+  "sourceId": "dailysecu",
+  "sourceName": "데일리시큐",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-13T10:17:03.000Z",
+  "collectedAt": "2026-10-14T17:16:06.027Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "재무팀에 사장을 사칭한 메일이 도착해, 비밀 계약금을 오늘 안에 첨부 계좌로 송금하라는 요구가 있었다.",
+   "발신 주소가 진짜와 글자 하나만 다른 BEC(비즈니스 이메일 사칭) 수법으로, 비밀·권위·마감을 결합해 판단을 흐리게 했다.",
+   "보안 담당자가 송금 직전 메일을 발견해 승인을 막았으며, 같은 발신 주소의 메일을 사내 전체에서 검색하도록 조치했다."
+  ],
+  "socPoint": "메일 게이트웨이에서 발신 도메인·주소가 임원 주소와 한 글자 차이로 유사한 메일, 그리고 송금·계좌·오늘 안 등의 문구가 포함된 메일을 함께 찾아 사내 수신 이력을 조회하세요.",
+  "attackTypes": [
+   "피싱"
+  ],
+  "sectors": [],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "데일리시큐"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "d92083d504b147cd",
+  "url": "https://www.dailysecu.com/news/articleView.html?idxno=208853",
+  "title": "아카마이 “AI 에이전트 보안, 접근 권한 넘어 실제 행동 통제해야”",
+  "titleKo": "아카마이 “AI 에이전트 보안, 접근 권한 넘어 실제 행동 통제해야”",
+  "sourceId": "dailysecu",
+  "sourceName": "데일리시큐",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-13T09:59:42.000Z",
+  "collectedAt": "2026-10-14T17:16:06.635Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "아카마이가 SOTI 보고서를 통해 AI 에이전트 보안의 초점을 접근 권한 관리에서 실제 행동 통제로 넓혀야 한다고 제언했다.",
+   "보고서는 MCP 보안 가시성 부족, 챗봇 대화의 민감정보 포함(6% 이상), AI 브라우저 확장 프로그램의 권한 변경과 CVE 보유 위험을 주요 문제로 제시했다.",
+   "패치 기간 중 네트워크 엣지 보호와 격리를 권고하고, 작업 검증 가능성에 따라 자율 권한을 차등 부여하라고 했다. 보도자료 수치의 표본과 산정 방식은 공개되지 않았다."
+  ],
+  "socPoint": "AI 에이전트나 브라우저 확장 프로그램의 비인가 MCP 연결, 개인 계정에서의 AI 챗봇 업로드 트래픽, 확장 프로그램 권한 변경 이력을 프록시·엔드포인트 로그에서 확인한다.",
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "아카마이 테크놀로지스",
+    "아카마이코리아",
+    "데일리시큐"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "78cdc0ee4a505b65",
+  "url": "https://www.dailysecu.com/news/articleView.html?idxno=208852",
+  "title": "카스퍼스키, ‘SAS 2026’ 개최…사이버 첩보·AI 보안 위협 분석",
+  "titleKo": "카스퍼스키, ‘SAS 2026’ 개최…사이버 첩보·AI 보안 위협 분석",
+  "sourceId": "dailysecu",
+  "sourceName": "데일리시큐",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-13T09:55:16.000Z",
+  "collectedAt": "2026-10-14T17:16:07.526Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "카스퍼스키가 10월 20일부터 23일까지 인도네시아 발리에서 시큐리티 애널리스트 서밋(SAS 2026)을 연다고 밝혔다.",
+   "외교 기관을 겨냥한 UEFI 부트킷 캠페인, 라자루스 신규 전술, LLM 호출 전 단계 공격 등 사이버 첩보와 AI 보안 주제가 발표된다.",
+   "행사에는 전 세계 보안 전문가 200여 명이 참가하며, 발표 세부 내용은 행사 당일 공개될 예정이다."
+  ],
+  "socPoint": "UEFI 부트킷은 OS 부팅 이전 단계에서 동작하므로 EDR 로그만으로는 놓치기 쉬워, 펌웨어 무결성 검사 결과와 부팅 체인 변조 지표를 함께 확인해야 합니다.",
+  "attackTypes": [
+   "악성코드",
+   "제로데이"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "라자루스"
+   ],
+   "orgs": [
+    "카스퍼스키",
+    "Ikotas Labs",
+    "화중과학기술대학교"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "413d9086a0190596",
+  "url": "https://www.dailysecu.com/news/articleView.html?idxno=208851",
+  "title": "테이텀 시큐리티, 삼성SDS 공공클라우드에 CNAPP 서비스 등록",
+  "titleKo": "테이텀 시큐리티, 삼성SDS 공공클라우드에 CNAPP 서비스 등록",
+  "sourceId": "dailysecu",
+  "sourceName": "데일리시큐",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-13T09:52:02.000Z",
+  "collectedAt": "2026-10-14T17:16:08.656Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "테이텀 시큐리티의 CNAPP 플랫폼이 삼성SDS 공공 전용 클라우드 보안 서비스(SCP)에 등록되었다고 발표했다.",
+   "이 플랫폼은 클라우드 설정 점검(CSPM), 워크로드 취약점·악성코드 검사(CWPP), 과도한 권한 식별(CIEM) 기능을 통합 제공하며 에이전트 없이 API로 연동한다.",
+   "정부·공공기관은 SCP 콘솔에서 신청해 이용할 수 있으며, 피해나 공격 사례는 언급되지 않은 제품 등록 소식이다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "테이텀 시큐리티",
+    "삼성SDS",
+    "삼성 클라우드 플랫폼(SCP)"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "4467f496ba42feff",
+  "url": "https://www.dailysecu.com/news/articleView.html?idxno=208850",
+  "title": "금융보안원, 11월 12일 FISCON 2026 개최…AI 시대 금융보안 전략 논의",
+  "titleKo": "금융보안원, 11월 12일 FISCON 2026 개최…AI 시대 금융보안 전략 논의",
+  "sourceId": "dailysecu",
+  "sourceName": "데일리시큐",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-13T09:48:48.000Z",
+  "collectedAt": "2026-10-14T17:16:08.358Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "금융보안원이 11월 12일 여의도 콘래드서울에서 금융정보보호 컨퍼런스 FISCON 2026을 개최한다고 밝혔다.",
+   "행사는 AI로 변화하는 금융 환경의 보안 전략을 주제로 하며, AI를 악용한 사이버 위협과 최근 금융권 침해사고 대응을 논의한다.",
+   "망분리 규제 변화, AI 거버넌스, AI 에이전트 권한 관리 등을 다루며 누구나 무료로 참여할 수 있다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [
+   "금융"
+  ],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "금융보안원",
+    "금융정보보호협의회",
+    "금융보안포럼",
+    "네이버클라우드",
+    "금융위원회"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "684b14bd3cae90f9",
+  "url": "https://www.dailysecu.com/news/articleView.html?idxno=208849",
+  "title": "병원정보보안협회, 환자정보 무단 열람·유출 막는 내부자 위협 가이드라인 발간",
+  "titleKo": "병원정보보안협회, 환자정보 무단 열람·유출 막는 내부자 위협 가이드라인 발간",
+  "sourceId": "dailysecu",
+  "sourceName": "데일리시큐",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-13T09:44:33.000Z",
+  "collectedAt": "2026-10-14T17:16:10.055Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "병원정보보안협회(K-HISA)가 의료기관 내부 직원의 환자정보 무단 열람과 유출·훼손에 대응하는 내부자 위협 관리 가이드라인을 발간했다.",
+   "정상 권한을 가진 직원의 조회는 시스템상 정상 접근으로 남아 접근통제와 DLP만으로는 탐지가 어렵다는 점이 문제로 지적됐다.",
+   "가이드라인은 진료관계 기반 접근통제, 응급 예외열람, 이상행위 탐지, 동적 워터마크 등 5대 통제를 제시하며 자율 권고 지침이다."
+  ],
+  "socPoint": "정상 계정으로 이뤄진 환자정보 조회 로그에서 짧은 시간 내 반복 조회, 담당 환자와 무관한 열람, 응급 예외열람 사유 기록 누락 등 이상 패턴을 점검한다.",
+  "attackTypes": [
+   "내부자"
+  ],
+  "sectors": [
+   "의료"
+  ],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "병원정보보안협회(K-HISA)"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "7bd9dd15239d3fe8",
+  "url": "https://www.dailysecu.com/news/articleView.html?idxno=208847",
+  "title": "노드VPN “여행 관련 개인정보 1억 1,940만 건 다크웹 노출”",
+  "titleKo": "노드VPN “여행 관련 개인정보 1억 1,940만 건 다크웹 노출”",
+  "sourceId": "dailysecu",
+  "sourceName": "데일리시큐",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-13T09:33:44.000Z",
+  "collectedAt": "2026-10-14T17:16:11.647Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "노드VPN과 세일리가 공동 조사한 결과 여행 관련 기업의 개인정보 약 1억 1,940만 건이 다크웹에 노출된 것으로 나타났다.",
+   "2021년부터 2026년 8월까지 확인된 여행 업계 유출 사례 494건을 분석했으며, 노출된 정보는 이름, 전화번호, 주소, 생년월일, 비밀번호 등이다.",
+   "예약 플랫폼과 투어 업체가 사례의 55.5%를 차지했고, 항공사 사례는 건당 평균 약 120만 건으로 규모가 컸다. 비밀번호 재사용 금지와 다중 인증, 불필요한 정보 삭제 요청이 권고된다."
+  ],
+  "socPoint": "여행 예약·투어 플랫폼의 대량 데이터 조회·다운로드 이벤트와 해당 계정의 비정상 로그인 기록을 확인하고, 다크웹이나 유출 데이터 모니터링에서 자사 도메인 또는 고객 정보 노출 여부를 점검하는 것이 좋습니다.",
+  "attackTypes": [
+   "정보유출"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "노드VPN",
+    "세일리(Saily)",
+    "노드레이어 인텔리전스"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "276cffb2ee428c17",
+  "url": "https://www.dailysecu.com/news/articleView.html?idxno=208846",
+  "title": "에임인텔리전스, UAE CPX와 AI 보안 협력 MOU 체결",
+  "titleKo": "에임인텔리전스, UAE CPX와 AI 보안 협력 MOU 체결",
+  "sourceId": "dailysecu",
+  "sourceName": "데일리시큐",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-13T09:30:55.000Z",
+  "collectedAt": "2026-10-14T17:16:11.797Z",
+  "regions": [
+   "KR",
+   "INTL"
+  ],
+  "summary": [
+   "AI 보안 기업 에임인텔리전스가 UAE 사이버보안 기업 CPX 홀딩과 중동 시장 협력을 위한 MOU를 체결했다.",
+   "양사는 CPX의 현지 고객 네트워크와 에임인텔리전스의 AI 보안 기술을 결합해 중동에서 사업을 추진할 계획이다.",
+   "협력 범위는 시장 진출 전략, 기술 시연·PoC, 공동 개발 등 8개 분야이며, 구체적인 피해 규모나 사건 내용은 없다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "에임인텔리전스",
+    "CPX 홀딩",
+    "G42"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "6ebfc31532ee33e4",
+  "url": "https://thehackernews.com/2026/10/attackers-heat-french-supermarket.html",
+  "title": "Attackers Heat French Supermarket Fridges Up to 50°C by Hijacking Danfoss Controllers",
+  "titleKo": "공격자들, Danfoss 컨트롤러 장악해 프랑스 슈퍼마켓 냉장고를 50°C까지 가열",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T08:48:41.000Z",
+  "collectedAt": "2026-10-14T17:16:15.006Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "10월 11일 밤 프랑스 수백 개 슈퍼마켓의 냉장·냉동 설비가 원격으로 조작되어 고온으로 가열되었고, 매장들은 식품을 폐기했다.",
+   "공격은 매장 냉동설비를 통합 관리하는 덴마크 Danfoss 컨트롤러를 거쳐 이루어졌으며, 유지보수업체의 원격 관리 기능이 사용된 것으로 보인다.",
+   "Intermarché·Netto, Carrefour, Coopérative U 등 여러 체인이 피해를 확인했다. CERT-FR은 AK-SM, AK-SC 계열 차단 또는 접근 제한을 권고했으며, 침해 경로와 공격 주체는 아직 확인되지 않았다."
+  ],
+  "socPoint": "AK-SM·AK-SC 컨트롤러의 관리 인터페이스에 대한 외부 인터넷 접속 로그와 인증 실패·설정 변경 이벤트를 확인하고, 냉장설비 온도 급상승 및 디프로스트 명령 기록을 함께 모니터링합니다.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Danfoss",
+    "Les Mousquetaires",
+    "Intermarché",
+    "Netto",
+    "Coopérative U"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "339f93492eeffe92",
+  "url": "https://thehackernews.com/2026/10/two-critical-marklogic-flaws-could-give.html",
+  "title": "Two Critical MarkLogic Flaws Could Give Delegated Managers Persistent Admin Control",
+  "titleKo": "두 개의 심각한 MarkLogic 취약점, 위임된 관리자가 지속적인 관리자 권한을 얻을 수 있어",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-13T08:44:01.000Z",
+  "collectedAt": "2026-10-14T17:16:15.070Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "Progress Software의 MarkLogic Server에서 공개된 31개 취약점 중 심각 등급 5개가 포함되었으며, 일부 관리 권한만 가진 계정이 서버 관리자 권한을 얻을 수 있습니다.",
+   "포레스트 관리 권한이나 사용자 관리 권한 등 이미 일부 권한을 가진 계정이 악용 대상이며, 일부는 XQuery 인젝션과 폐기된 관리 API 경로가 관련됩니다.",
+   "11.3.7 및 12.1.0에서 수정되었고, 기사 확인 시점(10월 13일) 기준 악용 사례는 확인되지 않았으며 우회 방법도 공지되지 않았습니다."
+  ],
+  "socPoint": "MarkLogic 서버의 관리 API 호출 로그와 forest·database 권한 변경 이력, 그리고 xdmp-eval-in 권한이 부여된 역할의 변경을 감시하세요.",
+  "attackTypes": [
+   "취약점 악용",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-85947",
+    "CVE-2026-85948",
+    "CVE-2026-85955",
+    "CVE-2026-85956",
+    "CVE-2026-9191",
+    "CVE-2026-85954"
+   ],
+   "actors": [],
+   "orgs": [
+    "Progress Software",
+    "MarkLogic",
+    "Bugcrowd"
+   ]
+  },
+  "basis": "본문"
  }
 ]
