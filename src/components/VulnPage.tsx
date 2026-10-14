@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableHeaderCell,
   TableRow,
+  Text,
   makeStyles,
   tokens,
 } from "@fluentui/react-components";
@@ -23,13 +24,15 @@ type SortDir = "ascending" | "descending";
 
 const useStyles = makeStyles({
   colDate: { width: "104px" },
-  colCve: { width: "168px" },
-  colVendor: { width: "220px" },
+  colCve: { width: "156px" },
+  colVendor: { width: "180px" },
   colEpss: { width: "120px" },
   colCvss: { width: "84px" },
   colNews: { width: "96px" },
   cell: { paddingTop: "8px", paddingBottom: "8px" },
   ransom: { marginLeft: "8px" },
+  nameCell: { display: "flex", alignItems: "center", gap: "8px", minWidth: 0 },
+  name: { minWidth: 0, flexShrink: 1 },
   newsCount: { color: tokens.colorBrandForeground1, fontWeight: tokens.fontWeightSemibold },
 });
 
@@ -167,10 +170,12 @@ export function VulnPage(p: Props) {
                     </Caption1>
                   </TableCell>
                   <TableCell className={s.cell}>
-                    <span className={ps.clamp1}>
-                      <Body1>{k.vulnerabilityName}</Body1>
+                    <span className={s.nameCell}>
+                      <Text truncate wrap={false} className={s.name}>
+                        {k.vulnerabilityName}
+                      </Text>
                       {k.ransomware && (
-                        <Badge className={s.ransom} size="small" appearance="tint" color="danger">
+                        <Badge size="small" appearance="tint" color="danger">
                           {t.ransomware}
                         </Badge>
                       )}

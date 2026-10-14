@@ -72,11 +72,17 @@ const useStyles = makeStyles({
   },
   kpis: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 240px))",
-    gap: "16px",
-    padding: "16px 0 4px",
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    gap: "8px",
+    padding: "12px 0 4px",
+    "@media (min-width: 641px)": { gridTemplateColumns: "repeat(auto-fill, minmax(200px, 240px))", gap: "16px", paddingTop: "16px" },
   },
-  kpi: { padding: "12px 16px", gap: "2px", minHeight: "96px" },
+  kpi: {
+    padding: "10px 12px",
+    gap: "2px",
+    minHeight: "84px",
+    "@media (min-width: 641px)": { padding: "12px 16px", minHeight: "96px" },
+  },
   kpiLabel: { fontWeight: tokens.fontWeightSemibold },
   kpiValue: { display: "flex", alignItems: "baseline", gap: "8px", marginTop: "auto" },
   kpiNumber: {

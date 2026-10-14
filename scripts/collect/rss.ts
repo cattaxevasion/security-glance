@@ -26,6 +26,21 @@ const SECURITY_KEYWORDS =
 
 const parser = new Parser();
 
+// 시간대 표시가 없는 날짜(예: 데일리시큐 "2026-10-14 19:08:29")는 출처 지역의 현지 시각으로 본다.
+// 그대로 Date에 넘기면 수집 서버(UTC) 기준으로 해석돼 한국·일본 기사가 9시간 미래로 저장된다.
+const LOCAL_OFFSET: Record<Region, string> = { KR: "+09:00", JP: "+09:00", INTL: "Z" };
+const NAIVE = /^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}(?::\d{2})?)$/;
+
+function parseDate(raw: string | undefined, source: Source): string {
+  const now = Date.now();
+  if (!raw) return new Date(now).toISOString();
+  const m = raw.trim().match(NAIVE);
+  const t = m ? Date.parse(`${m[1]}T${m[2]}${LOCAL_OFFSET[source.region]}`) : Date.parse(raw);
+  if (isNaN(t)) return new Date(now).toISOString();
+  // 피드 시계가 틀려 미래 시각이 오면 지금으로 자른다
+  return new Date(Math.min(t, now)).toISOString();
+}
+
 export async function fetchFeeds(sources: Source[]): Promise<{ items: RawItem[]; statuses: SourceStatus[] }> {
   const items: RawItem[] = [];
   const statuses: SourceStatus[] = [];
@@ -42,14 +57,7 @@ export async function fetchFeeds(sources: Source[]): Promise<{ items: RawItem[];
           if (!url || !title) continue;
           const snippet = cleanText(entry.contentSnippet ?? entry.summary ?? "").slice(0, 1500);
           if (source.keywordFilter && !SECURITY_KEYWORDS.test(`${title} ${snippet}`)) continue;
-          const date = entry.isoDate ?? entry.pubDate;
-          items.push({
-            url,
-            title,
-            snippet,
-            publishedAt: date && !isNaN(Date.parse(date)) ? new Date(date).toISOString() : new Date().toISOString(),
-            source,
-          });
+          items.push({ url, title, snippet, publishedAt: parseDate(entry.pubDate ?? entry.isoDate, source), source });
           count++;
         }
         statuses.push({ id: source.id, name: source.name, region: source.region, ok: true, items: count });
