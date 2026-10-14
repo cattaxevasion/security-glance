@@ -1,8 +1,6 @@
 import {
-  Body1,
   Button,
   Caption1,
-  Card,
   Menu,
   MenuItemRadio,
   MenuList,
@@ -10,16 +8,10 @@ import {
   MenuTrigger,
   SearchBox,
   Subtitle1,
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableHeaderCell,
-  TableRow,
   Text,
-  Toolbar,
-  ToolbarButton,
+  Tooltip,
   makeStyles,
+  mergeClasses,
   tokens,
 } from "@fluentui/react-components";
 import {
@@ -27,6 +19,7 @@ import {
   ArrowResetRegular,
   CalendarLtrRegular,
   ChevronDownRegular,
+  ChevronRightRegular,
   ChevronUpRegular,
   LinkRegular,
 } from "@fluentui/react-icons";
@@ -34,6 +27,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ATTACK_TYPES, NATURES, SECTORS } from "../../shared/taxonomy";
 import type { NewsItem, VulnData } from "../../shared/types";
 import { REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
+import type { View } from "./AppNav";
 import { FilterPill } from "./FilterPill";
 import { dayKey, dayLabel, timeOfDay } from "./format";
 import { useStoredFlag } from "./hooks";
@@ -49,7 +43,7 @@ export interface NewsFilters {
 
 export const DEFAULT_FILTERS: NewsFilters = { attack: [], sector: [], nature: [], days: 7 };
 const PERIODS = [1, 3, 7, 30, 0];
-const PAGE = 60;
+const PAGE = 50;
 
 const useStyles = makeStyles({
   overviewToggle: {
@@ -57,53 +51,156 @@ const useStyles = makeStyles({
     width: "100%",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: "16px",
+    marginTop: "20px",
     padding: "10px 0",
+    border: "none",
     borderTop: `1px solid ${tokens.colorNeutralStroke2}`,
-    borderBottom: `1px solid ${tokens.colorNeutralStroke2}`,
     background: "none",
-    borderLeft: "none",
-    borderRight: "none",
     cursor: "pointer",
-    color: tokens.colorNeutralForeground1,
+    color: tokens.colorNeutralForeground2,
     font: "inherit",
     fontSize: tokens.fontSizeBase300,
+    fontWeight: tokens.fontWeightSemibold,
     textAlign: "left",
   },
   kpis: {
     display: "grid",
     gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
     gap: "8px",
-    padding: "12px 0 4px",
-    "@media (min-width: 641px)": { gridTemplateColumns: "repeat(auto-fill, minmax(200px, 240px))", gap: "16px", paddingTop: "16px" },
+    paddingBottom: "8px",
+    "@media (min-width: 900px)": { gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "12px" },
   },
   kpi: {
-    padding: "10px 12px",
-    gap: "2px",
-    minHeight: "84px",
-    "@media (min-width: 641px)": { padding: "12px 16px", minHeight: "96px" },
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: "4px",
+    padding: "12px 16px",
+    borderRadius: tokens.borderRadiusLarge,
+    border: `1px solid ${tokens.colorNeutralStroke2}`,
+    backgroundColor: tokens.colorNeutralBackground1,
+    color: tokens.colorNeutralForeground1,
+    font: "inherit",
+    textAlign: "left",
+    cursor: "pointer",
+    transitionProperty: "background-color, border-color",
+    transitionDuration: tokens.durationFaster,
+    ":hover": {
+      backgroundColor: tokens.colorNeutralBackground1Hover,
+      borderTopColor: tokens.colorNeutralStroke1Hover,
+      borderRightColor: tokens.colorNeutralStroke1Hover,
+      borderBottomColor: tokens.colorNeutralStroke1Hover,
+      borderLeftColor: tokens.colorNeutralStroke1Hover,
+    },
+    ":focus-visible": { outline: `2px solid ${tokens.colorStrokeFocus2}`, outlineOffset: "1px" },
   },
-  kpiLabel: { fontWeight: tokens.fontWeightSemibold },
-  kpiValue: { display: "flex", alignItems: "baseline", gap: "8px", marginTop: "auto" },
+  kpiLabel: { display: "flex", alignItems: "center", gap: "4px", color: tokens.colorNeutralForeground2, width: "100%" },
+  kpiChevron: { marginLeft: "auto", color: tokens.colorNeutralForeground3 },
   kpiNumber: {
-    fontSize: tokens.fontSizeHero800,
-    lineHeight: tokens.lineHeightHero800,
+    fontSize: tokens.fontSizeHero700,
+    lineHeight: tokens.lineHeightHero700,
     fontWeight: tokens.fontWeightSemibold,
     fontVariantNumeric: "tabular-nums",
   },
-  colTime: { width: "64px" },
-  colRegion: { width: "112px" },
-  colNature: { width: "148px" },
-  colSource: { width: "168px" },
-  titleCell: { paddingTop: "8px", paddingBottom: "8px", minWidth: 0 },
-  title: { color: tokens.colorNeutralForeground1 },
-  summary: { color: tokens.colorNeutralForeground3, marginTop: "2px" },
-  meta: { color: tokens.colorNeutralForeground3, marginTop: "4px", display: "flex", gap: "6px", flexWrap: "wrap" },
+
+  // ── 기사 목록 (읽기용) ──
+  list: { margin: 0, padding: 0, listStyle: "none" },
+  dayHeader: {
+    position: "sticky",
+    top: 0,
+    zIndex: 1,
+    display: "flex",
+    alignItems: "baseline",
+    gap: "8px",
+    margin: 0,
+    padding: "12px 0 8px",
+    backgroundColor: tokens.colorNeutralBackground1,
+    borderBottom: `1px solid ${tokens.colorNeutralStroke2}`,
+    fontSize: tokens.fontSizeBase300,
+    fontWeight: tokens.fontWeightSemibold,
+    color: tokens.colorNeutralForeground1,
+  },
+  dayCount: { fontWeight: tokens.fontWeightRegular, color: tokens.colorNeutralForeground3 },
+  row: {
+    position: "relative",
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: "0 16px",
+    padding: "14px 12px",
+    margin: "0 -12px",
+    borderBottom: `1px solid ${tokens.colorNeutralStroke3}`,
+    borderRadius: tokens.borderRadiusMedium,
+    cursor: "pointer",
+    "@media (min-width: 641px)": { gridTemplateColumns: "48px 1fr", padding: "16px 12px" },
+    ":hover": { backgroundColor: tokens.colorSubtleBackgroundHover },
+    ":focus-visible": { outline: `2px solid ${tokens.colorStrokeFocus2}`, outlineOffset: "-2px" },
+  },
+  selected: {
+    backgroundColor: tokens.colorBrandBackground2,
+    ":hover": { backgroundColor: tokens.colorBrandBackground2Hover },
+    "::before": {
+      content: '""',
+      position: "absolute",
+      left: 0,
+      top: "12px",
+      bottom: "12px",
+      width: "3px",
+      borderRadius: "2px",
+      backgroundColor: tokens.colorBrandStroke1,
+    },
+  },
+  time: {
+    display: "none",
+    paddingTop: "3px",
+    fontSize: tokens.fontSizeBase200,
+    lineHeight: "18px",
+    color: tokens.colorNeutralForeground3,
+    fontVariantNumeric: "tabular-nums",
+    "@media (min-width: 641px)": { display: "block" },
+  },
+  body: { minWidth: 0 },
+  title: {
+    display: "-webkit-box",
+    WebkitLineClamp: "2",
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+    fontSize: tokens.fontSizeBase400,
+    lineHeight: "24px",
+    fontWeight: tokens.fontWeightSemibold,
+    color: tokens.colorNeutralForeground1,
+    wordBreak: "keep-all",
+    overflowWrap: "anywhere",
+  },
+  summary: {
+    display: "-webkit-box",
+    WebkitLineClamp: "2",
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+    marginTop: "4px",
+    fontSize: tokens.fontSizeBase300,
+    lineHeight: "22px",
+    color: tokens.colorNeutralForeground2,
+    wordBreak: "keep-all",
+    overflowWrap: "anywhere",
+  },
+  meta: {
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: "4px 12px",
+    marginTop: "8px",
+    fontSize: tokens.fontSizeBase200,
+    lineHeight: "16px",
+    color: tokens.colorNeutralForeground3,
+  },
+  metaNature: { color: tokens.colorNeutralForeground2 },
+  metaTime: { "@media (min-width: 641px)": { display: "none" } },
 });
 
 interface Props {
   lang: Lang;
   title: string;
+  showRegion: boolean;
   items: NewsItem[];
   vulns: VulnData | null;
   filters: NewsFilters;
@@ -115,6 +212,7 @@ interface Props {
   onSelect: (id: string) => void;
   onOrder: (ids: string[]) => void;
   onReload: () => void;
+  onGo: (view: View) => void;
 }
 
 export function matchesQuery(n: NewsItem, q: string): boolean {
@@ -193,7 +291,6 @@ export function NewsPage(p: Props) {
   const anyFilter = filters.attack.length + filters.sector.length + filters.nature.length > 0;
   const title = (n: NewsItem) => (lang === "ja" ? n.titleJa || n.titleKo : n.titleKo);
   const summary = (n: NewsItem) => (lang === "ja" && n.summaryJa.length ? n.summaryJa : n.summaryKo)[0] ?? "";
-  const regionText = (n: NewsItem) => n.regions.map((r) => REGION_LABELS[lang][r]).join(" · ");
 
   const copyLink = async () => {
     try {
@@ -206,14 +303,14 @@ export function NewsPage(p: Props) {
   };
 
   const kpis = [
-    { label: t.kpiToday, sub: t.kpiTodaySub, value: kpi.today },
-    { label: t.kpiRansom, sub: t.kpiRansomSub, value: kpi.ransom },
-    { label: t.kpiKev, sub: t.kpiKevSub, value: kpi.kev },
-    { label: t.kpiCritical, sub: t.kpiCriticalSub, value: kpi.critical },
+    { label: t.kpiToday, sub: t.kpiTodaySub, value: kpi.today, go: () => set({ days: 1, attack: [], sector: [], nature: [] }) },
+    { label: t.kpiRansom, sub: t.kpiRansomSub, value: kpi.ransom, go: () => set({ days: 7, attack: ["랜섬웨어"], sector: [], nature: [] }) },
+    { label: t.kpiKev, sub: t.kpiKevSub, value: kpi.kev, go: () => p.onGo("kev") },
+    { label: t.kpiCritical, sub: t.kpiCriticalSub, value: kpi.critical, go: () => p.onGo("cve") },
   ];
 
   return (
-    <div className={ps.page}>
+    <div className={mergeClasses(ps.page, ps.reading)}>
       <PageTitle>{p.title}</PageTitle>
 
       <button className={s.overviewToggle} onClick={() => setOverviewOpen(!overviewOpen)} aria-expanded={overviewOpen}>
@@ -223,30 +320,23 @@ export function NewsPage(p: Props) {
       {overviewOpen && (
         <div className={s.kpis}>
           {kpis.map((k) => (
-            <Card key={k.label} className={s.kpi}>
-              <Body1 className={s.kpiLabel}>{k.label}</Body1>
-              <div className={s.kpiValue}>
-                <span className={s.kpiNumber}>{k.value.toLocaleString()}</span>
-                <Caption1 className={ps.muted}>{k.sub}</Caption1>
-              </div>
-            </Card>
+            <button key={k.label} className={s.kpi} onClick={k.go}>
+              <Caption1 className={s.kpiLabel}>
+                {k.label}
+                <ChevronRightRegular className={s.kpiChevron} aria-hidden />
+              </Caption1>
+              <span className={s.kpiNumber}>{k.value.toLocaleString()}</span>
+              <Caption1 className={ps.muted}>{k.sub}</Caption1>
+            </button>
           ))}
         </div>
       )}
 
       <div className={ps.command}>
-        <Toolbar size="small" aria-label="commands">
-          <ToolbarButton icon={<LinkRegular />} onClick={copyLink}>
-            {copied ? t.copied : t.copyLink}
-          </ToolbarButton>
-          <ToolbarButton icon={<ArrowClockwiseRegular />} onClick={p.onReload}>
-            {t.refresh}
-          </ToolbarButton>
-        </Toolbar>
         <div className={ps.commandGroup}>
           <Menu checkedValues={{ days: [String(filters.days)] }} onCheckedValueChange={(_, d) => set({ days: Number(d.checkedItems[0]) })}>
             <MenuTrigger disableButtonEnhancement>
-              <Button appearance="subtle" size="small" icon={<CalendarLtrRegular />}>
+              <Button appearance="subtle" icon={<CalendarLtrRegular />}>
                 {t.periods[filters.days]}
                 <ChevronDownRegular style={{ marginLeft: 4 }} />
               </Button>
@@ -261,7 +351,15 @@ export function NewsPage(p: Props) {
               </MenuList>
             </MenuPopover>
           </Menu>
-          <Caption1 className={ps.count}>{t.count(filtered.length)}</Caption1>
+          <Text className={ps.count}>{t.count(filtered.length)}</Text>
+        </div>
+        <div className={ps.commandGroup}>
+          <Tooltip content={copied ? t.copied : t.copyLink} relationship="label">
+            <Button appearance="subtle" icon={<LinkRegular />} onClick={copyLink} />
+          </Tooltip>
+          <Tooltip content={t.refresh} relationship="label">
+            <Button appearance="subtle" icon={<ArrowClockwiseRegular />} onClick={p.onReload} />
+          </Tooltip>
         </div>
         {narrow && (
           <SearchBox className={ps.pageSearch} placeholder={t.search} value={query} onChange={(_, d) => p.setQuery(d.value)} />
@@ -301,98 +399,60 @@ export function NewsPage(p: Props) {
           }))}
         />
         {anyFilter && (
-          <Button
-            appearance="subtle"
-            size="small"
-            icon={<ArrowResetRegular />}
-            onClick={() => set({ attack: [], sector: [], nature: [] })}
-          >
+          <Button appearance="subtle" size="small" icon={<ArrowResetRegular />} onClick={() => set({ attack: [], sector: [], nature: [] })}>
             {t.resetAll}
           </Button>
         )}
       </div>
 
-      <div className={ps.tableWrap}>
-        {filtered.length === 0 ? (
-          <div className={ps.empty}>
-            <Subtitle1>{items.length ? t.empty : t.noData}</Subtitle1>
-            {items.length > 0 && <Text>{t.emptyHint}</Text>}
-          </div>
-        ) : (
-          <Table size="small" aria-label={p.title} style={{ tableLayout: "fixed", minWidth: narrow ? undefined : 760 }}>
-            {!narrow && (
-              <TableHeader>
-                <TableRow>
-                  <TableHeaderCell className={s.colTime}>{t.colTime}</TableHeaderCell>
-                  <TableHeaderCell className={s.colRegion}>{t.colRegion}</TableHeaderCell>
-                  <TableHeaderCell>{t.colTitle}</TableHeaderCell>
-                  <TableHeaderCell className={s.colNature}>{t.colNature}</TableHeaderCell>
-                  <TableHeaderCell className={s.colSource}>{t.colSource}</TableHeaderCell>
-                </TableRow>
-              </TableHeader>
-            )}
-            <TableBody>
-              {groups.flatMap((g) => [
-                <TableRow key={`g-${g.key}`} className={ps.groupRow} aria-hidden>
-                  <TableCell colSpan={narrow ? 1 : 5} className={ps.groupCell}>
-                    {g.label}
-                    <span className={ps.groupCount}>{t.count(g.items.length)}</span>
-                  </TableCell>
-                </TableRow>,
-                ...g.items.map((n) => (
-                  <TableRow
-                    key={n.id}
-                    className={ps.row}
-                    appearance={n.id === selectedId ? "brand" : "none"}
-                    aria-selected={n.id === selectedId}
-                    tabIndex={0}
-                    onClick={() => p.onSelect(n.id)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        p.onSelect(n.id);
-                      }
-                    }}
-                  >
-                    {!narrow && (
-                      <TableCell className={ps.nowrap}>
-                        <Caption1 className={ps.muted}>{timeOfDay(lang, n.publishedAt)}</Caption1>
-                      </TableCell>
-                    )}
-                    {!narrow && (
-                      <TableCell>
-                        <Caption1 className={ps.clamp1}>{regionText(n)}</Caption1>
-                      </TableCell>
-                    )}
-                    <TableCell className={s.titleCell}>
-                      <Body1 className={`${ps.clamp1} ${s.title}`}>{title(n)}</Body1>
-                      <Caption1 className={`${ps.clamp1} ${s.summary}`}>{summary(n)}</Caption1>
-                      {narrow && (
-                        <Caption1 className={s.meta}>
-                          <span>{timeOfDay(lang, n.publishedAt)}</span>·<span>{regionText(n)}</span>·
-                          <NatureMark nature={n.nature} lang={lang} />·<span>{n.sourceName}</span>
-                        </Caption1>
-                      )}
-                    </TableCell>
-                    {!narrow && (
-                      <TableCell>
-                        <Caption1>
-                          <NatureMark nature={n.nature} lang={lang} />
-                        </Caption1>
-                      </TableCell>
-                    )}
-                    {!narrow && (
-                      <TableCell>
-                        <Caption1 className={`${ps.clamp1} ${ps.muted}`}>{n.sourceName}</Caption1>
-                      </TableCell>
-                    )}
-                  </TableRow>
-                )),
-              ])}
-            </TableBody>
-          </Table>
-        )}
-      </div>
+      {filtered.length === 0 ? (
+        <div className={ps.empty}>
+          <Subtitle1>{items.length ? t.empty : t.noData}</Subtitle1>
+          {items.length > 0 && <Text>{t.emptyHint}</Text>}
+        </div>
+      ) : (
+        groups.map((g) => (
+          <section key={g.key} aria-label={g.label}>
+            <h2 className={s.dayHeader}>
+              {g.label}
+              <span className={s.dayCount}>{t.count(g.items.length)}</span>
+            </h2>
+            <ul className={s.list}>
+              {g.items.map((n) => (
+                <li
+                  key={n.id}
+                  className={mergeClasses(s.row, n.id === selectedId && s.selected)}
+                  role="button"
+                  tabIndex={0}
+                  aria-current={n.id === selectedId ? "true" : undefined}
+                  onClick={() => p.onSelect(n.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      p.onSelect(n.id);
+                    }
+                  }}
+                >
+                  <time className={s.time} dateTime={n.publishedAt}>
+                    {timeOfDay(lang, n.publishedAt)}
+                  </time>
+                  <div className={s.body}>
+                    <div className={s.title}>{title(n)}</div>
+                    {summary(n) && <div className={s.summary}>{summary(n)}</div>}
+                    <div className={s.meta}>
+                      <span className={s.metaTime}>{timeOfDay(lang, n.publishedAt)}</span>
+                      <NatureMark nature={n.nature} lang={lang} className={s.metaNature} />
+                      {p.showRegion && <span>{n.regions.map((r) => REGION_LABELS[lang][r]).join(" · ")}</span>}
+                      <span>{n.sourceName}</span>
+                      {n.attackTypes.length > 0 && <span>{n.attackTypes.map((a) => tagLabel(lang, a)).join(", ")}</span>}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      )}
 
       {filtered.length > shown && (
         <div className={ps.more}>

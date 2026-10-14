@@ -10,7 +10,6 @@ import {
   TableHeader,
   TableHeaderCell,
   TableRow,
-  Text,
   makeStyles,
   tokens,
 } from "@fluentui/react-components";
@@ -29,10 +28,20 @@ const useStyles = makeStyles({
   colEpss: { width: "120px" },
   colCvss: { width: "84px" },
   colNews: { width: "96px" },
-  cell: { paddingTop: "8px", paddingBottom: "8px" },
+  cell: { paddingTop: "10px", paddingBottom: "10px" },
   ransom: { marginLeft: "8px" },
   nameCell: { display: "flex", alignItems: "center", gap: "8px", minWidth: 0 },
-  name: { minWidth: 0, flexShrink: 1 },
+  // 이름·설명은 두 줄까지 보여준다 (한 줄로 자르면 무슨 취약점인지 읽을 수 없다)
+  clamp2: {
+    display: "-webkit-box",
+    WebkitLineClamp: "2",
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+    minWidth: 0,
+    fontSize: tokens.fontSizeBase300,
+    lineHeight: "20px",
+    color: tokens.colorNeutralForeground1,
+  },
   newsCount: { color: tokens.colorBrandForeground1, fontWeight: tokens.fontWeightSemibold },
 });
 
@@ -171,9 +180,7 @@ export function VulnPage(p: Props) {
                   </TableCell>
                   <TableCell className={s.cell}>
                     <span className={s.nameCell}>
-                      <Text truncate wrap={false} className={s.name}>
-                        {k.vulnerabilityName}
-                      </Text>
+                      <span className={s.clamp2}>{k.vulnerabilityName}</span>
                       {k.ransomware && (
                         <Badge size="small" appearance="tint" color="danger">
                           {t.ransomware}
@@ -243,7 +250,7 @@ export function VulnPage(p: Props) {
                     </Caption1>
                   </TableCell>
                   <TableCell className={s.cell}>
-                    <Caption1 className={ps.clamp1}>{c.description}</Caption1>
+                    <span className={s.clamp2}>{c.description}</span>
                   </TableCell>
                   <TableCell>{newsCell(c.id)}</TableCell>
                 </TableRow>

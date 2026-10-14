@@ -252,9 +252,10 @@ export function tagLabel(lang: Lang, value: string): string {
 
 export const LOCALE: Record<Lang, string> = { ko: "ko-KR", ja: "ja-JP" };
 
+// 한글·일본어는 Pretendard(가변 글꼴, 필요한 글자만 내려받는 분할 버전)로 읽기 좋게 맞춘다.
 export const FONT_STACK: Record<Lang, string> = {
-  ko: `"Segoe UI Variable Text", "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif`,
-  ja: `"Segoe UI Variable Text", "Segoe UI", "Yu Gothic UI", "Meiryo UI", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif`,
+  ko: `"Pretendard Variable", "Pretendard JP Variable", "Segoe UI Variable Text", "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif`,
+  ja: `"Pretendard JP Variable", "Pretendard Variable", "Segoe UI Variable Text", "Segoe UI", "Yu Gothic UI", "Hiragino Sans", system-ui, sans-serif`,
 };
 
 export function detectLang(): Lang {

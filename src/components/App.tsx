@@ -11,13 +11,15 @@ import {
   type Theme,
 } from "@fluentui/react-components";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
+import "pretendard-jp/dist/web/variable/pretendardvariable-jp-dynamic-subset.css";
 import type { Region } from "../../shared/taxonomy";
 import type { Meta, NewsItem, VulnData } from "../../shared/types";
 import { FONT_STACK, REGION_LABELS, STRINGS, detectLang, saveLang, type Lang } from "../i18n";
 import { AppHeader } from "./AppHeader";
 import { AppNav, VIEWS, type View } from "./AppNav";
 import { DetailPanel, type Selection } from "./DetailPanel";
-import { useNarrow, usePrefersDark } from "./hooks";
+import { useMediaQuery, useNarrow, usePrefersDark } from "./hooks";
 import { DEFAULT_FILTERS, NewsPage, type NewsFilters } from "./NewsPage";
 import { VulnPage } from "./VulnPage";
 
@@ -100,6 +102,8 @@ export default function App() {
   const s = useStyles();
   const dark = usePrefersDark();
   const narrow = useNarrow();
+  // 탐색(260) + 목록(최소 500) + 읽기 창(520)이 나란히 들어가는 폭부터 읽기 창을 옆에 붙인다
+  const wide = useMediaQuery("(min-width: 1320px)");
   const initial = useMemo(readUrl, []);
 
   const [lang, setLangState] = useState<Lang>(() => initial.lang ?? detectLang());
@@ -222,6 +226,7 @@ export default function App() {
               <NewsPage
                 lang={lang}
                 title={pageTitle}
+                showRegion={view === "all"}
                 items={regionItems}
                 vulns={vulns}
                 filters={filters}
@@ -233,25 +238,27 @@ export default function App() {
                 onSelect={(id) => setSelection({ kind: "news", id })}
                 onOrder={setOrder}
                 onReload={reload}
+                onGo={setView}
               />
             )}
           </main>
+          <DetailPanel
+            lang={lang}
+            narrow={narrow}
+            inline={wide}
+            selection={selection}
+            news={news ?? []}
+            vulns={vulns}
+            order={order}
+            onSelect={setSelection}
+            onSearch={(q) => {
+              setSelection(null);
+              setViewState("all");
+              setFilters({ ...DEFAULT_FILTERS, days: 0 });
+              setNewsQuery(q);
+            }}
+          />
         </div>
-        <DetailPanel
-          lang={lang}
-          narrow={narrow}
-          selection={selection}
-          news={news ?? []}
-          vulns={vulns}
-          order={order}
-          onSelect={setSelection}
-          onSearch={(q) => {
-            setSelection(null);
-            setViewState("all");
-            setFilters({ ...DEFAULT_FILTERS, days: 0 });
-            setNewsQuery(q);
-          }}
-        />
       </div>
     </FluentProvider>
   );

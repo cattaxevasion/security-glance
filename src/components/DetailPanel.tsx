@@ -7,6 +7,7 @@ import {
   DrawerBody,
   DrawerFooter,
   DrawerHeader,
+  InlineDrawer,
   Link,
   OverlayDrawer,
   Subtitle1,
@@ -39,6 +40,11 @@ export type Selection = { kind: "news"; id: string } | { kind: "kev" | "cve"; id
 
 const useStyles = makeStyles({
   surface: { boxShadow: tokens.shadow64 },
+  inline: {
+    width: "min(520px, 42vw)",
+    height: "100%",
+    backgroundColor: tokens.colorNeutralBackground1,
+  },
   topBar: { display: "flex", justifyContent: "flex-end", gap: "2px", marginRight: "-8px", marginTop: "-8px" },
   heading: { display: "flex", gap: "16px", alignItems: "flex-start", marginTop: "4px" },
   iconCircle: {
@@ -58,7 +64,19 @@ const useStyles = makeStyles({
   body: { display: "flex", flexDirection: "column", gap: "0", paddingBottom: "16px" },
   section: { padding: "16px 0", borderTop: `1px solid ${tokens.colorNeutralStroke2}` },
   sectionTitle: { display: "block", marginBottom: "10px" },
-  summary: { margin: 0, paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "8px" },
+  summary: {
+    margin: 0,
+    paddingLeft: "20px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+    fontSize: "15px",
+    lineHeight: "26px",
+    color: tokens.colorNeutralForeground1,
+    wordBreak: "keep-all",
+    overflowWrap: "anywhere",
+  },
+  value: { lineHeight: "22px", overflowWrap: "anywhere" },
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
@@ -89,7 +107,7 @@ function Field({ label, children, full }: { label: string; children: ReactNode; 
   return (
     <div className={mergeClasses(s.field, full && s.full)}>
       <Caption1 className={s.label}>{label}</Caption1>
-      <Body1>{children}</Body1>
+      <Body1 className={s.value}>{children}</Body1>
     </div>
   );
 }
@@ -107,6 +125,8 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 interface Props {
   lang: Lang;
   narrow: boolean;
+  /** 넓은 화면에서는 목록 옆에 붙는 읽기 창(InlineDrawer)으로 연다 */
+  inline: boolean;
   selection: Selection | null;
   news: NewsItem[];
   vulns: VulnData | null;
@@ -136,6 +156,34 @@ export function DetailPanel(p: Props) {
     if (v) content = vulnContent(sel.kind, v, p, s);
   }
 
+  const inner = content && (
+    <>
+      <DrawerHeader>
+        <div className={s.topBar}>
+          <Tooltip content={t.prevItem} relationship="label">
+            <Button appearance="subtle" icon={<ArrowUpRegular />} disabled={idx <= 0} onClick={() => go(-1)} />
+          </Tooltip>
+          <Tooltip content={t.nextItem} relationship="label">
+            <Button appearance="subtle" icon={<ArrowDownRegular />} disabled={idx < 0 || idx >= p.order.length - 1} onClick={() => go(1)} />
+          </Tooltip>
+          <Tooltip content={t.close} relationship="label">
+            <Button appearance="subtle" icon={<DismissRegular />} onClick={() => p.onSelect(null)} />
+          </Tooltip>
+        </div>
+        {content.head}
+      </DrawerHeader>
+      <DrawerBody className={s.body}>{content.body}</DrawerBody>
+      <DrawerFooter className={s.footer}>{content.footer}</DrawerFooter>
+    </>
+  );
+
+  if (p.inline) {
+    return (
+      <InlineDrawer className={s.inline} open={!!content} position="end" separator>
+        {inner}
+      </InlineDrawer>
+    );
+  }
   return (
     <OverlayDrawer
       className={s.surface}
@@ -145,31 +193,7 @@ export function DetailPanel(p: Props) {
       size={p.narrow ? "full" : "medium"}
       modalType={p.narrow ? "modal" : "non-modal"}
     >
-      {content && (
-        <>
-          <DrawerHeader>
-            <div className={s.topBar}>
-              <Tooltip content={t.prevItem} relationship="label">
-                <Button appearance="subtle" icon={<ArrowUpRegular />} disabled={idx <= 0} onClick={() => go(-1)} />
-              </Tooltip>
-              <Tooltip content={t.nextItem} relationship="label">
-                <Button
-                  appearance="subtle"
-                  icon={<ArrowDownRegular />}
-                  disabled={idx < 0 || idx >= p.order.length - 1}
-                  onClick={() => go(1)}
-                />
-              </Tooltip>
-              <Tooltip content={t.close} relationship="label">
-                <Button appearance="subtle" icon={<DismissRegular />} onClick={() => p.onSelect(null)} />
-              </Tooltip>
-            </div>
-            {content.head}
-          </DrawerHeader>
-          <DrawerBody className={s.body}>{content.body}</DrawerBody>
-          <DrawerFooter className={s.footer}>{content.footer}</DrawerFooter>
-        </>
-      )}
+      {inner}
     </OverlayDrawer>
   );
 }
@@ -246,9 +270,7 @@ function newsContent(n: NewsItem, p: Props, s: Styles, copied: boolean, setCopie
       <Section title={t.summary}>
         <ul className={s.summary}>
           {summary.map((line, i) => (
-            <li key={i}>
-              <Body1>{line}</Body1>
-            </li>
+            <li key={i}>{line}</li>
           ))}
         </ul>
       </Section>

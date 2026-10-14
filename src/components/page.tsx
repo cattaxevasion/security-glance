@@ -8,6 +8,8 @@ export const usePageStyles = makeStyles({
     "@media (min-width: 641px)": { padding: "28px 32px 48px" },
     maxWidth: "1600px",
   },
+  /** 기사 목록은 한 줄이 너무 길어지지 않게 폭을 제한한다 */
+  reading: { maxWidth: "1040px" },
   titleRow: { display: "flex", alignItems: "baseline", gap: "12px", marginBottom: "4px" },
   title: { margin: 0 },
   desc: { color: tokens.colorNeutralForeground3, maxWidth: "760px", marginTop: "4px", display: "block" },
@@ -17,11 +19,11 @@ export const usePageStyles = makeStyles({
     alignItems: "center",
     justifyContent: "space-between",
     gap: "8px",
-    marginTop: "20px",
-    paddingBottom: "8px",
+    marginTop: "12px",
+    paddingBottom: "4px",
   },
   commandGroup: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "4px" },
-  count: { color: tokens.colorNeutralForeground2, paddingLeft: "8px", paddingRight: "4px", whiteSpace: "nowrap" },
+  count: { color: tokens.colorNeutralForeground3, paddingLeft: "4px", whiteSpace: "nowrap" },
   pageSearch: { width: "100%", marginTop: "12px" },
   filters: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px", marginBottom: "12px" },
   tableWrap: {
