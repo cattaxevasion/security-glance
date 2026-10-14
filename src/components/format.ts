@@ -1,37 +1,43 @@
-const rtf = new Intl.RelativeTimeFormat("ko", { numeric: "auto" });
+import { LOCALE, type Lang } from "../i18n";
 
-export function relativeTime(iso: string, now = Date.now()): string {
+export function relativeTime(lang: Lang, iso: string, now = Date.now()): string {
+  const rtf = new Intl.RelativeTimeFormat(LOCALE[lang], { numeric: "auto" });
   const diff = (Date.parse(iso) - now) / 1000;
   const abs = Math.abs(diff);
-  if (abs < 60) return "방금";
+  if (abs < 60) return rtf.format(0, "minute");
   if (abs < 3600) return rtf.format(Math.round(diff / 60), "minute");
   if (abs < 86400) return rtf.format(Math.round(diff / 3600), "hour");
   return rtf.format(Math.round(diff / 86400), "day");
 }
 
-const dayFmt = new Intl.DateTimeFormat("ko", { month: "long", day: "numeric", weekday: "short" });
-const fullFmt = new Intl.DateTimeFormat("ko", { dateStyle: "medium", timeStyle: "short" });
+export function fullDateTime(lang: Lang, iso: string): string {
+  return new Intl.DateTimeFormat(LOCALE[lang], { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
+}
 
-export function fullDateTime(iso: string): string {
-  return fullFmt.format(new Date(iso));
+export function timeOfDay(lang: Lang, iso: string): string {
+  return new Intl.DateTimeFormat(LOCALE[lang], { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(iso));
+}
+
+export function shortDate(lang: Lang, iso: string): string {
+  return new Intl.DateTimeFormat(LOCALE[lang], { month: "short", day: "numeric" }).format(new Date(iso));
 }
 
 function localDayKey(d: Date): string {
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 }
 
-/** "오늘", "어제", 또는 "10월 13일 (월)" */
-export function dayLabel(iso: string, now = new Date()): string {
-  const d = new Date(iso);
-  if (localDayKey(d) === localDayKey(now)) return "오늘";
-  const y = new Date(now);
-  y.setDate(y.getDate() - 1);
-  if (localDayKey(d) === localDayKey(y)) return "어제";
-  return dayFmt.format(d);
-}
-
 export function dayKey(iso: string): string {
   return localDayKey(new Date(iso));
+}
+
+/** "오늘", "어제", 또는 "10월 13일 (월)" */
+export function dayLabel(lang: Lang, iso: string, labels: { today: string; yesterday: string }, now = new Date()): string {
+  const d = new Date(iso);
+  if (localDayKey(d) === localDayKey(now)) return labels.today;
+  const y = new Date(now);
+  y.setDate(y.getDate() - 1);
+  if (localDayKey(d) === localDayKey(y)) return labels.yesterday;
+  return new Intl.DateTimeFormat(LOCALE[lang], { month: "long", day: "numeric", weekday: "short" }).format(d);
 }
 
 export function pct(x: number | null | undefined, digits = 1): string {
