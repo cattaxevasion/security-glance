@@ -35,10 +35,34 @@ const LenientSchema = ResultSchema.extend({
 
 const squash = (s: string) => s.replace(/[\s·・]/g, "").toLowerCase();
 
+// 모델이 목록 대신 쓰곤 하는 비슷한 말 → 정해진 값
+const ALIASES: Record<string, string> = {
+  은행: "금융",
+  보험: "금융",
+  증권: "금융",
+  카드: "금융",
+  가상자산: "금융",
+  병원: "의료",
+  헬스케어: "의료",
+  학교: "교육",
+  대학: "교육",
+  정부: "정부·공공",
+  공공: "정부·공공",
+  국방: "정부·공공",
+  클라우드: "IT·클라우드",
+  소프트웨어: "IT·클라우드",
+  유통: "유통·서비스",
+  소매: "유통·서비스",
+  에너지: "에너지·기반시설",
+  기반시설: "에너지·기반시설",
+  ot: "에너지·기반시설",
+};
+
 function pick<T extends string>(allowed: readonly T[], values: string[], field: string): T[] {
   const out: T[] = [];
   for (const v of values) {
-    const hit = allowed.find((a) => squash(a) === squash(v));
+    const alias = ALIASES[squash(v)];
+    const hit = allowed.find((a) => squash(a) === squash(alias ?? v));
     if (hit) out.push(hit);
     else console.warn(`     (태그 제외) ${field}: "${v}"`);
   }
