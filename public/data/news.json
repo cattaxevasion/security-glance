@@ -8434,5 +8434,3102 @@
    ]
   },
   "basis": "본문"
+ },
+ {
+  "id": "43d8a91bc2a7ef23",
+  "url": "https://thehackernews.com/2026/10/fbi-arrests-another-shinyhunters.html",
+  "title": "FBI Arrests Another ShinyHunters Suspect Reportedly Involved in Its Jobs Portal Hack",
+  "titleKo": "FBI, 채용 포털 해킹과 관련된 또 다른 ShinyHunters 용의자 체포",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-09T17:45:26.000Z",
+  "collectedAt": "2026-10-14T17:26:35.692Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "FBI 국장 Kash Patel은 ShinyHunters 공범으로 의심되는 캐나다 국적 용의자가 펜실베이니아에서 체포됐다고 발표했다. 용의자 이름과 기소 내용은 공개되지 않았다.",
+   "FBI 채용 포털(FBIjobs.gov) 침해로 요원과 지원자의 개인정보, 직무 정보, 정신과·의료 정보가 유출된 것으로 보도됐다. FBI는 외부 위탁업체가 보안 패치를 적용하지 않은 것이 원인이라고 밝혔다.",
+   "이번 체포는 네덜란드, 요르단 체포에 이은 세 번째 건으로 알려졌다. 다른 공범은 아직 체포되지 않았으며, 위탁업체는 FBI가 계약을 해지했다. 피해 규모와 최종 확인은 아직 불분명하다."
+  ],
+  "socPoint": "FBI 채용 포털 연동 시스템의 인증·접근 로그와 PeopleSoft 등 HR 플랫폼의 비정상 데이터 대량 조회·추출 기록을 점검하고, ShinyHunters 관련 IoC와 공개 유출 사이트 게시 여부를 모니터링합니다.",
+  "attackTypes": [
+   "정보유출",
+   "취약점 악용",
+   "공급망"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "체포·수사",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "ShinyHunters"
+   ],
+   "orgs": [
+    "FBI",
+    "FBIjobs.gov",
+    "PeopleSoft",
+    "Oracle",
+    "Accenture"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "55864660cd86f4ba",
+  "url": "https://thehackernews.com/2026/10/tp-link-sued-by-four-more-us-states.html",
+  "title": "TP-Link Sued by Four More U.S. States Over Router Security and China Ties",
+  "titleKo": "TP-Link, 라우터 보안과 중국 연관성 문제로 미국 4개 주 추가 제소",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-09T13:22:53.000Z",
+  "collectedAt": "2026-10-14T17:26:36.235Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "미국 플로리다, 아이오와, 몬태나, 네브래스카 주가 TP-Link Systems를 소비자보호법 위반으로 제소해 제소 주는 총 5개(텍사스 포함)가 되었습니다.",
+   "주된 주장은 보안 기능을 광고와 달리 제공하지 않았다는 점과 중국 TP-Link Technologies와의 분리를 과장했다는 점이며, 해킹된 라우터와 지원 종료 모델이 근거로 제시되었습니다.",
+   "회사는 소송 내용을 부인하며 법정에서 다투겠다고 밝혔습니다. 별도로 21개 주 법무장관이 미국 내 신규 라우터 승인과 관련해 FCC에 서한을 보냈습니다."
+  ],
+  "socPoint": "TP-Link 라우터의 DNS 설정 변경, 비정상 자격증명 대입 및 세션 토큰 탈취 흔적을 점검하고, 지원 종료 모델과 CVE-2023-50224 영향 장비의 펌웨어 버전과 외부 관리 인터페이스 접속 로그를 확인하세요.",
+  "attackTypes": [
+   "취약점 악용",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "통신",
+   "유통·서비스"
+  ],
+  "nature": "정책·법규",
+  "entities": {
+   "cves": [
+    "CVE-2023-50224"
+   ],
+   "actors": [
+    "Volt Typhoon",
+    "Flax Typhoon"
+   ],
+   "orgs": [
+    "TP-Link Systems",
+    "TP-Link Technologies",
+    "Microsoft",
+    "FBI",
+    "Check Point Research"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "addcfda79adda4a8",
+  "url": "https://thehackernews.com/2026/10/researchers-publish-working-exploit-for.html",
+  "title": "Researchers Publish Working Exploit for Pre-Auth AnyDesk Linux Flaw That Gives Root Access",
+  "titleKo": "AnyDesk Linux 사전 인증 취약점에 대한 루트 권한 획득 공개 익스플로잇 발표",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-09T12:59:22.000Z",
+  "collectedAt": "2026-10-14T17:26:35.447Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "연구자들이 AnyDesk Linux의 인증 전 원격 코드 실행 취약점(AnyPwn)에 대한 동작하는 익스플로잇 코드를 GitHub에 공개했습니다.",
+   "세션 프로토콜 스트림 패킷 처리에서 32비트 정수 오버플로로 힙 버퍼 오버플로가 발생하며, 익스플로잇은 ROP 체인으로 root 명령을 실행합니다.",
+   "AnyDesk는 6월 8.0.3 버전에서 수정했지만 CVE 할당과 보안 권고 없이 변경 로그에만 기록했습니다. 관리자는 업데이트하거나 TCP 7070 포트 접근을 제한해야 합니다."
+  ],
+  "socPoint": "AnyDesk Linux 호스트에서 TCP 7070 포트로 들어오는 직접 연결을 확인하고, 8.0.2 이하 버전 설치 여부를 점검하며, 비정상 종료나 서비스 크래시 로그 및 root 권한으로 실행된 자식 프로세스를 함께 살펴봅니다.",
+  "attackTypes": [
+   "취약점 악용",
+   "제로데이"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "AnyDesk",
+    "V12",
+    "Zellic",
+    "Perfect Blue"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "04cd634844344647",
+  "url": "https://thehackernews.com/2026/10/anthropic-launches-free-ai.html",
+  "title": "Anthropic Launches Free AI Vulnerability Scanner for Open-Source Projects",
+  "titleKo": "Anthropic, 오픈소스 프로젝트용 무료 AI 취약점 스캐너 출시",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-09T12:47:28.000Z",
+  "collectedAt": "2026-10-14T17:26:34.968Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "Anthropic이 오픈소스 프로젝트를 대상으로 AI 기반 취약점 스캐너 OSS Scanner를 옵트인 방식으로 공개했다.",
+   "Project Glasswing에서 Claude로 취약점을 찾은 경험을 바탕으로 만들었으며, 결과물은 사람의 검토 없이 모델이 생성한다.",
+   "29,000건 이상의 후보 취약점을 찾았고 약 6,000건을 관리자에게 보고해 584건의 권고문이 나왔다고 밝혔다."
+  ],
+  "socPoint": null,
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Anthropic",
+    "OSS Scanner",
+    "Google OSS-Fuzz",
+    "Claude"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "2ce4fb4e00ced6de",
+  "url": "https://thehackernews.com/2026/10/attackers-exploit-ahsaycbs-flaws-to.html",
+  "title": "Attackers Exploit AhsayCBS Flaws to Deploy XMRig Miners Disguised as Microsoft Edge",
+  "titleKo": "공격자, AhsayCBS 취약점 악용해 Microsoft Edge로 위장한 XMRig 채굴기 배포",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-09T12:47:26.000Z",
+  "collectedAt": "2026-10-14T17:26:38.407Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "공격자들이 백업 솔루션 AhsayCBS의 최근 공개된 취약점 두 개를 악용해 장비를 장악하고 웹셸과 XMRig 암호화폐 채굴기를 설치하고 있다.",
+   "인증 우회(CVE-2026-105133)와 Replication Receiver의 OS 명령어 주입(CVE-2026-105134)을 연계해 원격 코드 실행을 수행한다.",
+   "Huntress에 따르면 공격 시도는 2026년 10월 7일부터 확인됐고 5개 조직이 영향을 받은 것으로 추정되며, 패치 전까지 관리 인터페이스 접근을 제한하도록 권고됐다."
+  ],
+  "socPoint": "AhsayCBS 웹 서비스에 대한 외부 접근 로그에서 checkSysPwd 또는 Replication Receiver 대상 비정상 요청을 확인하고, 프로세스 로그에서 edge.exe 위장 파일, certutil.exe의 WinRing0x64.sys 다운로드, curl 기반 Taskgmr.ps1 실행을 탐지한다.",
+  "attackTypes": [
+   "취약점 악용",
+   "악성코드"
+  ],
+  "sectors": [],
+  "nature": "사건",
+  "entities": {
+   "cves": [
+    "CVE-2026-105133",
+    "CVE-2026-105134"
+   ],
+   "actors": [],
+   "orgs": [
+    "Ahsay",
+    "Huntress",
+    "Microsoft"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "83f8612997a50a58",
+  "url": "https://thehackernews.com/2026/10/flax-typhoon-exploits-five-flaws-as.html",
+  "title": "Flax Typhoon Exploits Five Flaws as CISA Sets October 11 Deadline for Federal Agencies",
+  "titleKo": "Flax Typhoon, 5개 취약점 악용… CISA, 연방기관에 10월 11일까지 패치 요구",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-09T12:21:51.000Z",
+  "collectedAt": "2026-10-14T17:26:38.965Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "미국 CISA가 중국 연계 위협 그룹 Flax Typhoon이 악용한 취약점 5개를 KEV 카탈로그에 추가했다.",
+   "ProFTPD, ONLYOFFICE, Strapi, Apache Struts, ISC BIND의 취약점이 포함되며, 일부는 원격 코드 실행이나 서비스 거부를 유발할 수 있다.",
+   "연방기관은 2026년 10월 11일까지 패치하거나 사용을 중단해야 하며, 같은 날 여러 국가가 중국 기업 Integrity Technology Group 관련 공동 권고문을 발표했다."
+  ],
+  "socPoint": "Microsoft Exchange 서버의 비정상 로그인 시도(패스워드 스프레이), 취약 서비스(ProFTPD site cpfr/cpto 명령, Struts 요청)에 대한 비정상 요청, VPN 장비의 신규 지속성 설정과 이메일·자격증명 외부 전송 흔적을 확인하세요.",
+  "attackTypes": [
+   "취약점 악용",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2015-3306",
+    "CVE-2021-3199",
+    "CVE-2023-22894",
+    "CVE-2016-3081",
+    "CVE-2015-5477"
+   ],
+   "actors": [
+    "Flax Typhoon",
+    "Integrity Technology Group"
+   ],
+   "orgs": [
+    "ProFTPD",
+    "ONLYOFFICE",
+    "Strapi",
+    "Apache Struts",
+    "ISC BIND"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "5403ea7dd39d4adc",
+  "url": "https://www.itmedia.co.jp/news/article/2610/09/2000002178/",
+  "title": "ヤマハ・スズキも漏えいか 交流サイト基盤「コミューン」不正アクセス、計30万会員に影響の恐れ",
+  "titleKo": "야마하·스즈키도 유출 가능성, 교류 사이트 기반 '커뮤' 불법 접근으로 총 30만 명 회원 정보 영향 우려",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-09T11:51:33.000Z",
+  "collectedAt": "2026-10-14T17:26:40.481Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "커뮤니티 작성 서비스 커뮤(Commune)가 불법 접근을 받아 약 30만 7천 명의 회원 정보가 유출됐을 가능성이 있다고 발표했다.",
+   "공격자는 비공개 커뮤니티의 초대 링크를 부정하게 얻어 일반 회원으로 가입한 뒤, 관리자를 사칭해 회원 정보를 열람·취득하고 데이터를 덮어썼다.",
+   "회사는 6일 모든 커뮤니티를 중단하고 접근 경로를 차단했으며 8일부터 순차 재개했다. 144명은 비밀번호가 임의로 변경됐고, 피싱 주의가 권고됐다."
+  ],
+  "socPoint": "커뮤니티 서비스 웹 로그에서 비공개 커뮤니티 초대 링크 접근 기록, 관리자 계정의 비정상 로그인과 프로필·회원 데이터 대량 조회 및 수정 이벤트, 회원의 비밀번호 자동 변경 이력을 확인하십시오.",
+  "attackTypes": [
+   "계정 탈취",
+   "정보유출"
+  ],
+  "sectors": [
+   "IT·클라우드",
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "コミューン(Commune)",
+    "Commune for Work",
+    "ヤマハ(Yamaha)",
+    "スズキ(Suzuki)"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "b7ae45cc252807b0",
+  "url": "https://thehackernews.com/2026/10/the-ai-velocity-paradox-why-security-is.html",
+  "title": "The AI Velocity Paradox: Why Security Is Decades Behind AI Ambition",
+  "titleKo": "AI 속도의 역설: 보안이 AI 도입 속도를 수십 년 뒤처진 이유",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-09T11:30:00.000Z",
+  "collectedAt": "2026-10-14T17:26:39.211Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "SailPoint의 'Horizons of Identity Security' 보고서는 기업이 AI 에이전트를 도입하면서도 사람 중심의 느린 보안 통제를 그대로 쓰고 있다고 밝혔다.",
+   "자동화된 AI 에이전트는 수명이 몇 초에서 몇 분에 불과해, 주기적 접근 검토 같은 사람 중심 절차가 제대로 작동하지 않는다.",
+   "조사 대상 조직의 54%가 에이전트 신원 보안 성숙도 1단계에 머물러 있으며, 보고서는 이를 역량 부족이 아닌 적용 범위의 공백으로 본다."
+  ],
+  "socPoint": "클라우드 워크로드와 AI 에이전트의 서비스 계정, API 토큰 사용 로그를 모아 권한 부여·사용 빈도와 비정상 행위를 상시 모니터링하는 것이 필요하다.",
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "SailPoint",
+    "The Hacker News"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "c232ea737c00553a",
+  "url": "https://www.itmedia.co.jp/news/article/2610/09/2000002175/",
+  "title": "NewsPicks、メアド32.3万件やクレカ情報の一部36.2万件漏えいか【訂正あり】",
+  "titleKo": "NewsPicks, 메일 주소 32.3만 건과 신용카드 정보 일부 36.2만 건 유출 가능성",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-09T11:13:47.000Z",
+  "collectedAt": "2026-10-14T17:26:50.044Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "경제 미디어 NewsPicks의 업무용 관리 도구에 대한 불정 접근으로 사용자 개인정보가 유출됐을 가능성이 발표되었다.",
+   "관리 도구의 취약점을 악용한 공격이며, 서비스 본체나 모회사 시스템 침입, 비밀번호 유출은 확인되지 않았다고 한다.",
+   "유출 가능성 규모는 메일 주소 약 32.3만 건, 신용카드 정보 일부 약 36.2만 건 등이다. 2차 피해는 확인되지 않았고 접근 차단과 키 재발급 등을 진행 중이다."
+  ],
+  "socPoint": "관리 도구 서버의 접근 로그에서 비정상 API 호출, 대량 데이터 조회·다운로드, 미사용 계정이나 액세스 키의 이상 사용 흔적을 확인해야 합니다.",
+  "attackTypes": [
+   "취약점 악용",
+   "정보유출"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "ユーザベース(User Base)",
+    "NewsPicks",
+    "NewsPicks Enterprise",
+    "NewsPicks Education"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "5d5f9ae264ccf564",
+  "url": "https://www.itmedia.co.jp/news/article/2610/09/2000002176/",
+  "title": "韓国の銀行狙ったサイバー攻撃、犯人は「中国在住の26歳」か Claudeで作られた“履歴書”から浮上",
+  "titleKo": "한국 은행을 노린 사이버 공격, 범인은 '중국 거주 26세'인가 Claude로 작성된 '이력서'에서 드러나",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-09T10:08:10.000Z",
+  "collectedAt": "2026-10-14T17:26:45.388Z",
+  "regions": [
+   "KR",
+   "JP",
+   "INTL"
+  ],
+  "summary": [
+   "CrowdStrike는 한국 금융기관을 겨냥한 공격자가 사용한 서버를 분석해 결과를 공개했으며, 9월 말부터 적어도 9개 은행이 표적이 된 것으로 확인됐다.",
+   "공격자는 중국산 오픈소스 AI 침투 테스트 도구 ARTEX에 DeepSeek, GLM, Grok 등 여러 LLM을 연결해 악용했고, 서버 2대와 프록시 9개를 경유했다.",
+   "CrowdStrike는 공격자를 특定하지 못했으나 중국어 사용자이며 금전 목적일 가능성이 높다고 중간 수준의 확신으로 추정했다. 피해 규모와 현재 대응 상황은 기사에 자세히 나오지 않는다."
+  ],
+  "socPoint": "Claude Code 사용 기록, ARTEX 설정 파일, 금융기관 서버로 향하는 외부 IP 접속과 LLM API 호출 패턴, 홍콩 기반 서버와 프록시 경유 트래픽을 확인하라.",
+  "attackTypes": [
+   "정보유출",
+   "취약점 악용"
+  ],
+  "sectors": [
+   "금융"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "CrowdStrike 분석 대상 공격자(미확인)"
+   ],
+   "orgs": [
+    "CrowdStrike",
+    "ARTEX",
+    "DeepSeek",
+    "Zhipu AI",
+    "xAI"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "d32c756e311a08bc",
+  "url": "https://thehackernews.com/2026/10/gobalance-flaw-lets-attackers-hijack.html",
+  "title": "GoBalance Flaw Lets Attackers Hijack .onion Addresses by Recovering Tor-Format Keys",
+  "titleKo": "GoBalance 결함으로 Tor 형식 키가 복구되어 .onion 주소가 탈취될 수 있음",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-09T09:03:24.000Z",
+  "collectedAt": "2026-10-14T17:26:45.312Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "GoBalance 도구의 서명 과정 결함으로 공개된 디스크립터만으로 .onion 사이트의 마스터 개인키를 복구할 수 있다고 Searchlight Cyber가 10월 8일 공개했습니다.",
+   "Tor 개인키 64바이트 중 뒤 32바이트를 버려 서명 비밀값이 고정되어, 공격자가 주소를 가로채 방문자를 복제 사이트로 유도할 수 있습니다.",
+   "Dread 포럼의 두 주소가 10월 5~7일 탈취됐고 Omega도 주소를 이전했으나, 영향 범위는 확인되지 않았으며 공식 패치와 CVE는 아직 없습니다."
+  ],
+  "socPoint": "GoBalance 서버에서 Tor 마스터 키를 설정·갱신하는 기록과 .onion 디스크립터 게시 로그를 확인하고, 예상치 못한 주소 변경이나 알 수 없는 디스크립터 발행을 탐지합니다.",
+  "attackTypes": [
+   "취약점 악용",
+   "계정 탈취"
+  ],
+  "sectors": [],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "HugBunter",
+    "Paris"
+   ],
+   "orgs": [
+    "GoBalance",
+    "Searchlight Cyber",
+    "Dread",
+    "Omega",
+    "Tor Project"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "e3f3090fc550f0c0",
+  "url": "https://thehackernews.com/2026/10/three-teams-demonstrate-remote-hacks-of.html",
+  "title": "Three Teams Demonstrate Remote Hacks of Fully Patched Google Pixel 10 at Pwn2Own",
+  "titleKo": "세 팀, Pwn2Own에서 완전 패치된 Google Pixel 10 원격 해킹 시연",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-09T08:26:17.000Z",
+  "collectedAt": "2026-10-14T17:26:44.956Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "Pwn2Own Ireland 대회(10월 8일)에서 세 연구팀이 완전 패치된 Google Pixel 10을 원격으로 침투하는 데 성공했습니다.",
+   "원정 익스플로잇은 여러 취약점을 연결한 체인 형태이며, 두 건 이상이 이미 벤더에게 알려진 버그(collision)를 사용했습니다. 공격 경로와 기기 내 동작은 아직 공개되지 않았습니다.",
+   "총 상금은 562,500달러이며 Google은 10월 6일 보안 공지에서 이 대회를 언급하지 않았습니다. ZDI는 현재 패치 방법을 제시하지 않았고, 벤더 패치 후 90일 뒤 세부 내용을 공개할 예정입니다."
+  ],
+  "socPoint": "Pixel 10 대상 원격 공격 시연이 실제 공격으로 이어질 수 있으므로, 모바일 MDM 로그에서 Pixel 기기의 보안 패치 수준과 브라우저·NFC·Wi-Fi·Bluetooth·기저대역 관련 비정상 프로세스 생성 및 권한 상승 흔적을 점검하세요.",
+  "attackTypes": [
+   "취약점 악용",
+   "제로데이"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "Ikotas Labs",
+    "Xint",
+    "Dimitrios Valsamaras",
+    "Ken Gannon",
+    "Tenia Valsamara"
+   ],
+   "orgs": [
+    "Google",
+    "Pixel 10",
+    "Trend Micro",
+    "ZDI",
+    "Samsung Galaxy S26"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "313976c425033f79",
+  "url": "https://thehackernews.com/2026/10/citrix-patches-critical-netscaler-flaw.html",
+  "title": "Citrix Patches Critical NetScaler Flaw That Could Enable RCE in SAML Deployments",
+  "titleKo": "Citrix, SAML 환경에서 원격 코드 실행이 가능한 NetScaler 치명적 취약점 패치",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-09T08:11:33.000Z",
+  "collectedAt": "2026-10-14T17:26:48.268Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "Citrix가 NetScaler ADC 및 NetScaler Gateway의 치명적 취약점 CVE-2026-107406에 대한 패치를 공개했습니다. CVSS 점수는 9.5입니다.",
+   "메모리 오버플로 취약점으로, 특정 설정에서 원격 코드 실행 또는 서비스 거부를 유발할 수 있습니다. 공격은 SAML IdP 또는 SP로 구성된 환경에서만 성립합니다.",
+   "현재 실제 악용 사례는 확인되지 않았습니다. 고객은 설정을 점검한 뒤 권장 버전으로 업그레이드해야 하며, Secure Private Access 하이브리드 배포도 영향을 받습니다."
+  ],
+  "socPoint": "NetScaler 장비에서 SAML 설정(authentication samlAction, samlIdPProfile) 존재 여부를 점검하고, 해당 장비의 비정상 메모리 관련 크래시나 재시작 로그, SAML 인증 요청의 비정상 패턴을 모니터링하세요.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-107406"
+   ],
+   "actors": [],
+   "orgs": [
+    "Citrix",
+    "NetScaler ADC",
+    "NetScaler Gateway",
+    "JPMorgan Chase"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "aa872912cc5370b4",
+  "url": "https://piyolog.hatenadiary.jp/entry/2026/10/09/165507",
+  "title": "光回線代理店営業担当による競合事業者への不正アクセスについてまとめてみた",
+  "titleKo": "광회선 판매대리점 영업담당의 경쟁사 고객 마이페이지 불법 접속에 대한 정리",
+  "sourceId": "piyolog",
+  "sourceName": "piyolog",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-09T07:55:07.000Z",
+  "collectedAt": "2026-10-14T17:26:49.788Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "警視庁は2026年10月8日、光回線販売代理店の営業担当2人を不正アクセス禁止法違反などの疑いで逮捕したと発表した。",
+   "영업담당은 명단업체에서 입수한 고객 목록으로 전화를 걸어, 담당자를 사칭해 생년월일·우편번호·전화번호를 알아낸 뒤 마이페이지에 로그인했다.",
+   "프로바이더 hi-ho는 같은 날 약 38,509건의 불법 로그인을 공지했고, 이름·주소·계약정보 등이 노출됐을 가능성이 있다고 밝혔다."
+  ],
+  "socPoint": "마이페이지 로그인 로그에서 짧은 시간에 생년월일·우편번호·전화번호 기반 로그인이 다수 발생하거나 통신원 IP가 자주 바뀌는 패턴, 그리고 계약 해지·사업자 변경 요청이 급증하는지 확인합니다.",
+  "attackTypes": [
+   "계정 탈취",
+   "정보유출"
+  ],
+  "sectors": [],
+  "nature": "체포·수사",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "오피셜",
+    "hi-ho(ハイホー)",
+    "警視庁"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "5448277fa97ed701",
+  "url": "https://thehackernews.com/2026/10/fbi-seizes-7-domains-disrupts-flax.html",
+  "title": "FBI Seizes 7 Domains, Disrupts Flax Typhoon Tools Used in Critical Infrastructure Intrusions",
+  "titleKo": "FBI, 도메인 7개 압수하고 Flax Typhoon 도구 무력화, 중요 인프라 침투에 사용",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-09T06:39:29.000Z",
+  "collectedAt": "2026-10-14T17:26:49.245Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "미국 FBI와 법무부가 중국 연계 APT 그룹 Flax Typhoon이 쓰던 악성 도구를 무력화하고 도메인 7개를 압수했습니다.",
+   "이 그룹은 중국 정부와 계약하는 베이징 기업 Integrity Technology Group과 연결되며, 악성 IoT 봇넷과 스캔 도구 MicroScan, 피싱 도구 FishHub를 운용했습니다.",
+   "봇넷은 최소 26만 대 이상 기기를 감염시켰고 그 중 약 12만 6천 대가 미국 기기였습니다. 미국 전력회사, 일본·폴란드 공항, 대만 대학 등이 표적이 되었습니다."
+  ],
+  "socPoint": "C2 도메인(c0cc[.]cc, w8510[.]com 하위 도메인)과 IP(202.182.109[.]151, 198.13.53[.]226)에 대한 DNS 질의와 아웃바운드 연결을 확인하고, SOHO·IoT 기기의 비정상 외부 통신과 스캔 트래픽, 웹 서버에 대한 WebLogic·Struts·Jenkins 등 취약점 탐색 요청 로그를 점검합니다.",
+  "attackTypes": [
+   "취약점 악용",
+   "악성코드",
+   "피싱"
+  ],
+  "sectors": [
+   "정부·공공",
+   "에너지·기반시설"
+  ],
+  "nature": "체포·수사",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "Flax Typhoon",
+    "Ethereal Panda",
+    "RedJuliett",
+    "Silk Typhoon",
+    "Hafnium"
+   ],
+   "orgs": [
+    "Integrity Technology Group",
+    "FBI",
+    "U.S. Department of Justice",
+    "MicroScan",
+    "FishHub"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "a7b0d5149cad3c11",
+  "url": "https://www.itmedia.co.jp/news/article/2610/09/2000002158/",
+  "title": "米国防総省にも不正アクセス 個人情報300万人分が平文で漏えいか……発覚までに9カ月",
+  "titleKo": "미국 국방총성에도 불법 접근, 개인정보 300만 명분이 평문으로 유출된 듯… 발견까지 9개월",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-09T05:32:32.000Z",
+  "collectedAt": "2026-10-14T17:26:53.214Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "미국 국방부 국방인사데이터센터(DMDC) 서버가 불법 접근을 당해 군인·전직 군인 등 300만 명 이상의 개인정보가 열람된 것으로 확인됐다.",
+   "DMDC 파일 공유 시스템의 취약점으로 권한 없는 사용자가 암호화되지 않은 파일에 접근했으며, 2025년 10월부터 2026년 7월 16일까지 접근이 이어졌다.",
+   "국방부는 취약점을 수정하고 시스템을 복구했으며 악용 흔적은 없다고 밝혔지만, 9개월간 탐지되지 않은 점이 문제로 지적된다."
+  ],
+  "socPoint": "파일 공유 서버의 접근 로그에서 권한 없는 계정의 장기간 대용량 파일 조회와 암호화되지 않은 민감 파일 접근 이력을 점검하고, 비정상 접근 탐지 규칙을 강화해야 합니다.",
+  "attackTypes": [
+   "정보유출",
+   "취약점 악용"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "미국 국방총성",
+    "국방인사데이터센터(DMDC)",
+    "Federal News Network",
+    "Nextgov/FCW"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "8d2cc811563989ed",
+  "url": "https://www.itmedia.co.jp/news/article/2610/09/2000002164/",
+  "title": "Anthropic、サイバー防御の新たな取り組み「Cyber Mission」 OSS向け無料脆弱性スキャンや重要インフラ防御プログラムも",
+  "titleKo": "Anthropic, 사이버 방어 새 프로그램 'Cyber Mission' 발표… OSS 무료 취약점 스캔·중요 인프라 방어 프로그램 포함",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-09T04:20:56.000Z",
+  "collectedAt": "2026-10-14T17:26:52.760Z",
+  "regions": [
+   "JP",
+   "INTL"
+  ],
+  "summary": [
+   "Anthropic이 중요 인프라와 오픈소스 소프트웨어 방어를 지원하는 장기 프로젝트 'Anthropic Cyber Mission'을 발표했다.",
+   "OT 방어 사업자 대상 CIDP와 OSS 프로젝트 대상 무료 취약점 스캔 서비스 OSS Scanner를 함께 내놓았으며, 스캔 결과는 사람 검증 없이 전달될 수 있다.",
+   "CIDP에는 Accenture, CrowdStrike, Dragos, 日立製作所 등 11개 창설 파트너가 참여하며, 과거 6개월 스캔에서 2만9000건 이상의 후보가 나왔고 약 6000건만 사람이 확인했다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [
+   "에너지·기반시설"
+  ],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Anthropic",
+    "Claude Mythos",
+    "Critical Infrastructure Defense Program",
+    "OSS Scanner",
+    "日立製作所"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "ef5b43de7d155435",
+  "url": "https://www.itmedia.co.jp/news/article/2610/09/2000002161/",
+  "title": "国家サイバー統括室、不正アクセスによる漏えい事案受け注意喚起 「いつ攻撃受けてもおかしくない」",
+  "titleKo": "국가사이버통괄실, 불법 접근에 의한 유출 사건 관련 주의 환기 「언제 공격받아도 이상하지 않다」",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-09T03:10:44.000Z",
+  "collectedAt": "2026-10-14T17:26:54.332Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "내각관방 국가사이버통괄실이 대량의 개인정보를 다루는 사업자 시스템에 침입해 데이터를 빼내는 불법 접근 사건을 여러 건 확인했다고 밝혔다.",
+   "침입 수법으로는 웹시스템 취약점 악용, 협력사를 거친 공급망 침해, 허술한 데이터 관리가 제시되었다.",
+   "국가사이버통괄실은 패치 적용, 지원 종료 제품 사용 중단, MFA 도입, 로그 점검, 경영진의 투자 참여를 권고했다. 최근 대규모 유출 사례도 함께 언급되었다."
+  ],
+  "socPoint": "인터넷에 공개된 웹서버와 CMS의 웹 접근 로그, 관리자 페이지 인증 로그, 대량 조회나 비정상 데이터 추출 패턴, 위탁업체 계정의 비정상 접속을 함께 점검합니다.",
+  "attackTypes": [
+   "취약점 악용",
+   "공급망",
+   "정보유출"
+  ],
+  "sectors": [
+   "유통·서비스",
+   "IT·클라우드"
+  ],
+  "nature": "정책·법규",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "내각관방 국가사이버통괄실",
+    "물语コーポレーション",
+    "焼肉きんぐ",
+    "ブックオフグループホールディングス"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "c5e5094b0931ea13",
+  "url": "https://www.jpcert.or.jp/at/2026/at260030.html",
+  "title": "注意喚起: 直近で相次いでいる国内組織における不正アクセスに関する注意喚起 (更新)",
+  "titleKo": "국내 조직을 대상으로 한 불법 접근 사례가 잇따르고 있어 주의를 당부합니다 (갱신)",
+  "sourceId": "jpcert",
+  "sourceName": "JPCERT/CC",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-09T01:12:00.000Z",
+  "collectedAt": "2026-10-14T17:26:54.921Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "2026년 9월 전후 일본 국내 조직에서 불법 접근으로 인한 개인정보 등 유출 피해가 잇따라 공개되었습니다.",
+   "공격자는 여러 소프트웨어의 알려진 취약점을 스캔하고, API 비정상 호출, 탈취한 API 키 사용, 알려진 취약점 악용, Webshell 설치 등을 시도한 것으로 보입니다.",
+   "JPCERT/CC는 피해 규모와 원인에 대한 정보가 제한적이라고 밝혔으며, API 속도 제한과 접근 제어, 토큰 관리, 불필요한 관리 기능 비공개 등의 점검을 권고합니다."
+  ],
+  "socPoint": "웹·API 게이트웨이와 애플리케이션 서버 로그에서 짧은 시간 내 반복 요청, 비정상 HTTP 메서드, NoSQL 인젯션 패턴, 기재된 IP 및 User-Agent, 그리고 .war/.jsp 파일 생성과 해당 파일로의 반복 GET/POST 요청을 확인해야 합니다.",
+  "attackTypes": [
+   "취약점 악용",
+   "계정 탈취",
+   "악성코드"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-72898"
+   ],
+   "actors": [],
+   "orgs": [
+    "JPCERT/CC",
+    "Metabase",
+    "株式会社マクニカ"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "d8a6590c473c4638",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/09/56426.html",
+  "title": "「IDCFクラウド」にランサムウェア攻撃",
+  "titleKo": "IDCF 클라우드에 랜섬웨어 공격",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-08T23:05:12.000Z",
+  "collectedAt": "2026-10-14T17:26:59.362Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "일본 클라우드 서비스 IDCF 클라우드가 랜섬웨어 공격을 받은 것으로 보도되었습니다.",
+   "제목 외에 공격 수법이나 침투 경로에 대한 세부 내용은 확인되지 않았습니다.",
+   "피해 규모, 서비스 영향, 복구 상황과 대응 현황은 원문 정보만으로는 알 수 없습니다."
+  ],
+  "socPoint": "IDCF 클라우드 고객사 환경에서 대량 파일 암호화 및 확장자 변경, 랜섬노트 생성, 관리 콘솔의 비정상 로그인 기록을 확인하고, 공식 발표에서 침해 지표(IoC)가 공개되는지 살펴보는 것이 필요합니다.",
+  "attackTypes": [
+   "랜섬웨어"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "IDCF클라우드"
+   ]
+  },
+  "basis": "제목"
+ },
+ {
+  "id": "56a2e71f4b738df6",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/09/56425.html",
+  "title": "戸田建設に不正アクセス、取引先に関する情報が漏えい",
+  "titleKo": "도다건설에 부정 접속, 거래처 관련 정보 유출",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-08T23:05:10.000Z",
+  "collectedAt": "2026-10-14T17:26:57.375Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "일본 건설사 도다건설(戸田建設)이 외부의 부정 접속을 받아 거래처 관련 정보가 유출된 사실이 알려졌습니다.",
+   "원문 제목만 확인되어 공격 수법, 침입 경로, 유출 규모는 확인되지 않습니다.",
+   "세부 피해 범위와 대응 현황은 기사 본문이나 회사 공지를 추가로 확인해야 합니다."
+  ],
+  "socPoint": "도다건설 측 공지나 보도 자료에서 유출 범위와 침해 경로를 확인한 뒤, 외부 접속 로그(VPN, 원격 접속 장비)와 거래처 관련 데이터에 대한 비정상 대량 조회·다운로드 이력을 점검하는 것이 좋습니다.",
+  "attackTypes": [
+   "정보유출"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "도다건설"
+   ]
+  },
+  "basis": "제목"
+ },
+ {
+  "id": "c6f9232ba33963b5",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/09/56424.html",
+  "title": "大気社のマレーシアグループ会社従業員のメールアカウントに不正アクセス、不審メールの送信を確認",
+  "titleKo": "대기사 말레이시아 그룹사 직원 이메일 계정 무단 접근, 의심 메일 발송 확인",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-08T23:05:07.000Z",
+  "collectedAt": "2026-10-14T17:27:00.702Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "일본 건설설비 기업 대기사(Taikisha)의 말레이시아 그룹사 직원 이메일 계정에 무단 접근이 있었던 것으로 확인되었습니다.",
+   "해당 계정에서 의심스러운 메일이 발송된 사실이 확인됐지만, 제목 외에 침해 경위와 수법은 확인되지 않습니다.",
+   "피해 규모와 세부 대응 현황은 원문 정보가 부족해 파악할 수 없습니다."
+  ],
+  "socPoint": "Microsoft 365 또는 Exchange 로그에서 해당 계정의 비정상 로그인(IP, 국가, 시간대), 대량 메일 발송, 자동 전달이나 수신함 규칙 생성 여부를 확인하세요.",
+  "attackTypes": [
+   "계정 탈취"
+  ],
+  "sectors": [],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "大気社(Taikisha)",
+    "大気社マレーシアグループ会社"
+   ]
+  },
+  "basis": "제목"
+ },
+ {
+  "id": "02364e21fb5bc6de",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/09/56423.html",
+  "title": "ランドハウジングが登録する内見予約システムに不正アクセス、運営会社に原因究明を要請",
+  "titleKo": "랜드하우징이 등록한 내견 예약 시스템에 무단 접근, 운영사에 원인 규명 요청",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-08T23:05:05.000Z",
+  "collectedAt": "2026-10-14T17:27:01.385Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "일본 기업 랜드하우징이 등록해 쓰는 내견 예약 시스템에 불법 접근이 발생했습니다.",
+   "랜드하우징은 시스템 운영 회사에 원인 규명을 요청했으나, 공격 수법은 제목만으로 확인되지 않습니다.",
+   "피해 규모와 개인정보 유출 여부, 후속 대응은 기사 정보만으로는 알 수 없어 추후 공지를 확인해야 합니다."
+  ],
+  "socPoint": "내견 예약 시스템의 웹 접속 로그와 인증 로그에서 비정상 로그인 시도, 짧은 시간 내 대량 예약 조회, 외부 IP에서의 반복 접근 여부를 확인합니다.",
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "랜드하우징"
+   ]
+  },
+  "basis": "제목"
+ },
+ {
+  "id": "62d8f57f5f1acf9d",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/09/56422.html",
+  "title": "JGC Digital が利用する BI ツール「Metabase」に不正アクセス、約 6 万件の情報が取得されたことを確認",
+  "titleKo": "JGC Digital이 사용하는 BI 도구 'Metabase'에 부정 접근, 약 6만 건의 정보 취득 확인",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-08T23:05:02.000Z",
+  "collectedAt": "2026-10-14T17:27:02.102Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "JGC Digital이 사용하는 BI 도구 Metabase에 불법 접근이 있었고, 약 6만 건의 정보가 취득된 것이 확인되었습니다.",
+   "제목만으로는 침해 경로와 구체적인 공격 수법이 확인되지 않습니다.",
+   "유출된 정보의 종류와 피해 범위, 대응 현황은 원문에서 추가로 확인이 필요합니다."
+  ],
+  "socPoint": "Metabase 감사 로그와 관리자 로그인 기록을 확인해 비정상 로그인, 신규 계정 생성, 대량 쿼리나 데이터 내보내기 흔적을 찾아야 합니다.",
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "JGC Digital",
+    "Metabase"
+   ]
+  },
+  "basis": "제목"
+ },
+ {
+  "id": "d1490f6447d4ac3f",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/09/56421.html",
+  "title": "Movable Type に複数の脆弱性",
+  "titleKo": "Movable Type 여러 취약점",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-08T23:00:11.000Z",
+  "collectedAt": "2026-10-14T17:27:02.464Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "IPA와 JPCERT/CC는 10월 7일 Movable Type의 복수 취약점을 JVN을 통해 공개했다.",
+   "업그레이드 스크립트의 코드 인젝션(CVE-2026-96408)과 사이트 내 검색 기능의 SQL 인젝션(CVE-2026-103668)이 원인이다.",
+   "공격에 성공하면 임의의 Perl 코드나 SQL 쿼리가 실행될 수 있으며, 개발사는 수정 버전으로 업데이트할 것을 권고했다."
+  ],
+  "socPoint": "Movable Type 웹 서버의 업그레이드 스크립트 실행 이력과 검색 페이지 요청 로그에서 SQL 구문이나 Perl 코드가 포함된 파라미터를 확인하고, 웹 프로세스의 비정상 자식 프로세스 생성 여부를 점검해야 합니다.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-96408",
+    "CVE-2026-103668"
+   ],
+   "actors": [],
+   "orgs": [
+    "Movable Type",
+    "Six Apart",
+    "GMO Flatt Security",
+    "IPA",
+    "JPCERT/CC"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "d28532124fd3fea8",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/09/56420.html",
+  "title": "HENNGE AI株式会社設立、AI活用のガバナンスやコスト管理を支援",
+  "titleKo": "HENNGE AI 주식회사 설립, AI 활용 거버넌스와 비용 관리 지원",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-08T23:00:07.000Z",
+  "collectedAt": "2026-10-14T17:27:04.463Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "HENNGE가 AI 에이전트의 안전한 개발·운영과 AI 활용 거버넌스, 비용 관리를 돕는 자회사 HENNGE AI 주식회사를 2026년 10월 1일 설립했다고 발표했다.",
+   "클라우드 보안 서비스 HENNGE One에서 쌓은 보안·ID 관리 노하우를 바탕으로, 생성 AI 모델별 사용 권한과 비용을 통제하는 AI Gateway 기반 서비스를 개발한다.",
+   "AI Gateway 서비스는 2027년 9월까지 제공을 목표로 하며, 향후 AI 에이전트 등 비인간 ID를 인증·관리하는 기반으로 확장할 계획이다."
+  ],
+  "socPoint": "AI 게이트웨이나 생성 AI 사용 로그에서 사용자·그룹별 모델 접근 기록, 비인간 ID(에이전트, 봇)의 SSO 인증 이력, 비정상적인 API 사용량 급증을 함께 확인하는 것이 필요합니다.",
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "HENNGE 株式会社",
+    "HENNGE AI 株式会社",
+    "HENNGE One",
+    "AI Gateway"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "4f4a24e80603b5c1",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/09/56419.html",
+  "title": "MCC 製 Universal Library for Linux (uldaq) にバッファオーバーフローの脆弱性",
+  "titleKo": "MCC 제품 Universal Library for Linux(uldaq)의 버퍼 오버플로 취약점",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-08T23:00:03.000Z",
+  "collectedAt": "2026-10-14T17:27:05.813Z",
+  "regions": [
+   "JP",
+   "INTL"
+  ],
+  "summary": [
+   "IPA와 JPCERT/CC가 10월 6일 MCC의 Universal Library for Linux(uldaq) 버퍼 오버플로 취약점을 JVN에 공개했습니다.",
+   "스택 기반 버퍼 오버플로(CVE-2026-19477)로, 시스템 정보 유출이나 임의 코드 실행이 가능할 수 있습니다.",
+   "영향 버전은 v1.2.1 이하이며, 개발사가 제공한 최신 버전으로의 업데이트가 권고되고 있습니다."
+  ],
+  "socPoint": "uldaq를 사용하는 Linux 장비와 애플리케이션의 설치 버전(v1.2.1 이하)을 자산 목록에서 확인하고, 해당 프로세스의 비정상 종료나 예상치 못한 자식 프로세스 생성 같은 행위를 모니터링하는 것이 좋습니다.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-19477"
+   ],
+   "actors": [],
+   "orgs": [
+    "MCC",
+    "Measurement Computing Corporation",
+    "Universal Library for Linux(uldaq)",
+    "JPCERT/CC",
+    "IPA"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "83088b2ff4d97feb",
+  "url": "https://piyolog.hatenadiary.jp/entry/2026/10/09/073842",
+  "title": "デンマークのCPR登録簿への不正アクセスについてまとめてみた",
+  "titleKo": "덴마크 CPR 등록부 무단 접근 사건 정리",
+  "sourceId": "piyolog",
+  "sourceName": "piyolog",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-08T22:38:42.000Z",
+  "collectedAt": "2026-10-14T17:27:06.560Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "덴마크 연구·교육·디지털화부는 2026년 10월 5일, 민간기업의 정규 접근 권한이 악용되어 약 880만 명의 이름, 주소, CPR 번호가 제3자에게 조회된 사실을 공개했다.",
+   "공격자는 해당 기업의 계정을 이용해 9월 10일부터 20일까지 대량 조회를 수행했으며, 기업 IT 침해와 약한 비밀번호(123456)가 연관된 것으로 보인다.",
+   "당국은 해당 기업 접근을 차단하고 수사와 안전 점검을 진행 중이며, 민간 접근자 1,039곳에 보안 조치를 요구하고 본인확인 강화를 권고했다."
+  ],
+  "socPoint": "CPR 조회 시스템의 민간 기업 계정별 대량·자동화 조회 이력(조회 건수, 시간대, 기업 IP)과 해당 계정의 비정상 로그인 및 약한 비밀번호 사용 여부를 확인해야 합니다.",
+  "attackTypes": [
+   "계정 탈취",
+   "정보유출",
+   "내부자"
+  ],
+  "sectors": [
+   "정부·공공",
+   "IT·클라우드"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "익명의 관여 주장자"
+   ],
+   "orgs": [
+    "CPR-administrationen",
+    "Pays ApS",
+    "Datatilsynet",
+    "Politiken",
+    "DR"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "ffc305faa6eeb978",
+  "url": "https://thehackernews.com/2026/10/fbi-says-china-linked-hackers-ran.html",
+  "title": "FBI Says China-Linked Hackers Ran Portal Giving Third Parties Access to Stolen Emails",
+  "titleKo": "FBI, 중국 연계 해커들이 탈취한 이메일을 제3자에게 제공하는 포털 운영 발표",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-08T18:32:21.000Z",
+  "collectedAt": "2026-10-14T17:27:07.135Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "FBI와 6개국 기관은 중국 사이버보안 기업 Integrity Technology Group과 연계된 해커들이 동남아 정부, 의료, 종교 기관 등의 이메일을 탈취했다고 발표했습니다.",
+   "해커들은 1,300개 이상의 스크립트를 담은 MicroScan 등 도구로 취약점을 스캔하고, Microsoft 365·Exchange 계정 비밀번호를 추측해 사서함을 복사했습니다.",
+   "공동 권고문은 2021년 중순 이후 침입이 있었다고 밝혔으나 피해 조직 수와 탈취 시점은 특정하지 않았으며, 탈취 이메일을 제3자에게 제공하는 웹 애플리케이션도 운영 중이라고 설명했습니다."
+  ],
+  "socPoint": "웹 서버 접근 로그에서 Nmap·masscan·WPScan 등 스캐너 특유의 User-Agent와 21, 22, 53, 80, 443, 1080 포트에 대한 대량 스캔 패턴을 확인하고, Exchange·Microsoft 365 로그인 실패 및 비정상 IP의 사서함 접근 이력을 점검하십시오.",
+  "attackTypes": [
+   "취약점 악용",
+   "계정 탈취",
+   "정보유출"
+  ],
+  "sectors": [
+   "정부·공공",
+   "의료"
+  ],
+  "nature": "체포·수사",
+  "entities": {
+   "cves": [
+    "CVE-2014-6278",
+    "CVE-2015-3306",
+    "CVE-2015-5477",
+    "CVE-2016-3081",
+    "CVE-2019-11510",
+    "CVE-2021-22205",
+    "CVE-2021-3199",
+    "CVE-2023-22894"
+   ],
+   "actors": [
+    "Integrity Technology Group",
+    "Flax Typhoon",
+    "Ethereal Panda",
+    "RedJuliett"
+   ],
+   "orgs": [
+    "Integrity Technology Group",
+    "Microsoft",
+    "Exchange",
+    "GitLab",
+    "Strapi"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "f8595042a1981bc6",
+  "url": "https://thehackernews.com/2026/10/threatsday-ransomware-affiliate.html",
+  "title": "ThreatsDay: Ransomware Affiliate Betrayal, WhatsApp RAT, Exposed Hacker Tools and 12 More Stories",
+  "titleKo": "ThreatsDay: 랜섬웨어 제휴자 배신, WhatsApp RAT, 노출된 해커 도구 외 12건",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-08T17:58:02.000Z",
+  "collectedAt": "2026-10-14T17:27:09.368Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "랜섬웨어 제휴자가 수익을 독점하고, 악성 VS Code 테마와 WhatsApp 미끼 파일로 퍼지는 RAT 등 주간 위협이 정리되었습니다.",
+   "WhatsApp으로 전달된 'Statement.exe' 미끼 파일은 BYOVD로 보안 프로세스를 종료하고 PoolParty 기법으로 작업 스케줄러에 다운로더를 주입합니다.",
+   "Qilin 용의자가 일본에서 체포된 뒤 독일로 인도되었습니다. 독일에서 물류업체 침해와 16만 달러 이상 갈취 혐의를 받고 있습니다."
+  ],
+  "socPoint": "WhatsApp으로 받은 실행 파일(Statement.exe)의 실행 기록, 작업 스케줄러에 등록된 새 작업, 서명된 GoFly64.sys 드라이버 로드 이벤트, Vulkan DLL 사이드로딩 흔적을 EDR에서 확인하세요.",
+  "attackTypes": [
+   "악성코드",
+   "랜섬웨어",
+   "공급망"
+  ],
+  "sectors": [
+   "IT·클라우드",
+   "의료"
+  ],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "Azazel",
+    "Qilin",
+    "GlassWorm",
+    "VulcanRAT207"
+   ],
+   "orgs": [
+    "Socket",
+    "Group-IB",
+    "Hunt.io",
+    "Morphisec",
+    "Forescout"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "e23311ff0ce108d3",
+  "url": "https://thehackernews.com/2026/10/japan-sees-sharp-rise-in-web-data-leaks.html",
+  "title": "Japan Sees Sharp Rise in Web Data Leaks Amid Mobile API Abuse and Metabase Attacks",
+  "titleKo": "일본 웹 데이터 유출 급증, 모바일 API 악용과 Metabase 공격 영향",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-08T15:45:56.000Z",
+  "collectedAt": "2026-10-14T17:27:09.882Z",
+  "regions": [
+   "JP",
+   "INTL"
+  ],
+  "summary": [
+   "JPCERT/CC는 일본 기관들의 개인정보 유출이 모바일 앱 API 악용과 알려진 취약점 공격으로 이어지고 있으며 증가 추세일 수 있다고 경고했다.",
+   "공격자는 공개 앱에서 API 엔드포인트와 키를 추출하거나, 앱 화면에 없는 내부 API를 공격하고, Metabase의 SQL 인젝션 취약점(CVE-2026-72898)을 악용한다.",
+   "Macnica는 올해 10월 6일까지 일본에서 웹 시스템을 통한 개인정보 유출 사건을 119건으로 집계했으며, Park24와 모노가타리 등 대형 사례가 확인됐다."
+  ],
+  "socPoint": "웹 서버와 API 게이트웨이 로그에서 모바일 앱 User-Agent 이상 패턴, 인증 없이 호출되는 관리 API 요청, 인증 토큰 변조 요청, Metabase 서버의 비정상 SQL 쿼리와 경고된 IP 주소 접속 기록을 확인해야 한다.",
+  "attackTypes": [
+   "정보유출",
+   "취약점 악용",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "유통·서비스",
+   "IT·클라우드"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [
+    "CVE-2026-72898"
+   ],
+   "actors": [],
+   "orgs": [
+    "JPCERT/CC",
+    "Macnica",
+    "Metabase",
+    "Park24",
+    "Monogatari Corporation"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "597dc1488663d6c1",
+  "url": "https://thehackernews.com/2026/10/uac-0099-targets-ukrainian-government.html",
+  "title": "UAC-0099 Targets Ukrainian Government Personnel With ASHVEIN RAT Hiding Commands in HTML",
+  "titleKo": "UAC-0099, HTML에 명령을 숨긴 ASHVEIN RAT으로 우크라이나 정부 인력 공격",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-08T15:26:56.000Z",
+  "collectedAt": "2026-10-14T17:27:10.273Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "러시아 연계 위협 그룹 UAC-0099가 우크라이나 정부 인력을 겨냥해 새로운 .NET 인포스틸러이자 원격 제어 트로이목마 ASHVEIN을 사용하고 있다.",
+   "ASHVEIN은 브라우저 자격증명 탈취, 화면 캡처, 파일 수집, PowerShell 원격 셸 기능을 갖추고, 보이지 않는 HTML 요소에 명령을 숨기며 DLL 사이드로딩과 VHD 컨테이너로 배포된다.",
+   "원문에는 피해 규모와 현재 상황에 대한 구체적 수치가 없다. 대상은 정부 기관에서 민간 물류·인프라 운영자로 확대된 것으로 보고됐다."
+  ],
+  "socPoint": "메일 첨부의 VHD 마운트, DLL 사이드로딩으로 실행되는 서명되지 않은 실행 파일, 브라우저 자격증명 파일 접근, PowerShell 원격 셸 실행, HTML 내 숨김 요소와 GitHub 주소로의 외부 통신을 EDR과 프록시 로그에서 확인해야 한다.",
+  "attackTypes": [
+   "악성코드",
+   "계정 탈취",
+   "피싱"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "UAC-0099",
+    "Earth Sirrush",
+    "SHADOW-EARTH-065",
+    "Sandworm"
+   ],
+   "orgs": [
+    "TrendAI",
+    "ESET",
+    "CERT-UA",
+    "National Police of Ukraine"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "e43b81e0b9deb1df",
+  "url": "https://www.ipa.go.jp/security/security-alert/2026/alert20261009.html",
+  "title": "不正アクセスによる漏えい等の事案を踏まえ、速やかに実施すべき対策等について",
+  "titleKo": "불법 접근에 의한 정보 유출 사고를 바탕으로 신속히 시행해야 할 대책 등에 관하여",
+  "sourceId": "ipa",
+  "sourceName": "IPA",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-08T15:00:00.000Z",
+  "collectedAt": "2026-10-14T17:27:11.453Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "국내 금융기관과 통신사 등 여러 사업자가 불법 접근으로 인한 정보 유출 사고를 잇따라 공표했으며, IPA가 경영진 차원의 점검을 촉구했다.",
+   "현재 특정 제품 취약점을 노린 공격으로 단정되지는 않았으며, 외부 공개 애플리케이션이나 계정 침해가 유출의 시작점으로 보인다.",
+   "IPA는 로그 이상 여부, 미적용 패치, 외부 서비스 계정을 점검하고 보유 데이터를 최소화할 것을 권고했다."
+  ],
+  "socPoint": "외부 공개 애플리케이션과 SaaS·VPN 서비스의 인증 로그에서 로그인 실패 급증, 평시와 다른 로그인 IP·시간, 생성되지 않은 신규 계정이나 재활성화된 계정 여부를 확인한다.",
+  "attackTypes": [
+   "정보유출",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "금융",
+   "통신"
+  ],
+  "nature": "정책·법규",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "IPA",
+    "국내 금융기관",
+    "국내 통신사업자",
+    "경제산업성",
+    "국가사이버통합실"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "f27324b6e8ec1994",
+  "url": "https://thehackernews.com/2026/10/artex-ai-pentesting-tool-used-in-data.html",
+  "title": "ARTEX AI Pentesting Tool Used in Data Theft Attacks on South Korean Financial Firms",
+  "titleKo": "ARTEX AI 침투테스트 도구, 한국 금융사 데이터 탈취 공격에 악용",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-08T14:12:34.000Z",
+  "collectedAt": "2026-10-14T17:27:13.592Z",
+  "regions": [
+   "INTL",
+   "KR"
+  ],
+  "summary": [
+   "CrowdStrike는 2026년 9~10월 한국 금융기관을 겨냥한 표적 공격 캠페인을 공개했다. 신한은행, 예래저축은행 등에서 데이터가 유출된 것으로 확인됐다.",
+   "공격자는 중국에서 개발된 오픈소스 AI 침투테스트 도구 ARTEX와 여러 LLM을 함께 썼으며, 홍콩 IP에 노출된 디렉터리에서 세션 기록과 설정 파일이 발견됐다.",
+   "금융위원회와 금융감독원은 유출 데이터를 이용한 피싱과 대출 사기에 주의하라고 경고했다. 개발사 Autumn-27은 ARTEX를 비공개 소스로 전환했다."
+  ],
+  "socPoint": "홍콩 IP 38.244.50.120과 관련 LLM API 경유 트래픽, 금융사 웹 로그에서 자동화된 로그인 시도와 비정상적인 대량 데이터 조회 패턴을 확인하고, 유출 데이터 기반 피싱 및 대출 사기 신고를 함께 모니터링해야 한다.",
+  "attackTypes": [
+   "정보유출",
+   "취약점 악용"
+  ],
+  "sectors": [
+   "금융"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "@YY520CN"
+   ],
+   "orgs": [
+    "CrowdStrike",
+    "ARTEX",
+    "Autumn-27",
+    "신한은행",
+    "예래저축은행"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "d507fbcf3e8a29a7",
+  "url": "https://www.itmedia.co.jp/news/article/2610/08/2000002101/",
+  "title": "止まらない不正アクセス、背景にAIの“超高速攻撃”か 識者「使われていない方が不自然」",
+  "titleKo": "멈추지 않는 불법 접근, 배경에 AI의 '초고속 공격'이 있나? 전문가 \"사용되지 않았다고 보는 게 오히려 부자연스럽다\"",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-08T04:11:50.000Z",
+  "collectedAt": "2026-10-14T17:27:14.649Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "타임스카셰어 운전면허증 이미지 유출, 焼肉きんぐ 1000만 건 이상 정보 유출 등 기업 침해 사고가 잇따라 공개되고 있다.",
+   "공격에 AI 에이전트나 고성능 생성 AI가 쓰였을 가능성이 제기되며, 여러 약한 취약점을 엮어 침입 경로를 만드는 수법이 특징으로 꼽힌다.",
+   "개별 사고에 AI가 쓰였는지는 외부에서 단정할 수 없고 상세 보고서도 아직 없다. 전문가는 AI 사용을 배제하기 어렵다고 본다."
+  ],
+  "socPoint": "웹 애플리케이션 방화벽과 인증 로그에서 짧은 시간에 여러 경로를 연속 시도하는 자동화된 요청 패턴, 그리고 낮은 위험도의 취약점 여러 개가 한 세션에서 연쇄적으로 나타나는지 확인합니다.",
+  "attackTypes": [
+   "취약점 악용",
+   "계정 탈취",
+   "정보유출"
+  ],
+  "sectors": [
+   "유통·서비스",
+   "금융"
+  ],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "タイムズカーシェア",
+    "焼肉きんぐ",
+    "GMO子会社",
+    "アカマイ・テクノロジーズ",
+    "Claude Mythos"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "e0f8dd48837fc9ba",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/08/56417.html",
+  "title": "インフォスティーラーに感染するのは誰か、1 万件の StealerLog が描き出す被害者の素顔",
+  "titleKo": "인포스틸러에 감염되는 사람은 누구인가, 1만 건의 StealerLog가 보여주는 피해자의 실체",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T23:15:02.000Z",
+  "collectedAt": "2026-10-14T17:27:15.815Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "Flare 연구진이 2025년 StealerLog 10,198건을 무작위 추출해 인포스틸러 감염 피해자의 특성을 분석했다.",
+   "감염은 Epson 프린터 유틸리티, 게임 치트, 무료 업무 소프트웨어 등 흔한 설치 행동에서 시작된 것으로 나타났다. 데이터는 Telegram 등으로 전송·판매된다.",
+   "피해자의 59%가 금융 관련 데이터가 노출됐고 26%는 기업 인프라 접근 권한을 가졌으며, 72%는 조직에 위험이 될 수 있다고 평가됐다."
+  ],
+  "socPoint": "엔드포인트에서 브라우저 프로필 데이터(Cookie, 저장된 자격증명) 접근 프로세스와 Telegram API 또는 알려지지 않은 호스트로의 대용량 Zip 전송 연결을 함께 모니터링하십시오.",
+  "attackTypes": [
+   "정보유출",
+   "악성코드",
+   "계정 탈취"
+  ],
+  "sectors": [],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Flare",
+    "Epson",
+    "Telegram",
+    "GitHub",
+    "KnowBe4"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "f2655940e62fe486",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/08/56416.html",
+  "title": "「L2 スイッチのリプレースでゼロトラスト」でおなじみのパイオリンク、TiFRONT を「インテリジェントディフェンススイッチ」にブランド変更",
+  "titleKo": "L2 스위치 교체로 제로트러스트를 실현한다는 파이오링크, TiFRONT를 '인텔리전트 디펜스 스위치'로 브랜드 변경",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T23:10:03.000Z",
+  "collectedAt": "2026-10-14T17:27:17.304Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "파이오링크가 네트워크 스위치 TiFRONT의 브랜드를 '세큐리티 스위치'에서 '인텔리전트 디펜스 스위치'로 바꿨다.",
+   "제품은 단말에 가까운 액세스 스위치에서 내부 확산을 막으며, 가상 단말(vCAT)과 마이크로세그멘테이션(TiFRONT ZT) 기능을 갖췄다.",
+   "기존 명칭은 경쟁사와 겹쳤고, 2027년 여름 AI 기반 정책 자동 생성 기능 출시를 준비 중이라고 밝혔다. 피해 사례는 언급되지 않았다."
+  ],
+  "socPoint": "TiFRONT 로그에서 가상 단말(vCAT)로의 ARP 요청이나 포트스캔 접촉 기록을 확인하고, 내부 단말의 비정상적인 VLAN 내 통신 시도를 모니터링한다.",
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "파이오링크",
+    "PIOLINK",
+    "TiFRONT",
+    "TiController"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "cf7b40e073b0e1a7",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/08/56415.html",
+  "title": "オンラインカジノに関するコンテンツを表示 ～ 千葉銀行子会社のちばぎん商店のコーポレートサイトに不正アクセス",
+  "titleKo": "온라인 카지노 관련 콘텐츠 표시 — 지바은행 자회사 ちばぎん商店 기업 사이트 무단 접근",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T23:05:14.000Z",
+  "collectedAt": "2026-10-14T17:27:17.719Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "지바은행 자회사 ちばぎん商店의 코퍼레이트 사이트에 무단 접근이 발생해 온라인 카지노 관련 콘텐츠가 표시된 것으로 보입니다.",
+   "원문 제목만 확인되어 공격 수법과 접근 경로는 확인되지 않습니다.",
+   "피해 규모, 정보 유출 여부, 복구 및 대응 상황은 현재 알 수 없습니다."
+  ],
+  "socPoint": "해당 사이트의 웹 서버 접근 로그와 콘텐츠 변조 여부를 확인하고, 카지노 관련 도메인으로의 외부 리디렉션이나 비정상 파일 생성 흔적을 살펴볼 필요가 있습니다.",
+  "attackTypes": [
+   "내부자"
+  ],
+  "sectors": [
+   "금융"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "千葉銀行",
+    "ちばぎん商店"
+   ]
+  },
+  "basis": "제목"
+ },
+ {
+  "id": "220de73195adb4c8",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/08/56414.html",
+  "title": "検索経由で無関係なサイトへ誘導 ～ スコア・ジャパンがサイト改ざん被害",
+  "titleKo": "검색을 통해 무관한 사이트로 유도 ～ 스코어 재팬, 사이트 변조 피해",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T23:05:11.000Z",
+  "collectedAt": "2026-10-14T17:27:19.361Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "일본 기업 스코어 재팬(スコア・ジャパン)의 웹사이트가 변조된 사실이 제목으로 확인된다.",
+   "변조된 사이트가 검색 결과를 거쳐 무관한 사이트로 사용자를 유도한 것으로 보이나, 구체적인 수법은 본문 정보가 없어 확인되지 않는다.",
+   "피해 규모, 공격자, 복구 및 대응 현황은 제목만으로는 알 수 없다."
+  ],
+  "socPoint": "웹 서버 접근 로그와 파일 무결성 변경 기록을 확인하고, 검색엔진 유입 경로에서 외부 리디렉션 스크립트나 비정상 도메인 연결 흔적을 찾아볼 것.",
+  "attackTypes": [
+   "정보유출"
+  ],
+  "sectors": [],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "スコア・ジャパン"
+   ]
+  },
+  "basis": "제목"
+ },
+ {
+  "id": "b1a2855193cbbbd5",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/08/56413.html",
+  "title": "不正アクセスによる漏えい等の件数「必ずしも増加傾向にない（古川デジタル大臣）」",
+  "titleKo": "불법 접근으로 인한 유출 건수 \"반드시 증가 추세는 아니다\"(후루카와 디지털 장관)",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T23:05:09.000Z",
+  "collectedAt": "2026-10-14T17:27:20.351Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "디지털 장관 기자회견에서 타임스카 사건 대응과 최근 개인정보 유출 발표가 잇따르는 상황에 대한 정부 인식이 공개되었습니다.",
+   "장관은 불법 접근을 포함한 악의적 목적의 유출 건수가 2024년도 7,604건(비율 39.9%)에서 2025년도 3,822건(22.3%)으로 줄었다고 밝혔습니다.",
+   "정부는 국가사이버통괄실이 관계 부처와 함께 타임스카 사건의 정보를 계속 수집하고 필요에 따라 대응한다는 입장입니다."
+  ],
+  "socPoint": "타임스카 회원 서비스의 로그인 이력과 대량 조회·다운로드 행위, 그리고 유출 의심 데이터의 외부 공유 흔적을 확인하면 좋습니다.",
+  "attackTypes": [
+   "정보유출"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "정책·법규",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "디지털청",
+    "타임스카",
+    "국가사이버통괄실"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "c2e7be7ddcef1989",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/08/56412.html",
+  "title": "シチズン時計、問い合わせフォームの委託先サーバに不正アクセス ～ 個人情報約10万件漏えい可能性",
+  "titleKo": "시티즌 시계, 문의 양식 위탁 서버에 불법 접근 … 개인정보 약 10만 건 유출 가능성",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T23:05:05.000Z",
+  "collectedAt": "2026-10-14T17:27:20.651Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "시티즌 시계가 문의 양식을 맡긴 위탁업체 서버에 제3자가 무단으로 접근한 사실이 알려졌습니다.",
+   "유출 경로와 공격 수법에 대한 구체적인 내용은 제목 외에 확인되지 않았습니다.",
+   "개인정보 약 10만 건이 유출되었을 가능성이 있으며, 실제 유출 여부와 대응 현황은 추가 확인이 필요합니다."
+  ],
+  "socPoint": "위탁업체 서버의 접근 로그와 문의 양식 연동 구간의 비정상 조회, 대량 데이터 전송 기록을 점검하고, 시티즌 관련 도메인으로 향하는 외부 연결을 확인하는 것이 좋습니다.",
+  "attackTypes": [
+   "정보유출"
+  ],
+  "sectors": [
+   "제조"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "シチズン時計",
+    "シチズン時計の委託先"
+   ]
+  },
+  "basis": "제목"
+ },
+ {
+  "id": "e5956fd20654646e",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/08/56411.html",
+  "title": "楽天ドライブに不正アクセス、管理アカウント乗っ取りでデータ閲覧",
+  "titleKo": "라쿠텐 드라이브에 부정 접근, 관리 계정 탈취로 데이터 열람",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T23:05:02.000Z",
+  "collectedAt": "2026-10-14T17:27:22.954Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "라쿠텐 드라이브에 외부인이 부정 접근해 데이터를 열람한 사실이 보도되었습니다.",
+   "제목에 따르면 공격자는 관리 계정을 탈취해 서비스에 들어간 것으로 보입니다.",
+   "피해 규모, 유출 여부, 대응 현황은 제목만으로는 확인할 수 없어 원문 확인이 필요합니다."
+  ],
+  "socPoint": "라쿠텐 드라이브 관리자 계정의 로그인 기록에서 비정상 IP나 지역, 시간대 접속과 MFA 우회 흔적을 확인하고, 관리 계정으로 수행된 파일 조회·다운로드 이력을 함께 점검해야 합니다.",
+  "attackTypes": [
+   "계정 탈취"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "楽天ドライブ"
+   ]
+  },
+  "basis": "제목"
+ },
+ {
+  "id": "5a6642992de405e2",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/08/56410.html",
+  "title": "Android アプリ「チケット流通センター」に複数の脆弱性",
+  "titleKo": "Android 앱 '티켓 유통 센터'의 복수 취약점",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T23:00:10.000Z",
+  "collectedAt": "2026-10-14T17:27:24.747Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "JPCERT/CC와 IPA는 Android 앱 '티켓 유통 센터'(4.1.9 이하)에 복수의 취약점이 있다고 JVN을 통해 발표했다.",
+   "하드코딩된 인증 정보로 외부 서비스 연동용 API 키가 유출될 수 있고, Custom URL Scheme 핸들러의 접근 제어 미비로 악성 앱의 intent를 통해 임의 웹사이트로 유도될 수 있다.",
+   "개발사는 2025년 10월 수정 버전 4.2.0을 출시했으며, 사용자에게 최신 버전으로 업데이트할 것을 권고하고 있다."
+  ],
+  "socPoint": "앱의 로그인·연동 과정에서 외부 API 호출 시 하드코딩된 키 사용 여부를 확인하고, 모바일 단말의 의도치 않은 URL 스킴 호출 및 앱 실행 후 외부 도메인 리다이렉트 이벤트를 모니터링할 것.",
+  "attackTypes": [
+   "취약점 악용",
+   "정보유출"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-92861",
+    "CVE-2026-92862"
+   ],
+   "actors": [],
+   "orgs": [
+    "티켓 유통 센터",
+    "株式会社ウェイブダッシュ",
+    "株式会社ブロードバンドセキュリティ",
+    "IPA",
+    "JPCERT/CC"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "fd9999a9e54c9428",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/08/56409.html",
+  "title": "「AeyeScan」に生成 AI を搭載したモバイルアプリ脆弱性診断機能を追加",
+  "titleKo": "AeyeScan에 생성 AI를 탑재한 모바일 앱 취약점 진단 기능 추가",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T23:00:07.000Z",
+  "collectedAt": "2026-10-14T17:27:23.071Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "에이아이세큐리티랩이 클라우드형 웹 취약점 진단 도구 AeyeScan에 모바일 앱 진단 기능을 9월 28일부터 제공한다고 발표했다.",
+   "생성 AI(Gemini 등 Vision 능력)로 화면을 시각적으로 인식하고, 자율형 UI 크롤러가 API 통신까지 포함해 앱을 탐색하며 진단한다.",
+   "공개된 피해나 위협 사례는 없고, 제품 기능 소개 기사이다. 난독화 앱과 독자 UI 프레임워크에서도 동작한다고 밝혔다."
+  ],
+  "socPoint": null,
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "에이아이세큐리티랩",
+    "AeyeScan"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "8a49412915fbd5ef",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/08/56408.html",
+  "title": "クラウドセキュリティサービス「HENNGE One」でパスワード管理サービス「HENNGE Password Manager」を提供開始",
+  "titleKo": "클라우드 보안 서비스 'HENNGE One'에 패스워드 관리 서비스 'HENNGE Password Manager' 제공 시작",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T23:00:04.000Z",
+  "collectedAt": "2026-10-14T17:27:24.512Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "HENNGE가 클라우드 보안 서비스 HENNGE One에 패스워드 관리 서비스 HENNGE Password Manager를 추가해 제공을 시작했다고 발표했다.",
+   "SSO를 지원하지 않는 웹 서비스나 시스템의 공유 계정 ID와 비밀번호를 개인 단위로 안전하게 배포·공유·관리하는 기능이다.",
+   "비밀번호를 노출하지 않고 자동 입력으로 로그인하며, 제로 지식 구조로 저장 정보가 유출되어도 열람이 이론상 불가능하다고 설명한다."
+  ],
+  "socPoint": "SSO 미연동 서비스의 공유 계정 로그인 이력과 비밀번호 일괄 변경·배포 중지 작업 로그를 확인해, 여러 사용자가 같은 계정으로 비정상 접속하는지 점검하는 것이 좋다.",
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "HENNGE株式会社",
+    "HENNGE One",
+    "HENNGE Password Manager"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "0d34bdf355e59e8c",
+  "url": "https://piyolog.hatenadiary.jp/entry/2026/10/08/070606",
+  "title": "IDCFクラウドへのランサムウェア攻撃についてまとめてみた",
+  "titleKo": "IDCF클라우드 랜섬웨어 공격 정리",
+  "sourceId": "piyolog",
+  "sourceName": "piyolog",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T22:06:06.000Z",
+  "collectedAt": "2026-10-14T17:27:26.973Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "2025년 10월 7일 새벽 IDCF클라우드(IDCF Frontier)가 랜섬웨어 공격을 받아, 이 클라우드를 쓰던 다수 기업·기관의 서비스가 중단되었습니다.",
+   "UDトーク, SKIMA, Movable Type 클라우드, 파칭코 데이터 서비스 등이 영향을 받았고, 일부는 다른 클라우드로 옮겨 복구했습니다.",
+   "UDトーク는 데이터 복구가 어렵다고 알렸고, 여러 기업은 개인정보 유출이 확인되지 않았다고 밝혔습니다. 복구 일정은 기업마다 다릅니다."
+  ],
+  "socPoint": "IDCF클라우드를 쓰는 자사·고객 시스템의 접속 불가 로그, 관리자 계정의 비정상 로그인과 설정 초기화 여부, 외부 유출 징후를 확인하세요.",
+  "attackTypes": [
+   "랜섬웨어"
+  ],
+  "sectors": [
+   "IT·클라우드",
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "IDCF클라우드",
+    "IDCフロンティア",
+    "UDトーク",
+    "SKIMA",
+    "シックス・アパート"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "4d0ab1e7dd597340",
+  "url": "https://krebsonsecurity.com/2026/10/shinyhunters-extorted-boeing-spin-off-prior-to-arrests/",
+  "title": "ShinyHunters Extorted Boeing Spin-off Prior to Arrests",
+  "titleKo": "ShinyHunters, 체포 전 보잉 분사 기업을 공갈 시도",
+  "sourceId": "krebs",
+  "sourceName": "Krebs on Security",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-07T13:48:45.000Z",
+  "collectedAt": "2026-10-14T17:27:27.860Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "요르단 암만의 10대 용의자 Rey(Saif Al-din Khader로 지목)가 ShinyHunters 리더로 지목되어 구금됐으며 FBI와 협력 중인 것으로 전해졌다.",
+   "그룹은 보잉이 매각한 항공 소프트웨어 자회사 Jeppesen ForeFlight의 데이터를 빼내 공갈하려 했고, PeopleSoft 취약점 CVE-2026-35273을 악용한 것으로 보고됐다.",
+   "Jeppesen ForeFlight는 운영상 영향이 없다고 밝혔고, 보잉은 사실을 확인 중이라고 답했으며 FBI 사이트 침해 관련 계약직원 해임도 보도됐다."
+  ],
+  "socPoint": "PeopleSoft 웹 서버와 WAF 로그에서 CVE-2026-35273 공격 패턴, 특히 URL 인코딩 우회 요청과 비정상적인 대량 데이터 조회를 확인하고, 외부 데이터 전송 로그를 함께 점검합니다.",
+  "attackTypes": [
+   "정보유출",
+   "취약점 악용"
+  ],
+  "sectors": [
+   "유통·서비스",
+   "정부·공공"
+  ],
+  "nature": "체포·수사",
+  "entities": {
+   "cves": [
+    "CVE-2026-35273"
+   ],
+   "actors": [
+    "ShinyHunters",
+    "Rey",
+    "Saif Al-din Khader",
+    "Pepijn van der Stap"
+   ],
+   "orgs": [
+    "Boeing",
+    "Jeppesen ForeFlight",
+    "Oracle",
+    "FBI",
+    "Royal Jordanian Airlines"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "68735547a4bc9b87",
+  "url": "https://www.itmedia.co.jp/news/article/2610/07/2000002099/",
+  "title": "損保ジャパン、約6万件漏えいか 大和証券・シチズンと同じ委託先への不正アクセスで",
+  "titleKo": "損保ジャパン、大和証券・シチズンと同じ委託先への不正アクセスで約6万件漏えいか",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T08:22:36.000Z",
+  "collectedAt": "2026-10-14T17:27:29.190Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "損害保険ジャパンは、ドライブレコーダー問い合わせ対応を委託したFAQシステム「i-ask」への不正アクセスで顧客情報が漏えいした可能性があると発表した。",
+   "第三者が管理サイトに不正ログインし不正プログラムを設置したとされ、問い合わせ延べ約6万件の氏名・連絡先・勤務先情報などが対象となる。",
+   "不正利用や公開・拡散は確認されていない。損保ジャパン自身のシステムへの侵入は確認されておらず、原因調査と委託先管理の見直しを進める。"
+  ],
+  "socPoint": "FAQ・問い合わせ用SaaSの管理サイトに対する未知のIPや異常ログイン、認証後の不審なプログラム設置やファイル変更を、ウェブサーバおよび管理画面のアクセスログで確認する。",
+  "attackTypes": [
+   "정보유출",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "損害保険ジャパン",
+    "スカラコミュニケーションズ",
+    "i-ask",
+    "SMILING ROAD",
+    "大和証券"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "10fa54cea188bf55",
+  "url": "https://www.itmedia.co.jp/news/article/2610/07/2000002088/",
+  "title": "関西国際大に不正アクセス、学生の記録などが外部流出か 授業や手続きにも支障",
+  "titleKo": "간사이국제대학에 불법 접근, 학생 기록 등 외부 유출 의심 수업과 행정 절차에도 지장",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T06:30:15.000Z",
+  "collectedAt": "2026-10-14T17:27:28.648Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "간사이국제대학은 학생 학습 기록을 저장하는 e포트폴리오 시스템에 불법 접근이 있었고, 저장된 여러 파일이 외부로 유출됐다고 발표했다.",
+   "접근 기록 분석에서 외부로부터 파일을 여러 차례 가져간 흔적이 확인됐으며, 2023년 3월까지 재학했던 학생 정보가 유출된 것으로 보고 있다.",
+   "대학은 9월 30일 학내 인터넷 연결을 차단하고 Wi-Fi를 포함한 네트워크를 중단했으며, 외부 전문기관과 경찰과 함께 원인을 조사 중이다. 개인 식별 정보 포함 여부와 피해 규모는 아직 확인되지 않았다."
+  ],
+  "socPoint": "e포트폴리오 서버의 웹 접근 로그와 파일 다운로드 기록에서 대량 또는 반복적인 파일 조회·추출 패턴, 비정상 인증 시도, 외부 IP에서의 접근 여부를 확인해야 합니다.",
+  "attackTypes": [
+   "정보유출"
+  ],
+  "sectors": [
+   "교육"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "간사이국제대학",
+    "e포트폴리오 시스템"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "83007e133189abbe",
+  "url": "https://www.itmedia.co.jp/news/article/2610/07/2000002083/",
+  "title": "1億件超えの「楽天会員」情報が闇フォーラムで販売？ 楽天「漏えいは確認されていない」",
+  "titleKo": "1억 건 이상의 '라쿠텐 회원' 정보가 암흑 포럼에서 판매? 라쿠텐 \"유출은 확인되지 않았다\"",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T03:42:40.000Z",
+  "collectedAt": "2026-10-14T17:27:31.275Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "사이버 범죄 포럼에 라쿠텐 회원 정보라고 주장하는 약 1억 100만 건의 데이터를 700달러에 판매한다는 게시물이 4일 확인되었다.",
+   "판매자는 이름, 주소, 전화번호, 생년월일, 포인트 잔액 등을 담은 샘플을 올렸으며, 공격 수법과 데이터 출처는 기사에 나오지 않는다.",
+   "라쿠텐그룹은 유출 사실을 부인하며 샘플 계정도 실존 회원과 일치하지 않는다고 밝혔다. 6일에는 라쿠텐 모바일이 '라쿠텐 드라이브' 불법 접근으로 1만 5382개 계정 데이터가 노출됐을 수 있다고 공표한 바 있다."
+  ],
+  "socPoint": "라쿠텐 드라이브 관련 접근 로그와 다크웹 포럼 모니터링에서 라쿠텐 도메인 또는 대량 회원 데이터 샘플이 노출되는지 확인하고, 이상 로그인과 계정 정보 조회 행위를 점검한다.",
+  "attackTypes": [
+   "정보유출"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "楽天グループ",
+    "楽天モバイル",
+    "楽天ドライブ"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "4fe914b2ef4b665f",
+  "url": "https://www.itmedia.co.jp/news/article/2610/07/2000002055/",
+  "title": "バイブコーディングで作った公開中のWebアプリ、9割に脆弱性 MSの研究者など調査",
+  "titleKo": "바이브 코딩으로 만든 공개 웹앱, 90% 이상에서 취약점 발견… MS 연구자 등 조사",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T03:12:12.000Z",
+  "collectedAt": "2026-10-14T17:27:32.096Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "Microsoft 및 싱가포르 국립대 연구진이 AI로 자동 생성된 공개 웹앱의 보안 실태를 조사했다.",
+   "오픈소스 바이브 코딩 웹앱 200건을 표본 조사한 결과 91%에서 최소 1개 이상의 취약점이 발견됐고, 결함의 65.77%는 치명 또는 높음 등급이었다.",
+   "원인은 보안 조치 누락(기억 결함 13.5%), 빠른 동작 우선(목적 결함 23.1%), 암묵적 보안 규칙 누락(지식 결함 63.4%)으로 분류됐다."
+  ],
+  "socPoint": "AI로 생성되어 공개 중인 웹앱의 인증·입력값 검증 관련 웹 로그와 WAF 탐지 이벤트를 살펴보고, 외부에 노출된 신규 서비스의 취약 경로 접근 패턴을 점검하는 것이 좋습니다.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Microsoft",
+    "シンガポール国立大学"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "1a9744b3d8c61a0b",
+  "url": "https://piyolog.hatenadiary.jp/entry/2026/10/07/120750",
+  "title": "スカラコミュニケーションズへの不正アクセスについてまとめてみた",
+  "titleKo": "스카라커뮤니케이션즈에 대한 불법 접근 정리",
+  "sourceId": "piyolog",
+  "sourceName": "piyolog",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T03:07:50.000Z",
+  "collectedAt": "2026-10-14T17:27:32.633Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "스카라커뮤니케이션즈는 FAQ 시스템 i-ask의 관리 사이트에 제3자가 불법 로그인해 문의 정보가 유출됐을 가능성이 있다고 2026년 10월 6일 공개했습니다.",
+   "공격자는 관리 사이트에 불법 로그인한 뒤 서버에 악성 프로그램을 설치했고, 같은 서버의 이용 기업 데이터베이스에서 문의 정보를 가져갔을 수 있습니다.",
+   "대상은 같은 서버의 최대 5개사 문의 정보로 최대 713,126건이며, 대와증권·시티즌시계 등 일부 기업이 개별 공지를 냈고 2차 피해는 확인되지 않았습니다."
+  ],
+  "socPoint": "i-ask 관리 사이트와 데이터베이스의 2026년 10월 2일 20시 30분~10월 3일 8시 사이 관리자 계정 로그인 기록, 업로드 파일 실행 흔적, 신규 프로그램 생성, 외부 대량 데이터 전송을 확인하세요.",
+  "attackTypes": [
+   "정보유출",
+   "취약점 악용"
+  ],
+  "sectors": [
+   "금융",
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "스카라커뮤니케이션즈",
+    "스카라",
+    "i-ask",
+    "대和증권",
+    "시티즌시계"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "3fb11c9ac5c4350a",
+  "url": "https://piyolog.hatenadiary.jp/entry/2026/10/07/095650",
+  "title": "ランサム攻撃起因とみられる大阪公立大学のシステム障害についてまとめてみた",
+  "titleKo": "랜섬웨어 공격으로 추정되는 오사카공립대학 시스템 장애 정리",
+  "sourceId": "piyolog",
+  "sourceName": "piyolog",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T00:56:50.000Z",
+  "collectedAt": "2026-10-14T17:27:32.754Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "2026년 10월 2일 오사카공립대학의 정보기반시스템이 대규모 장애로 멈춰 전 캠퍼스 수업이 중단됐고, 대학은 5일 랜섬웨어 공격으로 판단한다고 발표했다.",
+   "공격자가 가상화 기반 시스템에 침입해 약 500대 서버가 정지했고, 핵심 서버에서 원격 데이터 변조 흔적과 암호화된 백업이 확인됐다.",
+   "학생·졸업생 등 약 13만 명분의 개인정보가 보관돼 있었으나 외부 유출 여부는 조사 중이며, 복구 시점은 정해지지 않았다."
+  ],
+  "socPoint": "가상화 플랫폼 관리 콘솔과 서버 로그에서 대량 서비스 정지, 관리자 계정의 비정상 로그인, 데이터 변조와 대량 파일 암호화 흔적을 확인하고, 외부로의 대용량 데이터 전송 여부도 함께 점검해야 합니다.",
+  "attackTypes": [
+   "랜섬웨어",
+   "정보유출"
+  ],
+  "sectors": [
+   "교육"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "오사카공립대학",
+    "OMU 메일 시스템",
+    "MedCity21"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "4f5d5b76ec5efd59",
+  "url": "https://piyolog.hatenadiary.jp/entry/2026/10/07/094633",
+  "title": "東洋紡グループのメールアカウントへの不正アクセスについてまとめてみた",
+  "titleKo": "도요보 그룹 메일 계정 무단 접근 사건 정리",
+  "sourceId": "piyolog",
+  "sourceName": "piyolog",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T00:46:33.000Z",
+  "collectedAt": "2026-10-14T17:27:34.885Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "도요보 그룹 직원 메일 계정이 제3자에게 무단 접근당해, PDF 첨부 피싱 메일 약 1,500건이 그룹 내외로 발송되었습니다.",
+   "공격자는 첨부 파일을 열면 외부 사이트로 유도해 메일 주소, ID, 비밀번호 등 인증 정보를 입력받는 수법을 썼습니다.",
+   "도요보 엠시 직원 2명도 피싱 피해를 입었으며, 현재까지 기간계 시스템 침해나 2차 피해는 확인되지 않았습니다. 개인정보 유출 여부는 조사 중입니다."
+  ],
+  "socPoint": "메일 게이트웨이와 메일 서버 로그에서 도요보 계열 발신 계정의 비정상 대량 발송, 외부 URL 접속 기록, 로그인 실패·신규 접속 위치 변화, 인증 세션 종료 이력을 확인하십시오.",
+  "attackTypes": [
+   "피싱",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "제조"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "도요보",
+    "도요보 세휀",
+    "도요보 엠시"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "5f2f0d67590b2fee",
+  "url": "https://www.jpcert.or.jp/wr/2026/wr261007.html",
+  "title": "Weekly Report: Google Chromeに複数の脆弱性",
+  "titleKo": "주간 보고서: Google Chrome 복수의 취약점",
+  "sourceId": "jpcert",
+  "sourceName": "JPCERT/CC",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-07T00:05:00.000Z",
+  "collectedAt": "2026-10-14T17:27:35.826Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "JPCERT/CC 주간 보고서(2026-10-07호)가 9월 27일~10월 3일 보안 소식을 묶어 정리했습니다.",
+   "Google Chrome, Apache HTTP Server 2.4, Mozilla 제품 등 여러 소프트웨어에 취약점이 공개되었고 패치 버전 업데이트로 해결할 수 있습니다.",
+   "다수 항목에서 악용 정황이 보고되었으며 특히 FortiMail, Cisco Catalyst SD-WAN Manager, NetScaler ADC/Gateway는 공격이 확인되어 우선 점검이 필요합니다."
+  ],
+  "socPoint": "NetScaler, FortiMail, Cisco SD-WAN Manager의 인증 우회 및 원격 코드 실행 시도를 보기 위해 웹 접근 로그와 관리 인터페이스 인증 실패 기록, 비정상 프로세스 생성 이벤트를 확인하세요.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-81433",
+    "CVE-2026-88771",
+    "CVE-2026-88778"
+   ],
+   "actors": [],
+   "orgs": [
+    "Google Chrome",
+    "Apache HTTP Server",
+    "Fortinet FortiMail",
+    "Mozilla",
+    "Cisco Catalyst SD-WAN Manager"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "b3814729c319e596",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/07/56407.html",
+  "title": "最初は正しかった設定が時とともに正しくなくなる ～ TwoFive が MXSCORE/25 for Cloud で挑む M365 の設定乖離",
+  "titleKo": "처음에는 올바랐던 설정이 시간이 지나며 어긋난다 ～ TwoFive의 MXSCORE/25 for Cloud가 다루는 M365 설정 편차",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-06T23:10:02.000Z",
+  "collectedAt": "2026-10-14T17:28:03.120Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "TwoFive가 Overe와 제휴해 일본 시장에 내놓은 MXSCORE/25 for Cloud를 소개하는 기사다. M365 설정 가시화, 설정 교정, 계정 침해 감시, 자동 대응을 한 서비스로 제공한다.",
+   "운영 중 담당자 교체나 임시 설정 변경이 쌓여 보안 수준이 서서히 어긋나는 '설정 편차'가 핵심 문제로 제시된다. 디바이스 코드 피싱과 다이렉트 센드 악용도 언급된다.",
+   "기사에는 피해 규모나 구체적 사고 수치가 없고, 교육기관 계정 침해 사례는 일반적으로 언급됐다. 가격은 1계정당 월 3자리 엔, 년 4자리 엔 수준으로만 제시됐다."
+  ],
+  "socPoint": "M365 감사 로그(로그인 및 조건부 액세스 기록)에서 디바이스 코드 인증 흐름과 비정상 국가 IP 접근을 확인하고, 외부 공유 설정 변경 이력과 다이렉트 센드 관련 메일 발송 로그를 함께 모니터링한다.",
+  "attackTypes": [
+   "계정 탈취",
+   "피싱"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "업계 동향",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "TwoFive",
+    "Overe",
+    "MXSCORE/25 for Cloud",
+    "Microsoft 365",
+    "HISOL"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "4c0b667034c704fc",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/07/56406.html",
+  "title": "KKR京都くに荘のメールサーバに不正アクセス",
+  "titleKo": "KKR 교토 쿠니소의 메일 서버에 무단 접근",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-06T23:05:22.000Z",
+  "collectedAt": "2026-10-14T17:27:39.273Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "일본 교토의 KKR 京都くに荘(쿠니소) 시설 메일 서버에 불법 접근이 발생한 것으로 보도되었습니다.",
+   "제목 외에 공격 경로나 사용된 수법은 확인되지 않았습니다.",
+   "피해 규모, 유출 여부, 현재 대응 상황은 입력된 정보만으로는 알 수 없습니다."
+  ],
+  "socPoint": "메일 서버의 인증 로그와 원격 접속 기록에서 비정상 시간대 로그인, 해외 IP 접속, 다수의 실패 후 성공하는 로그인 패턴, 사용자 계정의 새 전달 규칙이나 대량 발송 기록을 확인합니다.",
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "KKR京都くに荘"
+   ]
+  },
+  "basis": "제목"
+ },
+ {
+  "id": "044c71c5ce6a3d7b",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/07/56405.html",
+  "title": "九州電子 台湾子会社にランサムウェア攻撃、事業運営に必要なシステム環境の復旧を完了",
+  "titleKo": "규슈전자 대만 자회사에 랜섬웨어 공격, 사업 운영에 필요한 시스템 환경 복구 완료",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-06T23:05:18.000Z",
+  "collectedAt": "2026-10-14T17:27:40.686Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "규슈전자의 대만 자회사가 랜섬웨어 공격을 받았다.",
+   "제목만으로는 공격 수법과 침입 경로를 확인할 수 없다.",
+   "회사는 사업 운영에 필요한 시스템 환경의 복구를 완료했다고 밝혔다."
+  ],
+  "socPoint": "대만 자회사 네트워크에서 대량 파일 암호화·확장자 변경 이벤트, 백업 서버 삭제 로그, 관리자 계정의 비정상 로그인을 확인하고, 랜섬노트 생성 여부를 점검합니다.",
+  "attackTypes": [
+   "랜섬웨어"
+  ],
+  "sectors": [],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "九州電子",
+    "台湾子会社"
+   ]
+  },
+  "basis": "제목"
+ },
+ {
+  "id": "83ea7c3898ac2640",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/07/56404.html",
+  "title": "「カイクラサービス紹介サイト」に複数の不正プログラム、サーバ内のデータを外部に送信した形跡は確認されず",
+  "titleKo": "'카이쿠라 서비스 소개 사이트'에 여러 악성 프로그램 발견, 서버 데이터 외부 전송 흔적은 확인되지 않아",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-06T23:05:13.000Z",
+  "collectedAt": "2026-10-14T17:27:38.861Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "카이쿠라 서비스 소개 사이트에서 여러 개의 불정 프로그램(악성 코드)이 발견되었습니다.",
+   "원문 제목만으로는 감염 경로나 악성 코드의 세부 기능은 확인되지 않습니다.",
+   "서버 내 데이터가 외부로 전송된 흔적은 확인되지 않았다고 알려졌으며, 자세한 대응 내용은 본문 확인이 필요합니다."
+  ],
+  "socPoint": "웹 서버 접근 로그와 파일 무결성 점검 결과를 확인해 사이트에 삽입된 스크립트나 비정상 파일 변경을 찾고, 외부로 나가는 비정상 아웃바운드 트래픽 여부를 함께 봅니다.",
+  "attackTypes": [
+   "악성코드"
+  ],
+  "sectors": [],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "카이쿠라"
+   ]
+  },
+  "basis": "제목"
+ },
+ {
+  "id": "48034d639540c427",
+  "url": "https://piyolog.hatenadiary.jp/entry/2026/10/07/072551",
+  "title": "シンテックホズミの元社員2人が逮捕された営業秘密漏えい事件についてまとめてみた",
+  "titleKo": "신테크호즈미 전직 직원 2명, 영업비밀 유출 사건으로 체포",
+  "sourceId": "piyolog",
+  "sourceName": "piyolog",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-06T22:25:51.000Z",
+  "collectedAt": "2026-10-14T17:27:43.023Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "2026년 10월 5일 아이치현경은 토요타자동차 자회사 신테크호즈미의 전 직원 남녀 2명을 영업비밀 누설 혐의로 체포했다고 발표했다.",
+   "전 상사인 남성이 전 부하 여성에게 무인 반송차 충전장치 원가 전자데이터를 복제해 넘기도록 요청한 것으로 보고 있으며, 데이터는 취引 회사 클라우드에 업로드된 뒤 남성이 열람·다운로드할 수 있었다.",
+   "회사가 2024년 12월 경찰에 상담했고 경찰은 같은 달 자택을 수색했다. 남성은 같은 업종의 거래처 경쟁사로 이직했으며, 두 사람의 인정 여부와 동기는 아직 확인되지 않았다."
+  ],
+  "socPoint": "퇴직자 계정의 클라우드 파일 공유 서비스 접근 로그와 다운로드 기록, 특히 2024년 9월 대량 복제 및 업로드 이벤트를 확인하고, 퇴직 후에도 살아 있던 계정과 외부 저장소 전송 이력을 점검해야 합니다.",
+  "attackTypes": [
+   "정보유출",
+   "내부자"
+  ],
+  "sectors": [
+   "제조"
+  ],
+  "nature": "체포·수사",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "신테크호즈미",
+    "토요타자동차",
+    "아이치현경"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "fee4b0d9df468761",
+  "url": "https://www.ipa.go.jp/security/security-alert/2026/20261007-jvn.html",
+  "title": "「Movable Type」における複数の脆弱性について（JVN#91153973）",
+  "titleKo": "Movable Type의 여러 취약점에 관하여(JVN#91153973)",
+  "sourceId": "ipa",
+  "sourceName": "IPA",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-06T15:00:00.000Z",
+  "collectedAt": "2026-10-14T17:27:43.048Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "일본 IPA가 콘텐츠 관리 시스템 Movable Type의 코드 인젝션 및 SQL 인젝션 취약점을 공지했습니다.",
+   "악용되면 시스템에서 임의의 Perl 코드나 SQL 명령이 실행될 수 있으며, 그 밖의 취약점도 함께 수정되었습니다.",
+   "CVE-2026-96408(CVSS 9.4, 긴급)과 CVE-2026-103668(CVSS 8.6, 중요)이 확인되었습니다. 최신 버전 업데이트를 권장하며, 불가능하면 CGI 파일 삭제나 PSGI 설정으로 완화할 수 있습니다."
+  ],
+  "socPoint": "Movable Type 웹 서버의 mt-upgrade.cgi, mt-search.cgi, mt-ftsearch.cgi 대한 접근 로그와 비정상적인 Perl 실행 또는 DB에 대한 비정상적인 SQL 구문 로그를 확인하세요.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-96408",
+    "CVE-2026-103668"
+   ],
+   "actors": [],
+   "orgs": [
+    "시ックス・アパート株式会社",
+    "Movable Type",
+    "IPA",
+    "JPCERT/CC"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "2f88ab83493dc8d2",
+  "url": "https://www.itmedia.co.jp/news/article/2610/06/2000002032/",
+  "title": "デンマークで住民登録簿に不正アクセス 880万人分の個人番号など流出 政府「極めて深刻」",
+  "titleKo": "덴마크 주민등록부에 불법 접근, 880만 명분의 개인번호 등 유출… 정부 \"극히 심각\"",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-06T03:41:53.000Z",
+  "collectedAt": "2026-10-14T17:27:44.513Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "덴마크 고등교육·과학·디지털화부는 중앙 개인등록부(CPR)에 제3자가 불법 접근해 약 880만 명의 이름, 주소, 개인번호가 취득됐다고 발표했다.",
+   "정식 조회 권한을 가진 덴마크 민간기업의 접근 권한을 악용한 방식이며, CPR 시스템에 직접 침투한 것은 아니다. 비공개 등록자는 대상에서 제외됐다.",
+   "관리당국은 9월 이상 움직임을 파악해 해당 기업의 접근을 차단하고 데이터보호당국에 보고했으며, 경찰이 공격자를 수사 중이다."
+  ],
+  "socPoint": "CPR 조회 API나 시스템 접속 로그에서 민간기업 계정의 대량 조회, 비정상 시간대·대상 범위를 벗어난 조회 패턴을 확인해야 합니다.",
+  "attackTypes": [
+   "정보유출",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "덴마크 고등교육·과학·디지털화부",
+    "중앙 개인등록부(CPR)"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "b9d1682e16ca3896",
+  "url": "https://piyolog.hatenadiary.jp/entry/2026/10/06/121225",
+  "title": "AIペネトレーションテストツール「ARTEX」についてまとめてみた",
+  "titleKo": "AI 침투 테스트 도구 ARTEX 정리",
+  "sourceId": "piyolog",
+  "sourceName": "piyolog",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-06T03:12:25.000Z",
+  "collectedAt": "2026-10-14T17:27:46.997Z",
+  "regions": [
+   "INTL",
+   "KR"
+  ],
+  "summary": [
+   "GitHub에 공개됐던 AI 침투 테스트 도구 ARTEX가 한국 금융기관 대상 공격에 쓰였다는 정황이 제기됐다.",
+   "ARTEX는 LLM과 멀티 에이전트로 계획을 세워 실행하는 도구로, 개발자는 허가된 범위에서만 쓰라고 명시했다.",
+   "금융보안원장은 공격 IP에서 ARTEX 흔적을 확인했다고 밝혔으며, CrowdStrike는 공격자 인프라에서 관련 파일을 발견했다고 보고했다. 개발자는 10월 8일 업데이트와 공개를 중단하고 클로즈드소스화를 선언했다."
+  ],
+  "socPoint": "웹서버 HTML에 'ARTEX — 자주 침투 테스트 콘솔' 문자열이나 데모 사이트 제목이 있는지 확인하고, 이 도구의 LLM API 중계 서버로 나가는 외부 통신과 Claude Code 세션 관련 아웃바운드 트래픽을 점검하세요.",
+  "attackTypes": [
+   "계정 탈취"
+  ],
+  "sectors": [
+   "금융"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "ARTEX",
+    "CrowdStrike가 특정하지 않은 위협 행위자"
+   ],
+   "orgs": [
+    "신한은행",
+    "KB국민은행",
+    "Genians",
+    "Team Cymru Research",
+    "CrowdStrike"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "ce05f46f52a57c3a",
+  "url": "https://piyolog.hatenadiary.jp/entry/2026/10/06/103019",
+  "title": "韓国の金融機関で相次いだ不正アクセスについてまとめてみた",
+  "titleKo": "한국 금융기관에서 잇따른 불법 접근 사고 정리",
+  "sourceId": "piyolog",
+  "sourceName": "piyolog",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-06T01:30:19.000Z",
+  "collectedAt": "2026-10-14T17:27:46.852Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "2026년 10월 1일 신한은행이 융자 신청 고객 정보 약 2만 5천 명분의 외부 유출을 공표했고, 이후 여러 금융기관으로 유사 사고가 확인됐다.",
+   "공격자는 무작위 입력으로 유효한 고객번호를 확보했고, 융자 담당자용 등 외부 접점 시스템이 주로 노려졌다고 알려졌다.",
+   "금융당국은 7개사 사고를 설명했고 금융업계 전체에 긴급 점검을 요청했다. 현재까지 추가 유출 여부는 조사 중이다."
+  ],
+  "socPoint": "외부 IP에서 융자 조회·고객번호 대량 입력 등 비정상 조회 패턴이 있는지 웹·API 접근 로그와 WAF 로그를 확인하고, 공유된 공격 IP 목록과 대조한다.",
+  "attackTypes": [
+   "정보유출",
+   "취약점 악용",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "금융"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "신한은행",
+    "KB국민은행",
+    "하나은행",
+    "BNK부산은행",
+    "현대캐피탈"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "a91244f639ef75b5",
+  "url": "https://www.itmedia.co.jp/news/article/2610/06/2000002013/",
+  "title": "不正アクセスなぜ急増 原因はAIか、それとも…… 専門家の見解は",
+  "titleKo": "불법 접근이 왜 급증했나: AI 때문인가, 아니면… 전문가 견해",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-06T01:00:00.000Z",
+  "collectedAt": "2026-10-14T17:27:49.214Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "2026년 9월 말 이후 타임즈카셰어링(면허증 이미지 유출), 야키니쿠킹(1000만 건 이상 유출) 등 일본 기업의 불법 접근·정보 유출 발표가 잇따랐습니다.",
+   "라쿠(LAC)의 구라모치 히로아키 CTO는 공개 정보만으로는 동일 공격자나 단일 캠페인으로 판단할 수 없다고 봅니다.",
+   "다만 소비자 웹서비스와 공통 SaaS에 쌓인 신원·행동·인증 정보가 범죄적 가치를 높이는 구조는 주목해야 하며, AI 영향은 현재 확인된 근거가 없습니다."
+  ],
+  "socPoint": "SaaS·소비자 웹서비스의 비정상 로그인, 대량 조회·내보내기 이벤트, 세션 토큰 재사용 등 계정 탈취 징후와 면허증·예약 정보를 노린 정밀 피싱 신고 건을 함께 모니터링합니다.",
+  "attackTypes": [
+   "정보유출",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "유통·서비스",
+   "IT·클라우드"
+  ],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "ITmedia",
+    "타임즈카셰어링",
+    "야키니쿠킹",
+    "라쿠"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "8d7405cee074f723",
+  "url": "https://www.boho.or.kr/kr/bbs/view.do?searchCnd=&bbsId=B0000133&searchWrd=&menuNo=205020&pageIndex=1&categoryCode=&nttId=72210",
+  "title": "보안인증 소프트웨어 취약점 관련 클리닝 서비스 가동 안내",
+  "titleKo": "보안인증 소프트웨어 취약점 관련 클리닝 서비스 가동 안내",
+  "sourceId": "krcert",
+  "sourceName": "KISA 보호나라",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-06T00:00:00.000Z",
+  "collectedAt": "2026-10-14T17:27:51.613Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "KISA 보호나라가 INNORIX社 Agent 소프트웨어의 보안 취약점을 안내하고 해당 소프트웨어 삭제를 권고했습니다.",
+   "취약점은 로컬 권한 상승으로, 1.1.1.001 이상 1.3.5.576 이하 버전이 영향을 받습니다.",
+   "백신 프로그램을 통해 구버전을 자동 탐지하고, 이용자 동의 시 취약점을 조치하는 클리닝 서비스가 운영됩니다."
+  ],
+  "socPoint": "엔드포인트에서 INNORIX Agent 설치 여부와 버전을 점검하고, 해당 프로세스의 비정상적인 권한 상승 행위나 관리자 권한 획득 이벤트를 확인하세요.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "INNORIX",
+    "KISA 보호나라",
+    "nProtect Online Security",
+    "VirusChaser",
+    "엑소스피어"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "16e1f394388f2bf9",
+  "url": "https://www.boho.or.kr/kr/bbs/view.do?searchCnd=&bbsId=B0000133&searchWrd=&menuNo=205020&pageIndex=1&categoryCode=&nttId=72209",
+  "title": "Citrix 제품 보안 업데이트 권고",
+  "titleKo": "Citrix 제품 보안 업데이트 권고",
+  "sourceId": "krcert",
+  "sourceName": "KISA 보호나라",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-06T00:00:00.000Z",
+  "collectedAt": "2026-10-14T17:27:52.658Z",
+  "regions": [
+   "INTL"
+  ],
+  "summary": [
+   "Citrix가 NetScaler ADC와 NetScaler Gateway의 보안 취약점(CVE-2026-88779)을 해결한 업데이트를 발표했습니다.",
+   "취약점은 메모리 버퍼 경계 내 연산 제한 미흡(Improper Restriction of Operations within the Bounds of a Memory Buffer)으로 분류됩니다.",
+   "영향을 받는 버전 사용자는 Citrix 참고 사이트의 해결 버전으로 업데이트해야 하며, 공격 악용 여부는 본문에 나와 있지 않습니다."
+  ],
+  "socPoint": "NetScaler ADC와 Gateway의 버전 정보를 자산 목록과 대조해 영향 버전(13.1-64.28 미만, 14.1-73.41 미만 등)을 쓰는 장비를 먼저 찾고, 해당 장비의 비정상적인 메모리 관련 크래시나 재시작 로그를 확인하세요.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-88779"
+   ],
+   "actors": [],
+   "orgs": [
+    "Citrix",
+    "NetScaler ADC",
+    "NetScaler Gateway"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "f0f5bcc080352a65",
+  "url": "https://www.boho.or.kr/kr/bbs/view.do?searchCnd=&bbsId=B0000133&searchWrd=&menuNo=205020&pageIndex=1&categoryCode=&nttId=72211",
+  "title": "금융권 등 개인정보 유출 사고 피해보상금 지급 등 사칭 피싱 주의 권고",
+  "titleKo": "금융권 등 개인정보 유출 사고 피해보상금 지급 등 사칭 피싱 주의 권고",
+  "sourceId": "krcert",
+  "sourceName": "KISA 보호나라",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-06T00:00:00.000Z",
+  "collectedAt": "2026-10-14T17:27:52.981Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "최근 금융권과 민간기업 대상 침해사고가 잇따르자, 이를 빙자한 스미싱·피싱·보이스피싱 시도에 대한 주의 권고가 나왔습니다.",
+   "공격자는 '개인정보 유출', '피해보상금 지급', '유출정보 확인' 등을 사칭해 문자 속 악성 URL, 검색 광고 피싱사이트, 원격제어 앱 설치를 유도합니다.",
+   "피해 확인 시 문자 URL 삭제, 번호도용차단 신청, 통신사를 통한 소액결제 확인과 경찰 신고를 권고하며, 구체적인 피해 규모는 본문에 없습니다."
+  ],
+  "socPoint": "모바일 단말의 SMS 수신 후 URL 클릭 기록, 설치된 미상 APK와 원격제어 앱 설치 이력, 그리고 '피해보상', '개인정보 유출' 키워드가 포함된 도메인으로의 접속 로그를 확인하십시오.",
+  "attackTypes": [
+   "피싱",
+   "정보유출"
+  ],
+  "sectors": [
+   "금융"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "보호나라",
+    "KISA",
+    "전기통신금융사기통합신고대응센터"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "35e322da63a01657",
+  "url": "https://www.boho.or.kr/kr/bbs/view.do?searchCnd=&bbsId=B0000133&searchWrd=&menuNo=205020&pageIndex=1&categoryCode=&nttId=72208",
+  "title": "Apache 제품 보안 업데이트 권고",
+  "titleKo": "Apache 제품 보안 업데이트 권고",
+  "sourceId": "krcert",
+  "sourceName": "KISA 보호나라",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-06T00:00:00.000Z",
+  "collectedAt": "2026-10-14T17:27:55.277Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "Apache 재단이 Apache HTTP Server의 취약점 14건을 해결한 보안 업데이트를 발표했다.",
+   "취약점은 NULL 포인터 역참조, 범위 밖 쓰기, Use After Free, 인증 누락, 요청 스머글링 등 다양한 유형이다.",
+   "영향 버전은 2.4.69 미만이며 최신 버전인 2.4.69 이상으로 업데이트하도록 권고됐다."
+  ],
+  "socPoint": "웹 서버에 설치된 Apache HTTP Server 버전(httpd -v)을 점검하고, 서버 에러 로그와 비정상적인 HTTP 요청(중복 Content-Length, 비정상 헤더) 패턴을 확인하는 것이 필요하다.",
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-46729",
+    "CVE-2026-47360",
+    "CVE-2026-48005",
+    "CVE-2026-56153",
+    "CVE-2026-56154",
+    "CVE-2026-56449",
+    "CVE-2026-57941",
+    "CVE-2026-59685",
+    "CVE-2026-59797",
+    "CVE-2026-63045",
+    "CVE-2026-63292",
+    "CVE-2026-63686",
+    "CVE-2026-63718",
+    "CVE-2026-73636",
+    "CVE-2026-73637",
+    "CVE-2026-93546"
+   ],
+   "actors": [],
+   "orgs": [
+    "Apache 재단",
+    "Apache HTTP Server"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "eae822bc617b4a7c",
+  "url": "https://piyolog.hatenadiary.jp/entry/2026/10/06/002029",
+  "title": "ジェリービーンズグループの資金流出についてまとめてみた",
+  "titleKo": "젤리빈즈그룹 자금 유출 사건 정리",
+  "sourceId": "piyolog",
+  "sourceName": "piyolog",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-05T15:20:29.000Z",
+  "collectedAt": "2026-10-14T17:27:57.127Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "젤리빈즈그룹은 임원을 사칭한 제3자의 송금 지시로 4,500만 엔이 유출된 사실을 조사위원회 보고서 요약본으로 2026년 9월 30일 공개했습니다.",
+   "공격자는 회장을 사칭한 메일로 개인 LINE QR코드를 받아낸 뒤, 사장을 사칭한 LINE 그룹에서 타사 명의 계좌로의 긴급 송금을 지시했습니다.",
+   "송금 후 사장 확인으로 허위가 드러나 송금 취소와 지급정지를 시도했으나 회수하지 못했고, 조사위는 내부 공모 없이 BEC 피해로 판단했습니다."
+  ],
+  "socPoint": "기업 메일 서버의 발신 도메인 인증(SPF, DKIM, DMARC) 로그와 임직원 개인 메신저로의 업무 지시 이력, 인터넷뱅킹의 송금 등록자·승인자 분리 여부와 고액 단건 송금 이력을 함께 확인해야 합니다.",
+  "attackTypes": [
+   "정보유출",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "ジェリービーンズグループ",
+    "GMOあおぞらネット銀行",
+    "LINEヤフー"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "4169fa9610463bd2",
+  "url": "https://www.itmedia.co.jp/news/article/2610/05/2000002011/",
+  "title": "「焼肉きんぐ」個人情報約1079万件が漏えい 公式アプリのシステムに不正アクセス ほぼ全会員分に相当",
+  "titleKo": "「焼肉きんぐ」 개인정보 약 1079만 건 유출, 공식 앱 시스템 불법 접근으로 거의 전 회원분에 해당",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-05T09:39:42.000Z",
+  "collectedAt": "2026-10-14T17:27:57.164Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "焼肉きんぐ를 운영하는 물語코퍼레이션의 공식 앱 회원관리 시스템이 제3자의 불법 접근을 받아 회원정보 약 1078만 8963건이 유출됐다고 발표했다.",
+   "유출 항목은 회원번호, 앱 등록 이름, 이메일, 전화번호이며 비밀번호와 생년월일, 결제 정보는 포함되지 않았다.",
+   "회사는 2일 접근을 확인하고 통신 차단 등 조치를 했으며, 현재 유출 정보의 공개나 불법 사용은 확인되지 않았다고 밝혔다. 원인 조사와 개인정보보호위원회 보고, 경찰 신고를 진행 중이다."
+  ],
+  "socPoint": "회원관리 시스템 API와 앱 로그인 서버에서 대량 조회 요청, 비정상적인 계정 정보 열람 패턴, 외부 IP의 인증 우회 시도를 확인하고, 유출 가능성이 있는 회원 계정의 이메일·전화번호 기반 피싱 시도 여부도 모니터링해야 합니다.",
+  "attackTypes": [
+   "정보유출",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "物語コーポレーション",
+    "焼肉きんぐ",
+    "丸源ラーメン"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "30f66d445430f7df",
+  "url": "https://www.itmedia.co.jp/news/article/2610/05/2000002009/",
+  "title": "韓国の銀行6行にサイバー攻撃 計2万5000人超の個人情報流出──AIエージェントを使った可能性も 現地報道",
+  "titleKo": "한국 은행 6곳에 사이버 공격, 총 2만5000명 넘는 개인정보 유출 — AI 에이전트 사용 가능성도 현지 보도",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-05T09:21:19.000Z",
+  "collectedAt": "2026-10-14T17:27:59.163Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "9월 말부터 한국 은행들이 사이버 공격을 받아 신한·KB국민·하나·BNK부산 등 4개 은행에서 개인정보가 유출됐다.",
+   "외부에서 접근 가능한 업무 지원·조회 시스템이 침입구로 쓰였고, 하나·BNK부산은 AI 에이전트를 이용한 공격으로 추정된다.",
+   "신한은행 약 2만5000명분 유출이 발표됐으며, 금융위원회는 외부 접속 시스템 전반의 보안 점검을 지시했다."
+  ],
+  "socPoint": "외부에 노출된 업무 지원·조회 시스템의 웹 로그에서 짧은 시간에 여러 기능에 집중된 자동화성 접속, 국가가 다른 IP의 연속 접속, 비정상적인 세션 및 API 호출 패턴을 확인해야 한다.",
+  "attackTypes": [
+   "정보유출",
+   "취약점 악용",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "금융"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "신한은행",
+    "KB국민은행",
+    "하나은행",
+    "BNK부산은행",
+    "우리은행"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "6c7b9a78467cfcb4",
+  "url": "https://piyolog.hatenadiary.jp/entry/2026/10/05/151151",
+  "title": "e-Taxのシステム障害についてまとめてみた",
+  "titleKo": "e-Tax 시스템 장애에 관한 정리",
+  "sourceId": "piyolog",
+  "sourceName": "piyolog",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-05T06:11:51.000Z",
+  "collectedAt": "2026-10-14T17:28:01.098Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "국세청은 2026년 9월 24일 국세시스템을 갱신한 뒤 e-Tax 로그인, 납부, 전자신고 소프트웨어 등에서 장애가 발생했다고 알렸습니다.",
+   "e-Tax 마이페이지의 '증여세 관련 정보' 기능을 개편하는 과정에서 발생한 시스템 결함으로 설명되었습니다.",
+   "10월 2일 발표에 따르면 9월 24일과 25일 일부 시간대에 타인의 증여세 신고서 79건이 열람 가능했고, 열람 가능성이 있는 개인정보는 총 203명분입니다. 발견 후 기능이 중단되었고 9월 27일 복구되었습니다."
+  ],
+  "socPoint": "e-Tax 마이페이지의 증여세 관련 정보 조회 로그에서 본인이 아닌 계정이 타인의 신고서를 열람한 기록(9월 24일 8시 30분~24시, 9월 25일 4시~15시 58분)을 점검하고, 웹 접근 로그에서 비정상적인 조회 패턴이나 대량 열람 여부를 확인할 필요가 있습니다.",
+  "attackTypes": [],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "국세청",
+    "e-Tax",
+    "마이너포털",
+    "ゆうちょ銀行"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "3712ab804e6313f4",
+  "url": "https://www.itmedia.co.jp/news/article/2610/05/2000002001/",
+  "title": "大阪公立大、システム障害で1週間近く休講に 出願期間中で入試にも影響",
+  "titleKo": "오사카공립대, 시스템 장애로 약 1주일 휴강… 입시 출원에도 영향",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-05T04:50:34.000Z",
+  "collectedAt": "2026-10-14T17:28:01.051Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "오사카공립대학이 10월 2일 새벽 발생한 정보기반 시스템 대규모 장애로 8일까지 수업을 휴강한다고 발표했다.",
+   "원인은 아직 조사 중이며, 5일 오후 1시 기준 대부분의 주요 시스템에 접속할 수 없는 상태다.",
+   "Web 출원 사이트는 학외 서버에서 동작해 등록은 가능하지만 모집요강 열람과 일부 출원 서류 확보가 어렵고, 출원 마감은 8일이다."
+  ],
+  "socPoint": "교육기관 내부망의 서비스 가용성 저하 여부를 확인하기 위해 주요 시스템 접속 실패 로그, 인증 서버 및 스토리지 장애 이벤트를 점검하고, 랜섬웨어 등 공격 가능성 배제를 위해 대량 파일 암호화 및 비정상 관리자 활동 흔적을 함께 봅니다.",
+  "attackTypes": [],
+  "sectors": [
+   "교육"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "오사카공립대학"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "859e0aa30b377a59",
+  "url": "https://piyolog.hatenadiary.jp/entry/2026/10/05/115509",
+  "title": "日本経済新聞社へのサイバー攻撃となりすましメール送信についてまとめてみた",
+  "titleKo": "日本経済新聞社へのサイバー攻撃となりすましメール送信についてまとめてみた",
+  "sourceId": "piyolog",
+  "sourceName": "piyolog",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-05T02:55:09.000Z",
+  "collectedAt": "2026-10-14T17:28:03.065Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "닛케이 신문사는 직원의 Microsoft 365 계정이 공격받아 약 9,000건의 사칭 메일이 취재처 등에 발송됐다고 10월 4일 공표했다.",
+   "메일은 악성 사이트로 유도하는 내용이며, 직원 계정 정보가 외부에서 탈취된 것으로 보인다. 닛케이BP는 피싱 메일로 직원 인증정보가 탈취된 사실을 밝혔다.",
+   "유출 가능성이 있는 정보는 메일 주소와 이름 등이며, 비밀번호 변경 후 추가 불법 로그인은 확인되지 않았다. 개인정보보호위원회에 보고하고 조사 중이다."
+  ],
+  "socPoint": "Microsoft 365와 Google Workspace의 로그인 기록에서 해외 IP나 비정상 시간대 접속, 메일 전달 규칙 변경, 대량 외부 발송 흔적을 확인하고, 사칭 메일의 악성 URL 도메인도 함께 살펴볼 것.",
+  "attackTypes": [
+   "피싱",
+   "계정 탈취",
+   "정보유출"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "日本経済新聞社",
+    "日経BP",
+    "Microsoft 365",
+    "Google Workspace"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "5a1e9c7ca1cecbdd",
+  "url": "https://piyolog.hatenadiary.jp/entry/2026/10/05/023139",
+  "title": "ヤマト運輸のクロネコ代金後払いサービスへの不正アクセスについてまとめてみた",
+  "titleKo": "야마토운수 쿠로네코 대금후불 서비스 불법 접근 정리",
+  "sourceId": "piyolog",
+  "sourceName": "piyolog",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-04T17:31:39.000Z",
+  "collectedAt": "2026-10-14T17:28:04.581Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "야마토운수는 2026년 9월 28일 '쿠로네코 대금후불 서비스'에 제3자의 불법 접근이 있었음을 확인하고 같은 날 22시 28분 서비스를 중단했습니다.",
+   "공개된 자료에는 침입 시기와 경로, 원인이 아직 제시되지 않았고 외부 접근 제한 등의 대응이 언급되었습니다.",
+   "10월 2일 2차 공지에서 이용자 이름, 주소, 전화번호, 이메일, 청구 금액 등 일부 정보가 유출됐을 가능성을 밝혔으며, 카드 정보와 비밀번호는 포함되지 않았다고 설명했습니다."
+  ],
+  "socPoint": "대금후불 결제 API 및 관리 화면의 비정상 접근 로그, 인증 실패와 대량 조회 패턴, 가맹점 연동 서버의 외부 통신 기록을 확인하고 유출 의심 이메일과 SMS 피싱 시도를 함께 모니터링하십시오.",
+  "attackTypes": [
+   "정보유출",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "ヤマト運輸",
+    "ヤマトホールディングス",
+    "クロネコ代金後払いサービス"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "70727c8fc03d6b37",
+  "url": "https://www.boho.or.kr/kr/bbs/view.do?searchCnd=&bbsId=B0000133&searchWrd=&menuNo=205020&pageIndex=1&categoryCode=&nttId=72207",
+  "title": "최근 사이버공격 대비 기업 보안강화 권고",
+  "titleKo": "최근 사이버공격 대비 기업 보안강화 권고",
+  "sourceId": "krcert",
+  "sourceName": "KISA 보호나라",
+  "sourceRegion": "KR",
+  "publishedAt": "2026-10-03T00:00:00.000Z",
+  "collectedAt": "2026-10-14T17:28:04.915Z",
+  "regions": [
+   "KR"
+  ],
+  "summary": [
+   "국내 금융권과 민간기업을 대상으로 한 침해사고가 여러 건 발생해, KISA가 추가 공격에 대비한 보안 강화를 권고했다.",
+   "초기 침입에 자주 쓰이는 웹·API 취약점과 노출된 인증정보를 우선 점검하고, 침입 후 내부 접근과 정보 유출을 막도록 안내한다.",
+   "외부 노출 자산 정리, MFA 적용, 노출 인증정보 폐기, EDR 점검 등을 제시하며, 의심 시 KISA(118)에 신고하고 증적을 보존하도록 한다."
+  ],
+  "socPoint": "웹서버 프로세스의 비정상 명령 실행, 웹·API 로그의 식별자 변경 연속 조회와 대량 다운로드, 관리자 계정의 새로운 접속 환경 인증 및 신규 계정 생성 로그를 함께 확인한다.",
+  "attackTypes": [
+   "취약점 악용",
+   "계정 탈취",
+   "정보유출"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "KISA 보호나라"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "772bd7e3dc3500c0",
+  "url": "https://piyolog.hatenadiary.jp/entry/2026/10/03/001121",
+  "title": "WordPress Coreの脆弱性CVE-2026-87902についてまとめてみた",
+  "titleKo": "WordPress Core 취약점 CVE-2026-87902 정리",
+  "sourceId": "piyolog",
+  "sourceName": "piyolog",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-02T15:11:21.000Z",
+  "collectedAt": "2026-10-14T17:28:07.689Z",
+  "regions": [
+   "INTL",
+   "JP"
+  ],
+  "summary": [
+   "2026년 9월 22일 WordPress가 Core의 심각한 취약점 CVE-2026-87902를 공개하고 7.1.2 및 4.7 계열까지 수정 버전을 제공했습니다.",
+   "get_page_template() 처리의 경로 탐색 문제로 인증 없이 테마 디렉터리 밖의 로컬 PHP 파일이 포함될 수 있으며, 조건이 맞으면 RCE로 이어질 수 있습니다.",
+   "발견자가 PoC를 공개했고 CISA는 9월 25일 KEV에 추가했습니다. 국내에서는 JPCERT/CC와 JVN이 공지했으며, 엑스서버는 해당 조건의 사이트를 사업자 측에서 업데이트했다고 밝혔습니다."
+  ],
+  "socPoint": "웹서버 액세스 로그에서 pagename 또는 page_id 파라미터에 경로 이동 문자열이 포함된 요청, pearcmd 또는 config 관련 요청, 본 건 PoC 및 Nuclei 템플릿과 일치하는 User-Agent를 확인하고, /tmp와 /var/tmp에 생성된 예상치 못한 .php 파일을 점검하세요.",
+  "attackTypes": [
+   "취약점 악용",
+   "악성코드"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-87902"
+   ],
+   "actors": [],
+   "orgs": [
+    "WordPress",
+    "Patchstack",
+    "CrowdSec",
+    "Previdian",
+    "엑스서버"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "ed871dd03229dee3",
+  "url": "https://www.itmedia.co.jp/news/article/2610/02/2000001976/",
+  "title": "日本エネルギー経済研究所、不正アクセスの続報 パスポート情報13件の漏えい確認",
+  "titleKo": "일본에너지경제연구소, 불법 접속 후속 보도… 여권 정보 13건 유출 확인",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-02T08:51:33.000Z",
+  "collectedAt": "2026-10-14T17:28:06.379Z",
+  "regions": [
+   "JP"
+  ],
+  "summary": [
+   "일본에너지경제연구소(IEEJ)는 소속 직원 6명의 Microsoft 365 계정이 불법 접속당한 사고의 상세 조사 결과를 발표했습니다.",
+   "제3자가 피싱 공격으로 계정에 침입해 메일 5417건과 파일 3272건을 열람했고, 이 중 2798건은 다운로드 흔적이 확인되었습니다.",
+   "메일 주소 759건 등이 유출 가능성이 있으며, 여권 정보 13건은 유출이 확정되어 개인정보 보호법에 따라 대상자에게 통지 중입니다."
+  ],
+  "socPoint": "Microsoft 365 로그인 기록에서 해외 IP나 비정상 시간대 접속, 다수 파일 다운로드 및 메일함 전달 규칙 생성 여부를 확인해야 합니다.",
+  "attackTypes": [
+   "피싱",
+   "계정 탈취",
+   "정보유출"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "日本エネルギー経済研究所(IEEJ)",
+    "Microsoft 365"
+   ]
+  },
+  "basis": "본문"
  }
 ]
