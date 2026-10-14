@@ -1,8 +1,120 @@
 {
- "updatedAt": "2026-10-14T16:29:57.655Z",
- "lastRun": null,
+ "updatedAt": "2026-10-14T16:48:43.707Z",
+ "lastRun": {
+  "candidates": 357,
+  "added": 0,
+  "notSecurity": 0,
+  "failed": 0,
+  "deferred": 357
+ },
  "newsCount": 0,
  "kevCount": 94,
  "cveCount": 373,
- "sources": []
+ "sources": [
+  {
+   "id": "bleepingcomputer",
+   "name": "BleepingComputer",
+   "region": "INTL",
+   "ok": true,
+   "items": 15
+  },
+  {
+   "id": "thehackernews",
+   "name": "The Hacker News",
+   "region": "INTL",
+   "ok": true,
+   "items": 50
+  },
+  {
+   "id": "securityweek",
+   "name": "SecurityWeek",
+   "region": "INTL",
+   "ok": true,
+   "items": 10
+  },
+  {
+   "id": "therecord",
+   "name": "The Record",
+   "region": "INTL",
+   "ok": true,
+   "items": 5
+  },
+  {
+   "id": "krebs",
+   "name": "Krebs on Security",
+   "region": "INTL",
+   "ok": true,
+   "items": 10
+  },
+  {
+   "id": "jpcert",
+   "name": "JPCERT/CC",
+   "region": "JP",
+   "ok": true,
+   "items": 21
+  },
+  {
+   "id": "ipa",
+   "name": "IPA",
+   "region": "JP",
+   "ok": true,
+   "items": 30
+  },
+  {
+   "id": "securitynext",
+   "name": "Security NEXT",
+   "region": "JP",
+   "ok": true,
+   "items": 20
+  },
+  {
+   "id": "itmedia",
+   "name": "ITmedia セキュリティ",
+   "region": "JP",
+   "ok": true,
+   "items": 30
+  },
+  {
+   "id": "scannetsecurity",
+   "name": "ScanNetSecurity",
+   "region": "JP",
+   "ok": true,
+   "items": 50
+  },
+  {
+   "id": "piyolog",
+   "name": "piyolog",
+   "region": "JP",
+   "ok": true,
+   "items": 30
+  },
+  {
+   "id": "krcert",
+   "name": "KISA 보호나라",
+   "region": "KR",
+   "ok": true,
+   "items": 10
+  },
+  {
+   "id": "boannews",
+   "name": "보안뉴스",
+   "region": "KR",
+   "ok": true,
+   "items": 50
+  },
+  {
+   "id": "dailysecu",
+   "name": "데일리시큐",
+   "region": "KR",
+   "ok": true,
+   "items": 50
+  },
+  {
+   "id": "zdnetkr",
+   "name": "ZDNet Korea",
+   "region": "KR",
+   "ok": true,
+   "items": 11
+  }
+ ]
 }
