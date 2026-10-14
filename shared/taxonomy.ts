@@ -34,7 +34,7 @@ export const SECTORS = [
   "개인",
 ] as const;
 
-export const NATURES = ["사건", "취약점 공지", "정책·법규", "체포·수사", "연구·리포트"] as const;
+export const NATURES = ["사건", "취약점 공지", "정책·법규", "체포·수사", "연구·리포트", "업계 동향"] as const;
 
 export type AttackType = (typeof ATTACK_TYPES)[number];
 export type Sector = (typeof SECTORS)[number];
