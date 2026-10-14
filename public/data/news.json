@@ -170,6 +170,51 @@
   "titleJa": "農村振興庁、農家の個人情報57万5千件が漏えい…廃棄確約書を17回受け取りながら管理がずさん"
  },
  {
+  "id": "91d989b5fb66289f",
+  "url": "https://www.bleepingcomputer.com/news/security/ledger-asks-sellers-across-asia-to-halt-sales-after-supply-chain-attack/",
+  "title": "Ledger asks sellers across Asia to halt sales after supply-chain attack",
+  "titleKo": "Ledger, 공급망 공격 이후 아시아 판매자에게 판매 중단 요청",
+  "titleJa": "Ledger、サプライチェーン攻撃を受けアジアの販売代理店に販売停止を要請",
+  "sourceId": "bleepingcomputer",
+  "sourceName": "BleepingComputer",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-14T17:46:50.000Z",
+  "collectedAt": "2026-10-14T17:56:06.276Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "Ledger는 CryptoBilis를 통해 구매된 하드웨어 지갑에 복구 구문을 탈취하는 불법 칩이 삽입된 사실을 확인하고, 동남아와 홍콩의 리셀러·유통사에 판매 중단을 요청했습니다.",
+   "해당 임플란트는 마이크로컨트롤러로 24단어 복구 구문을 가로채 eSIM을 통해 LTE로 외부에 전송하며, 보안 칩과 운영체제는 변경하지 않아 Ledger의 무결성 자체 점검으로는 탐지되지 않습니다.",
+   "확인된 자금 손실은 모두 CryptoBilis 판매분이며, 싱가포르 공항 매장과 유럽 MediaMarkt 등에서도 변조 의심 사례가 보고되었습니다. Ledger는 직접 판매 채널은 안전하다고 밝혔고, Trezor는 리셀러 네트워크를 축소한다고 발표했습니다."
+  ],
+  "summaryJa": [
+   "Ledgerは、CryptoBilisを通じて販売されたハードウェアウォレットに リカバリーフレーズを窃取する不正な部品が仕込まれていたことを確認し、東南アジアと香港の販売代理店に販売停止を要請した。",
+   "この部品はマイクロコントローラでリカバリーフレーズ24語を傍受し、eSIMを使ってLTE経由で外部へ送信する。セキュアエレメントやOSは改変されないため、Ledgerの整合性自己点検では検知できない。",
+   "確認された資金流出はすべてCryptoBilis経由の端末で、シンガポールの空港店や欧州のMediaMarktでも改ざんの疑いが報告された。Ledgerは直販チャネルは安全だとしている。"
+  ],
+  "attackTypes": [
+   "공급망",
+   "정보유출"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Ledger",
+    "CryptoBilis",
+    "Trezor",
+    "MediaMarkt",
+    "Aqipa GmbH"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
   "id": "a7632caf16a4605d",
   "url": "https://www.bleepingcomputer.com/news/security/cisco-patches-actively-exploited-secure-email-gateway-zero-day/",
   "title": "Cisco patches new Secure Email Gateway zero-day exploited in attacks",
@@ -11710,6 +11755,483 @@
     "BIG-IP APM",
     "JPCERT/CC",
     "watchTowr Labs"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "d6050582b77d3e97",
+  "url": "https://www.itmedia.co.jp/news/article/2609/18/2000001648/",
+  "title": "ニチレイ、計5万件超の個人情報漏えいを確認 7月のサイバー攻撃で",
+  "titleKo": "닛레이, 7월 사이버 공격으로 총 5만 건 넘는 개인정보 유출 확인",
+  "titleJa": "ニチレイ、計5万件超の個人情報漏えいを確認 7月のサイバー攻撃で",
+  "sourceId": "itmedia",
+  "sourceName": "ITmedia セキュリティ",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-09-18T11:00:36.000Z",
+  "collectedAt": "2026-10-14T17:56:05.402Z",
+  "regions": [
+   "JP"
+  ],
+  "summaryKo": [
+   "닛레이는 7월 발생한 시스템 장애와 관련해 사이버 공격을 받은 서버 일부의 개인정보 유출을 확인했다고 9월 18일 발표했다.",
+   "유출 대상은 배송 고객, 거래처 임직원, 퇴직자 포함 그룹 직원과 구직자 등 총 5만 3866건이며, 직원 정보가 가장 많다.",
+   "해당자에게 순차적으로 개별 연락 중이며, 현재까지 확인된 범위에서 2차 피해는 없고 9월 11일 개인정보보호위원회에 보고했다."
+  ],
+  "summaryJa": [
+   "ニチレイは9月18日、7月のシステム障害に関連してサイバー攻撃を受けたサーバの一部から個人情報が漏えいしたと発表した。",
+   "対象は計5万3866件で、配送先顧客、取引先役職員、退職者を含むグループ従業員や求職者の情報が含まれ、従業員情報が最も多い。",
+   "該当者への個別連絡を順次進めており、現時点で不正利用などの二次被害は確認されていない。9月11日に個人情報保護委員会へ報告した。"
+  ],
+  "attackTypes": [
+   "정보유출"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "ニチレイ"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "d653533745a68c07",
+  "url": "https://krebsonsecurity.com/2026/09/data-broker-radaris-loses-domains-in-privacy-fight/",
+  "title": "Data Broker Radaris Loses Domains in Privacy Fight",
+  "titleKo": "데이터 브로커 Radaris, 개인정보 소송에서 도메인 상실",
+  "titleJa": "データブローカーRadaris、個人情報訴訟でドメインを失う",
+  "sourceId": "krebs",
+  "sourceName": "Krebs on Security",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-09-16T18:14:22.000Z",
+  "collectedAt": "2026-10-14T17:56:06.277Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "개인정보 검색 서비스 Radaris는 뉴저지주 Daniel's Law 위반 소송에서 패소해 radaris.com 등 다수의 도메인을 원고 측으로 넘기게 됐다.",
+   "회사는 수년간 공인 신원 정보 삭제 요청을 무시했고, 소송 과정에서도 실제 소유주를 숨기고 페이퍼 회사를 바꿔 가며 법원 출석을 지연했다.",
+   "법원은 2025년 8월 26일 피고들이 충분한 기회를 얻고도 응诉하지 않았다고 판단했으며, 피고 측 변호인은 판결에 이의를 제기하고 있다."
+  ],
+  "summaryJa": [
+   "個人情報検索サービスのRadarisは、ニュージャージー州のDaniel's Law違反訴訟で敗訴し、radaris.comなど十数件のドメインを原告側に移転することになった。",
+   "同社は長年にわたり公的職員の情報削除要請を無視してきており、訴訟でも実際の所有者を隠し、ペーパーカンパニーを切り替えて出廷を先延ばしにしていた。",
+   "裁判所は2025年8月26日、被告が十分な機会を与えられたにもかかわらず応訴しなかったと認定した。被告側はこの判断に異議を唱えている。"
+  ],
+  "attackTypes": [],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Radaris",
+    "Atlas Data Privacy Corp",
+    "Verisign",
+    "Andtop Company"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "427b1086f1bfd936",
+  "url": "https://www.jpcert.or.jp/at/2026/at260027.html",
+  "title": "注意喚起: Cisco Secure Email GatewayにおけるSQLインジェクションの脆弱性（CVE-2026-76461）に関する注意喚起 (公開)",
+  "titleKo": "Cisco Secure Email Gateway SQL 인젝션 취약점(CVE-2026-76461)에 관한 주의 환기",
+  "titleJa": "注意喚起: Cisco Secure Email GatewayにおけるSQLインジェクションの脆弱性（CVE-2026-76461）に関する注意喚起 (公開)",
+  "sourceId": "jpcert",
+  "sourceName": "JPCERT/CC",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-09-15T06:42:00.000Z",
+  "collectedAt": "2026-10-14T17:56:05.585Z",
+  "regions": [
+   "JP",
+   "INTL"
+  ],
+  "summaryKo": [
+   "Cisco가 2026년 9월 Cisco Secure Email Gateway의 SQL 인젝션 취약점(CVE-2026-76461)을 공개했습니다.",
+   "인증되지 않은 원격 공격자가 악성 SQL 문을 담은 메일을 보내면 root 권한으로 임의 명령이 실행될 수 있으며, Cisco는 이미 악용을 확인했습니다.",
+   "JPCERT/CC는 과거 다른 취약점을 악용한 국내 침해 사례를 확인했다고 밝혔고, 패치 적용과 로그 및 네트워크 로그 대조를 통한 침해 조사를 권고합니다."
+  ],
+  "summaryJa": [
+   "Ciscoは2026年9月にCisco Secure Email GatewayのSQLインジェクション脆弱性（CVE-2026-76461）を公表した。",
+   "認証されていないリモートの攻撃者が細工したメールを送信すると、root権限で任意のコマンドが実行されるおそれがある。Ciscoは本脆弱性の悪用をすでに確認している。",
+   "回避策は提供されておらず、修正版へのアップグレードが推奨される。JPCERT/CCは国内で別の脆弱性を悪用した侵害事案を確認しており、ネットワークログとの突合による侵害調査を勧めている。"
+  ],
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-76461",
+    "CVE-2025-20393"
+   ],
+   "actors": [],
+   "orgs": [
+    "Cisco",
+    "Cisco Secure Email Gateway",
+    "JPCERT/CC"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "c7e7ad60970c4251",
+  "url": "https://krebsonsecurity.com/2026/09/microsoft-plugs-nearly-1000-security-holes/",
+  "title": "Microsoft Plugs Nearly 1,000 Security Holes",
+  "titleKo": "마이크로소프트, 거의 1,000개의 보안 취약점 패치",
+  "titleJa": "マイクロソフト、約1,000件のセキュリティ脆弱性を修正",
+  "sourceId": "krebs",
+  "sourceName": "Krebs on Security",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-09-08T21:44:22.000Z",
+  "collectedAt": "2026-10-14T17:56:09.537Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "마이크로소프트가 Windows 및 기타 소프트웨어의 보안 취약점 974개 이상을 한꺼번에 수정하는 역대 최대 규모의 패치를 공개했다.",
+   "AI가 취약점 발견 속도를 높인 것으로 보이며, 실제 악용이 확인된 제로데이 취약점 2건(CVE-2026-81963, CVE-2026-85880)이 권한 상승에 쓰인다.",
+   "올해 누적 패치는 2,600건을 넘었고, 이번 패치 중 113건은 심각 등급이며 원격 코드 실행 취약점 CVE-2026-69829는 CVSS 9.8이다."
+  ],
+  "summaryJa": [
+   "マイクロソフトはWindowsなどの脆弱性974件以上を一括で修正する、過去最大規模のパッチを公開した。",
+   "AIによる脆弱性発見の加速が背景とされ、実際に悪用が確認されたゼロデイ脆弱性2件(CVE-2026-81963、CVE-2026-85880)は権限昇格に使われる。",
+   "今年の累計修正数は2,600件を超え、今回の113件は重大評価である。CVE-2026-69829はCVSS 9.8のリモートコード実行脆弱性である。"
+  ],
+  "attackTypes": [
+   "제로데이",
+   "취약점 악용"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-81963",
+    "CVE-2026-85880",
+    "CVE-2026-69730",
+    "CVE-2026-69829"
+   ],
+   "actors": [],
+   "orgs": [
+    "Microsoft",
+    "Windows",
+    "Adobe",
+    "Cisco",
+    "Google"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "472601d5f331ade8",
+  "url": "https://www.ipa.go.jp/security/security-alert/2026/0909-ms.html",
+  "title": "Microsoft 製品の脆弱性対策について(2026年9月)",
+  "titleKo": "Microsoft 제품의 취약점 대응에 대하여(2026년 9월)",
+  "titleJa": "Microsoft 製品の脆弱性対策について(2026年9月)",
+  "sourceId": "ipa",
+  "sourceName": "IPA",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-09-08T15:00:00.000Z",
+  "collectedAt": "2026-10-14T17:56:09.005Z",
+  "regions": [
+   "JP"
+  ],
+  "summaryKo": [
+   "2026년 9월 9일 Microsoft가 제품 보안 업데이트(월例)를 공개했으며, IPA가 이에 대한 대응을 안내했습니다.",
+   "공격자가 취약점을 악용하면 애플리케이션 비정상 종료나 PC 원격 제어 등의 피해가 생길 수 있습니다.",
+   "CVE-2026-81963과 CVE-2026-85880은 Microsoft가 악용을 확인했다고 밝혔으므로, 즉시 보안 업데이트를 적용해야 합니다."
+  ],
+  "summaryJa": [
+   "2026年9月9日にMicrosoftが製品のセキュリティ更新プログラム（月例）を公表し、IPAが対応を呼びかけた。",
+   "脆弱性が悪用されるとアプリケーションの異常終了や、攻撃者によるPCの制御といった被害が生じるおそれがある。",
+   "CVE-2026-81963とCVE-2026-85880は悪用が確認されたとMicrosoftが公表しており、至急の更新適用が必要である。"
+  ],
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-81963",
+    "CVE-2026-85880"
+   ],
+   "actors": [],
+   "orgs": [
+    "Microsoft",
+    "Windows"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "b21ab329f2f4bf75",
+  "url": "https://www.ipa.go.jp/security/security-alert/2026/0909-adobereader.html",
+  "title": "Adobe Acrobat および Reader の脆弱性対策について(2026年9月)",
+  "titleKo": "Adobe Acrobat 및 Reader의 취약점 대응에 대하여(2026년 9월)",
+  "titleJa": "Adobe Acrobat および Reader の脆弱性対策について(2026年9月)",
+  "sourceId": "ipa",
+  "sourceName": "IPA",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-09-08T15:00:00.000Z",
+  "collectedAt": "2026-10-14T17:56:10.014Z",
+  "regions": [
+   "JP"
+  ],
+  "summaryKo": [
+   "2026년 9월 9일 Adobe Acrobat 및 Reader의 보안 업데이트가 공개되었다.",
+   "취약점이 악용되면 애플리케이션이 비정상 종료되거나 공격자에 의해 PC가 제어될 수 있다.",
+   "영향이 커서 IPA는 가능한 한 빨리 보안 업데이트를 적용할 것을 권고하며, 기업은 IT 관리자가 일괄 관리하는 것이 좋다."
+  ],
+  "summaryJa": [
+   "2026年9月9日、Adobe Acrobat および Reader のセキュリティ更新プログラムが公表された。",
+   "これらの脆弱性が悪用されると、アプリケーションの異常終了や攻撃者によるパソコンの制御などの被害が生じるおそれがある。",
+   "IPAは影響の大きさから早急な更新適用を呼びかけており、組織ではIT管理者が早期に対応する必要がある。"
+  ],
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Adobe",
+    "IPA",
+    "Adobe Acrobat",
+    "Adobe Acrobat Reader"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "a0aed382f4580bb8",
+  "url": "https://krebsonsecurity.com/2026/09/fbi-probes-service-selling-153m-drivers-licenses/",
+  "title": "FBI Probes Service Selling 153M+ Drivers Licenses",
+  "titleKo": "FBI, 1억 5,300만 건 이상의 운전면허증을 판매하는 서비스 수사 착수",
+  "titleJa": "FBI、1億5300万件超の運転免許証を販売するサービスを捜査",
+  "sourceId": "krebs",
+  "sourceName": "Krebs on Security",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-09-01T22:40:28.000Z",
+  "collectedAt": "2026-10-14T17:56:11.132Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "다크웹의 신원도용 서비스 'Nexus'가 미국과 캐나다인 1억 5,300만 건 이상의 운전면허증 스캔본을 판매하고 있으며, FBI 뉴올리언스 지부가 출처 조사에 착수했습니다.",
+   "러시아 사이버범죄 포럼 Exploit에 광고된 이 서비스는 신원확인 업체에서 유출된 것으로 보이는 이미지를 쓰며, 업체는 진행 중인 침해를 주장합니다.",
+   "기사 작성자 등 확인된 9명의 면허증이 발견됐고 데이터는 주기적으로 늘고 있습니다. 피해 규모와 유출 경로는 아직 확인되지 않았습니다."
+  ],
+  "summaryJa": [
+   "ダークウェブの個人情報窃取サービス「Nexus」が、米国とカナダの住民1億5300万件超の運転免許証スキャン画像を販売しており、FBIニューオーリンズ支局が出所の調査を開始した。",
+   "ロシア語のサイバー犯罪フォーラム「Exploit」で宣伝されたこのサービスは、ルイジアナ州の本人確認業者から流出したとみられる画像を用いており、運営者は進行中の侵害だと主張している。",
+   "記事執筆者を含む確認済みの9人分の免許証が見つかり、データは定期的に増加している。被害の全容と流出経路はまだ確認されていない。"
+  ],
+  "attackTypes": [
+   "정보유출",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Nexus",
+    "Exploit",
+    "FBI"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "861f4dd4c580966a",
+  "url": "https://krebsonsecurity.com/2026/08/two-alleged-teampcp-hackers-arrested-in-australia/",
+  "title": "Two Alleged ‘TeamPCP’ Hackers Arrested in Australia",
+  "titleKo": "TeamPCP 소속 혐의자 2명, 호주에서 체포",
+  "titleJa": "TeamPCP関連の容疑者2人、オーストラリアで逮捕",
+  "sourceId": "krebs",
+  "sourceName": "Krebs on Security",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-08-27T11:04:15.000Z",
+  "collectedAt": "2026-10-14T17:56:13.545Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "호주 연방경찰(AFP)이 서호주의 21세, 23세 남성 2명을 TeamPCP 관련 혐의로 체포했다.",
+   "TeamPCP는 악성 코드를 심은 오픈소스 소프트웨어와 자가 전파 웜 Shai-Hulud로 개발자 자격증명을 탈취해 공급망 공격을 벌였다.",
+   "피해 규모는 수천 개 기업에 이르는 것으로 알려졌으며, 기사는 공식 기소 내용과 추가 피해 범위는 확인되지 않았다고 전한다."
+  ],
+  "summaryJa": [
+   "オーストラリア連邦警察は、西オーストラリア州在住の21歳と23歳の男性2人を、TeamPCPに関連する容疑で逮捕したと発表した。",
+   "TeamPCPは悪意あるコードを仕込んだオープンソースソフトウェアと、自己増殖型ワーム Shai-Hulud を使い、開発者の認証情報を盗んでサプライチェーン攻撃を行ったとされる。",
+   "被害は世界の数千社に及ぶとされるが、起訴内容や被害の全容は記事時点で確認されていない。"
+  ],
+  "attackTypes": [
+   "공급망",
+   "정보유출"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "체포·수사",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "TeamPCP",
+    "Shai-Hulud"
+   ],
+   "orgs": [
+    "Australian Federal Police",
+    "LiteLLM",
+    "GitHub",
+    "Google Threat Intelligence Group",
+    "Krebs on Security"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "1d6e6c16f79650ea",
+  "url": "https://www.ipa.go.jp/security/security-alert/2026/0812-ms.html",
+  "title": "Microsoft 製品の脆弱性対策について(2026年8月)",
+  "titleKo": "Microsoft 제품 취약점 대응에 관하여(2026년 8월)",
+  "titleJa": "Microsoft 製品の脆弱性対策について(2026年8月)",
+  "sourceId": "ipa",
+  "sourceName": "IPA",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-08-11T15:00:00.000Z",
+  "collectedAt": "2026-10-14T17:56:12.755Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "2026년 8월 12일 Microsoft가 월간 보안 업데이트를 공개했으며, IPA가 이를 안내하는 주의 공지를 게시했습니다.",
+   "CVE-2026-68820은 WinSock용 Windows Ancillary Function Driver의 권한 상승 취약점으로, Microsoft가 실제 악용을 확인했다고 밝혔습니다.",
+   "피해가 확산될 우려가 있어 Windows Update 등을 통해 보안 업데이트를 즉시 적용할 것을 권고합니다."
+  ],
+  "summaryJa": [
+   "2026年8月12日、Microsoftが月例のセキュリティ更新プログラムを公表し、IPAが対策を呼びかける注意喚起を掲載した。",
+   "CVE-2026-68820はWinSock用Windows Ancillary Function Driverの特権昇格の脆弱性で、Microsoftは悪用の事実を確認済みとしている。",
+   "被害拡大のおそれがあるため、Windows Updateなどを通じて至急セキュリティ更新プログラムを適用することが推奨される。"
+  ],
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-68820"
+   ],
+   "actors": [],
+   "orgs": [
+    "Microsoft",
+    "IPA",
+    "WinSock",
+    "Windows Ancillary Function Driver"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "4b991ec6062ce62e",
+  "url": "https://www.ipa.go.jp/security/security-alert/2026/0722-jre.html",
+  "title": "Oracle Java の脆弱性対策について(2026年7月)",
+  "titleKo": "Oracle Java 취약점 대응에 관하여(2026년 7월)",
+  "titleJa": "Oracle Java の脆弱性対策について(2026年7月)",
+  "sourceId": "ipa",
+  "sourceName": "IPA",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-07-21T15:00:00.000Z",
+  "collectedAt": "2026-10-14T17:56:12.846Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "2026년 7월 22일 Oracle Java SE에 대한 보안 업데이트가 공개되었다.",
+   "취약점이 악용되면 애플리케이션 비정상 종료나 공격자에 의한 PC 제어 등의 피해가 발생할 수 있다.",
+   "대상은 Java SE 26.0.1, 25.0.3, 21.0.11, 17.0.19, 11.0.31, 8 Update 491이며, 최신 버전으로 즉시 업데이트가 권고된다."
+  ],
+  "summaryJa": [
+   "2026年7月22日、Oracle Java SEに対するセキュリティ更新プログラムが公表された。",
+   "これらの脆弱性が悪用されると、アプリケーションの異常終了や攻撃者によるパソコンの制御などの被害が生じるおそれがある。",
+   "対象はJava SE 26.0.1、25.0.3、21.0.11、17.0.19、11.0.31、8 Update 491で、早急な最新版への更新が求められる。"
+  ],
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Oracle",
+    "IPA"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "54c6dc45f16bdc33",
+  "url": "https://www.ipa.go.jp/security/security-alert/2026/alert20260722.html",
+  "title": "WordPressの脆弱性対策について(CVE-2026-60137、CVE-2026-63030：wp2shell)",
+  "titleKo": "WordPress 취약점 대응 안내(CVE-2026-60137, CVE-2026-63030: wp2shell)",
+  "titleJa": "WordPressの脆弱性対策について(CVE-2026-60137、CVE-2026-63030：wp2shell)",
+  "sourceId": "ipa",
+  "sourceName": "IPA",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-07-21T15:00:00.000Z",
+  "collectedAt": "2026-10-14T17:56:15.380Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "IPA는 WordPress에서 CVE-2026-60137과 CVE-2026-63030 두 취약점이 수정되었다고 발표했습니다.",
+   "두 취약점을 조합한 'wp2shell'로 관리자 권한 없이 원격 코드 실행이 가능할 수 있으며, 2026년 7월 21일 CISA KEV 카탈로그에 악용 취약점으로 등재되었습니다.",
+   "WordPress 6.9.5 및 7.0.2로 즉시 업데이트를 권고하며, 자동 업데이트 여부를 확인하고 미적용 시 수동 업데이트가 필요합니다."
+  ],
+  "summaryJa": [
+   "IPAは、WordPressでCVE-2026-60137とCVE-2026-63030の2件の脆弱性が修正されたと公表した。",
+   "両脆弱性を組み合わせた「wp2shell」により、管理者権限なしで遠隔からコード実行される可能性が指摘されている。CISAのKEVカタログにも掲載され、悪用の拡大が懸念される。",
+   "修正版はWordPress 6.9.5および7.0.2で、即時更新が推奨される。自動更新が機能していない場合があるため、管理画面で確認し、未更新なら手動で更新する必要がある。"
+  ],
+  "attackTypes": [
+   "취약점 악용",
+   "제로데이"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-60137",
+    "CVE-2026-63030"
+   ],
+   "actors": [],
+   "orgs": [
+    "WordPress",
+    "CISA",
+    "IPA"
    ]
   },
   "basis": "본문"
