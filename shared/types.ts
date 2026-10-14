@@ -7,8 +7,10 @@ export interface NewsItem {
   id: string;
   url: string;
   title: string;
-  /** 원문이 한국어가 아니면 번역한 제목, 한국어면 원제목과 같다. */
+  /** 원문이 한국어면 원제목, 아니면 번역한 제목. */
   titleKo: string;
+  /** 원문이 일본어면 원제목, 아니면 번역한 제목. 이전 데이터는 채워지기 전까지 비어 있을 수 있다. */
+  titleJa: string;
   sourceId: string;
   sourceName: string;
   sourceRegion: Region;
@@ -16,8 +18,8 @@ export interface NewsItem {
   collectedAt: string;
   /** 사건 기준 지역. 애매하면 출처 지역. */
   regions: Region[];
-  summary: string[];
-  socPoint: string | null;
+  summaryKo: string[];
+  summaryJa: string[];
   attackTypes: AttackType[];
   sectors: Sector[];
   nature: Nature;
@@ -69,6 +71,9 @@ export interface SourceStatus {
 export interface RunStats {
   candidates: number;
   added: number;
+  /** 제목 키워드로 요약 전에 제외 */
+  keywordExcluded: number;
+  /** LLM이 보안 무관 또는 업계 동향으로 판정해 제외 */
   notSecurity: number;
   failed: number;
   deferred: number;

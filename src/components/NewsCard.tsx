@@ -8,7 +8,7 @@ import {
   makeStyles,
   tokens,
 } from "@fluentui/react-components";
-import { OpenRegular, ShieldTaskRegular } from "@fluentui/react-icons";
+import { OpenRegular } from "@fluentui/react-icons";
 import { REGION_LABEL } from "../../shared/taxonomy";
 import type { Basis, NewsItem } from "../../shared/types";
 import { fullDateTime, pct, relativeTime } from "./format";
@@ -130,9 +130,9 @@ export function NewsCard({ item, epss, onSearch, onCve }: Props) {
         {translated && <Caption1 className={s.original}>{item.title}</Caption1>}
       </div>
 
-      {item.summary.length > 0 && (
+      {item.summaryKo.length > 0 && (
         <ul className={s.summary}>
-          {item.summary.map((line, i) => (
+          {item.summaryKo.map((line, i) => (
             <li key={i}>
               <Body1>{line}</Body1>
             </li>
@@ -140,15 +140,6 @@ export function NewsCard({ item, epss, onSearch, onCve }: Props) {
         </ul>
       )}
 
-      {item.socPoint && (
-        <div className={s.soc}>
-          <ShieldTaskRegular className={s.socIcon} aria-hidden />
-          <Body1>
-            <span className={s.socLabel}>SOC 포인트</span>
-            {item.socPoint}
-          </Body1>
-        </div>
-      )}
 
       <div className={s.footer}>
         <Caption1>{item.sourceName}</Caption1>
