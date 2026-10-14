@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: "17 */6 * * *" # 6시간마다 (UTC)
   workflow_dispatch:
+    inputs:
+      limit:
+        description: "이번 실행에서 요약할 새 기사 최대 개수"
+        default: "80"
   push:
     branches: [main]
     paths-ignore: ["public/data/**", "data/**"]
@@ -35,6 +39,7 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+          MAX_NEW_PER_RUN: ${{ inputs.limit || '80' }}
 
       - name: Commit data
         run: |
@@ -54,7 +59,7 @@ jobs:
           SITE: https://${{ github.repository_owner }}.github.io
           BASE_PATH: /${{ github.event.repository.name }}/
 
-      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
@@ -66,4 +71,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
