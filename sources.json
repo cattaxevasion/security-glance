@@ -1,0 +1,22 @@
+{
+  "$comment": "RSS 소스 목록. region은 출처 지역(사건 지역은 LLM이 판단). keywordFilter=true면 제목/요지에 보안 키워드가 있을 때만 수집.",
+  "sources": [
+    { "id": "bleepingcomputer", "name": "BleepingComputer", "region": "INTL", "lang": "en", "url": "https://www.bleepingcomputer.com/feed/" },
+    { "id": "thehackernews", "name": "The Hacker News", "region": "INTL", "lang": "en", "url": "https://feeds.feedburner.com/TheHackersNews" },
+    { "id": "securityweek", "name": "SecurityWeek", "region": "INTL", "lang": "en", "url": "https://www.securityweek.com/feed/" },
+    { "id": "therecord", "name": "The Record", "region": "INTL", "lang": "en", "url": "https://therecord.media/feed" },
+    { "id": "krebs", "name": "Krebs on Security", "region": "INTL", "lang": "en", "url": "https://krebsonsecurity.com/feed/" },
+
+    { "id": "jpcert", "name": "JPCERT/CC", "region": "JP", "lang": "ja", "url": "https://www.jpcert.or.jp/rss/jpcert.rdf" },
+    { "id": "ipa", "name": "IPA", "region": "JP", "lang": "ja", "url": "https://www.ipa.go.jp/security/alert-rss.rdf" },
+    { "id": "securitynext", "name": "Security NEXT", "region": "JP", "lang": "ja", "url": "https://www.security-next.com/feed" },
+    { "id": "itmedia", "name": "ITmedia セキュリティ", "region": "JP", "lang": "ja", "url": "https://rss.itmedia.co.jp/rss/2.0/news_security.xml" },
+    { "id": "scannetsecurity", "name": "ScanNetSecurity", "region": "JP", "lang": "ja", "url": "https://scan.netsecurity.ne.jp/rss/index.rdf" },
+    { "id": "piyolog", "name": "piyolog", "region": "JP", "lang": "ja", "url": "https://piyolog.hatenadiary.jp/rss" },
+
+    { "id": "krcert", "name": "KISA 보호나라", "region": "KR", "lang": "ko", "url": "https://www.boho.or.kr/kr/rss.do?bbsId=B0000133" },
+    { "id": "boannews", "name": "보안뉴스", "region": "KR", "lang": "ko", "url": "https://cdn.boannews.com/rss/gn_rss_allArticle.xml" },
+    { "id": "dailysecu", "name": "데일리시큐", "region": "KR", "lang": "ko", "url": "https://www.dailysecu.com/rss/allArticle.xml" },
+    { "id": "zdnetkr", "name": "ZDNet Korea", "region": "KR", "lang": "ko", "url": "https://feeds.feedburner.com/zdkorea", "keywordFilter": true }
+  ]
+}

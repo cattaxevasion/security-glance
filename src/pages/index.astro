@@ -1,0 +1,45 @@
+---
+import App from "../components/App";
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="국제·일본·한국 보안 뉴스를 AI 요약과 태그로 한눈에 보는 개인 대시보드" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
+    <title>Security Glance</title>
+    <style is:global>
+      :root {
+        --page-bg: #fafafa;
+        --page-fg: #616161;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --page-bg: #1f1f1f;
+          --page-fg: #adadad;
+        }
+      }
+      html,
+      body {
+        margin: 0;
+        background: var(--page-bg);
+      }
+      .boot {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        color: var(--page-fg);
+        font: 14px "Segoe UI", "Malgun Gothic", system-ui, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <App client:only="react">
+      <div slot="fallback" class="boot">불러오는 중…</div>
+    </App>
+  </body>
+</html>
