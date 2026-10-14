@@ -4195,16 +4195,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-96661",
-   "published": "2026-10-14T04:19:01.350",
-   "description": "The Gmedia Photo Gallery plugin for WordPress is vulnerable to time-based SQL Injection via the 'gmedia__in' parameter in all versions up to, and including, 1.25.1 due to insufficient escaping on the user supplied parameter and lack of sufficient preparation on the existing SQL query. This makes it possible for unauthenticated attackers to append additional SQL queries into already existing queries that can be used to extract sensitive information from the database. The unauthenticated mobile app endpoint dispatches the library action without validating the Mobile App feature flag, a nonce, or any WordPress authentication, meaning no account or session of any kind is required to exploit this vulnerability.",
-   "cvss": 7.5,
-   "severity": "HIGH",
-   "epss": 0.00454,
-   "epssPercentile": 0.37809,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-78193",
    "published": "2026-10-14T04:18:36.860",
    "description": "The JTL-Connector for WooCommerce plugin for WordPress is vulnerable to time-based SQL Injection via 'product.push' Identity Endpoint in all versions up to, and including, 2.4.3 due to insufficient escaping on the user supplied parameter and lack of sufficient preparation on the existing SQL query. This makes it possible for unauthenticated attackers to append additional SQL queries into already existing queries that can be used to extract sensitive information from the database. The injection fires during identity linking, before ProductController::push() executes, meaning exploitation succeeds even if downstream product handling would otherwise reject the request.",
