@@ -136,6 +136,10 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.lang = lang;
+    // 한국어는 어절 단위로 줄바꿈해야 읽기 쉽다. 일본어는 띄어쓰기가 없어 기본 규칙(+금칙 처리)을 쓴다.
+    // 상세 패널·메뉴는 포털로 앱 밖에 그려지므로 <html>에 걸어 상속시킨다.
+    document.documentElement.style.wordBreak = lang === "ko" ? "keep-all" : "normal";
+    document.documentElement.style.setProperty("line-break", lang === "ja" ? "strict" : "auto");
     document.title = lang === "ja" ? "Security Glance – セキュリティニュース" : "Security Glance – 보안 이슈 한눈에";
   }, [lang]);
 

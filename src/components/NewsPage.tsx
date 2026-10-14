@@ -65,10 +65,11 @@ const useStyles = makeStyles({
   },
   kpis: {
     display: "grid",
-    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    // 읽기 창이 열려 본문이 좁아져도 찌그러지지 않게, 남은 폭에 맞춰 열 수를 정한다
+    gridTemplateColumns: "repeat(auto-fit, minmax(156px, 1fr))",
     gap: "8px",
     paddingBottom: "8px",
-    "@media (min-width: 900px)": { gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "12px" },
+    "@media (min-width: 641px)": { gap: "12px" },
   },
   kpi: {
     display: "flex",
@@ -94,7 +95,16 @@ const useStyles = makeStyles({
     },
     ":focus-visible": { outline: `2px solid ${tokens.colorStrokeFocus2}`, outlineOffset: "1px" },
   },
-  kpiLabel: { display: "flex", alignItems: "center", gap: "4px", color: tokens.colorNeutralForeground2, width: "100%" },
+  kpiLabel: {
+    display: "flex",
+    alignItems: "center",
+    gap: "4px",
+    color: tokens.colorNeutralForeground2,
+    width: "100%",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
   kpiChevron: { marginLeft: "auto", color: tokens.colorNeutralForeground3 },
   kpiNumber: {
     fontSize: tokens.fontSizeHero700,
@@ -168,7 +178,6 @@ const useStyles = makeStyles({
     lineHeight: "24px",
     fontWeight: tokens.fontWeightSemibold,
     color: tokens.colorNeutralForeground1,
-    wordBreak: "keep-all",
     overflowWrap: "anywhere",
   },
   summary: {
@@ -180,7 +189,6 @@ const useStyles = makeStyles({
     fontSize: tokens.fontSizeBase300,
     lineHeight: "22px",
     color: tokens.colorNeutralForeground2,
-    wordBreak: "keep-all",
     overflowWrap: "anywhere",
   },
   meta: {

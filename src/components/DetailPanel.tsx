@@ -73,7 +73,6 @@ const useStyles = makeStyles({
     fontSize: "15px",
     lineHeight: "26px",
     color: tokens.colorNeutralForeground1,
-    wordBreak: "keep-all",
     overflowWrap: "anywhere",
   },
   value: { lineHeight: "22px", overflowWrap: "anywhere" },

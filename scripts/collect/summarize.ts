@@ -154,7 +154,7 @@ const SYSTEM_PROMPT = `당신은 보안 뉴스를 한국어와 일본어로 정�
   - 악성코드: 트로이목마, 인포스틸러, 백도어, 스파이웨어 등 악성 프로그램이 중심일 때
 
 - sectors: 피해를 입었거나 공격 대상이 된 산업 0~2개. 목록에 있는 값만 그대로 씁니다. 특정 산업이 없으면 빈 배열.
-- entities.cves: 입력에 나온 CVE 번호(CVE-YYYY-NNNN 형식)만. actors: 위협 그룹, 랜섬웨어 조직, 스파이웨어 제조사 같은 공격 주체 이름(원문 표기). orgs: 피해 조직, 벤더, 제품 이름 최대 5개.
+- entities.cves: 입력에 나온 CVE 번호(CVE-YYYY-NNNN 형식)만. actors: 위협 그룹, 랜섬웨어 조직, 스파이웨어 제조사 같은 공격 주체 이름(원문 표기). orgs: 피해 조직, 벤더, 제품 이름 최대 5개. actors와 orgs는 번역하지 말고 원문에 쓰인 표기 그대로 씁니다.
 
 regions, nature, attackTypes, sectors는 일본어로 옮기지 말고 목록에 있는 값을 글자 그대로 씁니다. 일본어로 쓰는 것은 titleJa와 summaryJa뿐입니다.
 
