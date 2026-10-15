@@ -46,8 +46,9 @@ jobs:
 
       - run: npm ci
 
+      # astro sync가 만드는 .astro/types.d.ts(import.meta.env, CSS import 타입)가 있어야 타입 검사가 된다
       - name: Typecheck
-        run: npx tsc --noEmit -p .
+        run: npx astro sync && npx tsc --noEmit -p .
 
       - name: Collect news and vulnerabilities
         run: npm run collect -- ${{ inputs.briefing && '--briefing' || '' }}
