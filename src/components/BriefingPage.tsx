@@ -16,17 +16,11 @@ import {
   tokens,
 } from "@fluentui/react-components";
 import {
-  AlertUrgentRegular,
   ArrowRightRegular,
   ChevronDownRegular,
-  FlashRegular,
   HistoryRegular,
   LightbulbRegular,
-  LockClosedKeyRegular,
-  PeopleTeamRegular,
-  ShieldErrorRegular,
   SparkleFilled,
-  type FluentIcon,
 } from "@fluentui/react-icons";
 import { lazy, Suspense, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Nature } from "../../shared/taxonomy";
@@ -189,21 +183,32 @@ const useStyles = makeStyles({
   more: { marginTop: "8px", marginLeft: "-8px" },
   // ── 오른쪽 위젯 ──
   rail: { display: "flex", flexDirection: "column", gap: "12px" },
-  widget: { padding: "16px 18px" },
-  widgetHead: { display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" },
-  widgetIcon: {
-    width: "28px",
-    height: "28px",
-    borderRadius: tokens.borderRadiusMedium,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: "16px",
-    flexShrink: 0,
+  // 위젯: 흰 카드는 그대로, 위에 위젯별 색 선 3px (왼쪽 브리핑 카드의 머리띠보다 한발 물러난 표시)
+  widget: {
+    padding: "18px 18px 14px",
+    position: "relative",
+    overflow: "hidden",
+    "::before": { content: '""', position: "absolute", left: 0, right: 0, top: 0, height: "3px" },
   },
-  widgetTitle: { flex: 1, minWidth: 0 },
+  widgetAccent: { "::before": { backgroundImage: "var(--widget-accent)" } },
+  widgetHead: { display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" },
+  widgetTitle: { flex: 1, minWidth: 0, "& .fui-Subtitle2": { fontWeight: tokens.fontWeightBold } },
   widgetSub: { display: "block", color: tokens.colorNeutralForeground3 },
   wList: { margin: 0, padding: 0, listStyle: "none" },
+  // 순서가 있는 목록: 01·02… 회색 번호
+  wNumbered: {
+    counterReset: "w",
+    "& > li": { counterIncrement: "w", display: "grid", gridTemplateColumns: "28px minmax(0, 1fr)", alignItems: "start" },
+    "& > li::before": {
+      content: "counter(w, decimal-leading-zero)",
+      paddingTop: "10px",
+      fontSize: tokens.fontSizeBase200,
+      lineHeight: tokens.lineHeightBase300,
+      fontWeight: tokens.fontWeightSemibold,
+      color: tokens.colorNeutralForeground4,
+      fontVariantNumeric: "tabular-nums",
+    },
+  },
   wItem: {
     display: "block",
     width: "100%",
@@ -290,9 +295,17 @@ interface Props {
   onOrder: (ids: string[]) => void;
 }
 
+/** 위젯 위 색 선: 배너·카드 머리띠와 같은 색 계열 */
+const ACCENT = {
+  brand: "linear-gradient(90deg, #0c3b5e, #0f548c 45%, #4a3a9c)",
+  incident: "linear-gradient(90deg, #8e1b22, #b4232a 45%, #7a1f5c)",
+  leak: "linear-gradient(90deg, #7a4a00, #b86b00 50%, #9a3d12)",
+  kev: "linear-gradient(90deg, #8e2a1b, #c4511b 50%, #a3302a)",
+  actor: "linear-gradient(90deg, #5c1a52, #8a1f6d 50%, #4a3a9c)",
+};
+
 function Widget(p: {
-  icon: FluentIcon;
-  tint: { bg: string; fg: string };
+  accent: keyof typeof ACCENT;
   title: string;
   sub: string;
   action?: { label: string; onClick: () => void };
@@ -302,13 +315,12 @@ function Widget(p: {
   const s = useStyles();
   const ps = usePageStyles();
   const m = useMotion();
-  const Icon = p.icon;
   return (
-    <section className={mergeClasses(ps.surface, s.widget, m.enter)} style={stagger(p.index + 2, 80)}>
+    <section
+      className={mergeClasses(ps.surface, s.widget, s.widgetAccent, m.enter)}
+      style={{ ...stagger(p.index + 2, 80), ["--widget-accent" as string]: ACCENT[p.accent] }}
+    >
       <div className={s.widgetHead}>
-        <span className={s.widgetIcon} style={{ backgroundColor: p.tint.bg, color: p.tint.fg }} aria-hidden>
-          <Icon />
-        </span>
         <div className={s.widgetTitle}>
           <Subtitle2>{p.title}</Subtitle2>
           <Caption1 className={s.widgetSub}>{p.sub}</Caption1>
@@ -500,12 +512,11 @@ export function BriefingPage(p: Props) {
           {rail.sinceBriefing.length > 0 && b && (
             <Widget
               index={0}
-              icon={FlashRegular}
-              tint={{ bg: tokens.colorBrandBackground2, fg: tokens.colorBrandForeground2 }}
+              accent="brand"
               title={t.railSinceBriefing}
               sub={t.railSinceBriefingSub(timeOfDay(lang, b.generatedAt))}
             >
-              <ul className={s.wList}>
+              <ul className={mergeClasses(s.wList, s.wNumbered)}>
                 {rail.sinceBriefing.map((x) => (
                   <li key={x.id}>
                     <button className={s.wItem} onClick={() => p.onOpen(x.id)}>
@@ -522,8 +533,7 @@ export function BriefingPage(p: Props) {
           )}
           <Widget
             index={0}
-            icon={AlertUrgentRegular}
-            tint={{ bg: tokens.colorPaletteRedBackground1, fg: tokens.colorPaletteRedForeground1 }}
+            accent="incident"
             title={t.railIncidents}
             sub={t.railWindow}
             action={{ label: t.viewAll, onClick: () => p.onGo("incidents") }}
@@ -531,7 +541,7 @@ export function BriefingPage(p: Props) {
             {rail.incidents.length === 0 ? (
               <Caption1 className={s.empty}>{t.noneYet}</Caption1>
             ) : (
-              <ul className={s.wList}>
+              <ul className={mergeClasses(s.wList, s.wNumbered)}>
                 {rail.incidents.map((x) => (
                   <li key={x.id}>
                     <button className={s.wItem} onClick={() => p.onOpen(x.id)}>
@@ -552,8 +562,7 @@ export function BriefingPage(p: Props) {
           {p.leaks.length > 0 && (
             <Widget
               index={1}
-              icon={LockClosedKeyRegular}
-              tint={{ bg: tokens.colorPaletteMarigoldBackground1, fg: tokens.colorPaletteMarigoldForeground2 }}
+              accent="leak"
               title={t.railLeaks}
               sub={t.railLeaksSub}
               action={{ label: t.viewAll, onClick: () => p.onGo("incidents") }}
@@ -564,13 +573,12 @@ export function BriefingPage(p: Props) {
 
           <Widget
             index={1}
-            icon={ShieldErrorRegular}
-            tint={{ bg: tokens.colorPaletteDarkOrangeBackground1, fg: tokens.colorPaletteDarkOrangeForeground1 }}
+            accent="kev"
             title={t.railKev}
             sub="CISA KEV"
             action={{ label: t.viewAll, onClick: () => p.onGo("kev") }}
           >
-            <ul className={s.wList}>
+            <ul className={mergeClasses(s.wList, s.wNumbered)}>
               {rail.kev.map((k) => (
                 <li key={k.cveID}>
                   <button className={s.wItem} onClick={() => p.onVuln(k.cveID)}>
@@ -586,8 +594,7 @@ export function BriefingPage(p: Props) {
 
           <Widget
             index={2}
-            icon={PeopleTeamRegular}
-            tint={{ bg: tokens.colorPaletteBerryBackground1, fg: tokens.colorPaletteBerryForeground1 }}
+            accent="actor"
             title={t.railActors}
             sub={t.railWindow}
           >
