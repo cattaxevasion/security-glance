@@ -11,6 +11,8 @@
 //   3. 더 강한 모델(FIX_MODEL), 한 건씩
 //   4. 그래도 남으면 기계 변환 (가나 → 한글 소리 + 괄호 원문 / 한글 덩어리 삭제). 결과는 언제나 검사를 통과한다.
 // 그래서 늦게 올리거나 숨기지 않고, 이번 실행에서 고친 결과를 그대로 반영한다.
+// 기계 변환한 필드는 원래 글을 따로 보관해 두고(data/lang-forced.json), 다음 실행에서 되돌려 모델로 다시 고친다.
+// (모델 호출이 통째로 실패한 날 기계 변환이 그대로 굳지 않게)
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
 import {
@@ -90,6 +92,37 @@ async function untilClean<T>(
 
 function refusal(response: { stop_reason: string | null; stop_details?: { category?: string | null } | null }) {
   if (response.stop_reason === "refusal") throw new SummaryRefused(response.stop_details?.category ?? "refusal");
+}
+
+// ── 기계 변환 기록 ────────────────────────────────────────────────────
+
+/** 기계 변환한 필드: 키(범위:id:필드) → 원래 값과 변환한 값 */
+export type ForcedStore = Record<string, { orig: unknown; forced: unknown }>;
+let store: ForcedStore = {};
+
+export function loadForced(s: ForcedStore | null) {
+  store = s ?? {};
+}
+export function forcedStore(): ForcedStore {
+  return store;
+}
+
+function remember(key: string, orig: unknown, forced: unknown) {
+  if (JSON.stringify(orig) === JSON.stringify(forced)) return;
+  store[key] = { orig: store[key]?.orig ?? orig, forced };
+}
+
+/**
+ * 지난 실행에서 기계 변환한 필드를 원래 값으로 되돌린다. 그 뒤로 다른 이유로 바뀐 필드는 건드리지 않는다.
+ * 되돌린 필드는 다시 '문제 있음'이 되어 이번 점검에서 모델이 다시 고친다. 그 범위의 기록은 비운다(이번에 다시 기록).
+ */
+function restore<T extends object>(scope: string, entries: [string, T, (keyof T)[]][]) {
+  for (const [id, obj, fields] of entries)
+    for (const f of fields) {
+      const e = store[`${scope}:${id}:${String(f)}`];
+      if (e && JSON.stringify(obj[f]) === JSON.stringify(e.forced)) obj[f] = e.orig as T[keyof T];
+    }
+  for (const k of Object.keys(store)) if (k.startsWith(`${scope}:`)) delete store[k];
 }
 
 // ── 판별 ──────────────────────────────────────────────────────────────
@@ -219,7 +252,14 @@ async function rewriteTexts(texts: { text: string; problems?: string[] }[], to: 
 
 type Bilingual = { id: string; titleJa: string; summaryJa: string[]; titleKo: string; summaryKo: string[] };
 
-async function fixJa<T extends Bilingual>(label: string, items: T[], originalTitle: (x: T) => string) {
+const JA_FIELDS = ["titleJa", "summaryJa"] as const;
+const KO_FIELDS = ["titleKo", "summaryKo"] as const;
+
+async function fixJa<T extends Bilingual>(scope: string, label: string, items: T[], originalTitle: (x: T) => string) {
+  restore(
+    `${scope}-ja`,
+    items.map((x) => [x.id, x, [...JA_FIELDS]] as [string, T, (keyof T)[]]),
+  );
   return untilClean(
     `${label} 일본어 다시 번역`,
     items.filter((x) => x.summaryKo.length > 0),
@@ -244,16 +284,22 @@ async function fixJa<T extends Bilingual>(label: string, items: T[], originalTit
       }
     },
     (x) => {
+      const before = { titleJa: x.titleJa, summaryJa: x.summaryJa };
       const original = originalTitle(x);
       if (!x.titleJa || hasHangul(x.titleJa))
         x.titleJa = original && !hasHangul(original) ? original : forceJa(x.titleJa);
       x.summaryJa = x.summaryJa.map(forceJa).filter(Boolean);
+      for (const f of JA_FIELDS) remember(`${scope}-ja:${x.id}:${f}`, before[f], x[f]);
     },
     (x) => x.titleKo,
   );
 }
 
-async function fixKo<T extends Bilingual>(label: string, items: T[], originalTitle: (x: T) => string) {
+async function fixKo<T extends Bilingual>(scope: string, label: string, items: T[], originalTitle: (x: T) => string) {
+  restore(
+    `${scope}-ko`,
+    items.map((x) => [x.id, x, [...KO_FIELDS]] as [string, T, (keyof T)[]]),
+  );
   return untilClean(
     `${label} 한국어 고쳐 쓰기`,
     items,
@@ -279,8 +325,10 @@ async function fixKo<T extends Bilingual>(label: string, items: T[], originalTit
       }
     },
     (x) => {
+      const before = { titleKo: x.titleKo, summaryKo: x.summaryKo };
       x.titleKo = forceKo(x.titleKo);
       x.summaryKo = x.summaryKo.map(forceKo);
+      for (const f of KO_FIELDS) remember(`${scope}-ko:${x.id}:${f}`, before[f], x[f]);
     },
     (x) => x.titleKo,
   );
@@ -331,7 +379,9 @@ export async function updateNameReadings(
 ): Promise<{ readings: Record<string, string>; count: FixCount }> {
   const targets = [...new Set(names.filter((n) => JAPANESE.test(n)))];
   const readings: Record<string, string> = {};
-  for (const n of targets) if (prev[n] && validReading(prev[n])) readings[n] = prev[n];
+  const retry = new Set(Object.keys(store).filter((k) => k.startsWith("name:")).map((k) => k.slice(5)));
+  for (const k of Object.keys(store)) if (k.startsWith("name:")) delete store[k];
+  for (const n of targets) if (prev[n] && validReading(prev[n]) && !retry.has(n)) readings[n] = prev[n];
   const count = await untilClean(
     "이름 한국어 읽기",
     targets.filter((n) => !readings[n]),
@@ -342,6 +392,7 @@ export async function updateNameReadings(
     (n) => {
       const ko = kanaToHangul(n).replace(JP_RUN, " ").replace(/\s+/g, " ").trim();
       if (validReading(ko)) readings[n] = ko;
+      store[`name:${n}`] = { orig: null, forced: ko };
     },
     (n) => n,
     4,
@@ -360,44 +411,63 @@ export interface AuditStats {
 /** 기사: 일본어·한국어 필드와 엔티티 이름. 토픽의 엔티티는 기사에서 다시 계산되므로 여기서 고치면 함께 고쳐진다. */
 export async function auditArticles(news: NewsItem[]): Promise<AuditStats> {
   return {
-    ja: await fixJa("기사", news, (n) => n.title),
-    ko: await fixKo("기사", news, (n) => n.title),
+    ja: await fixJa("article", "기사", news, (n) => n.title),
+    ko: await fixKo("article", "기사", news, (n) => n.title),
     names: await fixHangulNames(news),
   };
 }
 
 /** 토픽: 통합 요약의 일본어·한국어 필드 */
 export async function auditTopics(topics: Topic[]): Promise<{ ja: FixCount; ko: FixCount }> {
-  return { ja: await fixJa("토픽", topics, (t) => t.titleKo), ko: await fixKo("토픽", topics, (t) => t.titleJa) };
+  return {
+    ja: await fixJa("topic", "토픽", topics, (t) => t.titleKo),
+    ko: await fixKo("topic", "토픽", topics, (t) => t.titleJa),
+  };
 }
 
-type Slot = { get: () => string; set: (v: string) => void; ko: string };
+type Slot = { key: string; get: () => string; set: (v: string) => void; ko: string };
 
 function briefingSlots(briefings: Briefing[]) {
   const ja: Slot[] = [];
   const ko: Slot[] = [];
   for (const b of briefings) {
-    ja.push({ get: () => b.headlineJa, set: (v) => (b.headlineJa = v), ko: b.headlineKo });
-    ko.push({ get: () => b.headlineKo, set: (v) => (b.headlineKo = v), ko: b.headlineKo });
-    for (const it of b.items) {
+    const k = (lang: string, i: number, f: string) => `briefing-${lang}:${b.date}:${i}:${f}`;
+    ja.push({ key: k("ja", -1, "headline"), get: () => b.headlineJa, set: (v) => (b.headlineJa = v), ko: b.headlineKo });
+    ko.push({ key: k("ko", -1, "headline"), get: () => b.headlineKo, set: (v) => (b.headlineKo = v), ko: b.headlineKo });
+    b.items.forEach((it, i) => {
       ja.push(
-        { get: () => it.titleJa, set: (v) => (it.titleJa = v), ko: it.titleKo },
-        { get: () => it.bodyJa, set: (v) => (it.bodyJa = v), ko: it.bodyKo },
-        { get: () => it.whyJa, set: (v) => (it.whyJa = v), ko: it.whyKo },
+        { key: k("ja", i, "title"), get: () => it.titleJa, set: (v) => (it.titleJa = v), ko: it.titleKo },
+        { key: k("ja", i, "body"), get: () => it.bodyJa, set: (v) => (it.bodyJa = v), ko: it.bodyKo },
+        { key: k("ja", i, "why"), get: () => it.whyJa, set: (v) => (it.whyJa = v), ko: it.whyKo },
       );
       ko.push(
-        { get: () => it.titleKo, set: (v) => (it.titleKo = v), ko: it.titleKo },
-        { get: () => it.bodyKo, set: (v) => (it.bodyKo = v), ko: it.bodyKo },
-        { get: () => it.whyKo, set: (v) => (it.whyKo = v), ko: it.whyKo },
+        { key: k("ko", i, "title"), get: () => it.titleKo, set: (v) => (it.titleKo = v), ko: it.titleKo },
+        { key: k("ko", i, "body"), get: () => it.bodyKo, set: (v) => (it.bodyKo = v), ko: it.bodyKo },
+        { key: k("ko", i, "why"), get: () => it.whyKo, set: (v) => (it.whyKo = v), ko: it.whyKo },
       );
-    }
+    });
   }
   return { ja, ko };
+}
+
+/** 슬롯 단위 되돌리기·기록 (브리핑) */
+function restoreSlots(slots: Slot[], prefix: string) {
+  for (const x of slots) {
+    const e = store[x.key];
+    if (e && x.get() === e.forced) x.set(e.orig as string);
+  }
+  for (const k of Object.keys(store)) if (k.startsWith(prefix)) delete store[k];
+}
+function forceSlot(x: Slot, fn: (s: string) => string) {
+  const before = x.get();
+  x.set(fn(before));
+  remember(x.key, before, x.get());
 }
 
 /** 브리핑: 한국어 문장을 먼저 고친 뒤, 일본어 문장 */
 export async function auditBriefings(briefings: Briefing[]): Promise<{ ja: FixCount; ko: FixCount }> {
   const { ko } = briefingSlots(briefings);
+  restoreSlots(ko, "briefing-ko:");
   const koCount = await untilClean(
     "브리핑 한국어 고쳐 쓰기",
     ko,
@@ -410,11 +480,12 @@ export async function auditBriefings(briefings: Briefing[]): Promise<{ ja: FixCo
       );
       chunk.forEach((x, i) => out[i] && !hasRawJapanese(out[i]) && x.set(out[i]));
     },
-    (x) => x.set(forceKo(x.get())),
+    (x) => forceSlot(x, forceKo),
     (x) => x.get(),
   );
   // 한국어를 고친 뒤의 문장으로 번역하도록 슬롯을 다시 만든다
   const { ja } = briefingSlots(briefings);
+  restoreSlots(ja, "briefing-ja:");
   const jaCount = await untilClean(
     "브리핑 일본어 다시 번역",
     ja,
@@ -427,7 +498,7 @@ export async function auditBriefings(briefings: Briefing[]): Promise<{ ja: FixCo
       );
       chunk.forEach((x, i) => out[i] && !hasHangul(out[i]) && x.set(out[i]));
     },
-    (x) => x.set(forceJa(x.get())),
+    (x) => forceSlot(x, forceJa),
     (x) => x.ko,
   );
   return { ja: jaCount, ko: koCount };
@@ -440,11 +511,13 @@ export async function auditBriefings(briefings: Briefing[]): Promise<{ ja: FixCo
  * (점검 단계 뒤에 새로 생긴 글이 있거나 모델 호출이 아예 안 된 경우를 위한 안전장치) 바꾼 수를 돌려준다.
  */
 export function enforceLanguage(
-  items: { titleJa: string; summaryJa?: string[]; titleKo: string; summaryKo?: string[]; title?: string }[],
+  scope: "article" | "topic",
+  items: { id: string; titleJa: string; summaryJa: string[]; titleKo: string; summaryKo: string[]; title?: string }[],
 ): number {
   let changed = 0;
   for (const x of items) {
     let hit = false;
+    const before = { titleJa: x.titleJa, summaryJa: x.summaryJa, titleKo: x.titleKo, summaryKo: x.summaryKo };
     if (hasHangul(x.titleJa)) {
       x.titleJa = x.title && !hasHangul(x.title) ? x.title : forceJa(x.titleJa);
       hit = true;
@@ -461,7 +534,11 @@ export function enforceLanguage(
       x.summaryKo = x.summaryKo.map(forceKo);
       hit = true;
     }
-    if (hit) changed++;
+    if (hit) {
+      changed++;
+      for (const f of JA_FIELDS) remember(`${scope}-ja:${x.id}:${f}`, before[f], x[f]);
+      for (const f of KO_FIELDS) remember(`${scope}-ko:${x.id}:${f}`, before[f], x[f]);
+    }
   }
   return changed;
 }
@@ -471,12 +548,12 @@ export function enforceBriefings(briefings: Briefing[]): number {
   let changed = 0;
   for (const x of ko)
     if (hasRawJapanese(x.get())) {
-      x.set(forceKo(x.get()));
+      forceSlot(x, forceKo);
       changed++;
     }
   for (const x of ja)
     if (hasHangul(x.get())) {
-      x.set(forceJa(x.get()));
+      forceSlot(x, forceJa);
       changed++;
     }
   return changed;

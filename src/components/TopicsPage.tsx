@@ -33,10 +33,11 @@ import type { View } from "./AppNav";
 import { FilterPill } from "./FilterPill";
 import { dayKey, dayLabel, shortDate, timeOfDay } from "./format";
 import { useStoredFlag } from "./hooks";
-import { NatureMark, NatureTile, SourceAvatars } from "./marks";
+import { FreshMark, NatureMark, NatureTile, SourceAvatars } from "./marks";
 import { stagger, useCountUp, useMotion } from "./motion";
 import { PageTitle, usePageStyles } from "./page";
 import { namesOf, sourceLabel, summaryOf, titleOf } from "./text";
+import { isFresh } from "./visit";
 
 export interface NewsFilters {
   attack: string[];
@@ -241,6 +242,8 @@ interface Props {
   showRegion: boolean;
   items: Topic[];
   vulns: VulnData | null;
+  /** 지난 방문 시각 (새 소식 표시) */
+  lastVisit: number | null;
   filters: NewsFilters;
   setFilters: (f: NewsFilters) => void;
   sort: SortMode;
@@ -556,6 +559,7 @@ export function TopicsPage(p: Props) {
                       <div className={s.title}>{title(n)}</div>
                       {summary(n) && <div className={s.summary}>{summary(n)}</div>}
                       <div className={s.meta}>
+                        {isFresh(n, p.lastVisit) && <FreshMark lang={lang} />}
                         {n.importance >= PRIORITY_THRESHOLD && <span className={s.priority}>{t.priority}</span>}
                         <time dateTime={n.lastUpdated}>
                           {p.sort === "important" ? shortDate(lang, n.lastUpdated) : timeOfDay(lang, n.lastUpdated)}

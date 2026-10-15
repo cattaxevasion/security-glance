@@ -2,7 +2,7 @@
 // (데이터 쪽은 수집기의 언어 점검이 배포 전에 고치고 확인한다. 여기는 그래도 새는 경우를 막는 마지막 안전장치)
 // 화면 코드는 언어별 필드를 직접 고르지 말고 반드시 이 도우미를 쓴다 (check:i18n이 검사한다).
 import { forceJa, forceKo, hasHangul, hasRawJapanese } from "../../shared/lang";
-import { SOURCE_LABELS, type Lang } from "../i18n";
+import { SOURCE_LABELS, VULN_TYPES, type Lang } from "../i18n";
 
 interface Bilingual {
   titleKo: string;
@@ -60,4 +60,16 @@ export function namesOf(lang: Lang, names: string[], withOriginal = false): stri
 /** 출처(매체) 이름의 화면 표기 */
 export function sourceLabel(lang: Lang, name: string): string {
   return SOURCE_LABELS[lang][name] ?? name;
+}
+
+/** 영문 취약점 이름·설명에서 찾은 취약점 종류 (화면 언어). 모르는 종류면 null */
+export function vulnTypeOf(lang: Lang, english: string): string | null {
+  const x = english.toLowerCase();
+  const hit = VULN_TYPES.find((v) => v.match.some((m) => x.includes(m)));
+  return hit ? hit[lang] : null;
+}
+
+/** 화면 링크로 써도 되는 주소만 (http·https). 수집기도 거르지만 화면에서 한 번 더 */
+export function safeUrl(url: string | null | undefined): string | undefined {
+  return url && /^https?:\/\//i.test(url) ? url : undefined;
 }

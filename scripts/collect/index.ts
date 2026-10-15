@@ -7,7 +7,8 @@
 //   --briefing                   오늘의 브리핑을 시각과 상관없이 다시 만든다
 import Anthropic from "@anthropic-ai/sdk";
 import { readFile } from "node:fs/promises";
-import type { ArticleRef, Briefing, Meta, NewsItem, RunStats, Topic, VulnData } from "../../shared/types";
+import type { ArticleRef, Briefing, LeakPost, Meta, NewsItem, RunStats, Topic, VulnData } from "../../shared/types";
+import { collectLeaks, matchLeaks, pruneLeakTopics } from "./leaks";
 import { BODY_CHARS, extractArticle } from "./article";
 import { maybeBriefing } from "./briefing";
 import {
@@ -16,6 +17,8 @@ import {
   auditTopics,
   enforceBriefings,
   enforceLanguage,
+  forcedStore,
+  loadForced,
   sumCount,
   updateNameReadings,
   type FixCount,
@@ -29,7 +32,14 @@ import { updateTopics } from "./topics";
 import { collectVulns } from "./vulns";
 
 const NEWS_PATH = "public/data/news.json";
+/** 취약점 전체 (수집기 내부용). 화면은 아래 둘로 나눠 받는다. */
 const VULNS_PATH = "public/data/vulns.json";
+/** 첫 화면용: KEV와 기사 속 CVE의 EPSS (고위험 CVE 목록은 빈 배열) */
+const VULNS_CORE_PATH = "public/data/vulns-core.json";
+/** 고위험 CVE 목록. CVE 화면을 열 때(또는 첫 화면이 뜬 뒤) 받는다. */
+const CVES_PATH = "public/data/cves.json";
+/** 랜섬웨어 유출 사이트 게시 (일본) */
+const LEAKS_PATH = "public/data/leaks.json";
 const META_PATH = "public/data/meta.json";
 /** 화면용 가벼운 기사 목록 (news.json은 수집기 내부용) */
 const ARTICLES_PATH = "public/data/articles.json";
@@ -37,6 +47,8 @@ const ARTICLES_PATH = "public/data/articles.json";
 const TOPICS_PATH = "public/data/topics.json";
 /** 일본어로 적힌 조직·위협 그룹 이름의 한국어 화면용 읽기 */
 const NAMES_KO_PATH = "public/data/names-ko.json";
+/** 기계 변환한 필드의 원래 글 (다음 실행에서 모델로 다시 고친다) */
+const LANG_FORCED_PATH = "data/lang-forced.json";
 /** 첫 화면에 필요한 최근 토픽 (인시던트 기본 기간 30일 + 여유 하루) */
 const TOPICS_RECENT_PATH = "public/data/topics-recent.json";
 /** 그보다 오래된 토픽. 화면이 뜬 뒤에 불러온다. */
@@ -80,7 +92,7 @@ type LegacyNewsItem = Omit<NewsItem, "sourceRegion" | "regions"> & {
  * - sourceKind, techniques, iocTypes 기본값
  */
 function migrate(items: LegacyNewsItem[], sources: Source[]): NewsItem[] {
-  const dropped = { nature: 0, korea: 0 };
+  const dropped = { nature: 0, korea: 0, url: 0 };
   const out: NewsItem[] = [];
   for (const { summary, socPoint: _socPoint, ...n } of items) {
     if (n.nature === EXCLUDED_NATURE) {
@@ -89,6 +101,11 @@ function migrate(items: LegacyNewsItem[], sources: Source[]): NewsItem[] {
     }
     if (n.sourceRegion === "KR") {
       dropped.korea++;
+      continue;
+    }
+    // http·https가 아닌 주소는 화면 링크로 쓰지 않는다
+    if (!/^https?:\/\//i.test(n.url)) {
+      dropped.url++;
       continue;
     }
     const regions = n.regions.filter((r): r is NewsItem["regions"][number] => r === "INTL" || r === "JP");
@@ -106,6 +123,7 @@ function migrate(items: LegacyNewsItem[], sources: Source[]): NewsItem[] {
   }
   if (dropped.nature) console.log(`기존 업계 동향 기사 ${dropped.nature}건 삭제`);
   if (dropped.korea) console.log(`한국 매체 기사 ${dropped.korea}건 삭제`);
+  if (dropped.url) console.log(`http·https가 아닌 주소의 기사 ${dropped.url}건 삭제`);
   return out;
 }
 
@@ -302,6 +320,7 @@ async function main() {
   let news = migrate(await readJson<LegacyNewsItem[]>(NEWS_PATH, []), await loadSources());
   if (mode !== "vulns") news = await runNews(meta);
 
+  loadForced(await readJson(LANG_FORCED_PATH, {}));
   // 언어 점검 1: 기사의 일본어·한국어 필드·엔티티 이름 (토픽 엔티티는 기사에서 다시 계산된다)
   if (hasKey()) {
     const a = await auditArticles(news);
@@ -326,6 +345,10 @@ async function main() {
     meta.cveCount = vulns.cves.length;
     if (!dry) await writeJson(VULNS_PATH, vulns);
   }
+  if (vulns && !dry) {
+    await writeJson(VULNS_CORE_PATH, { ...vulns, cves: [] });
+    await writeJson(CVES_PATH, vulns.cves);
+  }
 
   // 토픽(まとめ): 기사 묶기, 통합 요약, 중요도
   const prevTopics = await readJson<Topic[]>(TOPICS_PATH, []);
@@ -348,7 +371,7 @@ async function main() {
     console.log(`언어 점검(토픽): 일본어 ${fmt(f.ja)} · 한국어 ${fmt(f.ko)}`);
   }
   // 배포 전 마지막 확인: 위 단계가 다 고쳤다면 0
-  const gateTopics = enforceLanguage(topics);
+  const gateTopics = enforceLanguage("topic", topics);
   if (gateTopics) console.warn(`  !  마지막 확인(토픽)에서 기계 변환 ${gateTopics}건`);
   meta.topicCount = topics.length;
   if (!dry) {
@@ -357,6 +380,26 @@ async function main() {
     const isRecent = (t: Topic) => Date.parse(t.lastUpdated) >= recentCut;
     await writeJson(TOPICS_RECENT_PATH, topics.filter(isRecent));
     await writeJson(TOPICS_ARCHIVE_PATH, topics.filter((t) => !isRecent(t)));
+  }
+
+  // 랜섬웨어 유출 사이트 게시 (일본): 보도 토픽과 연결
+  try {
+    const leaks = await collectLeaks(await readJson<LeakPost[]>(LEAKS_PATH, []));
+    pruneLeakTopics(leaks, topics);
+    let matched = 0;
+    if (hasKey()) {
+      try {
+        matched = await matchLeaks(leaks, topics);
+      } catch (e) {
+        console.warn(`  !  유출 게시와 보도 연결 실패: ${(e as Error).message.slice(0, 120)}`);
+      }
+    }
+    console.log(
+      `랜섬웨어 유출 게시(일본, 30일) ${leaks.length}건 · 보도와 연결 ${leaks.filter((x) => x.topicIds.length).length}건 (이번에 ${matched})`,
+    );
+    if (!dry) await writeJson(LEAKS_PATH, leaks);
+  } catch (e) {
+    console.warn(`  !  랜섬웨어 유출 게시 수집 실패 (이전 데이터 유지): ${(e as Error).message.slice(0, 120)}`);
   }
 
   // 오늘의 브리핑 (일본 시간 아침, 하루 한 번)
@@ -377,7 +420,7 @@ async function main() {
     }
   }
 
-  const gateNews = enforceLanguage(news);
+  const gateNews = enforceLanguage("article", news);
   if (gateNews) {
     console.warn(`  !  마지막 확인(기사)에서 기계 변환 ${gateNews}건`);
     if (!dry) await writeJson(NEWS_PATH, news);
@@ -394,6 +437,10 @@ async function main() {
     basis: n.basis,
   }));
   if (!dry) await writeJson(ARTICLES_PATH, refs);
+
+  const forced = forcedStore();
+  if (Object.keys(forced).length) console.log(`기계 변환으로 마무리한 필드 ${Object.keys(forced).length}개 (다음 실행에서 모델로 다시 고침)`);
+  if (!dry) await writeJson(LANG_FORCED_PATH, forced);
 
   meta.newsCount = news.length;
   meta.updatedAt = new Date().toISOString();

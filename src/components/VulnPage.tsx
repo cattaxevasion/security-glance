@@ -11,11 +11,13 @@ import {
   TableHeaderCell,
   TableRow,
   makeStyles,
+  mergeClasses,
   tokens,
 } from "@fluentui/react-components";
 import { useEffect, useMemo, useState } from "react";
 import type { CveEntry, KevEntry, Topic, VulnData } from "../../shared/types";
 import { STRINGS, type Lang } from "../i18n";
+import { vulnTypeOf } from "./text";
 import { EpssMark } from "./marks";
 import { PageTitle, usePageStyles } from "./page";
 
@@ -31,6 +33,10 @@ const useStyles = makeStyles({
   cell: { paddingTop: "10px", paddingBottom: "10px" },
   ransom: { marginLeft: "8px" },
   nameCell: { display: "flex", alignItems: "center", gap: "8px", minWidth: 0 },
+  // 취약점 종류(화면 언어) + 원래 영문 이름
+  nameStack: { display: "flex", flexDirection: "column", gap: "2px", minWidth: 0 },
+  vulnType: { fontWeight: tokens.fontWeightSemibold },
+  vulnEn: { color: tokens.colorNeutralForeground3, fontSize: tokens.fontSizeBase200 },
   // 이름·설명은 두 줄까지 보여준다 (한 줄로 자르면 무슨 취약점인지 읽을 수 없다)
   clamp2: {
     display: "-webkit-box",
@@ -56,6 +62,19 @@ interface Props {
   selectedId: string | null;
   onSelect: (id: string) => void;
   onOrder: (ids: string[]) => void;
+}
+
+/** KEV 취약점 이름: 종류를 화면 언어로 먼저, 원래 영문 이름을 아래에 */
+function VulnName({ lang, english }: { lang: Lang; english: string }) {
+  const s = useStyles();
+  const type = vulnTypeOf(lang, english);
+  if (!type) return <span className={s.clamp2}>{english}</span>;
+  return (
+    <span className={s.nameStack}>
+      <span className={s.vulnType}>{type}</span>
+      <span className={mergeClasses(s.clamp2, s.vulnEn)}>{english}</span>
+    </span>
+  );
 }
 
 export function VulnPage(p: Props) {
@@ -211,7 +230,7 @@ export function VulnPage(p: Props) {
                   </TableCell>
                   <TableCell className={s.cell}>
                     <span className={s.nameCell}>
-                      <span className={s.clamp2}>{k.vulnerabilityName}</span>
+                      <VulnName lang={lang} english={k.vulnerabilityName} />
                       {k.ransomware && (
                         <Badge size="small" appearance="tint" color="danger">
                           {t.ransomware}
@@ -286,7 +305,14 @@ export function VulnPage(p: Props) {
                     </Caption1>
                   </TableCell>
                   <TableCell className={s.cell}>
-                    <span className={s.clamp2}>{c.description}</span>
+                    <span className={s.nameStack}>
+                      {vulnTypeOf(lang, c.description) && (
+                        <span className={s.vulnType}>{vulnTypeOf(lang, c.description)}</span>
+                      )}
+                      <span className={mergeClasses(s.clamp2, vulnTypeOf(lang, c.description) ? s.vulnEn : undefined)}>
+                        {c.description}
+                      </span>
+                    </span>
                   </TableCell>
                   <TableCell>{newsCell(c.id)}</TableCell>
                 </TableRow>

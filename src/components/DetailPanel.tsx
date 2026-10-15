@@ -37,7 +37,8 @@ import { REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import { fullDateTime, pct, relativeTime, shortDate } from "./format";
 import { EpssMark, NATURE_COLOR, NATURE_ICON, NatureMark } from "./marks";
 import { useMotion } from "./motion";
-import { namesOf, sourceLabel, summaryOf, titleOf } from "./text";
+import { namesOf, safeUrl, sourceLabel, summaryOf, titleOf, vulnTypeOf } from "./text";
+import { shareUrl } from "./share";
 import { PRIORITY_THRESHOLD } from "./TopicsPage";
 
 export type Selection = { kind: "topic"; id: string } | { kind: "kev" | "cve"; id: string };
@@ -232,7 +233,8 @@ export function DetailPanel(p: Props) {
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(location.href);
+      // 토픽은 공유용 주소(링크 미리보기에 제목·요약이 뜬다), 취약점은 지금 주소
+      await navigator.clipboard.writeText(sel?.kind === "topic" ? shareUrl(p.lang, sel.id) : location.href);
       p.onCopied();
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
@@ -341,7 +343,13 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
       </div>
       <Toolbar size="small" className={s.actions}>
         {main && (
-          <ToolbarButton as="a" href={main.url} target="_blank" rel="noopener noreferrer" icon={<OpenRegular />}>
+          <ToolbarButton
+            as="a"
+            href={safeUrl(main.url)}
+            target="_blank"
+            rel="noopener noreferrer"
+            icon={<OpenRegular />}
+          >
             {t.openSource}
           </ToolbarButton>
         )}
@@ -420,7 +428,7 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
                 <span className={s.tlKind}>{sourceLabel(L, n.sourceName)}</span>
                 <span>{t.kind[n.sourceKind]}</span>
               </div>
-              <Link className={s.tlTitle} href={n.url} target="_blank" rel="noopener noreferrer">
+              <Link className={s.tlTitle} href={safeUrl(n.url)} target="_blank" rel="noopener noreferrer">
                 {articleTitle(n)}
               </Link>
             </li>
@@ -510,7 +518,7 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
     <Button
       appearance="primary"
       as="a"
-      href={main.url}
+      href={safeUrl(main.url)}
       target="_blank"
       rel="noopener noreferrer"
       icon={<OpenRegular />}
@@ -544,7 +552,13 @@ function vulnContent(kind: "kev" | "cve", v: KevEntry | CveEntry, p: Props, s: S
         <Subtitle1 as="h2" className={mergeClasses(s.title, s.mono)}>
           {id}
         </Subtitle1>
-        {kev && <Body1>{kev.vulnerabilityName}</Body1>}
+        {kev && (
+          <Body1>
+            {vulnTypeOf(L, kev.vulnerabilityName) && <b>{vulnTypeOf(L, kev.vulnerabilityName)} · </b>}
+            {kev.vulnerabilityName}
+          </Body1>
+        )}
+        {!kev && cve && vulnTypeOf(L, cve.description) && <Body1>{vulnTypeOf(L, cve.description)}</Body1>}
         <Caption1 className={s.metaRow}>
           {kev && <span>{t.inKev}</span>}
           {kev?.ransomware && <span style={{ color: tokens.colorPaletteRedForeground1 }}>{t.ransomware}</span>}

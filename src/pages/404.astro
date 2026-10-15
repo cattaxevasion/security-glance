@@ -1,0 +1,21 @@
+---
+// 없는 주소. 합쳐져 사라진 토픽의 공유 주소(/t/<id>/)면 사이트로 보내 주고, 아니면 첫 화면으로.
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Security Glance</title>
+    <script is:inline define:vars={{ base }}>
+      const m = location.pathname.match(/\/(ja\/)?t\/([0-9a-f]{8,32})\/?$/);
+      location.replace(m ? `${base}?sel=${m[2]}&lang=${m[1] ? "ja" : "ko"}` : base);
+    </script>
+  </head>
+  <body>
+    <p><a href={base}>Security Glance</a></p>
+  </body>
+</html>

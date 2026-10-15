@@ -34,6 +34,7 @@ function refreshDerived(t: Topic, members: NewsItem[]) {
   t.hasVendor = sorted.some((n) => n.sourceKind === "vendor");
   t.firstSeen = sorted[sorted.length - 1].publishedAt;
   t.lastUpdated = sorted[0].publishedAt;
+  t.collectedAt = sorted.map((n) => n.collectedAt).sort().at(-1);
   t.entities = {
     cves: uniq(sorted.flatMap((n) => n.entities.cves)).slice(0, 12),
     actors: uniq(sorted.flatMap((n) => n.entities.actors)).slice(0, 8),

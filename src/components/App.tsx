@@ -19,23 +19,26 @@ import {
   type Theme,
 } from "@fluentui/react-components";
 import { CheckmarkCircleFilled } from "@fluentui/react-icons";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "pretendard-jp/dist/web/variable/pretendardvariable-jp-dynamic-subset.css";
 import type { Region } from "../../shared/taxonomy";
-import type { ArticleRef, Briefing, Meta, Topic, VulnData } from "../../shared/types";
+import type { ArticleRef, Briefing, CveEntry, LeakPost, Meta, Topic, VulnData } from "../../shared/types";
 import { FONT_STACK, REGION_LABELS, STRINGS, detectLang, saveLang, type Lang } from "../i18n";
 import { AppHeader } from "./AppHeader";
 import { AppNav, VIEWS, type View } from "./AppNav";
 import { DetailPanel, type Selection } from "./DetailPanel";
 import { useMediaQuery, useNarrow, usePrefersDark } from "./hooks";
 import { BriefingPage } from "./BriefingPage";
-import { IncidentsPage } from "./IncidentsPage";
 import { relativeTime } from "./format";
-import { setNameReadings } from "./text";
+import { setNameReadings, sourceLabel } from "./text";
 import { useMotion } from "./motion";
 import { DEFAULT_FILTERS, TopicsPage, type NewsFilters, type SortMode } from "./TopicsPage";
-import { VulnPage } from "./VulnPage";
+import { isFresh, useLastVisit } from "./visit";
+
+// 첫 화면(브리핑)에 필요 없는 화면은 열 때 받는다
+const IncidentsPage = lazy(() => import("./IncidentsPage").then((m) => ({ default: m.IncidentsPage })));
+const VulnPage = lazy(() => import("./VulnPage").then((m) => ({ default: m.VulnPage })));
 
 const useStyles = makeStyles({
   // FluentProvider의 className은 툴팁·팝오버 포털에도 복사된다. 배경·높이 같은 레이아웃 스타일은
@@ -185,6 +188,8 @@ export default function App() {
   const [briefings, setBriefings] = useState<Briefing[]>([]);
   const [vulns, setVulns] = useState<VulnData | null>(null);
   const [meta, setMeta] = useState<Meta | null>(null);
+  const [leaks, setLeaks] = useState<LeakPost[]>([]);
+  const lastVisit = useLastVisit();
 
   const t = STRINGS[lang];
 
@@ -202,10 +207,29 @@ export default function App() {
       },
     );
     load<Briefing[]>("briefings.json").then((d) => setBriefings(d ?? []));
-    load<VulnData>("vulns.json").then(setVulns);
+    cvesRequested.current = false;
+    load<VulnData>("vulns-core.json").then(setVulns);
     load<Meta>("meta.json").then(setMeta);
+    load<LeakPost[]>("leaks.json").then((d) => setLeaks(d ?? []));
   }, []);
   useEffect(reload, [reload]);
+
+  // 고위험 CVE 목록은 CVE 화면이나 CVE 상세를 열 때 바로, 아니면 첫 화면이 뜨고 잠시 뒤에 붙인다
+  const cvesRequested = useRef(false);
+  const loadCves = useCallback(() => {
+    if (cvesRequested.current) return;
+    cvesRequested.current = true;
+    load<CveEntry[]>("cves.json").then((d) => d && setVulns((v) => (v ? { ...v, cves: d } : v)));
+  }, []);
+  useEffect(() => {
+    if (!vulns) return;
+    if (view === "cve" || selection?.kind === "cve") {
+      loadCves();
+      return;
+    }
+    const timer = window.setTimeout(loadCves, 3000);
+    return () => window.clearTimeout(timer);
+  }, [vulns, view, selection, loadCves]);
 
   const loadArchive = useCallback(() => {
     if (archiveRequested.current) return;
@@ -394,10 +418,21 @@ export default function App() {
     }
     if (vulns) {
       c.kev = vulns.kev.length;
-      c.cve = vulns.cves.length;
+      c.cve = vulns.cves.length || meta?.cveCount || null;
     }
     return c;
-  }, [topics, vulns]);
+  }, [topics, vulns, meta]);
+
+  // 지난 방문 이후 새 소식 (탐색 메뉴의 +N)
+  const fresh = useMemo(() => {
+    const out: Partial<Record<View, number>> = {};
+    if (!topics || lastVisit == null) return out;
+    const xs = topics.filter((x) => isFresh(x, lastVisit));
+    out.all = xs.length;
+    out.incidents = xs.filter((x) => x.nature === "사건").length;
+    for (const r of ["INTL", "JP"] as Region[]) out[r] = xs.filter((x) => x.regions.includes(r)).length;
+    return out;
+  }, [topics, lastVisit]);
 
   const regionItems = useMemo(
     () => (topics ?? []).filter((n) => view === "all" || !isTopicView(view) || n.regions.includes(view as Region)),
@@ -431,11 +466,12 @@ export default function App() {
             overlay={narrow}
             onClose={() => setNavOpen(false)}
             counts={counts}
+            fresh={fresh}
           />
           <main className={s.main}>
             {failed.length > 0 && isTopicView(view) && (
               <MessageBar intent="warning" className={s.bar}>
-                <MessageBarBody>{t.sourcesFailed(failed.map((x) => x.name).join(", "))}</MessageBarBody>
+                <MessageBarBody>{t.sourcesFailed(failed.map((x) => sourceLabel(lang, x.name)).join(", "))}</MessageBarBody>
               </MessageBar>
             )}
             {loadError && (
@@ -457,6 +493,7 @@ export default function App() {
               <LoadingSkeleton />
             ) : (
               <div key={view} className={m.fade}>
+                <Suspense fallback={<LoadingSkeleton />}>
                 {view === "briefing" ? (
                   <BriefingPage
                     lang={lang}
@@ -464,6 +501,7 @@ export default function App() {
                     briefings={briefings}
                     topics={topics}
                     vulns={vulns}
+                    leaks={leaks}
                     onOpen={(id) => setSelection({ kind: "topic", id })}
                     onVuln={(id) => setSelection({ kind: "kev", id })}
                     onSearch={searchAll}
@@ -474,6 +512,8 @@ export default function App() {
                   <IncidentsPage
                     lang={lang}
                     topics={topics}
+                    leaks={leaks}
+                    lastVisit={lastVisit}
                     query={newsQuery}
                     setQuery={setNewsQuery}
                     narrow={narrow}
@@ -501,6 +541,7 @@ export default function App() {
                     showRegion={view === "all"}
                     items={regionItems}
                     vulns={vulns}
+                    lastVisit={lastVisit}
                     filters={filters}
                     setFilters={setFilters}
                     sort={sort}
@@ -516,6 +557,7 @@ export default function App() {
                     onGo={setView}
                   />
                 )}
+                </Suspense>
               </div>
             )}
           </main>

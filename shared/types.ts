@@ -66,6 +66,8 @@ export interface Topic {
   weak?: boolean;
   firstSeen: string;
   lastUpdated: string;
+  /** 이 토픽의 기사가 마지막으로 수집된 시각 (지난 방문 이후 새 소식 판단용) */
+  collectedAt?: string;
   /** 시간 감쇠 전 중요도 (0~100 남짓). 화면에서 최신성을 곱해 정렬한다. */
   importance: number;
   /** 통합 요약을 만들 때의 기사 수. 기사가 늘면 다시 만든다. */
@@ -141,6 +143,26 @@ export interface RunStats {
   notSecurity: number;
   failed: number;
   deferred: number;
+}
+
+/**
+ * 랜섬웨어 조직이 유출 사이트에 올린 피해 주장 (일본 조직, ransomware.live 집계). 사실 확인 전 정보.
+ * 유출 사이트 주소와 AI 생성 설명은 저장하지 않는다.
+ */
+export interface LeakPost {
+  id: string;
+  /** 게시된 피해 조직 이름 (대개 영문·도메인) */
+  victim: string;
+  website: string | null;
+  /** 랜섬웨어 조직 */
+  group: string;
+  /** 게시가 처음 확인된 시각 */
+  discovered: string;
+  sector: Sector | null;
+  /** 같은 조직의 피해를 다룬 보도 토픽 */
+  topicIds: string[];
+  /** 보도 연결을 마지막으로 확인한 시각 */
+  checkedAt: string | null;
 }
 
 export interface Meta {

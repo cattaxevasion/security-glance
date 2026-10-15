@@ -1,0 +1,11 @@
+---
+import TopicShare from "../../share/TopicShare.astro";
+import { buildTopics } from "../../share/topics";
+
+export function getStaticPaths() {
+  return buildTopics().map((topic) => ({ params: { id: topic.id }, props: { topic } }));
+}
+const { topic } = Astro.props;
+---
+
+<TopicShare topic={topic} lang="ko" />

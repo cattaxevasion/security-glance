@@ -19,25 +19,30 @@ import {
   AlertUrgentRegular,
   ArrowRightRegular,
   ChevronDownRegular,
+  FlashRegular,
   HistoryRegular,
   LightbulbRegular,
+  LockClosedKeyRegular,
   PeopleTeamRegular,
   ShieldErrorRegular,
   SparkleFilled,
   type FluentIcon,
 } from "@fluentui/react-icons";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Nature } from "../../shared/taxonomy";
-import type { Briefing, Topic, VulnData } from "../../shared/types";
+import type { Briefing, LeakPost, Topic, VulnData } from "../../shared/types";
 import { LOCALE, REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import type { View } from "./AppNav";
-import { relativeTime } from "./format";
-import { BriefingStories } from "./BriefingStories";
+import { relativeTime, timeOfDay } from "./format";
+import { LeakList } from "./Leaks";
 import { NATURE_ICON, natureGradient } from "./marks";
 import { stagger, useMotion } from "./motion";
 import { usePageStyles } from "./page";
 import { namesOf, textOf, titleOf } from "./text";
-import { rankScore } from "./TopicsPage";
+import { PRIORITY_THRESHOLD, rankScore } from "./TopicsPage";
+
+// 휴대폰에서만 쓰는 스토리 카드는 그때 받는다
+const BriefingStories = lazy(() => import("./BriefingStories").then((m) => ({ default: m.BriefingStories })));
 
 const useStyles = makeStyles({
   page: { maxWidth: "1320px" },
@@ -275,6 +280,8 @@ interface Props {
   briefings: Briefing[];
   topics: Topic[];
   vulns: VulnData | null;
+  /** 랜섬웨어 유출 사이트 게시 (일본) */
+  leaks: LeakPost[];
   onOpen: (topicId: string) => void;
   onVuln: (cve: string) => void;
   onSearch: (q: string) => void;
@@ -355,8 +362,21 @@ export function BriefingPage(p: Props) {
     for (const x of recent)
       for (const a of namesOf(lang, x.entities.actors)) actorCount.set(a, (actorCount.get(a) ?? 0) + 1);
     const actors = [...actorCount.entries()].sort((a, b2) => b2[1] - a[1]).slice(0, 12);
-    return { incidents, kev, actors };
-  }, [topics, p.vulns, lang]);
+    // 브리핑(일본 시간 아침) 뒤에 새로 수집된 주목 토픽. 최신 브리핑을 볼 때만.
+    const latest = b && b === briefings[0];
+    const inBriefing = new Set(b?.items.map((i) => i.topicId) ?? []);
+    const after = latest ? Date.parse(b.generatedAt) : Infinity;
+    const sinceBriefing = topics
+      .filter(
+        (x) =>
+          !inBriefing.has(x.id) &&
+          x.importance >= PRIORITY_THRESHOLD &&
+          Date.parse(x.collectedAt ?? x.firstSeen) > after,
+      )
+      .sort((a, b2) => b2.importance - a.importance)
+      .slice(0, 5);
+    return { incidents, kev, actors, sinceBriefing };
+  }, [topics, p.vulns, lang, b, briefings]);
 
   const fmtDate = (d: string) =>
     new Intl.DateTimeFormat(LOCALE[lang], { year: "numeric", month: "long", day: "numeric", weekday: "long" }).format(
@@ -367,7 +387,9 @@ export function BriefingPage(p: Props) {
   return (
     <div className={mergeClasses(ps.page, s.page)}>
       {p.narrow && b ? (
-        <BriefingStories lang={lang} briefing={b} topics={byId} dateLabel={fmtDate(b.date)} onOpen={p.onOpen} />
+        <Suspense fallback={null}>
+          <BriefingStories lang={lang} briefing={b} topics={byId} dateLabel={fmtDate(b.date)} onOpen={p.onOpen} />
+        </Suspense>
       ) : (
         <>
           {/* 배너 */}
@@ -470,6 +492,29 @@ export function BriefingPage(p: Props) {
 
         {/* 오른쪽 위젯 */}
         <aside className={s.rail}>
+          {rail.sinceBriefing.length > 0 && b && (
+            <Widget
+              index={0}
+              icon={FlashRegular}
+              tint={{ bg: tokens.colorBrandBackground2, fg: tokens.colorBrandForeground2 }}
+              title={t.railSinceBriefing}
+              sub={t.railSinceBriefingSub(timeOfDay(lang, b.generatedAt))}
+            >
+              <ul className={s.wList}>
+                {rail.sinceBriefing.map((x) => (
+                  <li key={x.id}>
+                    <button className={s.wItem} onClick={() => p.onOpen(x.id)}>
+                      <span className={s.wTitle}>{topicTitle(x)}</span>
+                      <span className={s.wMeta}>
+                        {tagLabel(lang, x.nature)} · {x.regions.map((r) => REGION_LABELS[lang][r]).join(" · ")} ·{" "}
+                        {relativeTime(lang, x.collectedAt ?? x.firstSeen)}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </Widget>
+          )}
           <Widget
             index={0}
             icon={AlertUrgentRegular}
@@ -498,6 +543,19 @@ export function BriefingPage(p: Props) {
               </ul>
             )}
           </Widget>
+
+          {p.leaks.length > 0 && (
+            <Widget
+              index={1}
+              icon={LockClosedKeyRegular}
+              tint={{ bg: tokens.colorPaletteMarigoldBackground1, fg: tokens.colorPaletteMarigoldForeground2 }}
+              title={t.railLeaks}
+              sub={t.railLeaksSub}
+              action={{ label: t.viewAll, onClick: () => p.onGo("incidents") }}
+            >
+              <LeakList lang={lang} leaks={p.leaks.slice(0, 4)} onOpen={p.onOpen} />
+            </Widget>
+          )}
 
           <Widget
             index={1}

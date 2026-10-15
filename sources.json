@@ -138,6 +138,14 @@
       "url": "https://thedfirreport.com/feed/"
     },
     {
+      "id": "gtig",
+      "name": "Google Threat Intelligence",
+      "region": "INTL",
+      "lang": "en",
+      "kind": "vendor",
+      "url": "https://cloudblog.withgoogle.com/topics/threat-intelligence/rss/"
+    },
+    {
       "id": "sansisc",
       "name": "SANS ISC",
       "region": "INTL",
@@ -224,6 +232,14 @@
       "lang": "ja",
       "kind": "vendor",
       "url": "https://wizsafe.iij.ad.jp/feed/"
+    },
+    {
+      "id": "trendmicro-jp",
+      "name": "トレンドマイクロ セキュリティブログ",
+      "region": "JP",
+      "lang": "ja",
+      "kind": "vendor",
+      "url": "https://feeds.feedburner.com/tm-security-blog"
     }
   ]
 }

@@ -1,0 +1,42 @@
+---
+// 토픽 공유 페이지: 링크 미리보기용 메타(제목·요약)만 담고, 열면 사이트의 그 토픽으로 보낸다.
+import type { Topic } from "../../shared/types";
+import { summaryOf, titleOf } from "../components/text";
+
+interface Props {
+  topic: Topic;
+  lang: "ko" | "ja";
+}
+const { topic, lang } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const site = Astro.site ? new URL(base, Astro.site).href : base;
+// 화면과 같은 도우미로 고른다 (언어 섞임 안전장치 포함)
+const title = titleOf(lang, topic);
+const description = summaryOf(lang, topic).slice(0, 2).join(" ");
+const target = `${base}?sel=${encodeURIComponent(topic.id)}&lang=${lang}`;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} – Security Glance</title>
+    <meta name="description" content={description} />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Security Glance" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${site}og.png`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={`${site}?sel=${topic.id}&lang=${lang}`} />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <script is:inline define:vars={{ target }}>location.replace(target);</script>
+  </head>
+  <body>
+    <p><a href={target}>{title}</a></p>
+  </body>
+</html>

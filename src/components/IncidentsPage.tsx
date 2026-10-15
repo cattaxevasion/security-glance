@@ -30,14 +30,16 @@ import {
 } from "@fluentui/react-icons";
 import { useEffect, useMemo, useState } from "react";
 import { ATTACK_TYPES, SECTORS, type Region } from "../../shared/taxonomy";
-import type { Topic } from "../../shared/types";
+import type { LeakPost, Topic } from "../../shared/types";
 import { LOCALE, REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import { FilterPill } from "./FilterPill";
 import { timeOfDay } from "./format";
-import { SourceAvatars } from "./marks";
+import { FreshMark, SourceAvatars } from "./marks";
 import { stagger, useCountUp, useMotion } from "./motion";
 import { PageTitle, usePageStyles } from "./page";
+import { LeaksSection } from "./Leaks";
 import { namesOf, sourceLabel, summaryOf, titleOf } from "./text";
+import { isFresh } from "./visit";
 import { PRIORITY_THRESHOLD, matchesQuery } from "./TopicsPage";
 
 const PERIODS = [7, 30, 90];
@@ -247,6 +249,10 @@ const useStyles = makeStyles({
 interface Props {
   lang: Lang;
   topics: Topic[];
+  /** 랜섬웨어 유출 사이트 게시 (일본) */
+  leaks: LeakPost[];
+  /** 지난 방문 시각 (새 소식 표시) */
+  lastVisit: number | null;
   query: string;
   setQuery: (q: string) => void;
   narrow: boolean;
@@ -431,6 +437,8 @@ export function IncidentsPage(p: Props) {
         )}
       </div>
 
+      {region !== "INTL" && <LeaksSection lang={lang} leaks={p.leaks} limit={5} onOpen={p.onSelect} />}
+
       <div className={ps.filters}>
         <FilterPill
           name="attack"
@@ -504,6 +512,7 @@ export function IncidentsPage(p: Props) {
                   <div className={s.title}>{title(x)}</div>
                   {summary(x) && <div className={s.summary}>{summary(x)}</div>}
                   <div className={s.meta}>
+                    {isFresh(x, p.lastVisit) && <FreshMark lang={lang} />}
                     {x.importance >= PRIORITY_THRESHOLD && <span className={s.priority}>{t.priority}</span>}
                     <span>{timeOfDay(lang, x.firstSeen)}</span>
                     <span>{x.regions.map((r) => REGION_LABELS[lang][r]).join(" · ")}</span>

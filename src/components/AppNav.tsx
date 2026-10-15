@@ -6,6 +6,7 @@ import {
   NavItem,
   NavSectionHeader,
   makeStyles,
+  mergeClasses,
   tokens,
 } from "@fluentui/react-components";
 import {
@@ -29,6 +30,18 @@ const useStyles = makeStyles({
   },
   body: { paddingTop: "8px" },
   item: { display: "flex", alignItems: "center", width: "100%", gap: "8px" },
+  // 지난 방문 이후 새 소식 수
+  fresh: {
+    marginLeft: "auto",
+    padding: "0 6px",
+    borderRadius: tokens.borderRadiusCircular,
+    backgroundColor: tokens.colorBrandBackground2,
+    color: tokens.colorBrandForeground2,
+    fontSize: tokens.fontSizeBase100,
+    fontWeight: tokens.fontWeightSemibold,
+    lineHeight: "16px",
+  },
+  freshThenCount: { marginLeft: "6px" },
   count: {
     marginLeft: "auto",
     color: tokens.colorNeutralForeground3,
@@ -45,9 +58,11 @@ interface Props {
   overlay: boolean;
   onClose: () => void;
   counts: Record<View, number | null>;
+  /** 지난 방문 이후 새 소식 수 */
+  fresh: Partial<Record<View, number>>;
 }
 
-export function AppNav({ lang, view, setView, open, overlay, onClose, counts }: Props) {
+export function AppNav({ lang, view, setView, open, overlay, onClose, counts, fresh }: Props) {
   const s = useStyles();
   const t = STRINGS[lang];
   const regions = REGION_LABELS[lang];
@@ -55,7 +70,16 @@ export function AppNav({ lang, view, setView, open, overlay, onClose, counts }: 
   const label = (text: string, v: View) => (
     <span className={s.item}>
       {text}
-      {counts[v] != null && <span className={s.count}>{counts[v]!.toLocaleString()}</span>}
+      {!!fresh[v] && (
+        <span className={s.fresh} title={t.newSince(fresh[v]!)}>
+          +{fresh[v]}
+        </span>
+      )}
+      {counts[v] != null && (
+        <span className={fresh[v] ? mergeClasses(s.count, s.freshThenCount) : s.count}>
+          {counts[v]!.toLocaleString()}
+        </span>
+      )}
     </span>
   );
 

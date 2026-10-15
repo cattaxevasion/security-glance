@@ -17,7 +17,7 @@ import {
   type FluentIcon,
 } from "@fluentui/react-icons";
 import type { Nature, Region } from "../../shared/taxonomy";
-import { tagLabel, type Lang } from "../i18n";
+import { STRINGS, tagLabel, type Lang } from "../i18n";
 import { pct } from "./format";
 
 export const NATURE_COLOR: Record<Nature, string> = {
@@ -39,6 +39,20 @@ export const NATURE_ICON: Record<Nature, FluentIcon> = {
 };
 
 const useStyles = makeStyles({
+  // 지난 방문 이후 새 소식
+  fresh: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "4px",
+    color: tokens.colorBrandForeground1,
+    fontWeight: tokens.fontWeightSemibold,
+  },
+  freshDot: {
+    width: "6px",
+    height: "6px",
+    borderRadius: tokens.borderRadiusCircular,
+    backgroundColor: tokens.colorBrandBackground,
+  },
   nature: { display: "inline-flex", alignItems: "center", gap: "8px", whiteSpace: "nowrap" },
   square: { width: "8px", height: "8px", borderRadius: "2px", flexShrink: 0 },
   avatars: { display: "inline-flex", alignItems: "center" },
@@ -175,5 +189,16 @@ export function EpssMark({
         {pct(epss)}
       </span>
     </Tooltip>
+  );
+}
+
+/** 지난 방문 이후 새로 수집된 소식 */
+export function FreshMark({ lang }: { lang: Lang }) {
+  const s = useStyles();
+  return (
+    <span className={s.fresh}>
+      <span className={s.freshDot} aria-hidden />
+      {STRINGS[lang].newBadge}
+    </span>
   );
 }

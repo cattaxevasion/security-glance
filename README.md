@@ -78,8 +78,13 @@ scripts/collect/        수집기: rss → article(본문) → summarize(Claude)
 public/data/            화면이 읽는 JSON (data 브랜치에서 받음, git 추적 안 함)
                         articles.json(화면용 가벼운 기사 목록), topics-recent.json(최근 31일 토픽, 첫 화면)
                         topics-archive.json(그 이전 토픽, 화면이 뜬 뒤에 받음)
-                        news.json·topics.json(수집기 내부용 전체본, 사이트엔 안 올림)
-data/                   내부 상태: state.json(제외·실패·다시 판정 기록), merge-checked.json(토픽 합치기 기록)
+                        vulns-core.json(KEV·EPSS, 첫 화면) · cves.json(고위험 CVE, 나중에 받음)
+                        leaks.json(랜섬웨어 유출 사이트 게시·일본, ransomware.live 집계 — 공격 조직의 주장)
+                        names-ko.json(일본어 이름의 한국어 읽기)
+                        news.json·topics.json·vulns.json(수집기 내부용 전체본, 사이트엔 안 올림)
+src/pages/t/[id].astro  토픽 공유 페이지 (링크 미리보기에 토픽 제목·요약, 열면 사이트의 그 토픽으로). 일본어는 /ja/t/[id]/
+data/                   내부 상태: state.json(제외·실패·다시 판정 기록), merge-checked.json(토픽 합치기 기록),
+                        lang-forced.json(기계 변환한 필드의 원래 글 — 다음 실행에서 모델로 다시 고침)
 scripts/collect/quality.ts  품질 점검: 일반 해설·홍보 글 다시 판정, 본문 다시 읽기
 src/components/         Fluent 2 화면 (React): AppHeader, AppNav, BriefingPage, IncidentsPage, TopicsPage, VulnPage, DetailPanel
                         motion.ts(Fluent 모션 토큰 기반 애니메이션)
