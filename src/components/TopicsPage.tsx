@@ -121,9 +121,14 @@ const useStyles = makeStyles({
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    "@media (max-width: 640px)": { whiteSpace: "normal", alignItems: "flex-start" },
+    // 휴대폰의 좁은 칸: 줄바꿈을 허용하고 화살표는 뺀다 (라벨이 잘리지 않게)
+    "@media (max-width: 640px)": { whiteSpace: "normal", overflow: "visible", alignItems: "flex-start" },
   },
-  kpiChevron: { marginLeft: "auto", color: tokens.colorNeutralForeground3 },
+  kpiChevron: {
+    marginLeft: "auto",
+    color: tokens.colorNeutralForeground3,
+    "@media (max-width: 640px)": { display: "none" },
+  },
   kpiNumber: {
     fontSize: tokens.fontSizeHero700,
     lineHeight: tokens.lineHeightHero700,
