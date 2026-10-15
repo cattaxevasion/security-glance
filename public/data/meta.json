@@ -1,16 +1,16 @@
 {
- "updatedAt": "2026-10-15T00:48:59.505Z",
+ "updatedAt": "2026-10-15T03:05:15.378Z",
  "lastRun": {
-  "candidates": 27,
-  "added": 20,
-  "keywordExcluded": 0,
-  "notSecurity": 7,
+  "candidates": 295,
+  "added": 58,
+  "keywordExcluded": 7,
+  "notSecurity": 22,
   "failed": 0,
-  "deferred": 0
+  "deferred": 208
  },
- "newsCount": 296,
+ "newsCount": 293,
  "kevCount": 98,
- "cveCount": 401,
+ "cveCount": 405,
  "sources": [
   {
    "id": "bleepingcomputer",
@@ -48,11 +48,116 @@
    "items": 10
   },
   {
+   "id": "mstic",
+   "name": "Microsoft Threat Intelligence",
+   "region": "INTL",
+   "ok": true,
+   "items": 10
+  },
+  {
+   "id": "unit42",
+   "name": "Unit 42",
+   "region": "INTL",
+   "ok": true,
+   "items": 15
+  },
+  {
+   "id": "talos",
+   "name": "Cisco Talos",
+   "region": "INTL",
+   "ok": true,
+   "items": 15
+  },
+  {
+   "id": "securelist",
+   "name": "Kaspersky Securelist",
+   "region": "INTL",
+   "ok": true,
+   "items": 10
+  },
+  {
+   "id": "eset",
+   "name": "ESET WeLiveSecurity",
+   "region": "INTL",
+   "ok": true,
+   "items": 100
+  },
+  {
+   "id": "checkpoint",
+   "name": "Check Point Research",
+   "region": "INTL",
+   "ok": true,
+   "items": 15
+  },
+  {
+   "id": "sentinellabs",
+   "name": "SentinelLABS",
+   "region": "INTL",
+   "ok": true,
+   "items": 10
+  },
+  {
+   "id": "elastic",
+   "name": "Elastic Security Labs",
+   "region": "INTL",
+   "ok": true,
+   "items": 305
+  },
+  {
+   "id": "huntress",
+   "name": "Huntress",
+   "region": "INTL",
+   "ok": true,
+   "items": 732
+  },
+  {
+   "id": "redcanary",
+   "name": "Red Canary",
+   "region": "INTL",
+   "ok": true,
+   "items": 10
+  },
+  {
+   "id": "crowdstrike",
+   "name": "CrowdStrike",
+   "region": "INTL",
+   "ok": true,
+   "items": 10
+  },
+  {
+   "id": "proofpoint",
+   "name": "Proofpoint",
+   "region": "INTL",
+   "ok": true,
+   "items": 10
+  },
+  {
+   "id": "dfirreport",
+   "name": "The DFIR Report",
+   "region": "INTL",
+   "ok": true,
+   "items": 10
+  },
+  {
+   "id": "sansisc",
+   "name": "SANS ISC",
+   "region": "INTL",
+   "ok": true,
+   "items": 10
+  },
+  {
    "id": "jpcert",
    "name": "JPCERT/CC",
    "region": "JP",
    "ok": true,
    "items": 24
+  },
+  {
+   "id": "jpcertblog",
+   "name": "JPCERT/CC ブログ",
+   "region": "JP",
+   "ok": true,
+   "items": 15
   },
   {
    "id": "ipa",
@@ -90,32 +195,26 @@
    "items": 30
   },
   {
-   "id": "krcert",
-   "name": "KISA 보호나라",
-   "region": "KR",
+   "id": "lac",
+   "name": "LAC WATCH",
+   "region": "JP",
+   "ok": true,
+   "items": 20
+  },
+  {
+   "id": "iijsect",
+   "name": "IIJ Security Diary",
+   "region": "JP",
    "ok": true,
    "items": 10
   },
   {
-   "id": "boannews",
-   "name": "보안뉴스",
-   "region": "KR",
+   "id": "wizsafe",
+   "name": "IIJ wizSafe",
+   "region": "JP",
    "ok": true,
-   "items": 50
-  },
-  {
-   "id": "dailysecu",
-   "name": "데일리시큐",
-   "region": "KR",
-   "ok": true,
-   "items": 50
-  },
-  {
-   "id": "zdnetkr",
-   "name": "ZDNet Korea",
-   "region": "KR",
-   "ok": true,
-   "items": 13
+   "items": 3
   }
- ]
+ ],
+ "topicCount": 229
 }
