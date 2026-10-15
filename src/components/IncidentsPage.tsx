@@ -18,15 +18,9 @@ import {
   tokens,
 } from "@fluentui/react-components";
 import {
-  AlertUrgentRegular,
-  BuildingMultipleRegular,
   CalendarLtrRegular,
   ChevronDownRegular,
   ChevronRightRegular,
-  DatabaseWarningRegular,
-  LockClosedRegular,
-  LocationRegular,
-  type FluentIcon,
 } from "@fluentui/react-icons";
 import { useEffect, useMemo, useState } from "react";
 import { ATTACK_TYPES, SECTORS, type Region } from "../../shared/taxonomy";
@@ -49,47 +43,23 @@ const PAGE = 50;
 
 const useStyles = makeStyles({
   regionTabs: { marginTop: "12px", marginLeft: "-10px" },
-  // 수치 타일
+  // 수치 타일 (D안): 첫 칸은 두 배 폭 + 배너 그라데이션 + 최근 7일 막대, 나머지는 색 숫자만
   stats: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
+    gridTemplateColumns: "repeat(6, minmax(0, 1fr))",
     gap: "12px",
     margin: "16px 0 8px",
-    // 휴대폰: 한 줄에 하나씩 쌓이면 첫 화면이 카드로 다 차므로 2열로, 마지막(가장 많은 산업)은 한 줄 전체
+    "@media (max-width: 1100px)": { gridTemplateColumns: "repeat(4, minmax(0, 1fr))" },
+    // 휴대폰: 대표 칸이 한 줄 전체, 나머지 넷이 2×2
     "@media (max-width: 640px)": { gridTemplateColumns: "1fr 1fr", gap: "8px" },
   },
   stat: {
-    display: "grid",
-    gridTemplateColumns: "36px 1fr",
-    gridTemplateRows: "auto auto auto",
-    gap: "2px 12px",
-    alignItems: "start",
-    padding: "14px 16px",
-    "@media (max-width: 640px)": {
-      gridTemplateColumns: "24px 1fr",
-      gridTemplateRows: "auto",
-      alignItems: "center",
-      gap: "4px 8px",
-      padding: "10px 12px",
-      ":last-child": { gridColumn: "1 / -1" },
-    },
-  },
-  statIcon: {
-    gridRow: "1 / 4",
-    width: "36px",
-    height: "36px",
-    borderRadius: tokens.borderRadiusLarge,
     display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: "20px",
-    "@media (max-width: 640px)": {
-      gridRow: "auto",
-      width: "24px",
-      height: "24px",
-      fontSize: "16px",
-      borderRadius: tokens.borderRadiusMedium,
-    },
+    flexDirection: "column",
+    gap: "2px",
+    padding: "14px 16px",
+    minWidth: 0,
+    "@media (max-width: 640px)": { padding: "10px 12px" },
   },
   statLabel: { color: tokens.colorNeutralForeground3 },
   statNum: {
@@ -97,19 +67,56 @@ const useStyles = makeStyles({
     lineHeight: tokens.lineHeightHero700,
     fontWeight: tokens.fontWeightSemibold,
     fontVariantNumeric: "tabular-nums",
-    "@media (max-width: 640px)": {
-      gridColumn: "1 / -1",
-      fontSize: tokens.fontSizeHero700,
-      lineHeight: tokens.lineHeightHero700,
-    },
   },
   statText: {
-    fontSize: tokens.fontSizeBase400,
+    fontSize: tokens.fontSizeBase500,
+    lineHeight: tokens.lineHeightHero700,
     fontWeight: tokens.fontWeightSemibold,
-    lineHeight: "28px",
-    "@media (max-width: 640px)": { gridColumn: "1 / -1" },
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
-  statSub: { color: tokens.colorNeutralForeground3, "@media (max-width: 640px)": { gridColumn: "1 / -1" } },
+  statSub: { color: tokens.colorNeutralForeground3 },
+  // 대표 칸
+  hero: {
+    gridColumn: "span 2",
+    display: "grid",
+    gridTemplateColumns: "auto minmax(0, 1fr)",
+    alignItems: "end",
+    gap: "16px",
+    padding: "16px 18px",
+    borderRadius: tokens.borderRadiusXLarge,
+    color: "#fff",
+    backgroundImage: "linear-gradient(120deg, #0c3b5e 0%, #0f548c 40%, #4a3a9c 100%)",
+    boxShadow: tokens.shadow8,
+    "@media (max-width: 1100px)": { gridColumn: "span 4" },
+    "@media (max-width: 640px)": { gridColumn: "1 / -1", padding: "14px 16px" },
+  },
+  heroText: { display: "flex", flexDirection: "column", gap: "2px", minWidth: 0 },
+  heroLabel: { color: "rgba(255,255,255,0.85)", fontWeight: tokens.fontWeightSemibold },
+  heroNum: {
+    fontSize: "40px",
+    lineHeight: "46px",
+    fontWeight: tokens.fontWeightBold,
+    fontVariantNumeric: "tabular-nums",
+  },
+  // 최근 7일 막대 (오늘이 맨 오른쪽, 오늘만 흰색)
+  bars: {
+    display: "flex",
+    alignItems: "flex-end",
+    gap: "4px",
+    height: "56px",
+    justifySelf: "end",
+    width: "100%",
+    maxWidth: "190px",
+  },
+  bar: {
+    flex: 1,
+    minHeight: "3px",
+    borderRadius: "2px 2px 0 0",
+    backgroundColor: "rgba(255,255,255,0.35)",
+    ":last-child": { backgroundColor: "#fff" },
+  },
   // 목록
   list: { margin: 0, listStyle: "none" },
   row: {
@@ -265,27 +272,60 @@ interface Props {
 }
 
 function StatTile(p: {
-  icon: FluentIcon;
-  tint: { bg: string; fg: string };
   label: string;
   value?: number;
   text?: string;
   sub?: string;
+  /** 숫자 색 (테마 토큰이라 다크 모드에서도 맞는다) */
+  color: string;
   index: number;
 }) {
   const s = useStyles();
   const ps = usePageStyles();
   const m = useMotion();
   const n = useCountUp(p.value ?? 0);
-  const Icon = p.icon;
   return (
     <div className={mergeClasses(ps.surface, s.stat, m.enter)} style={stagger(p.index, 50)}>
-      <span className={s.statIcon} style={{ backgroundColor: p.tint.bg, color: p.tint.fg }} aria-hidden>
-        <Icon />
-      </span>
       <Caption1 className={s.statLabel}>{p.label}</Caption1>
-      {p.text !== undefined ? <span className={s.statText}>{p.text}</span> : <span className={s.statNum}>{n}</span>}
+      {p.text !== undefined ? (
+        <span className={s.statText} style={{ color: p.color }} title={p.text}>
+          {p.text}
+        </span>
+      ) : (
+        <span className={s.statNum} style={{ color: p.color }}>
+          {n}
+        </span>
+      )}
       {p.sub && <Caption1 className={s.statSub}>{p.sub}</Caption1>}
+    </div>
+  );
+}
+
+/** 대표 칸: 최근 7일 인시던트 수 + 일별 막대 */
+function HeroStat(p: { lang: Lang; label: string; value: number; daily: { day: Date; n: number }[] }) {
+  const s = useStyles();
+  const m = useMotion();
+  const t = STRINGS[p.lang];
+  const n = useCountUp(p.value);
+  const max = Math.max(1, ...p.daily.map((d) => d.n));
+  const fmt = new Intl.DateTimeFormat(LOCALE[p.lang], { month: "numeric", day: "numeric" });
+  const desc = p.daily.map((d) => `${fmt.format(d.day)} ${t.count(d.n)}`).join(", ");
+  return (
+    <div className={mergeClasses(s.hero, m.enter)} style={stagger(0, 50)}>
+      <div className={s.heroText}>
+        <Caption1 className={s.heroLabel}>{p.label}</Caption1>
+        <span className={s.heroNum}>{n}</span>
+      </div>
+      <div className={s.bars} role="img" aria-label={desc}>
+        {p.daily.map((d) => (
+          <span
+            key={d.day.getTime()}
+            className={s.bar}
+            style={{ height: `${Math.max(6, (d.n / max) * 100)}%` }}
+            title={`${fmt.format(d.day)} · ${t.count(d.n)}`}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -323,6 +363,20 @@ export function IncidentsPage(p: Props) {
       leak: week.filter((x) => x.attackTypes.includes("정보유출")).length,
       topSector: top ? tagLabel(lang, top[0]) : t.noSector,
       topSectorN: top?.[1] ?? 0,
+      // 최근 7일 일별 (이 브라우저의 날짜 기준, 오늘이 마지막)
+      daily: Array.from({ length: 7 }, (_, i) => {
+        const day = new Date();
+        day.setHours(0, 0, 0, 0);
+        day.setDate(day.getDate() - (6 - i));
+        const end = day.getTime() + 86400_000;
+        return {
+          day,
+          n: inRegion.filter((x) => {
+            const at = Date.parse(x.firstSeen);
+            return at >= day.getTime() && at < end;
+          }).length,
+        };
+      }),
     };
   }, [inRegion, lang, t.noSector]);
   const pctOf = (n: number) => (stats.week ? `${Math.round((n / stats.week) * 100)}%` : "–");
@@ -369,41 +423,25 @@ export function IncidentsPage(p: Props) {
       </TabList>
 
       <div className={s.stats} key={region}>
-        <StatTile
-          index={0}
-          icon={AlertUrgentRegular}
-          tint={{ bg: tokens.colorPaletteRedBackground1, fg: tokens.colorPaletteRedForeground1 }}
-          label={t.incidents7d}
-          value={stats.week}
-        />
-        <StatTile
-          index={1}
-          icon={LocationRegular}
-          tint={{ bg: tokens.colorBrandBackground2, fg: tokens.colorBrandForeground2 }}
-          label={t.jpShare}
-          value={stats.jp}
-          sub={pctOf(stats.jp)}
-        />
+        <HeroStat lang={lang} label={t.incidents7d} value={stats.week} daily={stats.daily} />
+        <StatTile index={1} color={tokens.colorBrandForeground1} label={t.jpShare} value={stats.jp} sub={pctOf(stats.jp)} />
         <StatTile
           index={2}
-          icon={LockClosedRegular}
-          tint={{ bg: tokens.colorPaletteBerryBackground1, fg: tokens.colorPaletteBerryForeground1 }}
+          color={tokens.colorPaletteBerryForeground1}
           label={t.ransomShare}
           value={stats.ransom}
           sub={pctOf(stats.ransom)}
         />
         <StatTile
           index={3}
-          icon={DatabaseWarningRegular}
-          tint={{ bg: tokens.colorPaletteDarkOrangeBackground1, fg: tokens.colorPaletteDarkOrangeForeground1 }}
+          color={tokens.colorPaletteDarkOrangeForeground1}
           label={t.leakShare}
           value={stats.leak}
           sub={pctOf(stats.leak)}
         />
         <StatTile
           index={4}
-          icon={BuildingMultipleRegular}
-          tint={{ bg: tokens.colorPaletteTealBackground2, fg: tokens.colorPaletteTealForeground2 }}
+          color={tokens.colorPaletteTealForeground2}
           label={t.topSector}
           text={stats.topSector}
           sub={stats.topSectorN ? t.count(stats.topSectorN) : undefined}
