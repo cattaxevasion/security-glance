@@ -1277,16 +1277,6 @@
  ],
  "cves": [
   {
-   "id": "CVE-2026-48383",
-   "published": "2026-10-13T20:17:29.017",
-   "description": "Adobe Experience Manager is affected by an Incorrect Authorization vulnerability that could result in arbitrary code execution in the context of the current user, potentially gaining elevated access or control over the victim's account or session. Exploitation of this issue does not require user interaction. Scope is changed.",
-   "cvss": 10,
-   "severity": "CRITICAL",
-   "epss": 0.00822,
-   "epssPercentile": 0.56372,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-104748",
    "published": "2026-10-14T08:17:02.997",
    "description": "The SimpleForm – Form Maker to Chat Apps with Quiz, Poll and Multi Lead Notifications plugin for WordPress is vulnerable to Privilege Escalation in all versions up to, and including, 3.10.0 This is due to the `wp_ajax_nopriv_simpleform_wp_register` AJAX action lacking any capability check for role assignment and the `save_custom_fields_to_user_meta()` function using an exclusion list that omits `wp_capabilities`, combined with `get_form_settings()` returning a hard-coded defaults array that unconditionally enables meta writing regardless of the supplied `form_id`. This makes it possible for unauthenticated attackers to create a new Administrator-level WordPress account by supplying `wp_capabilities[administrator]=1` alongside standard registration fields. The nonce required by the endpoint is publicly emitted into the `front_end_data` JavaScript object on every front-end page via `wp_enqueue_scripts`, making it trivially obtainable by any unauthenticated visitor before submitting the malicious request.",
@@ -1747,16 +1737,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-102062",
-   "published": "2026-10-14T17:18:01.737",
-   "description": "An Use of Externally-Controlled Format String vulnerability in the ipfd daemon of Juniper Networks Junos OS on SRX Series allows an unauthenticated network-based attacker to execute code with root privileges via a compromised or impersonated configured HTTPS feed server.",
-   "cvss": 9.2,
-   "severity": "CRITICAL",
-   "epss": null,
-   "epssPercentile": null,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-102037",
    "published": "2026-10-14T17:17:57.867",
    "description": "An XML Injection vulnerability in the Unified Threat Management daemon (utmd) of Juniper Networks Junos OS on SRX Series devices allows an unauthenticated network attacker to commit arbitrary device configuration with root privileges via a malicious response from a configured custom URL-feed server.",
@@ -1780,36 +1760,6 @@
    "id": "CVE-2026-101955",
    "published": "2026-10-14T17:17:48.200",
    "description": "A Stack-based Buffer Overflow vulnerability in the UTM Anti-Spam SBL of Juniper Networks Junos OS on SRX series allows an unauthenticated remote attacker to cause arbitrary code execution or a denial of service via a injected malformed DNS packet when Anti-Spam SBL inspection is enabled.",
-   "cvss": 9.2,
-   "severity": "CRITICAL",
-   "epss": null,
-   "epssPercentile": null,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-97205",
-   "published": "2026-10-14T15:17:28.200",
-   "description": "NGINX Plus and NGINX Open Source have a vulnerability in the ngx_http_core_module module. When asynchronous file I/O (AIO) is enabled in certain configurations, processing a Server Side Includes (SSI) page containing “include virtual” commands may trigger a Use-After-Free (UAF) in the NGINX worker process. This may cause memory corruption or a worker process crash. Additionally, attackers can execute code on systems with Address Space Layout Randomization (ASLR) disabled or when the attacker can bypass ASLR.\n\nImpact:\nThis vulnerability may allow remote attackers to cause a denial-of-service (DoS) on the NGINX system, corrupt its memory, or possibly trigger code execution. There is no control plane exposure; this is a data plane issue only.\n\n\n\n\nNote: Software versions which have reached End of Technical Support (EoTS) are not evaluated.",
-   "cvss": 9.2,
-   "severity": "CRITICAL",
-   "epss": null,
-   "epssPercentile": null,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-93479",
-   "published": "2026-10-14T15:17:26.810",
-   "description": "A vulnerability exists in NGINX Plus and NGINX Open Source when a map directive uses regex matching and the root directive or access log format references the map's regex capture variables before referencing the map output variable. Alternatively, the same result could be achieved by using a non-cacheable variable in a string expression under certain conditions. An unauthenticated attacker along with conditions beyond their control can exploit this vulnerability by sending crafted HTTP requests. This may cause a heap buffer overflow in the NGINX worker process leading to a restart. Additionally, attackers can execute code on systems with Address Space Layout Randomization (ASLR) disabled or when the attacker can bypass ASLR.\n\nImpact: \nThis vulnerability may allow remote attackers to cause a denial-of-service (DoS) on the NGINX system or to possibly trigger a code execution. There is no control plane exposure; this is a data plane issue only.\n\nNote: Software versions which have reached End of Technical Support (EoTS) are not evaluated.",
-   "cvss": 9.2,
-   "severity": "CRITICAL",
-   "epss": null,
-   "epssPercentile": null,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-15176",
-   "published": "2026-10-14T15:17:19.140",
-   "description": "A vulnerability exists in NGINX Plus and NGINX Open Source when a location is configured that uses the alias directive together with rewrite and a set or return directive referencing the $request_filename variable. Alternatively, the same result could be achieved when the $request_filename variable is used in an access log format directive. An unauthenticated attacker along with conditions beyond their control can exploit this vulnerability by sending crafted HTTP requests. This may cause a heap buffer overflow in the NGINX worker process leading to a restart. Additionally, attackers can execute code on systems with Address Space Layout Randomization (ASLR) disabled or when the attacker can bypass ASLR.\n\nImpact:\nThis vulnerability may allow remote attackers to cause a denial-of-service (DoS) on the NGINX system or to possibly trigger a code execution. There is no control plane exposure; this is a data plane issue only.\n\n\n\n\nNote: Software versions which have reached End of Technical Support (EoTS) are not evaluated.",
    "cvss": 9.2,
    "severity": "CRITICAL",
    "epss": null,
@@ -1937,16 +1887,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-92464",
-   "published": "2026-10-13T19:21:43.370",
-   "description": "Adobe Commerce is affected by an Improper Input Validation vulnerability that could result in arbitrary code execution in the context of the current user. An attacker with high privileges could exploit this vulnerability to execute arbitrary code. Exploitation of this issue does not require user interaction. Scope is changed.",
-   "cvss": 9.1,
-   "severity": "CRITICAL",
-   "epss": 0.00752,
-   "epssPercentile": 0.5399,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-53997",
    "published": "2026-10-12T21:17:17.400",
    "description": "Netherman Portal del Hermano (portaldelhermano.es) before 2026-10-06 contains a broken authentication vulnerability in its password-recovery flow at the POST /password/create-access and POST /password/email endpoints, allowing unauthenticated attackers to take over any member account across all tenants by exploiting the lack of rate limiting and distinct error messages that act as oracles for each of the four identity-verification factors (DNI, date of birth, phone number, last four IBAN digits). Attackers can confirm the DNI via the oracle, brute-force the date of birth and IBAN digits, obtain the phone number through open-source intelligence, then submit an attacker-controlled email field so the password reset link is delivered to them, enabling full account takeover including profile data, full IBAN, and fiscal documents.",
@@ -2044,16 +1984,6 @@
    "severity": "CRITICAL",
    "epss": 0.00124,
    "epssPercentile": 0.01899,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-88164",
-   "published": "2026-10-14T18:19:30.300",
-   "description": "Missing authorization in Microsoft Office SharePoint allows an authorized attacker to elevate privileges over a network.",
-   "cvss": 8.8,
-   "severity": "HIGH",
-   "epss": null,
-   "epssPercentile": null,
    "inKev": false
   },
   {
@@ -2567,16 +2497,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-91184",
-   "published": "2026-10-14T15:17:26.420",
-   "description": "Description\n\nNGINX Gateway Fabric has a vulnerability when it renders the spec.basic.realm (and spec.jwt.realm) field of a namespaced AuthenticationFilter verbatim, unescaped and unvalidated, into the shared data-plane nginx.conf as auth_basic \"<realm>\";. A namespaced authenticated attacker that configures AuthenticationFilter CRD to an HTTPRoute/GRPCRoute on a shared Gateway can craft a realm value that closes the quoted directive and the enclosing location {} block and injects arbitrary NGINX directives into that Gateway's data-plane config. \n\nImpact\n\nA remote authenticated attacker can send crafted requests to configure NGINX Gateway Fabric AuthenticationFilter CRD and may be able to read every co-located tenant's mounted secrets, SSRF via proxy_pass, reading the pod ServiceAccount token, or hijacking other tenants' routes. There is no data plane exposure; this is a control plane issue only.\n\n\n\n\n\n\nNote: Software versions which have reached End of Technical Support (EoTS) are not evaluated.",
-   "cvss": 8.7,
-   "severity": "HIGH",
-   "epss": null,
-   "epssPercentile": null,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-110641",
    "published": "2026-10-14T15:17:17.437",
    "description": "@runnerty/executor-decompress through 3.1.1 contains an OS command injection vulnerability that allows attackers to execute commands by supplying crafted archive file names to compress_file. Attackers who can name a file dropped into a watched directory can inject $() substitutions or unquoted shell metacharacters into shelljs exec() calls, running commands with Runnerty process privileges.",
@@ -2614,16 +2534,6 @@
    "severity": "HIGH",
    "epss": null,
    "epssPercentile": null,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-95631",
-   "published": "2026-10-13T19:21:44.693",
-   "description": "Adobe Commerce is affected by an Improper Input Validation vulnerability that could result in arbitrary code execution in the context of the current user. An attacker with high privileges could exploit this vulnerability to execute arbitrary code. Exploitation of this issue does not require user interaction. Scope is changed.",
-   "cvss": 8.7,
-   "severity": "HIGH",
-   "epss": 0.00856,
-   "epssPercentile": 0.57494,
    "inKev": false
   },
   {
@@ -3167,16 +3077,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-102079",
-   "published": "2026-10-14T17:18:03.560",
-   "description": "An OS command injection vulnerability in the CLI of Juniper Networks Junos OS allows a local, low privileged attacker to take complete control of the device.\n\nA specific 'request csds' command doesn't sanitize user provided input so that it can be interpreted as a command. This allows unintended command execution with root privileges, which can lead to unauthorized system access or modification.\n\n\n\n\n\nThis issue affects Junos OS:\n\n\n  *  24.4 versions before 24.4R2-S4;\n  *  25.2 versions before 25.2R2-S1;\n  *  25.4 versions before 25.4R1-S3;\n\n\n\n\n\n\nThis issue does not affect Junos OS releases before 24.4R1.",
-   "cvss": 8.5,
-   "severity": "HIGH",
-   "epss": null,
-   "epssPercentile": null,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-110648",
    "published": "2026-10-14T15:17:18.510",
    "description": "@offactory/compress-fonts before 1.1.1 contains an OS command injection vulnerability that allows attackers to execute shell commands by supplying font files with crafted names. Font paths are interpolated unquoted into a FontForge command run through child_process.execSync, so shell metacharacters in file names execute commands with the Node.js process privileges.",
@@ -3374,16 +3274,6 @@
    "severity": "HIGH",
    "epss": null,
    "epssPercentile": null,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-92908",
-   "published": "2026-10-13T19:21:43.487",
-   "description": "Adobe Commerce is affected by an Incorrect Authorization vulnerability that could result in a Security feature bypass. A low-privileged attacker could leverage this vulnerability to bypass security measures and gain unauthorized read and write access, causing a limited disruption to availability. Exploitation of this issue does not require user interaction.",
-   "cvss": 8.3,
-   "severity": "HIGH",
-   "epss": 0.006,
-   "epssPercentile": 0.47482,
    "inKev": false
   },
   {
@@ -3604,46 +3494,6 @@
    "severity": "HIGH",
    "epss": 0.00197,
    "epssPercentile": 0.08782,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-103838",
-   "published": "2026-10-13T20:17:10.113",
-   "description": "Substance3D - Stager is affected by an out-of-bounds write vulnerability that could result in arbitrary code execution in the context of the current user. Exploitation of this issue requires user interaction in that a victim must open a malicious file.",
-   "cvss": 7.8,
-   "severity": "HIGH",
-   "epss": 0.00148,
-   "epssPercentile": 0.03555,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-103836",
-   "published": "2026-10-13T20:17:09.883",
-   "description": "Substance3D - Stager is affected by an out-of-bounds write vulnerability that could result in arbitrary code execution in the context of the current user. Exploitation of this issue requires user interaction in that a victim must open a malicious file.",
-   "cvss": 7.8,
-   "severity": "HIGH",
-   "epss": 0.00148,
-   "epssPercentile": 0.03556,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-103833",
-   "published": "2026-10-13T20:17:09.533",
-   "description": "Substance3D - Stager is affected by an out-of-bounds write vulnerability that could result in arbitrary code execution in the context of the current user. Exploitation of this issue requires user interaction in that a victim must open a malicious file.",
-   "cvss": 7.8,
-   "severity": "HIGH",
-   "epss": 0.00148,
-   "epssPercentile": 0.03554,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-103830",
-   "published": "2026-10-13T20:17:09.290",
-   "description": "Substance3D - Stager is affected by a Stack-based Buffer Overflow vulnerability that could result in arbitrary code execution in the context of the current user. Exploitation of this issue requires user interaction in that a victim must open a malicious file.",
-   "cvss": 7.8,
-   "severity": "HIGH",
-   "epss": 0.00186,
-   "epssPercentile": 0.07617,
    "inKev": false
   },
   {
