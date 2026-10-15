@@ -7,7 +7,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "collect": "tsx scripts/collect/index.ts",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "check:i18n": "tsx scripts/check-i18n.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.133.0",

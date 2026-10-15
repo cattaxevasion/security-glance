@@ -36,6 +36,7 @@ import { REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import { fullDateTime, pct, relativeTime, shortDate } from "./format";
 import { EpssMark, NATURE_COLOR, NATURE_ICON, NatureMark } from "./marks";
 import { useMotion } from "./motion";
+import { namesOf, summaryOf, titleOf } from "./text";
 import { PRIORITY_THRESHOLD } from "./TopicsPage";
 
 export type Selection = { kind: "topic"; id: string } | { kind: "kev" | "cve"; id: string };
@@ -310,10 +311,12 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
   const byId = new Map(p.news.map((n) => [n.id, n]));
   const articles = topic.articleIds.map((id) => byId.get(id)).filter((n): n is NewsItem => !!n);
   const main = representative(articles);
-  const title = L === "ja" ? topic.titleJa || topic.titleKo : topic.titleKo;
-  const summary = L === "ja" && topic.summaryJa.length ? topic.summaryJa : topic.summaryKo;
+  const title = titleOf(L, topic);
+  const summary = summaryOf(L, topic);
+  const actors = namesOf(L, topic.entities.actors);
+  const orgs = namesOf(L, topic.entities.orgs);
   const epss = p.vulns?.mentioned ?? {};
-  const articleTitle = (n: NewsItem) => (L === "ja" ? n.titleJa || n.titleKo : n.titleKo);
+  const articleTitle = (n: NewsItem) => titleOf(L, n, n.title);
 
   const head = (
     <>
@@ -433,7 +436,7 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
         </div>
       </Section>
 
-      {(topic.entities.cves.length > 0 || topic.entities.actors.length > 0 || topic.entities.orgs.length > 0) && (
+      {(topic.entities.cves.length > 0 || actors.length > 0 || orgs.length > 0) && (
         <Section s={s} title={t.entities}>
           <div className={s.grid}>
             {topic.entities.cves.length > 0 && (
@@ -463,10 +466,10 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
                 ))}
               </Field>
             )}
-            {topic.entities.actors.length > 0 && (
+            {actors.length > 0 && (
               <Field s={s} label={t.actors}>
                 <div className={s.tags}>
-                  {topic.entities.actors.map((a) => (
+                  {actors.map((a) => (
                     <Tag key={a} size="small" appearance="brand" as="button" onClick={() => p.onSearch(a)}>
                       {a}
                     </Tag>
@@ -474,9 +477,9 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
                 </div>
               </Field>
             )}
-            {topic.entities.orgs.length > 0 && (
+            {orgs.length > 0 && (
               <Field s={s} label={t.orgs}>
-                {topic.entities.orgs.join(", ")}
+                {orgs.join(", ")}
               </Field>
             )}
           </div>
@@ -597,9 +600,7 @@ function vulnContent(kind: "kev" | "cve", v: KevEntry | CveEntry, p: Props, s: S
           <div className={s.related}>
             {related.map((x) => (
               <div key={x.id} className={s.relatedItem}>
-                <Link onClick={() => p.onSelect({ kind: "topic", id: x.id })}>
-                  {L === "ja" ? x.titleJa || x.titleKo : x.titleKo}
-                </Link>
+                <Link onClick={() => p.onSelect({ kind: "topic", id: x.id })}>{titleOf(L, x)}</Link>
                 <Caption1 className={s.label}>
                   {t.sourcesCount(x.sources.length)} · {relativeTime(L, x.lastUpdated)}
                 </Caption1>

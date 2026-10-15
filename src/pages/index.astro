@@ -8,7 +8,7 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="국제·일본·한국 보안 뉴스를 AI 요약과 태그로 한눈에 보는 개인 대시보드" />
+    <meta name="description" content="Japan &amp; international security news, summarized by AI. 日本・国際のセキュリティニュースを AI 要約でまとめた個人ダッシュボード" />
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
     <title>Security Glance</title>
@@ -39,7 +39,7 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
   </head>
   <body>
     <App client:only="react">
-      <div slot="fallback" class="boot">불러오는 중…</div>
+      <div slot="fallback" class="boot">Security Glance</div>
     </App>
   </body>
 </html>

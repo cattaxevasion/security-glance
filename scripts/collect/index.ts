@@ -10,6 +10,7 @@ import { readFile } from "node:fs/promises";
 import type { Briefing, Meta, NewsItem, RunStats, Topic, VulnData } from "../../shared/types";
 import { BODY_CHARS, extractArticle } from "./article";
 import { maybeBriefing } from "./briefing";
+import { auditArticles, auditBriefings, auditTopics } from "./lang-audit";
 import { keywordExclusion } from "./filter";
 import { fetchFeeds, type RawItem, type Source } from "./rss";
 import { EXCLUDED_NATURE, SummaryRefused, summarize, translateToJa } from "./summarize";
@@ -252,6 +253,13 @@ async function main() {
   let news = migrate(await readJson<LegacyNewsItem[]>(NEWS_PATH, []), await loadSources());
   if (mode !== "vulns") news = await runNews(meta);
 
+  // 언어 점검 1: 기사의 일본어 필드·엔티티 이름 (토픽 엔티티는 기사에서 다시 계산된다)
+  if (hasKey()) {
+    const a = await auditArticles(news);
+    console.log(`언어 점검(기사): 일본어 다시 번역 ${a.ja} · 이름 바로잡기 ${a.names} · 남은 문제 ${a.remaining}`);
+    if (!dry && (a.ja || a.names)) await writeJson(NEWS_PATH, news);
+  }
+
   let vulns = await readJson<VulnData | null>(VULNS_PATH, null);
   if (mode !== "news") {
     const mentionedCves = [...new Set(news.flatMap((n) => n.entities.cves))];
@@ -268,6 +276,11 @@ async function main() {
   console.log(
     `토픽 ${topics.length}개 · 기존 토픽에 배정 ${stats.assigned} · 새 토픽 ${stats.created} · 통합 요약 ${stats.synthesized} · 실패 ${stats.failed}`,
   );
+  // 언어 점검 2: 토픽 통합 요약의 일본어 필드
+  if (hasKey()) {
+    const fixed = await auditTopics(topics);
+    if (fixed) console.log(`언어 점검(토픽): 일본어 다시 번역 ${fixed}`);
+  }
   meta.topicCount = topics.length;
   if (!dry) await writeJson(TOPICS_PATH, topics);
 
@@ -276,10 +289,11 @@ async function main() {
     try {
       const prev = await readJson<Briefing[]>(BRIEFINGS_PATH, []);
       const { briefings, made } = await maybeBriefing(topics, prev, forceBriefing);
-      if (made) {
-        console.log(`브리핑 생성: ${briefings[0].date} · ${briefings[0].items.length}건`);
-        if (!dry) await writeJson(BRIEFINGS_PATH, briefings);
-      }
+      if (made) console.log(`브리핑 생성: ${briefings[0].date} · ${briefings[0].items.length}건`);
+      // 언어 점검 3: 브리핑의 일본어 문장
+      const fixed = await auditBriefings(briefings);
+      if (fixed) console.log(`언어 점검(브리핑): 일본어 다시 번역 ${fixed}`);
+      if (!dry && (made || fixed)) await writeJson(BRIEFINGS_PATH, briefings);
     } catch (e) {
       console.warn(`  !  브리핑 실패: ${(e as Error).message.slice(0, 160)}`);
     }

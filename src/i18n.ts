@@ -3,8 +3,21 @@ import type { AttackType, Nature, Region, Sector } from "../shared/taxonomy";
 
 export type Lang = "ko" | "ja";
 
+/** 언어 선택 메뉴: 각 언어를 그 언어로 쓴다 */
+export const LANG_NAMES: Record<Lang, string> = { ko: "한국어", ja: "日本語" };
+
 const ko = {
   appName: "Security Glance",
+  docTitle: "Security Glance – 보안 이슈 한눈에",
+  justNow: "방금",
+  storyLabel: "오늘의 브리핑 카드",
+  storyPrev: "이전 카드",
+  storyNext: "다음 카드",
+  storyPause: "자동 넘김 멈추기",
+  storyPlay: "자동 넘김 다시 시작",
+  storyReplay: "처음부터 보기",
+  storyPos: (i: number, n: number) => `${n}장 중 ${i}번째`,
+  storyHint: "탭해서 넘기기 · 꾹 눌러 멈추기",
   search: "토픽, 요약, CVE, 그룹명 검색",
   navBriefing: "오늘의 브리핑",
   navArticles: "토픽",
@@ -156,6 +169,16 @@ export type Strings = typeof ko;
 
 const ja: Strings = {
   appName: "Security Glance",
+  docTitle: "Security Glance – セキュリティニュース",
+  justNow: "たった今",
+  storyLabel: "今日のブリーフィングカード",
+  storyPrev: "前のカード",
+  storyNext: "次のカード",
+  storyPause: "自動再生を一時停止",
+  storyPlay: "自動再生を再開",
+  storyReplay: "最初から見る",
+  storyPos: (i: number, n: number) => `${n}枚中 ${i}枚目`,
+  storyHint: "タップで切り替え · 長押しで一時停止",
   search: "トピック、要約、CVE、グループ名で検索",
   navBriefing: "今日のブリーフィング",
   navArticles: "トピック",

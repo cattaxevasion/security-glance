@@ -31,9 +31,11 @@ import type { Briefing, Topic, VulnData } from "../../shared/types";
 import { LOCALE, REGION_LABELS, STRINGS, type Lang } from "../i18n";
 import type { View } from "./AppNav";
 import { relativeTime } from "./format";
+import { BriefingStories } from "./BriefingStories";
 import { NatureMark, NatureTile } from "./marks";
 import { stagger, useMotion } from "./motion";
 import { usePageStyles } from "./page";
+import { namesOf, titleOf } from "./text";
 import { rankScore } from "./TopicsPage";
 
 const useStyles = makeStyles({
@@ -273,6 +275,8 @@ const useStyles = makeStyles({
 
 interface Props {
   lang: Lang;
+  /** 휴대폰 폭이면 브리핑을 스토리 카드로 보여준다 */
+  narrow: boolean;
   briefings: Briefing[];
   topics: Topic[];
   vulns: VulnData | null;
@@ -343,57 +347,67 @@ export function BriefingPage(p: Props) {
     const kevWeek = kevAll.filter((k) => Date.parse(k.dateAdded) >= since);
     const kev = (kevWeek.length ? kevWeek : kevAll).slice(0, 5);
     const actorCount = new Map<string, number>();
-    for (const x of recent) for (const a of x.entities.actors) actorCount.set(a, (actorCount.get(a) ?? 0) + 1);
+    for (const x of recent)
+      for (const a of namesOf(lang, x.entities.actors)) actorCount.set(a, (actorCount.get(a) ?? 0) + 1);
     const actors = [...actorCount.entries()].sort((a, b2) => b2[1] - a[1]).slice(0, 12);
     return { incidents, kev, actors };
-  }, [topics, p.vulns]);
+  }, [topics, p.vulns, lang]);
 
   const fmtDate = (d: string) =>
     new Intl.DateTimeFormat(LOCALE[lang], { year: "numeric", month: "long", day: "numeric", weekday: "long" }).format(
       new Date(`${d}T00:00:00+09:00`),
     );
-  const topicTitle = (x: Topic) => (lang === "ja" ? x.titleJa || x.titleKo : x.titleKo);
+  const topicTitle = (x: Topic) => titleOf(lang, x);
 
   return (
     <div className={mergeClasses(ps.page, s.page)}>
-      {/* 배너 */}
-      <header className={mergeClasses(s.hero, m.enter)} key={b?.date ?? "none"}>
-        <SparkleFilled className={s.heroDeco} aria-hidden />
-        <div className={s.heroTop}>
-          <span>
-            <span className={s.aiChip}>
-              <SparkleFilled aria-hidden />
-              {t.aiGenerated}
-            </span>
-            {b && <span className={s.heroDate}>{fmtDate(b.date)}</span>}
-          </span>
-          {briefings.length > 1 && (
-            <Menu checkedValues={{ date: [b?.date ?? ""] }} onCheckedValueChange={(_, d) => setDate(d.checkedItems[0])}>
-              <MenuTrigger disableButtonEnhancement>
-                <Button appearance="transparent" className={s.heroBtn} icon={<HistoryRegular />}>
-                  {t.briefingArchive}
-                  <ChevronDownRegular style={{ marginLeft: 4 }} />
-                </Button>
-              </MenuTrigger>
-              <MenuPopover>
-                <MenuList>
-                  {briefings.map((x) => (
-                    <MenuItemRadio key={x.date} name="date" value={x.date}>
-                      {fmtDate(x.date)}
-                    </MenuItemRadio>
-                  ))}
-                </MenuList>
-              </MenuPopover>
-            </Menu>
-          )}
-        </div>
-        <h1 className={s.heroTitle}>{t.briefingTitle}</h1>
-        <p className={s.heroText}>{b ? (lang === "ja" ? b.headlineJa : b.headlineKo) : t.briefingEmpty}</p>
-      </header>
+      {p.narrow && b ? (
+        <BriefingStories lang={lang} briefing={b} topics={byId} dateLabel={fmtDate(b.date)} onOpen={p.onOpen} />
+      ) : (
+        <>
+          {/* 배너 */}
+          <header className={mergeClasses(s.hero, m.enter)} key={b?.date ?? "none"}>
+            <SparkleFilled className={s.heroDeco} aria-hidden />
+            <div className={s.heroTop}>
+              <span>
+                <span className={s.aiChip}>
+                  <SparkleFilled aria-hidden />
+                  {t.aiGenerated}
+                </span>
+                {b && <span className={s.heroDate}>{fmtDate(b.date)}</span>}
+              </span>
+              {briefings.length > 1 && (
+                <Menu
+                  checkedValues={{ date: [b?.date ?? ""] }}
+                  onCheckedValueChange={(_, d) => setDate(d.checkedItems[0])}
+                >
+                  <MenuTrigger disableButtonEnhancement>
+                    <Button appearance="transparent" className={s.heroBtn} icon={<HistoryRegular />}>
+                      {t.briefingArchive}
+                      <ChevronDownRegular style={{ marginLeft: 4 }} />
+                    </Button>
+                  </MenuTrigger>
+                  <MenuPopover>
+                    <MenuList>
+                      {briefings.map((x) => (
+                        <MenuItemRadio key={x.date} name="date" value={x.date}>
+                          {fmtDate(x.date)}
+                        </MenuItemRadio>
+                      ))}
+                    </MenuList>
+                  </MenuPopover>
+                </Menu>
+              )}
+            </div>
+            <h1 className={s.heroTitle}>{t.briefingTitle}</h1>
+            <p className={s.heroText}>{b ? (lang === "ja" ? b.headlineJa : b.headlineKo) : t.briefingEmpty}</p>
+          </header>
+        </>
+      )}
 
       <div className={s.grid}>
-        {/* 오늘의 항목 */}
-        {b ? (
+        {/* 오늘의 항목 (모바일에서는 위의 스토리 카드가 대신한다) */}
+        {p.narrow && b ? null : b ? (
           <ol className={s.items} key={`list-${b.date}`}>
             {b.items.map((it, i) => {
               const topic = byId.get(it.topicId);
@@ -462,8 +476,8 @@ export function BriefingPage(p: Props) {
                 {rail.incidents.map((x) => (
                   <li key={x.id}>
                     <button className={s.wItem} onClick={() => p.onOpen(x.id)}>
-                      {x.entities.orgs.length > 0 && (
-                        <span className={s.wOrg}>{x.entities.orgs.slice(0, 2).join(", ")}</span>
+                      {namesOf(lang, x.entities.orgs).length > 0 && (
+                        <span className={s.wOrg}>{namesOf(lang, x.entities.orgs).slice(0, 2).join(", ")}</span>
                       )}
                       <span className={s.wTitle}>{topicTitle(x)}</span>
                       <span className={s.wMeta}>

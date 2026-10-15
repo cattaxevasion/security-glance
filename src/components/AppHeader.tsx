@@ -27,7 +27,7 @@ import {
   ShieldRegular,
 } from "@fluentui/react-icons";
 import type { Meta } from "../../shared/types";
-import { REGION_LABELS, STRINGS, type Lang } from "../i18n";
+import { LANG_NAMES, REGION_LABELS, STRINGS, type Lang } from "../i18n";
 import { fullDateTime, relativeTime } from "./format";
 
 const useStyles = makeStyles({
@@ -146,17 +146,17 @@ export function AppHeader({
           <MenuTrigger disableButtonEnhancement>
             <Tooltip content={t.language} relationship="label">
               <Button appearance="transparent" className={s.onBrand} icon={<LocalLanguageRegular />}>
-                {narrow ? null : lang === "ko" ? "한국어" : "日本語"}
+                {narrow ? null : LANG_NAMES[lang]}
               </Button>
             </Tooltip>
           </MenuTrigger>
           <MenuPopover>
             <MenuList>
               <MenuItemRadio name="lang" value="ko">
-                한국어
+                {LANG_NAMES.ko}
               </MenuItemRadio>
               <MenuItemRadio name="lang" value="ja">
-                日本語
+                {LANG_NAMES.ja}
               </MenuItemRadio>
             </MenuList>
           </MenuPopover>

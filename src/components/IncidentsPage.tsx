@@ -37,6 +37,7 @@ import { timeOfDay } from "./format";
 import { SourceAvatars } from "./marks";
 import { stagger, useCountUp, useMotion } from "./motion";
 import { PageTitle, usePageStyles } from "./page";
+import { namesOf, summaryOf, titleOf } from "./text";
 import { PRIORITY_THRESHOLD, matchesQuery } from "./TopicsPage";
 
 const PERIODS = [7, 30, 90];
@@ -308,8 +309,8 @@ export function IncidentsPage(p: Props) {
   useEffect(() => p.onOrder(ids), [ids]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const month = (d: Date) => new Intl.DateTimeFormat(LOCALE[lang], { month: "short" }).format(d);
-  const title = (x: Topic) => (lang === "ja" ? x.titleJa || x.titleKo : x.titleKo);
-  const summary = (x: Topic) => (lang === "ja" && x.summaryJa.length ? x.summaryJa : x.summaryKo)[0] ?? "";
+  const title = (x: Topic) => titleOf(lang, x);
+  const summary = (x: Topic) => summaryOf(lang, x)[0] ?? "";
   const isLive = (x: Topic) => Date.now() - Date.parse(x.lastUpdated) < 86400_000;
 
   return (
@@ -468,9 +469,9 @@ export function IncidentsPage(p: Props) {
                   {isLive(x) && <span className={mergeClasses(s.live, m.pulse)} aria-hidden />}
                 </span>
                 <div className={s.body}>
-                  {x.entities.orgs.length > 0 && (
+                  {namesOf(lang, x.entities.orgs).length > 0 && (
                     <div className={s.orgs}>
-                      {t.orgsLabel} · {x.entities.orgs.slice(0, 3).join(", ")}
+                      {t.orgsLabel} · {namesOf(lang, x.entities.orgs).slice(0, 3).join(", ")}
                     </div>
                   )}
                   <div className={s.title}>{title(x)}</div>

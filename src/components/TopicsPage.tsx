@@ -36,6 +36,7 @@ import { useStoredFlag } from "./hooks";
 import { NatureMark, NatureTile, SourceAvatars } from "./marks";
 import { stagger, useCountUp, useMotion } from "./motion";
 import { PageTitle, usePageStyles } from "./page";
+import { summaryOf, titleOf } from "./text";
 
 export interface NewsFilters {
   attack: string[];
@@ -351,8 +352,8 @@ export function TopicsPage(p: Props) {
   }, [visible, lang, t, p.sort]);
 
   const anyFilter = filters.attack.length + filters.sector.length + filters.nature.length > 0;
-  const title = (n: Topic) => (lang === "ja" ? n.titleJa || n.titleKo : n.titleKo);
-  const summary = (n: Topic) => (lang === "ja" && n.summaryJa.length ? n.summaryJa : n.summaryKo)[0] ?? "";
+  const title = (n: Topic) => titleOf(lang, n);
+  const summary = (n: Topic) => summaryOf(lang, n)[0] ?? "";
   const sourcesText = (n: Topic) =>
     n.sources.length <= 2 ? n.sources.join(", ") : `${n.sources.slice(0, 2).join(", ")} +${n.sources.length - 2}`;
 

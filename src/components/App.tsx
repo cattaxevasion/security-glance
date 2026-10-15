@@ -190,7 +190,7 @@ export default function App() {
     // 상세 패널·메뉴는 포털로 앱 밖에 그려지므로 <html>에 걸어 상속시킨다.
     document.documentElement.style.wordBreak = lang === "ko" ? "keep-all" : "normal";
     document.documentElement.style.setProperty("line-break", lang === "ja" ? "strict" : "auto");
-    document.title = lang === "ja" ? "Security Glance – セキュリティニュース" : "Security Glance – 보안 이슈 한눈에";
+    document.title = STRINGS[lang].docTitle;
   }, [lang]);
 
   const query = isVulnView(view) ? vulnQuery : newsQuery;
@@ -336,6 +336,7 @@ export default function App() {
                 {view === "briefing" ? (
                   <BriefingPage
                     lang={lang}
+                    narrow={narrow}
                     briefings={briefings}
                     topics={topics}
                     vulns={vulns}

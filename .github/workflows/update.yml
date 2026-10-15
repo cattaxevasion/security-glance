@@ -58,6 +58,9 @@ jobs:
             git push
           fi
 
+      - name: Check Japanese UI has no Korean leaks
+        run: npm run check:i18n -- --data
+
       - name: Build site
         run: npm run build
         env:
