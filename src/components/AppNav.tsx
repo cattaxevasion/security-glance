@@ -8,12 +8,12 @@ import {
   makeStyles,
   tokens,
 } from "@fluentui/react-components";
-import { BugRegular, GlobeRegular, NewsRegular, ShieldErrorRegular } from "@fluentui/react-icons";
+import { BugRegular, GlobeRegular, LayerRegular, ShieldErrorRegular, WeatherSunnyRegular } from "@fluentui/react-icons";
 import { REGION_LABELS, STRINGS, type Lang } from "../i18n";
 import { RegionMonogram } from "./marks";
 
-export type View = "all" | "INTL" | "JP" | "KR" | "kev" | "cve";
-export const VIEWS: View[] = ["all", "INTL", "JP", "KR", "kev", "cve"];
+export type View = "briefing" | "all" | "INTL" | "JP" | "kev" | "cve";
+export const VIEWS: View[] = ["briefing", "all", "INTL", "JP", "kev", "cve"];
 
 const useStyles = makeStyles({
   drawer: {
@@ -65,18 +65,20 @@ export function AppNav({ lang, view, setView, open, overlay, onClose, counts }: 
       }}
     >
       <NavDrawerBody className={s.body}>
-        <NavSectionHeader>{t.navArticles}</NavSectionHeader>
-        <NavItem value="all" icon={<NewsRegular />}>
-          {label(t.navAll, "all")}
+        <NavItem value="briefing" icon={<WeatherSunnyRegular />}>
+          {t.navBriefing}
         </NavItem>
-        <NavItem value="INTL" icon={<GlobeRegular />}>
-          {label(regions.INTL, "INTL")}
+
+        <NavDivider />
+        <NavSectionHeader>{t.navArticles}</NavSectionHeader>
+        <NavItem value="all" icon={<LayerRegular />}>
+          {label(t.navAll, "all")}
         </NavItem>
         <NavItem value="JP" icon={<RegionMonogram region="JP" />}>
           {label(regions.JP, "JP")}
         </NavItem>
-        <NavItem value="KR" icon={<RegionMonogram region="KR" />}>
-          {label(regions.KR, "KR")}
+        <NavItem value="INTL" icon={<GlobeRegular />}>
+          {label(regions.INTL, "INTL")}
         </NavItem>
 
         <NavDivider />

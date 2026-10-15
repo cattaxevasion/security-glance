@@ -4,19 +4,24 @@
 //   npm run collect -- vulns     취약점만
 //   --limit N                    이번 실행에서 요약할 새 기사 최대 개수 (기본 80)
 //   --dry                        요약 결과를 출력만 하고 저장하지 않음
+//   --briefing                   오늘의 브리핑을 시각과 상관없이 다시 만든다
 import Anthropic from "@anthropic-ai/sdk";
 import { readFile } from "node:fs/promises";
-import type { Meta, NewsItem, RunStats, VulnData } from "../../shared/types";
-import { extractArticle } from "./article";
+import type { Briefing, Meta, NewsItem, RunStats, Topic, VulnData } from "../../shared/types";
+import { BODY_CHARS, extractArticle } from "./article";
+import { maybeBriefing } from "./briefing";
 import { keywordExclusion } from "./filter";
 import { fetchFeeds, type RawItem, type Source } from "./rss";
 import { EXCLUDED_NATURE, SummaryRefused, summarize, translateToJa } from "./summarize";
 import { idFor, mapLimit, readJson, writeJson } from "./util";
+import { updateTopics } from "./topics";
 import { collectVulns } from "./vulns";
 
 const NEWS_PATH = "public/data/news.json";
 const VULNS_PATH = "public/data/vulns.json";
 const META_PATH = "public/data/meta.json";
+const TOPICS_PATH = "public/data/topics.json";
+const BRIEFINGS_PATH = "public/data/briefings.json";
 /** 공개하지 않는 내부 상태: 제외 판정, 실패 횟수 */
 const STATE_PATH = "data/state.json";
 
@@ -33,25 +38,47 @@ interface State {
   failures: Record<string, number>;
 }
 
-type LegacyNewsItem = NewsItem & { summary?: string[]; socPoint?: string | null };
+type LegacyNewsItem = Omit<NewsItem, "sourceRegion" | "regions"> & {
+  sourceRegion: string;
+  regions: string[];
+  summary?: string[];
+  socPoint?: string | null;
+};
 
-/** 이전 형식(summary, socPoint)을 지금 형식으로 바꾸고, 이제는 받지 않는 업계 동향 기사를 뺀다. */
-function migrate(items: LegacyNewsItem[]): NewsItem[] {
-  let dropped = 0;
+/**
+ * 이전 형식을 지금 형식으로 바꾼다.
+ * - summary/socPoint → summaryKo (SOC 포인트 삭제)
+ * - 업계 동향 기사 삭제
+ * - 한국 범위 제외(2026-10-15): 한국 매체 기사 삭제, 지역에서 KR 제거
+ * - sourceKind, techniques, iocTypes 기본값
+ */
+function migrate(items: LegacyNewsItem[], sources: Source[]): NewsItem[] {
+  const dropped = { nature: 0, korea: 0 };
   const out: NewsItem[] = [];
   for (const { summary, socPoint: _socPoint, ...n } of items) {
     if (n.nature === EXCLUDED_NATURE) {
-      dropped++;
+      dropped.nature++;
       continue;
     }
+    if (n.sourceRegion === "KR") {
+      dropped.korea++;
+      continue;
+    }
+    const regions = n.regions.filter((r): r is NewsItem["regions"][number] => r === "INTL" || r === "JP");
     out.push({
       ...n,
+      sourceRegion: n.sourceRegion as NewsItem["sourceRegion"],
+      sourceKind: n.sourceKind ?? sources.find((s) => s.id === n.sourceId)?.kind ?? "news",
+      regions: regions.length ? regions : ["INTL"],
       summaryKo: n.summaryKo ?? summary ?? [],
       summaryJa: n.summaryJa ?? [],
       titleJa: n.titleJa ?? "",
+      techniques: n.techniques ?? [],
+      iocTypes: n.iocTypes ?? [],
     });
   }
-  if (dropped) console.log(`기존 업계 동향 기사 ${dropped}건 삭제`);
+  if (dropped.nature) console.log(`기존 업계 동향 기사 ${dropped.nature}건 삭제`);
+  if (dropped.korea) console.log(`한국 매체 기사 ${dropped.korea}건 삭제`);
   return out;
 }
 
@@ -68,14 +95,21 @@ function isConfigError(e: unknown): e is Error {
 const args = process.argv.slice(2);
 const mode = args.find((a) => a === "news" || a === "vulns") ?? "all";
 const dry = args.includes("--dry");
+const forceBriefing = args.includes("--briefing");
 const limitArg = args.indexOf("--limit");
 const limit = limitArg >= 0 ? Number(args[limitArg + 1]) : Number(process.env.MAX_NEW_PER_RUN ?? 80);
 
 const cutoff = Date.now() - RETENTION_DAYS * 86400_000;
 
+async function loadSources(): Promise<Source[]> {
+  return (JSON.parse(await readFile("sources.json", "utf8")) as { sources: Source[] }).sources;
+}
+
+const hasKey = () => Boolean(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
+
 async function runNews(meta: Meta): Promise<NewsItem[]> {
-  const { sources } = JSON.parse(await readFile("sources.json", "utf8")) as { sources: Source[] };
-  const existing = migrate(await readJson<LegacyNewsItem[]>(NEWS_PATH, []));
+  const sources = await loadSources();
+  const existing = migrate(await readJson<LegacyNewsItem[]>(NEWS_PATH, []), sources);
   const saved = await readJson<Partial<State> & { notSecurity?: Record<string, string> }>(STATE_PATH, {});
   const state: State = { excluded: { ...saved.notSecurity, ...saved.excluded }, failures: saved.failures ?? {} };
 
@@ -112,9 +146,8 @@ async function runNews(meta: Meta): Promise<NewsItem[]> {
   // 최신 기사부터 처리하고, 한도를 넘는 건 다음 실행으로 미룬다
   const queue = [...candidates.entries()].sort((a, b) => b[1].publishedAt.localeCompare(a[1].publishedAt));
   // 키가 없으면 요약을 건너뛰고 다음 실행으로 미룬다 (취약점 수집은 계속)
-  const hasKey = Boolean(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
-  if (!hasKey) console.warn("\nANTHROPIC_API_KEY가 없어 기사 요약을 건너뜁니다.");
-  const batch = hasKey ? queue.slice(0, limit) : [];
+  if (!hasKey()) console.warn("\nANTHROPIC_API_KEY가 없어 기사 요약을 건너뜁니다.");
+  const batch = hasKey() ? queue.slice(0, limit) : [];
   console.log(`\n새 기사 ${queue.length}건 중 ${batch.length}건 요약 시작 (모델 ${process.env.SUMMARY_MODEL ?? "claude-haiku-5-5"})`);
 
   const stats: RunStats = {
@@ -131,7 +164,8 @@ async function runNews(meta: Meta): Promise<NewsItem[]> {
   await mapLimit(batch, CONCURRENCY, async ([id, raw]) => {
     if (configFailed) return;
     try {
-      const body = await extractArticle(raw.url);
+      // 벤더 분석 글은 기법·IoC가 뒤쪽에 있어 본문을 더 길게 읽는다
+      const body = await extractArticle(raw.url, raw.source.kind === "vendor" ? BODY_CHARS.long : BODY_CHARS.news);
       const result = await summarize(raw, body);
       if (result.kind === "excluded") {
         state.excluded[id] = new Date().toISOString();
@@ -166,7 +200,7 @@ async function runNews(meta: Meta): Promise<NewsItem[]> {
 
   // 일본어가 비어 있는 기존 기사 채우기 (이전 형식에서 넘어온 기사)
   const missingJa = existing.filter((n) => n.summaryJa.length === 0);
-  if (missingJa.length && hasKey && !configFailed) {
+  if (missingJa.length && hasKey() && !configFailed) {
     const chunks: NewsItem[][] = [];
     for (let i = 0; i < missingJa.length; i += TRANSLATE_BATCH) chunks.push(missingJa.slice(i, i + TRANSLATE_BATCH));
     let filled = 0;
@@ -209,21 +243,46 @@ async function main() {
     updatedAt: "",
     lastRun: null,
     newsCount: 0,
+    topicCount: 0,
     kevCount: 0,
     cveCount: 0,
     sources: [],
   });
 
-  let news = await readJson<NewsItem[]>(NEWS_PATH, []);
+  let news = migrate(await readJson<LegacyNewsItem[]>(NEWS_PATH, []), await loadSources());
   if (mode !== "vulns") news = await runNews(meta);
 
+  let vulns = await readJson<VulnData | null>(VULNS_PATH, null);
   if (mode !== "news") {
     const mentionedCves = [...new Set(news.flatMap((n) => n.entities.cves))];
-    const vulns: VulnData = await collectVulns(mentionedCves);
+    vulns = await collectVulns(mentionedCves);
     console.log(`KEV ${vulns.kev.length}건 · 고위험 CVE ${vulns.cves.length}건 · 기사 속 CVE EPSS ${Object.keys(vulns.mentioned).length}건`);
     meta.kevCount = vulns.kev.length;
     meta.cveCount = vulns.cves.length;
     if (!dry) await writeJson(VULNS_PATH, vulns);
+  }
+
+  // 토픽(まとめ): 기사 묶기, 통합 요약, 중요도
+  const prevTopics = await readJson<Topic[]>(TOPICS_PATH, []);
+  const { topics, stats } = await updateTopics(news, prevTopics, vulns, { useLlm: hasKey(), isConfigError });
+  console.log(
+    `토픽 ${topics.length}개 · 기존 토픽에 배정 ${stats.assigned} · 새 토픽 ${stats.created} · 통합 요약 ${stats.synthesized} · 실패 ${stats.failed}`,
+  );
+  meta.topicCount = topics.length;
+  if (!dry) await writeJson(TOPICS_PATH, topics);
+
+  // 오늘의 브리핑 (일본 시간 아침, 하루 한 번)
+  if (hasKey()) {
+    try {
+      const prev = await readJson<Briefing[]>(BRIEFINGS_PATH, []);
+      const { briefings, made } = await maybeBriefing(topics, prev, forceBriefing);
+      if (made) {
+        console.log(`브리핑 생성: ${briefings[0].date} · ${briefings[0].items.length}건`);
+        if (!dry) await writeJson(BRIEFINGS_PATH, briefings);
+      }
+    } catch (e) {
+      console.warn(`  !  브리핑 실패: ${(e as Error).message.slice(0, 160)}`);
+    }
   }
 
   meta.newsCount = news.length;

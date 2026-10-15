@@ -5,8 +5,9 @@ export type Lang = "ko" | "ja";
 
 const ko = {
   appName: "Security Glance",
-  search: "제목, 요약, CVE, 그룹명 검색",
-  navArticles: "기사",
+  search: "토픽, 요약, CVE, 그룹명 검색",
+  navBriefing: "오늘의 브리핑",
+  navArticles: "토픽",
   navAll: "전체",
   navVulns: "취약점",
   navKev: "실제 악용 (KEV)",
@@ -19,9 +20,9 @@ const ko = {
   lastCollected: "마지막 수집",
   sourceFailed: "읽지 못함",
   overview: "최근 동향",
-  kpiToday: "최근 24시간 기사",
+  kpiToday: "최근 24시간 토픽",
   kpiTodaySub: "전체 지역",
-  kpiRansom: "랜섬웨어 기사",
+  kpiRansom: "랜섬웨어 토픽",
   kpiRansomSub: "최근 7일",
   kpiKev: "KEV 신규 등록",
   kpiKevSub: "최근 7일",
@@ -42,9 +43,9 @@ const ko = {
   colSource: "출처",
   today: "오늘",
   yesterday: "어제",
-  empty: "조건에 맞는 기사가 없어요.",
+  empty: "조건에 맞는 토픽이 없어요.",
   emptyHint: "필터를 줄이거나 기간을 늘려 보세요.",
-  noData: "아직 수집된 기사가 없어요.",
+  noData: "아직 정리된 토픽이 없어요.",
   more: (n: number) => `더 보기 (${n.toLocaleString()}건 남음)`,
   loading: "불러오는 중",
   // 상세 패널
@@ -98,14 +99,39 @@ const ko = {
   openNvd: "NVD에서 보기",
   footer: "기사 저작권은 각 언론사와 기관에 있어요. 이 사이트는 제목, 링크, AI 요약만 보여줘요. 취약점 데이터: CISA KEV, NVD, FIRST EPSS.",
   sourcesFailed: (names: string) => `이번 수집에서 ${names} 소스를 읽지 못했어요.`,
+  // 토픽·브리핑
+  sortLatest: "최신순",
+  sortImportant: "중요도순",
+  priority: "주목",
+  sourcesCount: (n: number) => `출처 ${n}곳`,
+  analysis: "벤더 분석",
+  hasAnalysis: "분석 있음",
+  timeline: "흐름",
+  techniques: "ATT&CK 기법",
+  iocTypes: "공개된 IoC",
+  noIoc: "공개된 IoC 없음",
+  kind: { news: "뉴스", vendor: "벤더 리서치", cert: "CERT·기관" } as Record<string, string>,
+  openSource: "대표 출처 열기",
+  articles: (n: number) => `기사 ${n}건`,
+  firstSeen: "처음 보도",
+  lastUpdated: "마지막 업데이트",
+  briefingTitle: "오늘의 브리핑",
+  briefingSub: "매일 아침 7시(일본 시간)쯤, 지난 하루의 중요한 토픽을 정리해요.",
+  briefingWhy: "왜 중요한가",
+  briefingMore: "자세히 보기",
+  briefingEmpty: "아직 브리핑이 없어요. 다음 아침 수집 때 만들어져요.",
+  briefingArchive: "지난 브리핑",
+  relatedTopics: "관련 토픽",
+  noRelatedTopics: "이 CVE를 다룬 토픽이 아직 없어요.",
 };
 
 export type Strings = typeof ko;
 
 const ja: Strings = {
   appName: "Security Glance",
-  search: "タイトル、要約、CVE、グループ名で検索",
-  navArticles: "記事",
+  search: "トピック、要約、CVE、グループ名で検索",
+  navBriefing: "今日のブリーフィング",
+  navArticles: "トピック",
   navAll: "すべて",
   navVulns: "脆弱性",
   navKev: "悪用確認済み (KEV)",
@@ -118,9 +144,9 @@ const ja: Strings = {
   lastCollected: "最終収集",
   sourceFailed: "取得失敗",
   overview: "最近の動向",
-  kpiToday: "直近24時間の記事",
+  kpiToday: "直近24時間のトピック",
   kpiTodaySub: "全地域",
-  kpiRansom: "ランサムウェア記事",
+  kpiRansom: "ランサムウェアのトピック",
   kpiRansomSub: "直近7日",
   kpiKev: "KEV 新規登録",
   kpiKevSub: "直近7日",
@@ -141,9 +167,9 @@ const ja: Strings = {
   colSource: "出典",
   today: "今日",
   yesterday: "昨日",
-  empty: "条件に合う記事はありません。",
+  empty: "条件に合うトピックはありません。",
   emptyHint: "フィルターを減らすか、期間を広げてください。",
-  noData: "まだ収集された記事がありません。",
+  noData: "まだまとめられたトピックがありません。",
   more: (n: number) => `さらに表示 (残り${n.toLocaleString()}件)`,
   loading: "読み込み中",
   prevItem: "前の項目",
@@ -195,13 +221,36 @@ const ja: Strings = {
   openNvd: "NVD で見る",
   footer: "記事の著作権は各報道機関・組織に帰属します。本サイトはタイトル、リンク、AI 要約のみを表示します。脆弱性データ: CISA KEV、NVD、FIRST EPSS。",
   sourcesFailed: (names: string) => `今回の収集で ${names} を取得できませんでした。`,
+  sortLatest: "新着順",
+  sortImportant: "重要度順",
+  priority: "注目",
+  sourcesCount: (n: number) => `出典 ${n}件`,
+  analysis: "ベンダー分析",
+  hasAnalysis: "分析あり",
+  timeline: "経緯",
+  techniques: "ATT&CK テクニック",
+  iocTypes: "公開された IoC",
+  noIoc: "公開された IoC なし",
+  kind: { news: "ニュース", vendor: "ベンダーリサーチ", cert: "CERT・公的機関" },
+  openSource: "代表的な出典を開く",
+  articles: (n: number) => `記事 ${n}件`,
+  firstSeen: "初報",
+  lastUpdated: "最終更新",
+  briefingTitle: "今日のブリーフィング",
+  briefingSub: "毎朝 7 時ごろ(日本時間)、前日の重要なトピックをまとめます。",
+  briefingWhy: "なぜ重要か",
+  briefingMore: "詳しく見る",
+  briefingEmpty: "まだブリーフィングがありません。次の朝の収集で作成されます。",
+  briefingArchive: "過去のブリーフィング",
+  relatedTopics: "関連トピック",
+  noRelatedTopics: "この CVE を扱ったトピックはまだありません。",
 };
 
 export const STRINGS: Record<Lang, Strings> = { ko, ja };
 
 export const REGION_LABELS: Record<Lang, Record<Region, string>> = {
-  ko: { INTL: "국제", JP: "일본", KR: "한국" },
-  ja: { INTL: "国際", JP: "日本", KR: "韓国" },
+  ko: { INTL: "국제", JP: "일본" },
+  ja: { INTL: "国際", JP: "日本" },
 };
 
 const ATTACK_JA: Record<AttackType, string> = {
@@ -239,6 +288,8 @@ const NATURE_JA: Record<Nature, string> = {
   "업계 동향": "業界動向",
 };
 
+const IOC_JA: Record<string, string> = { 도메인: "ドメイン", "파일 해시": "ファイルハッシュ", 파일명: "ファイル名", 레지스트리: "レジストリ", 이메일: "メール", 인증서: "証明書" };
+
 /** 태그 값(한국어)을 화면 언어로 */
 export function tagLabel(lang: Lang, value: string): string {
   if (lang === "ko") return value;
@@ -246,6 +297,7 @@ export function tagLabel(lang: Lang, value: string): string {
     (ATTACK_JA as Record<string, string>)[value] ??
     (SECTOR_JA as Record<string, string>)[value] ??
     (NATURE_JA as Record<string, string>)[value] ??
+    IOC_JA[value] ??
     value
   );
 }

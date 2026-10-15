@@ -14,13 +14,14 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "pretendard-jp/dist/web/variable/pretendardvariable-jp-dynamic-subset.css";
 import type { Region } from "../../shared/taxonomy";
-import type { Meta, NewsItem, VulnData } from "../../shared/types";
+import type { Briefing, Meta, NewsItem, Topic, VulnData } from "../../shared/types";
 import { FONT_STACK, REGION_LABELS, STRINGS, detectLang, saveLang, type Lang } from "../i18n";
 import { AppHeader } from "./AppHeader";
 import { AppNav, VIEWS, type View } from "./AppNav";
 import { DetailPanel, type Selection } from "./DetailPanel";
 import { useMediaQuery, useNarrow, usePrefersDark } from "./hooks";
-import { DEFAULT_FILTERS, NewsPage, type NewsFilters } from "./NewsPage";
+import { BriefingPage } from "./BriefingPage";
+import { DEFAULT_FILTERS, TopicsPage, type NewsFilters, type SortMode } from "./TopicsPage";
 import { VulnPage } from "./VulnPage";
 
 const useStyles = makeStyles({
@@ -55,6 +56,7 @@ async function load<T>(name: string): Promise<T | null> {
 // ── 주소창 상태: 보기·검색·필터·선택 항목을 URL에 남겨 북마크·공유할 수 있게 한다 (Defender처럼) ──
 interface UrlState {
   view: View;
+  sort: SortMode;
   q: string;
   filters: NewsFilters;
   sel: string | null;
@@ -63,12 +65,14 @@ interface UrlState {
 
 function readUrl(): UrlState {
   const p = new URLSearchParams(location.search);
-  const view = (VIEWS as string[]).includes(p.get("view") ?? "") ? (p.get("view") as View) : "all";
+  // 처음 열면 오늘의 브리핑부터
+  const view = (VIEWS as string[]).includes(p.get("view") ?? "") ? (p.get("view") as View) : "briefing";
   const list = (k: string) => (p.get(k) ? p.get(k)!.split(",").filter(Boolean) : []);
   const days = p.get("days");
   const lang = p.get("lang");
   return {
     view,
+    sort: p.get("sort") === "important" ? "important" : "latest",
     q: p.get("q") ?? "",
     filters: {
       attack: list("attack"),
@@ -81,11 +85,12 @@ function readUrl(): UrlState {
   };
 }
 
-function writeUrl(st: { view: View; q: string; filters: NewsFilters; sel: string | null; lang: Lang }) {
+function writeUrl(st: { view: View; sort: SortMode; q: string; filters: NewsFilters; sel: string | null; lang: Lang }) {
   const p = new URLSearchParams();
-  if (st.view !== "all") p.set("view", st.view);
+  if (st.view !== "briefing") p.set("view", st.view);
   if (st.q) p.set("q", st.q);
-  if (st.view !== "kev" && st.view !== "cve") {
+  if (isTopicView(st.view)) {
+    if (st.sort !== "latest") p.set("sort", st.sort);
     if (st.filters.days !== DEFAULT_FILTERS.days) p.set("days", String(st.filters.days));
     if (st.filters.attack.length) p.set("attack", st.filters.attack.join(","));
     if (st.filters.sector.length) p.set("sector", st.filters.sector.join(","));
@@ -97,6 +102,7 @@ function writeUrl(st: { view: View; q: string; filters: NewsFilters; sel: string
 }
 
 const isVulnView = (v: View): v is "kev" | "cve" => v === "kev" || v === "cve";
+const isTopicView = (v: View) => v === "all" || v === "INTL" || v === "JP";
 
 export default function App() {
   const s = useStyles();
@@ -111,22 +117,25 @@ export default function App() {
   const [newsQuery, setNewsQuery] = useState(isVulnView(initial.view) ? "" : initial.q);
   const [vulnQuery, setVulnQuery] = useState(isVulnView(initial.view) ? initial.q : "");
   const [filters, setFilters] = useState<NewsFilters>(initial.filters);
+  const [sort, setSort] = useState<SortMode>(initial.sort);
   const [selection, setSelection] = useState<Selection | null>(
-    initial.sel ? { kind: isVulnView(initial.view) ? initial.view : "news", id: initial.sel } : null,
+    initial.sel ? { kind: isVulnView(initial.view) ? initial.view : "topic", id: initial.sel } : null,
   );
   const [order, setOrder] = useState<string[]>([]);
   const [navOpen, setNavOpen] = useState(!narrow);
 
   const [news, setNews] = useState<NewsItem[] | null>(null);
+  const [topics, setTopics] = useState<Topic[] | null>(null);
+  const [briefings, setBriefings] = useState<Briefing[]>([]);
   const [vulns, setVulns] = useState<VulnData | null>(null);
   const [meta, setMeta] = useState<Meta | null>(null);
 
   const t = STRINGS[lang];
 
   const reload = useCallback(() => {
-    // 개발 서버에서는 scripts/dev/dev-fixture.ts가 만든 임시 데이터가 있으면 그걸 쓴다
-    const devNews = import.meta.env.DEV ? load<NewsItem[]>("news.dev.json") : Promise.resolve(null);
-    devNews.then((d) => d ?? load<NewsItem[]>("news.json")).then((d) => setNews(d ?? []));
+    load<NewsItem[]>("news.json").then((d) => setNews(d ?? []));
+    load<Topic[]>("topics.json").then((d) => setTopics(d ?? []));
+    load<Briefing[]>("briefings.json").then((d) => setBriefings(d ?? []));
     load<VulnData>("vulns.json").then(setVulns);
     load<Meta>("meta.json").then(setMeta);
   }, []);
@@ -144,7 +153,16 @@ export default function App() {
   }, [lang]);
 
   const query = isVulnView(view) ? vulnQuery : newsQuery;
-  useEffect(() => writeUrl({ view, q: query, filters, sel: selection?.id ?? null, lang }), [view, query, filters, selection, lang]);
+  useEffect(
+    () => writeUrl({ view, sort, q: query, filters, sel: selection?.id ?? null, lang }),
+    [view, sort, query, filters, selection, lang],
+  );
+
+  // 브리핑 화면에서 검색하면 토픽 전체로 넘어간다
+  const setTopicQuery = (q: string) => {
+    if (view === "briefing") setViewState("all");
+    setNewsQuery(q);
+  };
 
   const setLang = (l: Lang) => {
     setLangState(l);
@@ -158,25 +176,25 @@ export default function App() {
   };
 
   const counts = useMemo(() => {
-    const c: Record<View, number | null> = { all: null, INTL: null, JP: null, KR: null, kev: null, cve: null };
-    if (news) {
-      c.all = news.length;
-      for (const r of ["INTL", "JP", "KR"] as Region[]) c[r] = news.filter((n) => n.regions.includes(r)).length;
+    const c: Record<View, number | null> = { briefing: null, all: null, INTL: null, JP: null, kev: null, cve: null };
+    if (topics) {
+      c.all = topics.length;
+      for (const r of ["INTL", "JP"] as Region[]) c[r] = topics.filter((n) => n.regions.includes(r)).length;
     }
     if (vulns) {
       c.kev = vulns.kev.length;
       c.cve = vulns.cves.length;
     }
     return c;
-  }, [news, vulns]);
+  }, [topics, vulns]);
 
   const regionItems = useMemo(
-    () => (news ?? []).filter((n) => view === "all" || isVulnView(view) || n.regions.includes(view)),
-    [news, view],
+    () => (topics ?? []).filter((n) => view === "all" || !isTopicView(view) || n.regions.includes(view as Region)),
+    [topics, view],
   );
 
   const failed = meta?.sources.filter((x) => !x.ok) ?? [];
-  const pageTitle = view === "all" ? t.navAll : isVulnView(view) ? "" : REGION_LABELS[lang][view];
+  const pageTitle = view === "all" ? t.navAll : view === "INTL" || view === "JP" ? REGION_LABELS[lang][view] : "";
 
   return (
     <FluentProvider theme={makeTheme(dark, lang)}>
@@ -189,7 +207,7 @@ export default function App() {
           navOpen={navOpen}
           toggleNav={() => setNavOpen(!navOpen)}
           query={query}
-          setQuery={isVulnView(view) ? setVulnQuery : setNewsQuery}
+          setQuery={isVulnView(view) ? setVulnQuery : setTopicQuery}
           searchPlaceholder={isVulnView(view) ? t.vulnSearch : t.search}
           meta={meta}
         />
@@ -204,15 +222,23 @@ export default function App() {
             counts={counts}
           />
           <main className={s.main}>
-            {failed.length > 0 && !isVulnView(view) && (
+            {failed.length > 0 && isTopicView(view) && (
               <MessageBar intent="warning" className={s.bar}>
                 <MessageBarBody>{t.sourcesFailed(failed.map((x) => x.name).join(", "))}</MessageBarBody>
               </MessageBar>
             )}
-            {news === null ? (
+            {news === null || topics === null ? (
               <div className={s.center}>
                 <Spinner label={t.loading} />
               </div>
+            ) : view === "briefing" ? (
+              <BriefingPage
+                lang={lang}
+                briefings={briefings}
+                topics={topics}
+                onOpen={(id) => setSelection({ kind: "topic", id })}
+                onOrder={setOrder}
+              />
             ) : isVulnView(view) ? (
               <VulnPage
                 lang={lang}
@@ -222,12 +248,12 @@ export default function App() {
                 query={vulnQuery}
                 setQuery={setVulnQuery}
                 narrow={narrow}
-                selectedId={selection && selection.kind !== "news" ? selection.id : null}
+                selectedId={selection && selection.kind !== "topic" ? selection.id : null}
                 onSelect={(id) => setSelection({ kind: view, id })}
                 onOrder={setOrder}
               />
             ) : (
-              <NewsPage
+              <TopicsPage
                 lang={lang}
                 title={pageTitle}
                 showRegion={view === "all"}
@@ -235,11 +261,13 @@ export default function App() {
                 vulns={vulns}
                 filters={filters}
                 setFilters={setFilters}
+                sort={sort}
+                setSort={setSort}
                 query={newsQuery}
                 setQuery={setNewsQuery}
                 narrow={narrow}
-                selectedId={selection?.kind === "news" ? selection.id : null}
-                onSelect={(id) => setSelection({ kind: "news", id })}
+                selectedId={selection?.kind === "topic" ? selection.id : null}
+                onSelect={(id) => setSelection({ kind: "topic", id })}
                 onOrder={setOrder}
                 onReload={reload}
                 onGo={setView}
@@ -251,6 +279,7 @@ export default function App() {
             narrow={narrow}
             inline={wide}
             selection={selection}
+            topics={topics ?? []}
             news={news ?? []}
             vulns={vulns}
             order={order}

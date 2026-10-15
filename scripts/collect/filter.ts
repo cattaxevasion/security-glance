@@ -20,8 +20,13 @@ const PATTERNS: RegExp[] = [
 const INCIDENT =
   /해킹|유출|랜섬|취약점|침해|공격|악성|피싱|탈취|漏えい|漏洩|不正アクセス|脆弱性|ランサム|攻撃|ransomware|breach|vulnerab|hack|exploit|attack|malware|CVE-/i;
 
+// 사건 단어가 있어도 항상 거르는 것: 팟캐스트·정기 방송 (SANS ISC Stormcast 등)
+const ALWAYS = /ISC Stormcast|podcast|ポッドキャスト/i;
+
 /** 걸러야 하면 걸린 단어를, 아니면 null을 돌려준다. */
 export function keywordExclusion(title: string): string | null {
+  const always = title.match(ALWAYS);
+  if (always) return always[0];
   if (INCIDENT.test(title)) return null;
   for (const p of PATTERNS) {
     const m = title.match(p);

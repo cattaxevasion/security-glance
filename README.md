@@ -31,8 +31,6 @@ npm run collect -- news --limit 10 --dry   # 새 기사 10건만 요약해서 �
 
 - `probe-feeds.ts <url...>`: RSS 주소가 파싱되는지 확인
 - `probe-extract.ts`: 소스마다 본문 추출이 되는지 확인
-- `check-dates.ts`: 피드 날짜가 올바른 시간대로 해석되는지 확인
-- `dev-fixture.ts`: API 키 없이 화면을 볼 수 있게 임시 `news.dev.json` 생성 (gitignore됨, 개발 서버에서만 읽음)
 
 ## 소스 추가
 

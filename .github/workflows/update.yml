@@ -2,12 +2,16 @@ name: Collect & Deploy
 
 on:
   schedule:
-    - cron: "17 */6 * * *" # 6시간마다 (UTC)
+    - cron: "17 3,9,15,21 * * *" # 6시간마다. 21:17 UTC = 일본 시간 06:17 (오늘의 브리핑)
   workflow_dispatch:
     inputs:
       limit:
         description: "이번 실행에서 요약할 새 기사 최대 개수"
         default: "80"
+      briefing:
+        description: "오늘의 브리핑을 지금 다시 만들기"
+        type: boolean
+        default: false
   push:
     branches: [main]
     paths-ignore: ["public/data/**", "data/**"]
@@ -35,7 +39,7 @@ jobs:
       - run: npm ci
 
       - name: Collect news and vulnerabilities
-        run: npm run collect
+        run: npm run collect -- ${{ inputs.briefing && '--briefing' || '' }}
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           ANTHROPIC_WORKSPACE_ID: ${{ secrets.ANTHROPIC_WORKSPACE_ID }}

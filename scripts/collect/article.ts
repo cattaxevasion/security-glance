@@ -19,10 +19,10 @@ function robotsFor(url: string) {
   return cached;
 }
 
-/** 본문 최대 길이. 요약에는 앞부분이면 충분하고 비용도 줄인다. */
-const MAX_BODY_CHARS = 6000;
+/** 본문 최대 길이. 뉴스는 앞부분이면 충분하고, 벤더 분석 글은 기법·IoC가 뒤쪽에 있어 더 길게 읽는다. */
+export const BODY_CHARS = { news: 6000, long: 14000 };
 
-export async function extractArticle(url: string): Promise<string | null> {
+export async function extractArticle(url: string, maxChars = BODY_CHARS.news): Promise<string | null> {
   try {
     const robots = await robotsFor(url);
     if (robots && robots.isAllowed(url, USER_AGENT) === false) return null;
@@ -35,7 +35,7 @@ export async function extractArticle(url: string): Promise<string | null> {
     const text = (article?.textContent ?? "").replace(/\s+/g, " ").trim();
     // 너무 짧으면 차단 페이지·유료 안내일 가능성이 높다
     if (text.length < 300) return null;
-    return text.slice(0, MAX_BODY_CHARS);
+    return text.slice(0, maxChars);
   } catch {
     return null;
   }

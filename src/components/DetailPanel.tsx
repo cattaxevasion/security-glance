@@ -1,9 +1,9 @@
-// 오른쪽 상세 패널. Defender처럼 위·아래 화살표로 목록의 이전·다음 항목으로 이동한다.
+// 오른쪽 상세 패널. 넓은 화면에서는 목록 옆 읽기 창, 좁은 화면에서는 덮는 패널.
+// Defender처럼 위·아래 화살표로 목록의 이전·다음 항목으로 이동한다.
 import {
   Body1,
   Button,
   Caption1,
-  Divider,
   DrawerBody,
   DrawerFooter,
   DrawerHeader,
@@ -23,47 +23,59 @@ import {
 import {
   ArrowDownRegular,
   ArrowUpRegular,
+  BugRegular,
   DismissRegular,
   LinkRegular,
   OpenRegular,
   ShieldErrorRegular,
-  BugRegular,
   SparkleRegular,
 } from "@fluentui/react-icons";
 import { useState, type ReactNode } from "react";
-import type { CveEntry, KevEntry, NewsItem, VulnData } from "../../shared/types";
+import type { CveEntry, KevEntry, NewsItem, Topic, VulnData } from "../../shared/types";
 import { REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
-import { fullDateTime, pct, relativeTime } from "./format";
+import { fullDateTime, pct, relativeTime, shortDate } from "./format";
 import { EpssMark, NATURE_COLOR, NATURE_ICON, NatureMark } from "./marks";
+import { PRIORITY_THRESHOLD } from "./TopicsPage";
 
-export type Selection = { kind: "news"; id: string } | { kind: "kev" | "cve"; id: string };
+export type Selection = { kind: "topic"; id: string } | { kind: "kev" | "cve"; id: string };
 
 const useStyles = makeStyles({
   surface: { boxShadow: tokens.shadow64 },
   inline: {
-    width: "min(520px, 42vw)",
+    width: "min(540px, 42vw)",
     height: "100%",
     backgroundColor: tokens.colorNeutralBackground1,
   },
   topBar: { display: "flex", justifyContent: "flex-end", gap: "2px", marginRight: "-8px", marginTop: "-8px" },
   heading: { display: "flex", gap: "16px", alignItems: "flex-start", marginTop: "4px" },
   iconCircle: {
-    width: "48px",
-    height: "48px",
+    width: "44px",
+    height: "44px",
     borderRadius: "50%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
-    fontSize: "24px",
+    fontSize: "22px",
+    backgroundColor: tokens.colorNeutralBackground3,
   },
-  headText: { display: "flex", flexDirection: "column", gap: "6px", minWidth: 0 },
-  title: { overflowWrap: "anywhere" },
-  metaRow: { display: "flex", flexWrap: "wrap", gap: "4px 16px", color: tokens.colorNeutralForeground2 },
+  headText: { display: "flex", flexDirection: "column", gap: "8px", minWidth: 0 },
+  title: { overflowWrap: "anywhere", lineHeight: "28px" },
+  metaRow: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "4px 14px", color: tokens.colorNeutralForeground2 },
+  priority: {
+    display: "inline-flex",
+    alignItems: "center",
+    height: "18px",
+    padding: "0 6px",
+    borderRadius: tokens.borderRadiusSmall,
+    backgroundColor: tokens.colorPaletteRedBackground1,
+    color: tokens.colorPaletteRedForeground1,
+    fontWeight: tokens.fontWeightSemibold,
+  },
   actions: { marginTop: "12px", marginLeft: "-8px" },
-  body: { display: "flex", flexDirection: "column", gap: "0", paddingBottom: "16px" },
-  section: { padding: "16px 0", borderTop: `1px solid ${tokens.colorNeutralStroke2}` },
-  sectionTitle: { display: "block", marginBottom: "10px" },
+  body: { display: "flex", flexDirection: "column", paddingBottom: "16px" },
+  section: { padding: "18px 0", borderTop: `1px solid ${tokens.colorNeutralStroke2}` },
+  sectionTitle: { display: "block", marginBottom: "12px" },
   summary: {
     margin: 0,
     paddingLeft: "20px",
@@ -75,16 +87,58 @@ const useStyles = makeStyles({
     color: tokens.colorNeutralForeground1,
     overflowWrap: "anywhere",
   },
-  value: { lineHeight: "22px", overflowWrap: "anywhere" },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-    gap: "14px 24px",
-  },
-  field: { display: "flex", flexDirection: "column", gap: "2px", minWidth: 0 },
+  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "14px 24px" },
+  field: { display: "flex", flexDirection: "column", gap: "4px", minWidth: 0 },
   full: { gridColumn: "1 / -1" },
   label: { color: tokens.colorNeutralForeground3 },
+  value: { lineHeight: "22px", overflowWrap: "anywhere" },
   tags: { display: "flex", flexWrap: "wrap", gap: "6px" },
+  technique: { fontFamily: tokens.fontFamilyMonospace, fontWeight: tokens.fontWeightSemibold, marginRight: "6px" },
+  // ATT&CK 기법 칩: 누르면 MITRE 페이지로 간다
+  techChip: {
+    display: "inline-flex",
+    alignItems: "center",
+    minHeight: "24px",
+    padding: "2px 8px",
+    borderRadius: tokens.borderRadiusMedium,
+    backgroundColor: tokens.colorBrandBackground2,
+    color: tokens.colorBrandForeground2,
+    fontSize: tokens.fontSizeBase200,
+    lineHeight: "18px",
+    textDecorationLine: "none",
+    ":hover": { backgroundColor: tokens.colorBrandBackground2Hover, textDecorationLine: "underline" },
+    ":focus-visible": { outline: `2px solid ${tokens.colorStrokeFocus2}` },
+  },
+  // 흐름: 세로 선과 점으로 이은 시간순 목록
+  timeline: { listStyle: "none", margin: 0, padding: 0, position: "relative" },
+  tlItem: {
+    position: "relative",
+    paddingLeft: "22px",
+    paddingBottom: "14px",
+    "::before": {
+      content: '""',
+      position: "absolute",
+      left: "5px",
+      top: "8px",
+      bottom: "-8px",
+      width: "2px",
+      backgroundColor: tokens.colorNeutralStroke2,
+    },
+    ":last-child::before": { display: "none" },
+  },
+  tlDot: {
+    position: "absolute",
+    left: 0,
+    top: "5px",
+    width: "12px",
+    height: "12px",
+    borderRadius: "50%",
+    border: `2px solid ${tokens.colorNeutralBackground1}`,
+    boxSizing: "border-box",
+  },
+  tlMeta: { display: "flex", flexWrap: "wrap", gap: "2px 10px", color: tokens.colorNeutralForeground3, fontSize: tokens.fontSizeBase200 },
+  tlKind: { fontWeight: tokens.fontWeightSemibold },
+  tlTitle: { display: "block", marginTop: "2px", lineHeight: "22px" },
   cveRow: {
     display: "flex",
     alignItems: "center",
@@ -94,15 +148,21 @@ const useStyles = makeStyles({
     borderBottom: `1px solid ${tokens.colorNeutralStroke3}`,
   },
   mono: { fontFamily: tokens.fontFamilyMonospace },
-  linkButton: { border: "none", background: "none", padding: 0, font: "inherit", cursor: "pointer", textAlign: "left" },
   notice: { display: "flex", gap: "6px", alignItems: "flex-start", color: tokens.colorNeutralForeground3, paddingTop: "12px" },
-  related: { display: "flex", flexDirection: "column", gap: "10px" },
+  related: { display: "flex", flexDirection: "column", gap: "12px" },
   relatedItem: { display: "flex", flexDirection: "column", gap: "2px" },
   footer: { borderTop: `1px solid ${tokens.colorNeutralStroke2}`, paddingTop: "12px" },
 });
 
-function Field({ label, children, full }: { label: string; children: ReactNode; full?: boolean }) {
-  const s = useStyles();
+const KIND_COLOR: Record<string, string> = {
+  vendor: tokens.colorPaletteBerryBackground3,
+  cert: tokens.colorPaletteDarkOrangeBackground3,
+  news: tokens.colorBrandBackground,
+};
+
+type Styles = ReturnType<typeof useStyles>;
+
+function Field({ s, label, children, full }: { s: Styles; label: string; children: ReactNode; full?: boolean }) {
   return (
     <div className={mergeClasses(s.field, full && s.full)}>
       <Caption1 className={s.label}>{label}</Caption1>
@@ -111,8 +171,7 @@ function Field({ label, children, full }: { label: string; children: ReactNode; 
   );
 }
 
-function Section({ title, children }: { title: string; children: ReactNode }) {
-  const s = useStyles();
+function Section({ s, title, children }: { s: Styles; title: string; children: ReactNode }) {
   return (
     <section className={s.section}>
       <Subtitle2 className={s.sectionTitle}>{title}</Subtitle2>
@@ -127,6 +186,7 @@ interface Props {
   /** 넓은 화면에서는 목록 옆에 붙는 읽기 창(InlineDrawer)으로 연다 */
   inline: boolean;
   selection: Selection | null;
+  topics: Topic[];
   news: NewsItem[];
   vulns: VulnData | null;
   order: string[];
@@ -146,10 +206,20 @@ export function DetailPanel(p: Props) {
     if (sel && next) p.onSelect({ ...sel, id: next });
   };
 
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      // 클립보드 권한이 없으면 조용히 넘어간다
+    }
+  };
+
   let content: { head: ReactNode; body: ReactNode; footer: ReactNode } | null = null;
-  if (sel?.kind === "news") {
-    const n = p.news.find((x) => x.id === sel.id);
-    if (n) content = newsContent(n, p, s, copied, setCopied);
+  if (sel?.kind === "topic") {
+    const topic = p.topics.find((x) => x.id === sel.id);
+    if (topic) content = topicContent(topic, p, s, { copied, copy });
   } else if (sel) {
     const v = sel.kind === "kev" ? p.vulns?.kev.find((k) => k.cveID === sel.id) : p.vulns?.cves.find((c) => c.id === sel.id);
     if (v) content = vulnContent(sel.kind, v, p, s);
@@ -197,34 +267,27 @@ export function DetailPanel(p: Props) {
   );
 }
 
-type Styles = ReturnType<typeof useStyles>;
+/** 대표 출처: 벤더 분석 글이 있으면 그것(가장 자세함), 없으면 최신 기사 */
+function representative(articles: NewsItem[]): NewsItem | undefined {
+  return articles.find((n) => n.sourceKind === "vendor") ?? articles[0];
+}
 
-function newsContent(n: NewsItem, p: Props, s: Styles, copied: boolean, setCopied: (v: boolean) => void) {
+function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean; copy: () => void }) {
   const L = p.lang;
   const t = STRINGS[L];
-  const Icon = NATURE_ICON[n.nature];
-  const title = L === "ja" ? n.titleJa || n.titleKo : n.titleKo;
-  const summary = L === "ja" && n.summaryJa.length ? n.summaryJa : n.summaryKo;
+  const Icon = NATURE_ICON[topic.nature];
+  const byId = new Map(p.news.map((n) => [n.id, n]));
+  const articles = topic.articleIds.map((id) => byId.get(id)).filter((n): n is NewsItem => !!n);
+  const main = representative(articles);
+  const title = L === "ja" ? topic.titleJa || topic.titleKo : topic.titleKo;
+  const summary = L === "ja" && topic.summaryJa.length ? topic.summaryJa : topic.summaryKo;
   const epss = p.vulns?.mentioned ?? {};
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(n.url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {
-      // 클립보드 권한이 없으면 조용히 넘어간다
-    }
-  };
+  const articleTitle = (n: NewsItem) => (L === "ja" ? n.titleJa || n.titleKo : n.titleKo);
 
   const head = (
     <>
       <div className={s.heading}>
-        <span
-          className={s.iconCircle}
-          style={{ color: NATURE_COLOR[n.nature], backgroundColor: tokens.colorNeutralBackground3 }}
-          aria-hidden
-        >
+        <span className={s.iconCircle} style={{ color: NATURE_COLOR[topic.nature] }} aria-hidden>
           <Icon />
         </span>
         <div className={s.headText}>
@@ -232,20 +295,22 @@ function newsContent(n: NewsItem, p: Props, s: Styles, copied: boolean, setCopie
             {title}
           </Subtitle1>
           <Caption1 className={s.metaRow}>
-            <NatureMark nature={n.nature} lang={L} />
-            <span>{n.regions.map((r) => REGION_LABELS[L][r]).join(" · ")}</span>
-            <span>
-              {n.sourceName} · {relativeTime(L, n.publishedAt)}
-            </span>
+            {topic.importance >= PRIORITY_THRESHOLD && <span className={s.priority}>{t.priority}</span>}
+            <NatureMark nature={topic.nature} lang={L} />
+            <span>{topic.regions.map((r) => REGION_LABELS[L][r]).join(" · ")}</span>
+            <span>{t.sourcesCount(topic.sources.length)}</span>
+            <span>{relativeTime(L, topic.lastUpdated)}</span>
           </Caption1>
         </div>
       </div>
       <Toolbar size="small" className={s.actions}>
-        <ToolbarButton as="a" href={n.url} target="_blank" rel="noopener noreferrer" icon={<OpenRegular />}>
-          {t.openArticle}
-        </ToolbarButton>
-        <ToolbarButton icon={<LinkRegular />} onClick={copy}>
-          {copied ? t.copied : t.copyLink}
+        {main && (
+          <ToolbarButton as="a" href={main.url} target="_blank" rel="noopener noreferrer" icon={<OpenRegular />}>
+            {t.openSource}
+          </ToolbarButton>
+        )}
+        <ToolbarButton icon={<LinkRegular />} onClick={clip.copy}>
+          {clip.copied ? t.copied : t.copyLink}
         </ToolbarButton>
       </Toolbar>
     </>
@@ -264,9 +329,11 @@ function newsContent(n: NewsItem, p: Props, s: Styles, copied: boolean, setCopie
       <span className={s.label}>{t.none}</span>
     );
 
+  const hasAnalysis = topic.techniques.length > 0 || topic.iocTypes.length > 0;
+
   const body = (
     <>
-      <Section title={t.summary}>
+      <Section s={s} title={t.summary}>
         <ul className={s.summary}>
           {summary.map((line, i) => (
             <li key={i}>{line}</li>
@@ -274,19 +341,69 @@ function newsContent(n: NewsItem, p: Props, s: Styles, copied: boolean, setCopie
         </ul>
       </Section>
 
-      <Section title={t.classification}>
+      {hasAnalysis && (
+        <Section s={s} title={t.analysis}>
+          <div className={s.grid}>
+            {topic.techniques.length > 0 && (
+              <Field s={s} label={t.techniques} full>
+                <div className={s.tags}>
+                  {topic.techniques.map((x) => (
+                    <a
+                      key={x.id}
+                      className={s.techChip}
+                      href={`https://attack.mitre.org/techniques/${x.id.replace(".", "/")}/`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span className={s.technique}>{x.id}</span>
+                      {x.name}
+                    </a>
+                  ))}
+                </div>
+              </Field>
+            )}
+            <Field s={s} label={t.iocTypes} full>
+              {topic.iocTypes.length ? tagList(topic.iocTypes) : <span className={s.label}>{t.noIoc}</span>}
+            </Field>
+          </div>
+        </Section>
+      )}
+
+      <Section s={s} title={`${t.timeline} · ${t.articles(articles.length)}`}>
+        <ol className={s.timeline}>
+          {[...articles].reverse().map((n) => (
+            <li key={n.id} className={s.tlItem}>
+              <span className={s.tlDot} style={{ backgroundColor: KIND_COLOR[n.sourceKind] ?? KIND_COLOR.news }} aria-hidden />
+              <div className={s.tlMeta}>
+                <span>{shortDate(L, n.publishedAt)}</span>
+                <span className={s.tlKind}>{n.sourceName}</span>
+                <span>{t.kind[n.sourceKind]}</span>
+              </div>
+              <Link className={s.tlTitle} href={n.url} target="_blank" rel="noopener noreferrer">
+                {articleTitle(n)}
+              </Link>
+            </li>
+          ))}
+        </ol>
+      </Section>
+
+      <Section s={s} title={t.classification}>
         <div className={s.grid}>
-          <Field label={t.attackTypes}>{tagList(n.attackTypes)}</Field>
-          <Field label={t.sectors}>{tagList(n.sectors)}</Field>
+          <Field s={s} label={t.attackTypes}>
+            {tagList(topic.attackTypes)}
+          </Field>
+          <Field s={s} label={t.sectors}>
+            {tagList(topic.sectors)}
+          </Field>
         </div>
       </Section>
 
-      {(n.entities.cves.length > 0 || n.entities.actors.length > 0 || n.entities.orgs.length > 0) && (
-        <Section title={t.entities}>
+      {(topic.entities.cves.length > 0 || topic.entities.actors.length > 0 || topic.entities.orgs.length > 0) && (
+        <Section s={s} title={t.entities}>
           <div className={s.grid}>
-            {n.entities.cves.length > 0 && (
-              <Field label={t.cves} full>
-                {n.entities.cves.map((cve) => (
+            {topic.entities.cves.length > 0 && (
+              <Field s={s} label={t.cves} full>
+                {topic.entities.cves.map((cve) => (
                   <div key={cve} className={s.cveRow}>
                     <Link
                       className={s.mono}
@@ -307,10 +424,10 @@ function newsContent(n: NewsItem, p: Props, s: Styles, copied: boolean, setCopie
                 ))}
               </Field>
             )}
-            {n.entities.actors.length > 0 && (
-              <Field label={t.actors}>
+            {topic.entities.actors.length > 0 && (
+              <Field s={s} label={t.actors}>
                 <div className={s.tags}>
-                  {n.entities.actors.map((a) => (
+                  {topic.entities.actors.map((a) => (
                     <Tag key={a} size="small" appearance="brand" as="button" onClick={() => p.onSearch(a)}>
                       {a}
                     </Tag>
@@ -318,22 +435,23 @@ function newsContent(n: NewsItem, p: Props, s: Styles, copied: boolean, setCopie
                 </div>
               </Field>
             )}
-            {n.entities.orgs.length > 0 && <Field label={t.orgs}>{n.entities.orgs.join(", ")}</Field>}
+            {topic.entities.orgs.length > 0 && (
+              <Field s={s} label={t.orgs}>
+                {topic.entities.orgs.join(", ")}
+              </Field>
+            )}
           </div>
         </Section>
       )}
 
-      <Section title={t.details}>
+      <Section s={s} title={t.details}>
         <div className={s.grid}>
-          <Field label={t.source}>{n.sourceName}</Field>
-          <Field label={t.published}>{fullDateTime(L, n.publishedAt)}</Field>
-          <Field label={t.basis}>{t.basisLabel[n.basis]}</Field>
-          <Field label={t.regions}>{n.regions.map((r) => REGION_LABELS[L][r]).join(", ")}</Field>
-          {n.title !== title && (
-            <Field label={t.originalTitle} full>
-              {n.title}
-            </Field>
-          )}
+          <Field s={s} label={t.firstSeen}>
+            {fullDateTime(L, topic.firstSeen)}
+          </Field>
+          <Field s={s} label={t.lastUpdated}>
+            {fullDateTime(L, topic.lastUpdated)}
+          </Field>
         </div>
         <Caption1 className={s.notice}>
           <SparkleRegular aria-hidden />
@@ -343,11 +461,11 @@ function newsContent(n: NewsItem, p: Props, s: Styles, copied: boolean, setCopie
     </>
   );
 
-  const footer = (
-    <Button appearance="primary" as="a" href={n.url} target="_blank" rel="noopener noreferrer" icon={<OpenRegular />}>
-      {t.openArticle}
+  const footer = main ? (
+    <Button appearance="primary" as="a" href={main.url} target="_blank" rel="noopener noreferrer" icon={<OpenRegular />}>
+      {t.openSource}
     </Button>
-  );
+  ) : null;
 
   return { head, body, footer };
 }
@@ -358,17 +476,14 @@ function vulnContent(kind: "kev" | "cve", v: KevEntry | CveEntry, p: Props, s: S
   const id = kind === "kev" ? (v as KevEntry).cveID : (v as CveEntry).id;
   const kev = kind === "kev" ? (v as KevEntry) : p.vulns?.kev.find((k) => k.cveID === id);
   const cve = kind === "cve" ? (v as CveEntry) : p.vulns?.cves.find((c) => c.id === id);
-  const related = p.news.filter((n) => n.entities.cves.includes(id));
+  const related = p.topics.filter((x) => x.entities.cves.includes(id));
   const nvd = `https://nvd.nist.gov/vuln/detail/${id}`;
 
   const head = (
     <div className={s.heading}>
       <span
         className={s.iconCircle}
-        style={{
-          color: kev ? tokens.colorPaletteRedForeground1 : tokens.colorPaletteDarkOrangeForeground1,
-          backgroundColor: tokens.colorNeutralBackground3,
-        }}
+        style={{ color: kev ? tokens.colorPaletteRedForeground1 : tokens.colorPaletteDarkOrangeForeground1 }}
         aria-hidden
       >
         {kev ? <ShieldErrorRegular /> : <BugRegular />}
@@ -394,21 +509,33 @@ function vulnContent(kind: "kev" | "cve", v: KevEntry | CveEntry, p: Props, s: S
 
   const body = (
     <>
-      <Section title={t.description}>
-        <Body1>{kev?.shortDescription ?? cve?.description}</Body1>
+      <Section s={s} title={t.description}>
+        <Body1 className={s.value}>{kev?.shortDescription ?? cve?.description}</Body1>
       </Section>
       {kev && (
-        <Section title={t.requiredAction}>
-          <Body1>{kev.requiredAction}</Body1>
+        <Section s={s} title={t.requiredAction}>
+          <Body1 className={s.value}>{kev.requiredAction}</Body1>
         </Section>
       )}
-      <Section title={t.details}>
+      <Section s={s} title={t.details}>
         <div className={s.grid}>
-          {kev && <Field label={t.colVendor}>{`${kev.vendorProject} · ${kev.product}`}</Field>}
-          {kev && <Field label={t.colAdded}>{kev.dateAdded}</Field>}
-          {kev && <Field label={t.colDue}>{kev.dueDate}</Field>}
-          {cve && <Field label={t.colPublished}>{cve.published.slice(0, 10)}</Field>}
-          <Field label={t.colEpss}>
+          {kev && <Field s={s} label={t.colVendor}>{`${kev.vendorProject} · ${kev.product}`}</Field>}
+          {kev && (
+            <Field s={s} label={t.colAdded}>
+              {kev.dateAdded}
+            </Field>
+          )}
+          {kev && (
+            <Field s={s} label={t.colDue}>
+              {kev.dueDate}
+            </Field>
+          )}
+          {cve && (
+            <Field s={s} label={t.colPublished}>
+              {cve.published.slice(0, 10)}
+            </Field>
+          )}
+          <Field s={s} label={t.colEpss}>
             <EpssMark
               epss={kev?.epss ?? cve?.epss ?? null}
               percentile={kev?.epssPercentile ?? cve?.epssPercentile ?? null}
@@ -417,25 +544,22 @@ function vulnContent(kind: "kev" | "cve", v: KevEntry | CveEntry, p: Props, s: S
           </Field>
         </div>
       </Section>
-      <Section title={`${t.relatedNews} (${related.length})`}>
+      <Section s={s} title={`${t.relatedTopics} (${related.length})`}>
         {related.length === 0 ? (
-          <Caption1 className={s.label}>{t.noRelated}</Caption1>
+          <Caption1 className={s.label}>{t.noRelatedTopics}</Caption1>
         ) : (
           <div className={s.related}>
-            {related.map((n) => (
-              <div key={n.id} className={s.relatedItem}>
-                <Link onClick={() => p.onSelect({ kind: "news", id: n.id })}>
-                  {L === "ja" ? n.titleJa || n.titleKo : n.titleKo}
-                </Link>
+            {related.map((x) => (
+              <div key={x.id} className={s.relatedItem}>
+                <Link onClick={() => p.onSelect({ kind: "topic", id: x.id })}>{L === "ja" ? x.titleJa || x.titleKo : x.titleKo}</Link>
                 <Caption1 className={s.label}>
-                  {n.sourceName} · {relativeTime(L, n.publishedAt)}
+                  {t.sourcesCount(x.sources.length)} · {relativeTime(L, x.lastUpdated)}
                 </Caption1>
               </div>
             ))}
           </div>
         )}
       </Section>
-      <Divider />
     </>
   );
 

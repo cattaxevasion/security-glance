@@ -1,4 +1,4 @@
-import type { AttackType, Nature, Region, Sector } from "./taxonomy";
+import type { AttackType, IocType, Nature, Region, Sector, SourceKind } from "./taxonomy";
 
 /** 요약에 쓴 근거. 본문을 못 읽으면 RSS 요지, 그것도 없으면 제목만. */
 export type Basis = "본문" | "요지" | "제목";
@@ -14,6 +14,8 @@ export interface NewsItem {
   sourceId: string;
   sourceName: string;
   sourceRegion: Region;
+  /** 뉴스 매체, 보안 벤더 리서치, CERT·공공기관 */
+  sourceKind: SourceKind;
   publishedAt: string;
   collectedAt: string;
   /** 사건 기준 지역. 애매하면 출처 지역. */
@@ -24,7 +26,61 @@ export interface NewsItem {
   sectors: Sector[];
   nature: Nature;
   entities: { cves: string[]; actors: string[]; orgs: string[] };
+  /** 기술 분석이 있는 글에서만: MITRE ATT&CK 기법 */
+  techniques: Technique[];
+  iocTypes: IocType[];
   basis: Basis;
+}
+
+export interface Technique {
+  /** 예: T1190, T1059.001 */
+  id: string;
+  name: string;
+}
+
+/** 같은 사건·이슈를 다룬 기사 묶음 (まとめ) */
+export interface Topic {
+  id: string;
+  titleKo: string;
+  titleJa: string;
+  summaryKo: string[];
+  summaryJa: string[];
+  regions: Region[];
+  nature: Nature;
+  attackTypes: AttackType[];
+  sectors: Sector[];
+  entities: { cves: string[]; actors: string[]; orgs: string[] };
+  techniques: Technique[];
+  iocTypes: IocType[];
+  /** 최신 기사 먼저 */
+  articleIds: string[];
+  sources: string[];
+  hasVendor: boolean;
+  firstSeen: string;
+  lastUpdated: string;
+  /** 시간 감쇠 전 중요도 (0~100 남짓). 화면에서 최신성을 곱해 정렬한다. */
+  importance: number;
+  /** 통합 요약을 만들 때의 기사 수. 기사가 늘면 다시 만든다. */
+  summarizedCount: number;
+}
+
+export interface BriefingItem {
+  topicId: string;
+  titleKo: string;
+  titleJa: string;
+  bodyKo: string;
+  bodyJa: string;
+  whyKo: string;
+  whyJa: string;
+}
+
+/** 오늘의 브리핑 (일본 시간 기준 하루 한 번) */
+export interface Briefing {
+  date: string;
+  generatedAt: string;
+  headlineKo: string;
+  headlineJa: string;
+  items: BriefingItem[];
 }
 
 export interface KevEntry {
@@ -83,6 +139,7 @@ export interface Meta {
   updatedAt: string;
   lastRun: RunStats | null;
   newsCount: number;
+  topicCount: number;
   kevCount: number;
   cveCount: number;
   sources: SourceStatus[];

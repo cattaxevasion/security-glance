@@ -1,5 +1,5 @@
 import Parser from "rss-parser";
-import type { Region } from "../../shared/taxonomy";
+import type { Region, SourceKind } from "../../shared/taxonomy";
 import type { SourceStatus } from "../../shared/types";
 import { cleanText, fetchText, normalizeUrl } from "./util";
 
@@ -8,6 +8,7 @@ export interface Source {
   name: string;
   region: Region;
   lang: "en" | "ja" | "ko";
+  kind: SourceKind;
   url: string;
   keywordFilter?: boolean;
 }
@@ -28,7 +29,7 @@ const parser = new Parser();
 
 // 시간대 표시가 없는 날짜(예: 데일리시큐 "2026-10-14 19:08:29")는 출처 지역의 현지 시각으로 본다.
 // 그대로 Date에 넘기면 수집 서버(UTC) 기준으로 해석돼 한국·일본 기사가 9시간 미래로 저장된다.
-const LOCAL_OFFSET: Record<Region, string> = { KR: "+09:00", JP: "+09:00", INTL: "Z" };
+const LOCAL_OFFSET: Record<Region, string> = { JP: "+09:00", INTL: "Z" };
 const NAIVE = /^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}(?::\d{2})?)$/;
 
 function parseDate(raw: string | undefined, source: Source): string {

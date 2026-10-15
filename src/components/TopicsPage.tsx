@@ -17,19 +17,21 @@ import {
 import {
   ArrowClockwiseRegular,
   ArrowResetRegular,
+  ArrowSortRegular,
   CalendarLtrRegular,
   ChevronDownRegular,
   ChevronRightRegular,
   ChevronUpRegular,
+  DocumentSearchRegular,
   LinkRegular,
 } from "@fluentui/react-icons";
 import { useEffect, useMemo, useState } from "react";
 import { ATTACK_TYPES, NATURES, SECTORS } from "../../shared/taxonomy";
-import type { NewsItem, VulnData } from "../../shared/types";
+import type { Topic, VulnData } from "../../shared/types";
 import { REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import type { View } from "./AppNav";
 import { FilterPill } from "./FilterPill";
-import { dayKey, dayLabel, timeOfDay } from "./format";
+import { dayKey, dayLabel, shortDate, timeOfDay } from "./format";
 import { useStoredFlag } from "./hooks";
 import { NatureMark } from "./marks";
 import { PageTitle, usePageStyles } from "./page";
@@ -42,6 +44,16 @@ export interface NewsFilters {
 }
 
 export const DEFAULT_FILTERS: NewsFilters = { attack: [], sector: [], nature: [], days: 7 };
+export type SortMode = "latest" | "important";
+
+/** 이 점수 이상인 토픽에 '주목' 표시 */
+export const PRIORITY_THRESHOLD = 60;
+
+/** 중요도에 최신성을 곱한 정렬 점수 (사흘마다 절반) */
+export function rankScore(t: Topic, now = Date.now()): number {
+  const ageHours = Math.max(0, (now - Date.parse(t.lastUpdated)) / 3600_000);
+  return t.importance * Math.pow(0.5, ageHours / 72);
+}
 const PERIODS = [1, 3, 7, 30, 0];
 const PAGE = 50;
 
@@ -202,6 +214,17 @@ const useStyles = makeStyles({
     color: tokens.colorNeutralForeground3,
   },
   metaNature: { color: tokens.colorNeutralForeground2 },
+  metaIcon: { display: "inline-flex", alignItems: "center", gap: "4px" },
+  priority: {
+    display: "inline-flex",
+    alignItems: "center",
+    height: "18px",
+    padding: "0 6px",
+    borderRadius: tokens.borderRadiusSmall,
+    backgroundColor: tokens.colorPaletteRedBackground1,
+    color: tokens.colorPaletteRedForeground1,
+    fontWeight: tokens.fontWeightSemibold,
+  },
   metaTime: { "@media (min-width: 641px)": { display: "none" } },
 });
 
@@ -209,10 +232,12 @@ interface Props {
   lang: Lang;
   title: string;
   showRegion: boolean;
-  items: NewsItem[];
+  items: Topic[];
   vulns: VulnData | null;
   filters: NewsFilters;
   setFilters: (f: NewsFilters) => void;
+  sort: SortMode;
+  setSort: (s: SortMode) => void;
   query: string;
   setQuery: (q: string) => void;
   narrow: boolean;
@@ -223,16 +248,16 @@ interface Props {
   onGo: (view: View) => void;
 }
 
-export function matchesQuery(n: NewsItem, q: string): boolean {
+export function matchesQuery(n: Topic, q: string): boolean {
   if (!q) return true;
   const needle = q.trim().toLowerCase();
-  return [n.titleKo, n.titleJa, n.title, n.sourceName, ...n.summaryKo, ...n.summaryJa, ...n.entities.cves, ...n.entities.actors, ...n.entities.orgs]
+  return [n.titleKo, n.titleJa, ...n.sources, ...n.summaryKo, ...n.summaryJa, ...n.entities.cves, ...n.entities.actors, ...n.entities.orgs, ...n.techniques.map((x) => x.id)]
     .join(" ")
     .toLowerCase()
     .includes(needle);
 }
 
-export function NewsPage(p: Props) {
+export function TopicsPage(p: Props) {
   const { lang, items, filters, setFilters, query, narrow, selectedId } = p;
   const s = useStyles();
   const ps = usePageStyles();
@@ -249,24 +274,27 @@ export function NewsPage(p: Props) {
   // 검색어와 기간까지 적용한 집합. 필터 메뉴의 개수는 여기서 센다.
   const base = useMemo(() => {
     const since = filters.days ? Date.now() - filters.days * 86400_000 : 0;
-    return items.filter((n) => Date.parse(n.publishedAt) >= since && matchesQuery(n, query));
+    return items.filter((n) => Date.parse(n.lastUpdated) >= since && matchesQuery(n, query));
   }, [items, filters.days, query]);
 
-  const filtered = useMemo(
-    () =>
-      base.filter(
-        (n) =>
-          filters.attack.every((x) => (n.attackTypes as string[]).includes(x)) &&
-          (filters.sector.length === 0 || filters.sector.some((x) => (n.sectors as string[]).includes(x))) &&
-          (filters.nature.length === 0 || filters.nature.includes(n.nature)),
-      ),
-    [base, filters.attack, filters.sector, filters.nature],
-  );
+  const filtered = useMemo(() => {
+    const out = base.filter(
+      (n) =>
+        filters.attack.every((x) => (n.attackTypes as string[]).includes(x)) &&
+        (filters.sector.length === 0 || filters.sector.some((x) => (n.sectors as string[]).includes(x))) &&
+        (filters.nature.length === 0 || filters.nature.includes(n.nature)),
+    );
+    if (p.sort === "important") {
+      const now = Date.now();
+      out.sort((a, b) => rankScore(b, now) - rankScore(a, now));
+    }
+    return out;
+  }, [base, filters.attack, filters.sector, filters.nature, p.sort]);
 
   const visible = useMemo(() => filtered.slice(0, shown), [filtered, shown]);
   useEffect(() => p.onOrder(visible.map((n) => n.id)), [visible]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const countBy = (pick: (n: NewsItem) => string[]) => {
+  const countBy = (pick: (n: Topic) => string[]) => {
     const m = new Map<string, number>();
     for (const n of base) for (const v of pick(n)) m.set(v, (m.get(v) ?? 0) + 1);
     return m;
@@ -278,27 +306,31 @@ export function NewsPage(p: Props) {
   const kpi = useMemo(() => {
     const day = (d: number) => Date.now() - d * 86400_000;
     return {
-      today: items.filter((n) => Date.parse(n.publishedAt) >= day(1)).length,
-      ransom: items.filter((n) => Date.parse(n.publishedAt) >= day(7) && n.attackTypes.includes("랜섬웨어")).length,
+      today: items.filter((n) => Date.parse(n.lastUpdated) >= day(1)).length,
+      ransom: items.filter((n) => Date.parse(n.lastUpdated) >= day(7) && n.attackTypes.includes("랜섬웨어")).length,
       kev: (p.vulns?.kev ?? []).filter((k) => Date.parse(k.dateAdded) >= day(7)).length,
       critical: (p.vulns?.cves ?? []).filter((c) => (c.cvss ?? 0) >= 9).length,
     };
   }, [items, p.vulns]);
 
   const groups = useMemo(() => {
-    const out: { key: string; label: string; items: NewsItem[] }[] = [];
+    // 중요도순은 날짜로 묶지 않고 한 목록으로 보여준다
+    if (p.sort === "important") return [{ key: "important", label: t.sortImportant, items: visible }];
+    const out: { key: string; label: string; items: Topic[] }[] = [];
     for (const n of visible) {
-      const key = dayKey(n.publishedAt);
+      const key = dayKey(n.lastUpdated);
       const last = out[out.length - 1];
       if (last?.key === key) last.items.push(n);
-      else out.push({ key, label: dayLabel(lang, n.publishedAt, t), items: [n] });
+      else out.push({ key, label: dayLabel(lang, n.lastUpdated, t), items: [n] });
     }
     return out;
-  }, [visible, lang, t]);
+  }, [visible, lang, t, p.sort]);
 
   const anyFilter = filters.attack.length + filters.sector.length + filters.nature.length > 0;
-  const title = (n: NewsItem) => (lang === "ja" ? n.titleJa || n.titleKo : n.titleKo);
-  const summary = (n: NewsItem) => (lang === "ja" && n.summaryJa.length ? n.summaryJa : n.summaryKo)[0] ?? "";
+  const title = (n: Topic) => (lang === "ja" ? n.titleJa || n.titleKo : n.titleKo);
+  const summary = (n: Topic) => (lang === "ja" && n.summaryJa.length ? n.summaryJa : n.summaryKo)[0] ?? "";
+  const sourcesText = (n: Topic) =>
+    n.sources.length <= 2 ? n.sources.join(", ") : `${n.sources.slice(0, 2).join(", ")} +${n.sources.length - 2}`;
 
   const copyLink = async () => {
     try {
@@ -356,6 +388,24 @@ export function NewsPage(p: Props) {
                     {t.periods[d]}
                   </MenuItemRadio>
                 ))}
+              </MenuList>
+            </MenuPopover>
+          </Menu>
+          <Menu checkedValues={{ sort: [p.sort] }} onCheckedValueChange={(_, d) => p.setSort(d.checkedItems[0] as SortMode)}>
+            <MenuTrigger disableButtonEnhancement>
+              <Button appearance="subtle" icon={<ArrowSortRegular />}>
+                {p.sort === "important" ? t.sortImportant : t.sortLatest}
+                <ChevronDownRegular style={{ marginLeft: 4 }} />
+              </Button>
+            </MenuTrigger>
+            <MenuPopover>
+              <MenuList>
+                <MenuItemRadio name="sort" value="latest">
+                  {t.sortLatest}
+                </MenuItemRadio>
+                <MenuItemRadio name="sort" value="important">
+                  {t.sortImportant}
+                </MenuItemRadio>
               </MenuList>
             </MenuPopover>
           </Menu>
@@ -441,17 +491,24 @@ export function NewsPage(p: Props) {
                     }
                   }}
                 >
-                  <time className={s.time} dateTime={n.publishedAt}>
-                    {timeOfDay(lang, n.publishedAt)}
+                  <time className={s.time} dateTime={n.lastUpdated}>
+                    {p.sort === "important" ? shortDate(lang, n.lastUpdated) : timeOfDay(lang, n.lastUpdated)}
                   </time>
                   <div className={s.body}>
                     <div className={s.title}>{title(n)}</div>
                     {summary(n) && <div className={s.summary}>{summary(n)}</div>}
                     <div className={s.meta}>
-                      <span className={s.metaTime}>{timeOfDay(lang, n.publishedAt)}</span>
+                      {n.importance >= PRIORITY_THRESHOLD && <span className={s.priority}>{t.priority}</span>}
+                      <span className={s.metaTime}>{timeOfDay(lang, n.lastUpdated)}</span>
                       <NatureMark nature={n.nature} lang={lang} className={s.metaNature} />
                       {p.showRegion && <span>{n.regions.map((r) => REGION_LABELS[lang][r]).join(" · ")}</span>}
-                      <span>{n.sourceName}</span>
+                      <span>{n.sources.length > 1 ? `${t.sourcesCount(n.sources.length)} · ${sourcesText(n)}` : n.sources[0]}</span>
+                      {n.hasVendor && (
+                        <span className={s.metaIcon}>
+                          <DocumentSearchRegular aria-hidden />
+                          {t.hasAnalysis}
+                        </span>
+                      )}
                       {n.attackTypes.length > 0 && <span>{n.attackTypes.map((a) => tagLabel(lang, a)).join(", ")}</span>}
                     </div>
                   </div>
