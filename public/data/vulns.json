@@ -1867,16 +1867,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-109357",
-   "published": "2026-10-12T17:17:33.020",
-   "description": "LibreNMS before 26.9.0 contains an LDAP filter injection in ldap-authorization and ad-authorization modes because usernames are inserted unescaped into LDAP search filters and authentication only checks user existence. When REMOTE_USER is not forwarded, unauthenticated attackers can send a wildcard username via HTTP Basic Authorization (PHP_AUTH_USER) to match all users and groups and gain admin access.",
-   "cvss": 9.2,
-   "severity": "CRITICAL",
-   "epss": 0.00458,
-   "epssPercentile": 0.38182,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-109399",
    "published": "2026-10-12T16:17:05.557",
    "description": "SWUpdate through 2026.05.1 contains an improper certificate validation vulnerability in crypto/swupdate_cms_verify_openssl.c that trusts untrusted X.509 certificates embedded in CMS SignedData for chain building. Attackers holding a signing key from a sibling intermediate under the same root can embed that intermediate in the signature to install malicious updates.",
@@ -1984,16 +1974,6 @@
    "severity": "CRITICAL",
    "epss": 0.0029,
    "epssPercentile": 0.20099,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-109394",
-   "published": "2026-10-12T16:17:04.920",
-   "description": "Thirty bees through 1.7.0 contains an authentication bypass vulnerability in PasswordController::resolveCustomer() that allows unauthenticated attackers to reset registered customers' passwords using guest account tokens. Attackers can place a guest order with the victim's email, then use the guest secure key to reset and take over the victim's account when guest checkout is enabled.",
-   "cvss": 9.1,
-   "severity": "CRITICAL",
-   "epss": 0.00342,
-   "epssPercentile": 0.26009,
    "inKev": false
   },
   {
@@ -2134,16 +2114,6 @@
    "severity": "HIGH",
    "epss": 0.00414,
    "epssPercentile": 0.34144,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-109371",
-   "published": "2026-10-12T17:17:34.547",
-   "description": "ZITADEL 3.0.0 before 4.18.0 contains a missing authentication vulnerability in the hosted Login V1 UI, where the change-username handler acts on the account bound to a login flow before any factor is verified. Unauthenticated attackers can submit a victim's login name and then post a new username to rename any active human user, including administrators, locking them out.",
-   "cvss": 8.8,
-   "severity": "HIGH",
-   "epss": 0.00363,
-   "epssPercentile": 0.28493,
    "inKev": false
   },
   {
@@ -3047,36 +3017,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-109347",
-   "published": "2026-10-12T17:17:31.517",
-   "description": "Adminer before 6.1.1 contains a remote code execution vulnerability that allows authenticated SQLite users to bypass ATTACH and VACUUM INTO restrictions by prefixing statements with a UTF-8 byte-order mark. Attackers can attach a database file at a PHP-served path and create a table named with PHP code to execute it as the web server user.",
-   "cvss": 8.6,
-   "severity": "HIGH",
-   "epss": 0.00645,
-   "epssPercentile": 0.49715,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-109317",
-   "published": "2026-10-12T17:17:26.653",
-   "description": "Grav grav-plugin-api before 1.0.36 contains a privilege escalation vulnerability that allows delegated user managers to obtain super-admin access by storing positive scalar admin or api parent grants. Attackers with api.users.write can edit account access maps or invitations so the inheriting permission resolver satisfies requireSuper checks, accessing super-only API endpoints.",
-   "cvss": 8.6,
-   "severity": "HIGH",
-   "epss": 0.0036,
-   "epssPercentile": 0.28095,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-109312",
-   "published": "2026-10-12T17:17:25.890",
-   "description": "Grav Login plugin 2.7.0 before 3.9.9 contains an authentication bypass in processUserProfile(), which checks that the session user exists but not that a pending front-end 2FA session is fully authorized. Attackers with a victim's password who can publish a page form without an access rule can invoke update_user before completing 2FA to disable twofa_enabled and take over the account.",
-   "cvss": 8.6,
-   "severity": "HIGH",
-   "epss": 0.00351,
-   "epssPercentile": 0.27086,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-109286",
    "published": "2026-10-12T17:17:21.613",
    "description": "Open WebUI from 0.7.0 before 0.11.4 contains a cross-origin message handling vulnerability in SyncStatsModal that allows any website to steal a signed-in user's session token by posting unvalidated verify:chat messages. Attackers can supply a path-traversal chat id redirecting the authenticated stats export request to the auths endpoint, receiving the victim's JWT for full API access.",
@@ -3084,16 +3024,6 @@
    "severity": "HIGH",
    "epss": 0.00145,
    "epssPercentile": 0.03366,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-109237",
-   "published": "2026-10-12T17:17:14.233",
-   "description": "Crawl4AI from 0.9.0 before 0.9.4 contains an untrusted-config gate bypass that allows non-admin API clients to construct forbidden config objects by wrapping them in dict-type wrappers. Attackers can send a laundered LLMConfig with api_token set to an env reference via /config/dump to read SECRET_KEY and provider keys, enabling admin JWT forgery.",
-   "cvss": 8.6,
-   "severity": "HIGH",
-   "epss": 0.00324,
-   "epssPercentile": 0.23815,
    "inKev": false
   },
   {
@@ -4207,16 +4137,6 @@
    "inKev": false
   },
   {
-   "id": "CVE-2026-108906",
-   "published": "2026-10-12T16:17:03.917",
-   "description": "A vulnerability has been found in Netcore NR268 1.7.121109. This affects the function filter_arp_put_file_cgi of the file /router/filter_arp_put_file.cgi. The manipulation of the argument put_file leads to out-of-bounds read. It is possible to initiate the attack remotely. The exploit has been disclosed to the public and may be used. The vendor was contacted early about this disclosure but did not respond in any way.",
-   "cvss": 7.3,
-   "severity": "HIGH",
-   "epss": 0.00426,
-   "epssPercentile": 0.35279,
-   "inKev": false
-  },
-  {
    "id": "CVE-2026-108744",
    "published": "2026-10-11T13:17:18.957",
    "description": "pbi-cli 3.10.1 through 3.12.0 contains an OS command injection vulnerability in desktop_sync.py that passes unquoted .pbip paths to cmd /c start when reopening projects. Attackers can lure victims into opening a Power BI project from a space-free path containing & to run commands with victim privileges during report write or reload.",
@@ -4554,16 +4474,6 @@
    "severity": "HIGH",
    "epss": 0.00258,
    "epssPercentile": 0.16283,
-   "inKev": false
-  },
-  {
-   "id": "CVE-2026-109242",
-   "published": "2026-10-12T17:17:15.023",
-   "description": "FreeRDP before 3.0.0 and 3.6.0 before 3.32.0 renders uninitialized heap memory from un-decoded progressive tiles because the tile->current buffer is allocated without zeroing. A malicious RDP server can send a crafted WBT_TILE_FIRST then WBT_TILE_UPGRADE sequence to paint heap bytes onscreen or abort the client process.",
-   "cvss": 7.1,
-   "severity": "HIGH",
-   "epss": 0.00235,
-   "epssPercentile": 0.13457,
    "inKev": false
   },
   {

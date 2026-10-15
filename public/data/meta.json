@@ -1,8 +1,8 @@
 {
- "updatedAt": "2026-10-15T03:15:38.114Z",
+ "updatedAt": "2026-10-15T03:36:16.436Z",
  "lastRun": {
-  "candidates": 1,
-  "added": 1,
+  "candidates": 0,
+  "added": 0,
   "keywordExcluded": 0,
   "notSecurity": 0,
   "failed": 0,
@@ -10,7 +10,7 @@
  },
  "newsCount": 439,
  "kevCount": 98,
- "cveCount": 405,
+ "cveCount": 396,
  "sources": [
   {
    "id": "bleepingcomputer",
