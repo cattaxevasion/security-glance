@@ -111,12 +111,12 @@ export function LeakList({ lang, leaks, onOpen }: { lang: Lang; leaks: LeakPost[
           </span>
           {x.topicIds.length ? (
             <Button size="small" appearance="transparent" onClick={() => onOpen(x.topicIds[0])}>
-              <Badge appearance="tint" color="informative">
+              <Badge appearance="tint" color="brand">
                 {t.leaksReported}
               </Badge>
             </Button>
           ) : (
-            <Badge appearance="outline" color="subtle">
+            <Badge appearance="outline" color="informative">
               {t.leaksUnreported}
             </Badge>
           )}
