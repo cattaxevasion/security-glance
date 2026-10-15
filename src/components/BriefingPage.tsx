@@ -10,24 +10,64 @@ import {
   Subtitle1,
   Text,
   makeStyles,
+  mergeClasses,
   tokens,
 } from "@fluentui/react-components";
-import { ArrowRightRegular, ChevronDownRegular, HistoryRegular, LightbulbRegular } from "@fluentui/react-icons";
+import {
+  ArrowRightRegular,
+  ChevronDownRegular,
+  HistoryRegular,
+  LightbulbRegular,
+  SparkleFilled,
+} from "@fluentui/react-icons";
 import { useEffect, useMemo, useState } from "react";
 import type { Briefing, Topic } from "../../shared/types";
 import { LOCALE, REGION_LABELS, STRINGS, type Lang } from "../i18n";
 import { NatureMark } from "./marks";
+import { stagger, useMotion } from "./motion";
 import { PageTitle, usePageStyles } from "./page";
 
 const useStyles = makeStyles({
   wrap: { maxWidth: "760px" },
-  sub: { display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "8px", marginTop: "4px" },
+  sub: {
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "8px",
+    marginTop: "4px",
+  },
   muted: { color: tokens.colorNeutralForeground3 },
+  // AI가 쓴 글: Fluent 2 Copilot 패턴처럼 그라디언트 테두리 + 반짝이 표시. 테두리 색이 천천히 흐른다.
   headline: {
+    position: "relative",
     margin: "24px 0 8px",
     padding: "16px 20px",
-    borderRadius: tokens.borderRadiusLarge,
-    backgroundColor: tokens.colorBrandBackground2,
+    borderRadius: tokens.borderRadiusXLarge,
+    border: "1.5px solid transparent",
+    backgroundImage: `linear-gradient(${tokens.colorNeutralBackground1}, ${tokens.colorNeutralBackground1}), linear-gradient(115deg, #2b7de9, #8c5ee6, #e2509b, #f0883e, #2b7de9)`,
+    backgroundOrigin: "border-box",
+    backgroundClip: "padding-box, border-box",
+    backgroundSize: "100% 100%, 300% 100%",
+    boxShadow: tokens.shadow4,
+    animationName: { from: { backgroundPosition: "0 0, 0% 0" }, to: { backgroundPosition: "0 0, 300% 0" } },
+    animationDuration: "12s",
+    animationTimingFunction: "linear",
+    animationIterationCount: "infinite",
+    "@media (prefers-reduced-motion: reduce)": { animationName: "none" },
+  },
+  aiLabel: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "4px",
+    marginBottom: "6px",
+    fontSize: tokens.fontSizeBase200,
+    fontWeight: tokens.fontWeightSemibold,
+    color: tokens.colorNeutralForeground2,
+  },
+  aiIcon: { color: "#8c5ee6", fontSize: "16px" },
+  headlineText: {
+    margin: 0,
     color: tokens.colorNeutralForeground1,
     fontSize: "17px",
     lineHeight: "28px",
@@ -53,7 +93,13 @@ const useStyles = makeStyles({
     fontWeight: tokens.fontWeightSemibold,
     fontVariantNumeric: "tabular-nums",
   },
-  meta: { display: "flex", flexWrap: "wrap", gap: "4px 12px", color: tokens.colorNeutralForeground3, fontSize: tokens.fontSizeBase200 },
+  meta: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "4px 12px",
+    color: tokens.colorNeutralForeground3,
+    fontSize: tokens.fontSizeBase200,
+  },
   title: {
     margin: "6px 0 8px",
     fontSize: "18px",
@@ -90,6 +136,7 @@ interface Props {
 export function BriefingPage({ lang, briefings, topics, onOpen, onOrder }: Props) {
   const s = useStyles();
   const ps = usePageStyles();
+  const m = useMotion();
   const t = STRINGS[lang];
   const [date, setDate] = useState<string | null>(null);
   const b = briefings.find((x) => x.date === date) ?? briefings[0];
@@ -99,7 +146,9 @@ export function BriefingPage({ lang, briefings, topics, onOpen, onOrder }: Props
   useEffect(() => onOrder(ids), [ids]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fmtDate = (d: string) =>
-    new Intl.DateTimeFormat(LOCALE[lang], { month: "long", day: "numeric", weekday: "short" }).format(new Date(`${d}T00:00:00+09:00`));
+    new Intl.DateTimeFormat(LOCALE[lang], { month: "long", day: "numeric", weekday: "short" }).format(
+      new Date(`${d}T00:00:00+09:00`),
+    );
 
   return (
     <div className={`${ps.page} ${s.wrap}`}>
@@ -134,12 +183,18 @@ export function BriefingPage({ lang, briefings, topics, onOpen, onOrder }: Props
         </div>
       ) : (
         <>
-          <p className={s.headline}>{lang === "ja" ? b.headlineJa : b.headlineKo}</p>
-          <ol className={s.list}>
+          <div key={b.date} className={mergeClasses(s.headline, m.enter)}>
+            <div className={s.aiLabel}>
+              <SparkleFilled className={s.aiIcon} aria-hidden />
+              {t.aiGenerated}
+            </div>
+            <p className={s.headlineText}>{lang === "ja" ? b.headlineJa : b.headlineKo}</p>
+          </div>
+          <ol className={s.list} key={`list-${b.date}`}>
             {b.items.map((it, i) => {
               const topic = byId.get(it.topicId);
               return (
-                <li key={it.topicId} className={s.item}>
+                <li key={it.topicId} className={mergeClasses(s.item, m.enter)} style={stagger(i + 1, 90)}>
                   <span className={s.num} aria-hidden>
                     {i + 1}
                   </span>

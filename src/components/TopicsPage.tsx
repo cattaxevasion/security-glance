@@ -34,6 +34,7 @@ import { FilterPill } from "./FilterPill";
 import { dayKey, dayLabel, shortDate, timeOfDay } from "./format";
 import { useStoredFlag } from "./hooks";
 import { NatureMark } from "./marks";
+import { stagger, useCountUp, useMotion } from "./motion";
 import { PageTitle, usePageStyles } from "./page";
 
 export interface NewsFilters {
@@ -153,7 +154,9 @@ const useStyles = makeStyles({
     borderBottom: `1px solid ${tokens.colorNeutralStroke3}`,
     borderRadius: tokens.borderRadiusMedium,
     cursor: "pointer",
-    "@media (min-width: 641px)": { gridTemplateColumns: "48px 1fr", padding: "16px 12px" },
+    transitionProperty: "background-color",
+    transitionDuration: tokens.durationFaster,
+    "@media (min-width: 641px)": { gridTemplateColumns: "48px 1fr 20px", padding: "16px 12px" },
     ":hover": { backgroundColor: tokens.colorSubtleBackgroundHover },
     ":focus-visible": { outline: `2px solid ${tokens.colorStrokeFocus2}`, outlineOffset: "-2px" },
   },
@@ -215,6 +218,19 @@ const useStyles = makeStyles({
   },
   metaNature: { color: tokens.colorNeutralForeground2 },
   metaIcon: { display: "inline-flex", alignItems: "center", gap: "4px" },
+  // 행에 마우스를 올리면 오른쪽에서 살짝 밀려 들어오는 화살표 (누를 수 있다는 신호)
+  chevron: {
+    display: "none",
+    alignSelf: "center",
+    color: tokens.colorNeutralForeground3,
+    opacity: 0,
+    transform: "translateX(-4px)",
+    transitionProperty: "opacity, transform",
+    transitionDuration: tokens.durationNormal,
+    transitionTimingFunction: tokens.curveDecelerateMid,
+    "@media (min-width: 641px)": { display: "block" },
+  },
+  chevronOn: { opacity: 1, transform: "none" },
   priority: {
     display: "inline-flex",
     alignItems: "center",
@@ -245,13 +261,29 @@ interface Props {
   onSelect: (id: string) => void;
   onOrder: (ids: string[]) => void;
   onReload: () => void;
+  onCopied: () => void;
   onGo: (view: View) => void;
+}
+
+function KpiNumber({ value, className }: { value: number; className: string }) {
+  const n = useCountUp(value);
+  return <span className={className}>{n.toLocaleString()}</span>;
 }
 
 export function matchesQuery(n: Topic, q: string): boolean {
   if (!q) return true;
   const needle = q.trim().toLowerCase();
-  return [n.titleKo, n.titleJa, ...n.sources, ...n.summaryKo, ...n.summaryJa, ...n.entities.cves, ...n.entities.actors, ...n.entities.orgs, ...n.techniques.map((x) => x.id)]
+  return [
+    n.titleKo,
+    n.titleJa,
+    ...n.sources,
+    ...n.summaryKo,
+    ...n.summaryJa,
+    ...n.entities.cves,
+    ...n.entities.actors,
+    ...n.entities.orgs,
+    ...n.techniques.map((x) => x.id),
+  ]
     .join(" ")
     .toLowerCase()
     .includes(needle);
@@ -261,7 +293,9 @@ export function TopicsPage(p: Props) {
   const { lang, items, filters, setFilters, query, narrow, selectedId } = p;
   const s = useStyles();
   const ps = usePageStyles();
+  const m = useMotion();
   const t = STRINGS[lang];
+  const [hoverRow, setHoverRow] = useState<string | null>(null);
   const [overviewOpen, setOverviewOpen] = useStoredFlag("sg-overview", true);
   const [shown, setShown] = useState(PAGE);
   const [copied, setCopied] = useState(false);
@@ -335,6 +369,7 @@ export function TopicsPage(p: Props) {
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(location.href);
+      p.onCopied();
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     } catch {
@@ -343,8 +378,18 @@ export function TopicsPage(p: Props) {
   };
 
   const kpis = [
-    { label: t.kpiToday, sub: t.kpiTodaySub, value: kpi.today, go: () => set({ days: 1, attack: [], sector: [], nature: [] }) },
-    { label: t.kpiRansom, sub: t.kpiRansomSub, value: kpi.ransom, go: () => set({ days: 7, attack: ["랜섬웨어"], sector: [], nature: [] }) },
+    {
+      label: t.kpiToday,
+      sub: t.kpiTodaySub,
+      value: kpi.today,
+      go: () => set({ days: 1, attack: [], sector: [], nature: [] }),
+    },
+    {
+      label: t.kpiRansom,
+      sub: t.kpiRansomSub,
+      value: kpi.ransom,
+      go: () => set({ days: 7, attack: ["랜섬웨어"], sector: [], nature: [] }),
+    },
     { label: t.kpiKev, sub: t.kpiKevSub, value: kpi.kev, go: () => p.onGo("kev") },
     { label: t.kpiCritical, sub: t.kpiCriticalSub, value: kpi.critical, go: () => p.onGo("cve") },
   ];
@@ -359,13 +404,13 @@ export function TopicsPage(p: Props) {
       </button>
       {overviewOpen && (
         <div className={s.kpis}>
-          {kpis.map((k) => (
-            <button key={k.label} className={s.kpi} onClick={k.go}>
+          {kpis.map((k, i) => (
+            <button key={k.label} className={mergeClasses(s.kpi, m.enter)} style={stagger(i, 50)} onClick={k.go}>
               <Caption1 className={s.kpiLabel}>
                 {k.label}
                 <ChevronRightRegular className={s.kpiChevron} aria-hidden />
               </Caption1>
-              <span className={s.kpiNumber}>{k.value.toLocaleString()}</span>
+              <KpiNumber value={k.value} className={s.kpiNumber} />
               <Caption1 className={ps.muted}>{k.sub}</Caption1>
             </button>
           ))}
@@ -374,7 +419,10 @@ export function TopicsPage(p: Props) {
 
       <div className={ps.command}>
         <div className={ps.commandGroup}>
-          <Menu checkedValues={{ days: [String(filters.days)] }} onCheckedValueChange={(_, d) => set({ days: Number(d.checkedItems[0]) })}>
+          <Menu
+            checkedValues={{ days: [String(filters.days)] }}
+            onCheckedValueChange={(_, d) => set({ days: Number(d.checkedItems[0]) })}
+          >
             <MenuTrigger disableButtonEnhancement>
               <Button appearance="subtle" icon={<CalendarLtrRegular />}>
                 {t.periods[filters.days]}
@@ -391,7 +439,10 @@ export function TopicsPage(p: Props) {
               </MenuList>
             </MenuPopover>
           </Menu>
-          <Menu checkedValues={{ sort: [p.sort] }} onCheckedValueChange={(_, d) => p.setSort(d.checkedItems[0] as SortMode)}>
+          <Menu
+            checkedValues={{ sort: [p.sort] }}
+            onCheckedValueChange={(_, d) => p.setSort(d.checkedItems[0] as SortMode)}
+          >
             <MenuTrigger disableButtonEnhancement>
               <Button appearance="subtle" icon={<ArrowSortRegular />}>
                 {p.sort === "important" ? t.sortImportant : t.sortLatest}
@@ -420,7 +471,12 @@ export function TopicsPage(p: Props) {
           </Tooltip>
         </div>
         {narrow && (
-          <SearchBox className={ps.pageSearch} placeholder={t.search} value={query} onChange={(_, d) => p.setQuery(d.value)} />
+          <SearchBox
+            className={ps.pageSearch}
+            placeholder={t.search}
+            value={query}
+            onChange={(_, d) => p.setQuery(d.value)}
+          />
         )}
       </div>
 
@@ -457,7 +513,12 @@ export function TopicsPage(p: Props) {
           }))}
         />
         {anyFilter && (
-          <Button appearance="subtle" size="small" icon={<ArrowResetRegular />} onClick={() => set({ attack: [], sector: [], nature: [] })}>
+          <Button
+            appearance="subtle"
+            size="small"
+            icon={<ArrowResetRegular />}
+            onClick={() => set({ attack: [], sector: [], nature: [] })}
+          >
             {t.resetAll}
           </Button>
         )}
@@ -469,17 +530,20 @@ export function TopicsPage(p: Props) {
           {items.length > 0 && <Text>{t.emptyHint}</Text>}
         </div>
       ) : (
-        groups.map((g) => (
-          <section key={g.key} aria-label={g.label}>
+        groups.map((g, gi) => (
+          <section key={`${g.key}-${p.sort}`} aria-label={g.label}>
             <h2 className={s.dayHeader}>
               {g.label}
               <span className={s.dayCount}>{t.count(g.items.length)}</span>
             </h2>
             <ul className={s.list}>
-              {g.items.map((n) => (
+              {g.items.map((n, i) => (
                 <li
                   key={n.id}
-                  className={mergeClasses(s.row, n.id === selectedId && s.selected)}
+                  className={mergeClasses(s.row, n.id === selectedId && s.selected, gi < 3 && m.enter)}
+                  style={gi < 3 ? stagger(i + gi * 4) : undefined}
+                  onMouseEnter={() => setHoverRow(n.id)}
+                  onMouseLeave={() => setHoverRow(null)}
                   role="button"
                   tabIndex={0}
                   aria-current={n.id === selectedId ? "true" : undefined}
@@ -502,16 +566,26 @@ export function TopicsPage(p: Props) {
                       <span className={s.metaTime}>{timeOfDay(lang, n.lastUpdated)}</span>
                       <NatureMark nature={n.nature} lang={lang} className={s.metaNature} />
                       {p.showRegion && <span>{n.regions.map((r) => REGION_LABELS[lang][r]).join(" · ")}</span>}
-                      <span>{n.sources.length > 1 ? `${t.sourcesCount(n.sources.length)} · ${sourcesText(n)}` : n.sources[0]}</span>
+                      <span>
+                        {n.sources.length > 1
+                          ? `${t.sourcesCount(n.sources.length)} · ${sourcesText(n)}`
+                          : n.sources[0]}
+                      </span>
                       {n.hasVendor && (
                         <span className={s.metaIcon}>
                           <DocumentSearchRegular aria-hidden />
                           {t.hasAnalysis}
                         </span>
                       )}
-                      {n.attackTypes.length > 0 && <span>{n.attackTypes.map((a) => tagLabel(lang, a)).join(", ")}</span>}
+                      {n.attackTypes.length > 0 && (
+                        <span>{n.attackTypes.map((a) => tagLabel(lang, a)).join(", ")}</span>
+                      )}
                     </div>
                   </div>
+                  <ChevronRightRegular
+                    className={mergeClasses(s.chevron, (hoverRow === n.id || n.id === selectedId) && s.chevronOn)}
+                    aria-hidden
+                  />
                 </li>
               ))}
             </ul>

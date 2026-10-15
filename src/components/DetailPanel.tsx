@@ -35,6 +35,7 @@ import type { CveEntry, KevEntry, NewsItem, Topic, VulnData } from "../../shared
 import { REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import { fullDateTime, pct, relativeTime, shortDate } from "./format";
 import { EpssMark, NATURE_COLOR, NATURE_ICON, NatureMark } from "./marks";
+import { useMotion } from "./motion";
 import { PRIORITY_THRESHOLD } from "./TopicsPage";
 
 export type Selection = { kind: "topic"; id: string } | { kind: "kev" | "cve"; id: string };
@@ -61,7 +62,13 @@ const useStyles = makeStyles({
   },
   headText: { display: "flex", flexDirection: "column", gap: "8px", minWidth: 0 },
   title: { overflowWrap: "anywhere", lineHeight: "28px" },
-  metaRow: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "4px 14px", color: tokens.colorNeutralForeground2 },
+  metaRow: {
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: "4px 14px",
+    color: tokens.colorNeutralForeground2,
+  },
   priority: {
     display: "inline-flex",
     alignItems: "center",
@@ -136,7 +143,13 @@ const useStyles = makeStyles({
     border: `2px solid ${tokens.colorNeutralBackground1}`,
     boxSizing: "border-box",
   },
-  tlMeta: { display: "flex", flexWrap: "wrap", gap: "2px 10px", color: tokens.colorNeutralForeground3, fontSize: tokens.fontSizeBase200 },
+  tlMeta: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "2px 10px",
+    color: tokens.colorNeutralForeground3,
+    fontSize: tokens.fontSizeBase200,
+  },
   tlKind: { fontWeight: tokens.fontWeightSemibold },
   tlTitle: { display: "block", marginTop: "2px", lineHeight: "22px" },
   cveRow: {
@@ -148,7 +161,13 @@ const useStyles = makeStyles({
     borderBottom: `1px solid ${tokens.colorNeutralStroke3}`,
   },
   mono: { fontFamily: tokens.fontFamilyMonospace },
-  notice: { display: "flex", gap: "6px", alignItems: "flex-start", color: tokens.colorNeutralForeground3, paddingTop: "12px" },
+  notice: {
+    display: "flex",
+    gap: "6px",
+    alignItems: "flex-start",
+    color: tokens.colorNeutralForeground3,
+    paddingTop: "12px",
+  },
   related: { display: "flex", flexDirection: "column", gap: "12px" },
   relatedItem: { display: "flex", flexDirection: "column", gap: "2px" },
   footer: { borderTop: `1px solid ${tokens.colorNeutralStroke2}`, paddingTop: "12px" },
@@ -190,12 +209,14 @@ interface Props {
   news: NewsItem[];
   vulns: VulnData | null;
   order: string[];
+  onCopied: () => void;
   onSelect: (sel: Selection | null) => void;
   onSearch: (q: string) => void;
 }
 
 export function DetailPanel(p: Props) {
   const s = useStyles();
+  const m = useMotion();
   const t = STRINGS[p.lang];
   const sel = p.selection;
   const [copied, setCopied] = useState(false);
@@ -209,6 +230,7 @@ export function DetailPanel(p: Props) {
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(location.href);
+      p.onCopied();
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     } catch {
@@ -221,7 +243,8 @@ export function DetailPanel(p: Props) {
     const topic = p.topics.find((x) => x.id === sel.id);
     if (topic) content = topicContent(topic, p, s, { copied, copy });
   } else if (sel) {
-    const v = sel.kind === "kev" ? p.vulns?.kev.find((k) => k.cveID === sel.id) : p.vulns?.cves.find((c) => c.id === sel.id);
+    const v =
+      sel.kind === "kev" ? p.vulns?.kev.find((k) => k.cveID === sel.id) : p.vulns?.cves.find((c) => c.id === sel.id);
     if (v) content = vulnContent(sel.kind, v, p, s);
   }
 
@@ -233,7 +256,12 @@ export function DetailPanel(p: Props) {
             <Button appearance="subtle" icon={<ArrowUpRegular />} disabled={idx <= 0} onClick={() => go(-1)} />
           </Tooltip>
           <Tooltip content={t.nextItem} relationship="label">
-            <Button appearance="subtle" icon={<ArrowDownRegular />} disabled={idx < 0 || idx >= p.order.length - 1} onClick={() => go(1)} />
+            <Button
+              appearance="subtle"
+              icon={<ArrowDownRegular />}
+              disabled={idx < 0 || idx >= p.order.length - 1}
+              onClick={() => go(1)}
+            />
           </Tooltip>
           <Tooltip content={t.close} relationship="label">
             <Button appearance="subtle" icon={<DismissRegular />} onClick={() => p.onSelect(null)} />
@@ -241,7 +269,10 @@ export function DetailPanel(p: Props) {
         </div>
         {content.head}
       </DrawerHeader>
-      <DrawerBody className={s.body}>{content.body}</DrawerBody>
+      {/* 항목이 바뀔 때 내용이 부드럽게 바뀌도록 선택 id로 다시 그린다 */}
+      <DrawerBody key={sel?.id} className={mergeClasses(s.body, m.fade)}>
+        {content.body}
+      </DrawerBody>
       <DrawerFooter className={s.footer}>{content.footer}</DrawerFooter>
     </>
   );
@@ -373,7 +404,11 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
         <ol className={s.timeline}>
           {[...articles].reverse().map((n) => (
             <li key={n.id} className={s.tlItem}>
-              <span className={s.tlDot} style={{ backgroundColor: KIND_COLOR[n.sourceKind] ?? KIND_COLOR.news }} aria-hidden />
+              <span
+                className={s.tlDot}
+                style={{ backgroundColor: KIND_COLOR[n.sourceKind] ?? KIND_COLOR.news }}
+                aria-hidden
+              />
               <div className={s.tlMeta}>
                 <span>{shortDate(L, n.publishedAt)}</span>
                 <span className={s.tlKind}>{n.sourceName}</span>
@@ -418,7 +453,11 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
                       {cve}
                     </Link>
                     <Caption1>
-                      <EpssMark epss={epss[cve]?.epss ?? null} percentile={epss[cve]?.percentile ?? null} tip={t.epssTip} />
+                      <EpssMark
+                        epss={epss[cve]?.epss ?? null}
+                        percentile={epss[cve]?.percentile ?? null}
+                        tip={t.epssTip}
+                      />
                     </Caption1>
                   </div>
                 ))}
@@ -462,7 +501,14 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
   );
 
   const footer = main ? (
-    <Button appearance="primary" as="a" href={main.url} target="_blank" rel="noopener noreferrer" icon={<OpenRegular />}>
+    <Button
+      appearance="primary"
+      as="a"
+      href={main.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      icon={<OpenRegular />}
+    >
       {t.openSource}
     </Button>
   ) : null;
@@ -551,7 +597,9 @@ function vulnContent(kind: "kev" | "cve", v: KevEntry | CveEntry, p: Props, s: S
           <div className={s.related}>
             {related.map((x) => (
               <div key={x.id} className={s.relatedItem}>
-                <Link onClick={() => p.onSelect({ kind: "topic", id: x.id })}>{L === "ja" ? x.titleJa || x.titleKo : x.titleKo}</Link>
+                <Link onClick={() => p.onSelect({ kind: "topic", id: x.id })}>
+                  {L === "ja" ? x.titleJa || x.titleKo : x.titleKo}
+                </Link>
                 <Caption1 className={s.label}>
                   {t.sourcesCount(x.sources.length)} · {relativeTime(L, x.lastUpdated)}
                 </Caption1>

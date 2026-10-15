@@ -8,12 +8,19 @@ import {
   makeStyles,
   tokens,
 } from "@fluentui/react-components";
-import { BugRegular, GlobeRegular, LayerRegular, ShieldErrorRegular, WeatherSunnyRegular } from "@fluentui/react-icons";
+import {
+  AlertUrgentRegular,
+  BugRegular,
+  GlobeRegular,
+  LayerRegular,
+  ShieldErrorRegular,
+  WeatherSunnyRegular,
+} from "@fluentui/react-icons";
 import { REGION_LABELS, STRINGS, type Lang } from "../i18n";
 import { RegionMonogram } from "./marks";
 
-export type View = "briefing" | "all" | "INTL" | "JP" | "kev" | "cve";
-export const VIEWS: View[] = ["briefing", "all", "INTL", "JP", "kev", "cve"];
+export type View = "briefing" | "incidents" | "all" | "INTL" | "JP" | "kev" | "cve";
+export const VIEWS: View[] = ["briefing", "incidents", "all", "INTL", "JP", "kev", "cve"];
 
 const useStyles = makeStyles({
   drawer: {
@@ -67,6 +74,9 @@ export function AppNav({ lang, view, setView, open, overlay, onClose, counts }: 
       <NavDrawerBody className={s.body}>
         <NavItem value="briefing" icon={<WeatherSunnyRegular />}>
           {t.navBriefing}
+        </NavItem>
+        <NavItem value="incidents" icon={<AlertUrgentRegular />}>
+          {label(t.navIncidents, "incidents")}
         </NavItem>
 
         <NavDivider />

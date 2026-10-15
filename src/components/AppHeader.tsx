@@ -42,6 +42,7 @@ const useStyles = makeStyles({
     paddingRight: "8px",
     backgroundColor: tokens.colorBrandBackgroundSelected,
     color: tokens.colorNeutralForegroundOnBrand,
+    boxShadow: tokens.shadow4,
     zIndex: 2,
   },
   barDark: {
@@ -116,14 +117,16 @@ export function AppHeader({ lang, setLang, dark, narrow, navOpen, toggleNav, que
 
       <div className={s.center}>
         {!narrow && (
-          <SearchBox
-            className={s.search}
-            size="medium"
-            appearance="filled-lighter"
-            placeholder={searchPlaceholder}
-            value={query}
-            onChange={(_, d) => setQuery(d.value)}
-          />
+          <Tooltip content={t.shortcuts} relationship="description" positioning="below">
+            <SearchBox
+              className={s.search}
+              size="medium"
+              appearance="filled-lighter"
+              placeholder={`${searchPlaceholder}  ( / )`}
+              value={query}
+              onChange={(_, d) => setQuery(d.value)}
+            />
+          </Tooltip>
         )}
       </div>
 

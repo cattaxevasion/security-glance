@@ -3,13 +3,20 @@ import {
   FluentProvider,
   MessageBar,
   MessageBarBody,
-  Spinner,
+  Skeleton,
+  SkeletonItem,
+  Toast,
+  ToastTitle,
+  Toaster,
   makeStyles,
   tokens,
+  useId,
+  useToastController,
   webDarkTheme,
   webLightTheme,
   type Theme,
 } from "@fluentui/react-components";
+import { CheckmarkCircleFilled } from "@fluentui/react-icons";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "pretendard-jp/dist/web/variable/pretendardvariable-jp-dynamic-subset.css";
@@ -21,6 +28,8 @@ import { AppNav, VIEWS, type View } from "./AppNav";
 import { DetailPanel, type Selection } from "./DetailPanel";
 import { useMediaQuery, useNarrow, usePrefersDark } from "./hooks";
 import { BriefingPage } from "./BriefingPage";
+import { IncidentsPage } from "./IncidentsPage";
+import { useMotion } from "./motion";
 import { DEFAULT_FILTERS, TopicsPage, type NewsFilters, type SortMode } from "./TopicsPage";
 import { VulnPage } from "./VulnPage";
 
@@ -37,6 +46,11 @@ const useStyles = makeStyles({
   body: { flex: 1, minHeight: 0, display: "flex" },
   main: { flex: 1, minWidth: 0, overflowY: "auto", backgroundColor: tokens.colorNeutralBackground1 },
   center: { display: "flex", justifyContent: "center", padding: "96px 0" },
+  skeleton: { display: "flex", flexDirection: "column", gap: "12px", padding: "32px", maxWidth: "1040px" },
+  skTitle: { width: "220px", height: "32px", marginBottom: "16px" },
+  skRow: { display: "grid", gridTemplateColumns: "48px 1fr", gap: "16px", padding: "12px 0" },
+  skLines: { display: "flex", flexDirection: "column", gap: "8px" },
+  toastIcon: { color: tokens.colorPaletteGreenForeground1 },
   bar: { margin: "16px 32px 0" },
 });
 
@@ -104,8 +118,34 @@ function writeUrl(st: { view: View; sort: SortMode; q: string; filters: NewsFilt
 const isVulnView = (v: View): v is "kev" | "cve" => v === "kev" || v === "cve";
 const isTopicView = (v: View) => v === "all" || v === "INTL" || v === "JP";
 
+/** 데이터를 불러오는 동안 보여줄 뼈대 (스피너 대신 실제 화면 모양으로) */
+function LoadingSkeleton() {
+  const s = useStyles();
+  return (
+    <Skeleton className={s.skeleton} aria-label="loading">
+      <SkeletonItem className={s.skTitle} />
+      {Array.from({ length: 6 }, (_, i) => (
+        <div key={i} className={s.skRow}>
+          <SkeletonItem size={16} />
+          <div className={s.skLines}>
+            <SkeletonItem size={20} style={{ width: `${70 + ((i * 13) % 25)}%` }} />
+            <SkeletonItem size={12} />
+            <SkeletonItem size={12} style={{ width: "40%" }} />
+          </div>
+        </div>
+      ))}
+    </Skeleton>
+  );
+}
+
+const isEditable = (el: EventTarget | null) =>
+  el instanceof HTMLElement && (el.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(el.tagName));
+
 export default function App() {
   const s = useStyles();
+  const m = useMotion();
+  const toasterId = useId("toaster");
+  const { dispatchToast } = useToastController(toasterId);
   const dark = usePrefersDark();
   const narrow = useNarrow();
   // 탐색(260) + 목록(최소 500) + 읽기 창(520)이 나란히 들어가는 폭부터 읽기 창을 옆에 붙인다
@@ -164,6 +204,49 @@ export default function App() {
     setNewsQuery(q);
   };
 
+  const notifyCopied = () =>
+    dispatchToast(
+      <Toast>
+        <ToastTitle media={<CheckmarkCircleFilled className={s.toastIcon} />}>{STRINGS[lang].linkCopied}</ToastTitle>
+      </Toast>,
+      { intent: "success", timeout: 2000, position: "bottom" },
+    );
+
+  // 키보드 단축키: / 검색, j·k 이전·다음 항목, Esc 닫기 (Outlook·Gmail과 같은 감각)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.key === "Escape") {
+        if (selection) setSelection(null);
+        return;
+      }
+      if (isEditable(e.target)) return;
+      if (e.key === "/") {
+        const input = document.querySelector<HTMLInputElement>("header input, main input[type='search']");
+        if (input) {
+          e.preventDefault();
+          input.focus();
+        }
+        return;
+      }
+      if (e.key === "j" || e.key === "k") {
+        if (order.length === 0) return;
+        const i = selection ? order.indexOf(selection.id) : -1;
+        const next = e.key === "j" ? Math.min(order.length - 1, i + 1) : Math.max(0, i - 1);
+        const kind = isVulnView(view) ? view : "topic";
+        setSelection({ kind, id: order[i < 0 ? 0 : next] });
+        // 고른 항목이 보이게 스크롤
+        requestAnimationFrame(() =>
+          document
+            .querySelector("[aria-current='true'], tr[aria-selected='true']")
+            ?.scrollIntoView({ block: "nearest" }),
+        );
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selection, order, view]);
+
   const setLang = (l: Lang) => {
     setLangState(l);
     saveLang(l);
@@ -176,9 +259,19 @@ export default function App() {
   };
 
   const counts = useMemo(() => {
-    const c: Record<View, number | null> = { briefing: null, all: null, INTL: null, JP: null, kev: null, cve: null };
+    const c: Record<View, number | null> = {
+      briefing: null,
+      incidents: null,
+      all: null,
+      INTL: null,
+      JP: null,
+      kev: null,
+      cve: null,
+    };
     if (topics) {
       c.all = topics.length;
+      const week = Date.now() - 7 * 86400_000;
+      c.incidents = topics.filter((n) => n.nature === "사건" && Date.parse(n.firstSeen) >= week).length;
       for (const r of ["INTL", "JP"] as Region[]) c[r] = topics.filter((n) => n.regions.includes(r)).length;
     }
     if (vulns) {
@@ -228,50 +321,65 @@ export default function App() {
               </MessageBar>
             )}
             {news === null || topics === null ? (
-              <div className={s.center}>
-                <Spinner label={t.loading} />
-              </div>
-            ) : view === "briefing" ? (
-              <BriefingPage
-                lang={lang}
-                briefings={briefings}
-                topics={topics}
-                onOpen={(id) => setSelection({ kind: "topic", id })}
-                onOrder={setOrder}
-              />
-            ) : isVulnView(view) ? (
-              <VulnPage
-                lang={lang}
-                kind={view}
-                data={vulns}
-                news={news}
-                query={vulnQuery}
-                setQuery={setVulnQuery}
-                narrow={narrow}
-                selectedId={selection && selection.kind !== "topic" ? selection.id : null}
-                onSelect={(id) => setSelection({ kind: view, id })}
-                onOrder={setOrder}
-              />
+              <LoadingSkeleton />
             ) : (
-              <TopicsPage
-                lang={lang}
-                title={pageTitle}
-                showRegion={view === "all"}
-                items={regionItems}
-                vulns={vulns}
-                filters={filters}
-                setFilters={setFilters}
-                sort={sort}
-                setSort={setSort}
-                query={newsQuery}
-                setQuery={setNewsQuery}
-                narrow={narrow}
-                selectedId={selection?.kind === "topic" ? selection.id : null}
-                onSelect={(id) => setSelection({ kind: "topic", id })}
-                onOrder={setOrder}
-                onReload={reload}
-                onGo={setView}
-              />
+              <div key={view} className={m.fade}>
+                {view === "briefing" ? (
+                  <BriefingPage
+                    lang={lang}
+                    briefings={briefings}
+                    topics={topics}
+                    onOpen={(id) => setSelection({ kind: "topic", id })}
+                    onOrder={setOrder}
+                  />
+                ) : view === "incidents" ? (
+                  <IncidentsPage
+                    lang={lang}
+                    dark={dark}
+                    topics={topics}
+                    query={newsQuery}
+                    setQuery={setNewsQuery}
+                    narrow={narrow}
+                    selectedId={selection?.kind === "topic" ? selection.id : null}
+                    onSelect={(id) => setSelection({ kind: "topic", id })}
+                    onOrder={setOrder}
+                  />
+                ) : isVulnView(view) ? (
+                  <VulnPage
+                    lang={lang}
+                    kind={view}
+                    data={vulns}
+                    news={news}
+                    query={vulnQuery}
+                    setQuery={setVulnQuery}
+                    narrow={narrow}
+                    selectedId={selection && selection.kind !== "topic" ? selection.id : null}
+                    onSelect={(id) => setSelection({ kind: view, id })}
+                    onOrder={setOrder}
+                  />
+                ) : (
+                  <TopicsPage
+                    lang={lang}
+                    title={pageTitle}
+                    showRegion={view === "all"}
+                    items={regionItems}
+                    vulns={vulns}
+                    filters={filters}
+                    setFilters={setFilters}
+                    sort={sort}
+                    setSort={setSort}
+                    query={newsQuery}
+                    setQuery={setNewsQuery}
+                    narrow={narrow}
+                    selectedId={selection?.kind === "topic" ? selection.id : null}
+                    onSelect={(id) => setSelection({ kind: "topic", id })}
+                    onOrder={setOrder}
+                    onReload={reload}
+                    onCopied={notifyCopied}
+                    onGo={setView}
+                  />
+                )}
+              </div>
             )}
           </main>
           <DetailPanel
@@ -283,6 +391,7 @@ export default function App() {
             news={news ?? []}
             vulns={vulns}
             order={order}
+            onCopied={notifyCopied}
             onSelect={setSelection}
             onSearch={(q) => {
               setSelection(null);
@@ -293,6 +402,7 @@ export default function App() {
           />
         </div>
       </div>
+      <Toaster toasterId={toasterId} />
     </FluentProvider>
   );
 }
