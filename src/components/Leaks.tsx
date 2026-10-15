@@ -1,6 +1,6 @@
 // 랜섬웨어 유출 사이트 게시 (일본). 공격 조직의 주장이라 사실 확인 전 정보임을 늘 함께 보여준다.
-import { Badge, Button, Caption1, makeStyles, mergeClasses, Subtitle2, tokens } from "@fluentui/react-components";
-import { ChevronDownRegular, ChevronUpRegular, LockClosedKeyRegular } from "@fluentui/react-icons";
+import { Button, Caption1, makeStyles, mergeClasses, Subtitle2, tokens } from "@fluentui/react-components";
+import { ArrowRightRegular, ChevronDownRegular, ChevronUpRegular, LockClosedKeyRegular } from "@fluentui/react-icons";
 import { useState } from "react";
 import type { LeakPost } from "../../shared/types";
 import { STRINGS, tagLabel, type Lang } from "../i18n";
@@ -47,6 +47,13 @@ const useStyles = makeStyles({
   },
   sub: { color: tokens.colorNeutralForeground3 },
   more: { marginTop: "6px" },
+  unreported: {
+    color: tokens.colorNeutralForeground3,
+    padding: "2px 8px",
+    borderRadius: tokens.borderRadiusCircular,
+    border: `1px solid ${tokens.colorNeutralStroke2}`,
+    whiteSpace: "nowrap",
+  },
 });
 
 interface Props {
@@ -110,15 +117,17 @@ export function LeakList({ lang, leaks, onOpen }: { lang: Lang; leaks: LeakPost[
             </Caption1>
           </span>
           {x.topicIds.length ? (
-            <Button size="small" appearance="transparent" onClick={() => onOpen(x.topicIds[0])}>
-              <Badge appearance="tint" color="brand">
-                {t.leaksReported}
-              </Badge>
+            <Button
+              size="small"
+              appearance="subtle"
+              icon={<ArrowRightRegular />}
+              iconPosition="after"
+              onClick={() => onOpen(x.topicIds[0])}
+            >
+              {t.leaksReported}
             </Button>
           ) : (
-            <Badge appearance="outline" color="informative">
-              {t.leaksUnreported}
-            </Badge>
+            <Caption1 className={s.unreported}>{t.leaksUnreported}</Caption1>
           )}
         </li>
       ))}
