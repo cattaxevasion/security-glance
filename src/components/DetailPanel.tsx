@@ -34,7 +34,7 @@ import { useState, type ReactNode } from "react";
 import type { ArticleRef, CveEntry, KevEntry, Topic, VulnData } from "../../shared/types";
 import { REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import { fullDateTime, pct, relativeTime, shortDate } from "./format";
-import { EpssMark, NATURE_COLOR, NATURE_ICON, NatureMark } from "./marks";
+import { EpssMark, NATURE_ICON, NatureMark, natureGradient } from "./marks";
 import { useMotion } from "./motion";
 import { namesOf, safeUrl, sourceLabel, summaryOf, titleOf, vulnTypeOf } from "./text";
 import { shareUrl } from "./share";
@@ -47,6 +47,16 @@ const useStyles = makeStyles({
   surface: { boxShadow: tokens.shadow64 },
   // 넓은 화면: 상단 바(48px) 아래부터 열어서 언어 전환·수집 상태 버튼을 가리지 않는다
   belowHeader: { top: "48px", height: "calc(100% - 48px)", maxHeight: "calc(100% - 48px)" },
+  // 머리: 토픽 성격 색(KEV는 사건 색, CVE는 취약점 공지 색) 그라데이션 위에 흰 글자 (브리핑 카드 머리띠와 같은 문법)
+  band: {
+    color: "#fff",
+    paddingBottom: "12px",
+    "& .fui-Button": { color: "#fff" },
+    "& .fui-Button:hover": { color: "#fff", backgroundColor: "rgba(255,255,255,0.14)" },
+    "& .fui-Button:hover:active": { color: "#fff", backgroundColor: "rgba(255,255,255,0.22)" },
+    "& .fui-Button:disabled": { color: "rgba(255,255,255,0.4)", backgroundColor: "transparent" },
+    "& .fui-Button .fui-Button__icon": { color: "inherit" },
+  },
   topBar: { display: "flex", justifyContent: "flex-end", gap: "2px", marginRight: "-8px", marginTop: "-8px" },
   heading: { display: "flex", gap: "16px", alignItems: "flex-start", marginTop: "4px" },
   iconCircle: {
@@ -58,7 +68,8 @@ const useStyles = makeStyles({
     justifyContent: "center",
     flexShrink: 0,
     fontSize: "22px",
-    backgroundColor: tokens.colorNeutralBackground3,
+    color: "#fff",
+    backgroundColor: "rgba(255,255,255,0.16)",
   },
   headText: { display: "flex", flexDirection: "column", gap: "8px", minWidth: 0 },
   title: { overflowWrap: "anywhere", lineHeight: "28px" },
@@ -67,7 +78,7 @@ const useStyles = makeStyles({
     flexWrap: "wrap",
     alignItems: "center",
     gap: "4px 14px",
-    color: tokens.colorNeutralForeground2,
+    color: "rgba(255,255,255,0.85)",
   },
   priority: {
     display: "inline-flex",
@@ -75,11 +86,16 @@ const useStyles = makeStyles({
     height: "18px",
     padding: "0 6px",
     borderRadius: tokens.borderRadiusSmall,
-    backgroundColor: tokens.colorPaletteRedBackground1,
-    color: tokens.colorPaletteRedForeground1,
+    backgroundColor: "rgba(255,255,255,0.22)",
+    color: "#fff",
     fontWeight: tokens.fontWeightSemibold,
   },
-  actions: { marginTop: "12px", marginLeft: "-8px" },
+  actions: {
+    marginTop: "12px",
+    marginLeft: "-8px",
+    paddingTop: "6px",
+    borderTop: "1px solid rgba(255,255,255,0.2)",
+  },
   body: { display: "flex", flexDirection: "column", paddingBottom: "16px" },
   section: { padding: "18px 0", borderTop: `1px solid ${tokens.colorNeutralStroke2}` },
   sectionTitle: { display: "block", marginBottom: "12px" },
@@ -238,7 +254,7 @@ export function DetailPanel(p: Props) {
     }
   };
 
-  let content: { head: ReactNode; body: ReactNode; footer: ReactNode } | null = null;
+  let content: { head: ReactNode; body: ReactNode; footer: ReactNode; band: string } | null = null;
   if (sel?.kind === "topic") {
     const topic = p.topics.find((x) => x.id === sel.id);
     if (topic) content = topicContent(topic, p, s, { copied, copy });
@@ -250,7 +266,7 @@ export function DetailPanel(p: Props) {
 
   const inner = content && (
     <>
-      <DrawerHeader>
+      <DrawerHeader className={s.band} style={{ backgroundImage: content.band }}>
         <div className={s.topBar}>
           <Tooltip content={t.prevItem} relationship="label">
             <Button appearance="subtle" icon={<ArrowUpRegular />} disabled={idx <= 0} onClick={() => go(-1)} />
@@ -315,7 +331,7 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
   const head = (
     <>
       <div className={s.heading}>
-        <span className={s.iconCircle} style={{ color: NATURE_COLOR[topic.nature] }} aria-hidden>
+        <span className={s.iconCircle} aria-hidden>
           <Icon />
         </span>
         <div className={s.headText}>
@@ -517,7 +533,7 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
     </Button>
   ) : null;
 
-  return { head, body, footer };
+  return { head, body, footer, band: natureGradient(topic.nature, 115) };
 }
 
 function vulnContent(kind: "kev" | "cve", v: KevEntry | CveEntry, p: Props, s: Styles) {
@@ -531,11 +547,7 @@ function vulnContent(kind: "kev" | "cve", v: KevEntry | CveEntry, p: Props, s: S
 
   const head = (
     <div className={s.heading}>
-      <span
-        className={s.iconCircle}
-        style={{ color: kev ? tokens.colorPaletteRedForeground1 : tokens.colorPaletteDarkOrangeForeground1 }}
-        aria-hidden
-      >
+      <span className={s.iconCircle} aria-hidden>
         {kev ? <ShieldErrorRegular /> : <BugRegular />}
       </span>
       <div className={s.headText}>
@@ -551,7 +563,7 @@ function vulnContent(kind: "kev" | "cve", v: KevEntry | CveEntry, p: Props, s: S
         {!kev && cve && vulnTypeOf(L, cve.description) && <Body1>{vulnTypeOf(L, cve.description)}</Body1>}
         <Caption1 className={s.metaRow}>
           {kev && <span>{t.inKev}</span>}
-          {kev?.ransomware && <span style={{ color: tokens.colorPaletteRedForeground1 }}>{t.ransomware}</span>}
+          {kev?.ransomware && <span className={s.priority}>{t.ransomware}</span>}
           {cve?.cvss != null && (
             <span>
               CVSS {cve.cvss.toFixed(1)} {cve.severity ? `· ${cve.severity}` : ""}
@@ -625,5 +637,6 @@ function vulnContent(kind: "kev" | "cve", v: KevEntry | CveEntry, p: Props, s: S
     </Button>
   );
 
-  return { head, body, footer };
+  // KEV(실제 악용)는 사건 색, CVE는 취약점 공지 색
+  return { head, body, footer, band: natureGradient(kev ? "사건" : "취약점 공지", 115) };
 }
