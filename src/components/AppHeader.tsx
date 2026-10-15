@@ -41,21 +41,32 @@ const useStyles = makeStyles({
     gap: "12px",
     paddingLeft: "4px",
     paddingRight: "8px",
-    backgroundColor: tokens.colorBrandBackgroundSelected,
-    color: tokens.colorNeutralForegroundOnBrand,
-    boxShadow: tokens.shadow4,
-    zIndex: 2,
-  },
-  barDark: {
-    backgroundColor: tokens.colorNeutralBackground4,
+    // 흰 바 + 맨 위에 배너와 같은 색의 그라데이션 선 (D안). 파란 띠는 배너와 겹쳐 무거워 보여서 뺐다.
+    // Safari 상단 바 색(theme-color)도 이 바탕색과 맞춰 index.astro에 둔다.
+    position: "relative",
+    backgroundColor: tokens.colorNeutralBackground1,
     color: tokens.colorNeutralForeground1,
     borderBottom: `1px solid ${tokens.colorNeutralStroke2}`,
+    zIndex: 2,
+    "::before": {
+      content: '""',
+      position: "absolute",
+      left: 0,
+      right: 0,
+      top: 0,
+      height: "3px",
+      backgroundImage: "linear-gradient(90deg, #0c3b5e 0%, #0f548c 40%, #4a3a9c 100%)",
+    },
+  },
+  barDark: {
+    // 어두운 화면에서는 같은 색 흐름을 밝게
+    "::before": { backgroundImage: "linear-gradient(90deg, #2a6aa8 0%, #3a86cf 40%, #7b68d6 100%)" },
   },
   left: { display: "flex", alignItems: "center", gap: "4px", minWidth: 0 },
   onBrand: {
     color: "inherit",
-    ":hover": { color: "inherit", backgroundColor: "rgba(255,255,255,0.12)" },
-    ":hover:active": { color: "inherit", backgroundColor: "rgba(255,255,255,0.2)" },
+    ":hover": { color: "inherit", backgroundColor: tokens.colorSubtleBackgroundHover },
+    ":hover:active": { color: "inherit", backgroundColor: tokens.colorSubtleBackgroundPressed },
   },
   brand: {
     display: "flex",
@@ -70,10 +81,10 @@ const useStyles = makeStyles({
     textDecorationLine: "none",
     borderRadius: tokens.borderRadiusMedium,
     paddingRight: "6px",
-    ":hover": { backgroundColor: "rgba(255,255,255,0.12)" },
-    ":focus-visible": { outline: "2px solid #fff", outlineOffset: "2px" },
+    ":hover": { backgroundColor: tokens.colorSubtleBackgroundHover },
+    ":focus-visible": { outline: `2px solid ${tokens.colorStrokeFocus2}`, outlineOffset: "2px" },
   },
-  brandIcon: { fontSize: "20px" },
+  brandIcon: { fontSize: "20px", color: tokens.colorBrandForeground1 },
   center: { display: "flex", justifyContent: "center", minWidth: 0 },
   search: { width: "100%", maxWidth: "468px" },
   right: { display: "flex", alignItems: "center", gap: "2px" },
@@ -87,7 +98,7 @@ const useStyles = makeStyles({
     height: "8px",
     borderRadius: "50%",
     backgroundColor: tokens.colorPaletteRedBackground3,
-    border: `1.5px solid ${tokens.colorNeutralForegroundOnBrand}`,
+    border: `1.5px solid ${tokens.colorNeutralBackground1}`,
     marginLeft: "-6px",
     marginTop: "-10px",
   },
@@ -152,7 +163,7 @@ export function AppHeader({
             <SearchBox
               className={s.search}
               size="medium"
-              appearance="filled-lighter"
+              appearance="filled-darker"
               placeholder={`${searchPlaceholder}  ( / )`}
               value={query}
               onChange={(_, d) => setQuery(d.value)}
