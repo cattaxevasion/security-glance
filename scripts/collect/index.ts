@@ -24,7 +24,13 @@ const VULNS_PATH = "public/data/vulns.json";
 const META_PATH = "public/data/meta.json";
 /** 화면용 가벼운 기사 목록 (news.json은 수집기 내부용) */
 const ARTICLES_PATH = "public/data/articles.json";
+/** 토픽 전체 (수집기 내부용). 화면은 아래 두 파일로 나눠 받는다. */
 const TOPICS_PATH = "public/data/topics.json";
+/** 첫 화면에 필요한 최근 토픽 (인시던트 기본 기간 30일 + 여유 하루) */
+const TOPICS_RECENT_PATH = "public/data/topics-recent.json";
+/** 그보다 오래된 토픽. 화면이 뜬 뒤에 불러온다. */
+const TOPICS_ARCHIVE_PATH = "public/data/topics-archive.json";
+const RECENT_DAYS = 31;
 const BRIEFINGS_PATH = "public/data/briefings.json";
 /** 토픽 다시 합치기에서 이미 물어본 토픽 쌍 (다시 묻지 않는다) */
 const MERGE_CHECKED_PATH = "data/merge-checked.json";
@@ -288,8 +294,10 @@ async function main() {
   // 언어 점검 1: 기사의 일본어 필드·엔티티 이름 (토픽 엔티티는 기사에서 다시 계산된다)
   if (hasKey()) {
     const a = await auditArticles(news);
-    console.log(`언어 점검(기사): 일본어 다시 번역 ${a.ja} · 이름 바로잡기 ${a.names} · 남은 문제 ${a.remaining}`);
-    if (!dry && (a.ja || a.names)) await writeJson(NEWS_PATH, news);
+    console.log(
+      `언어 점검(기사): 일본어 다시 번역 ${a.ja} · 한국어 고쳐 쓰기 ${a.ko} · 이름 바로잡기 ${a.names} · 남은 문제 ${a.remaining}`,
+    );
+    if (!dry && (a.ja || a.ko || a.names)) await writeJson(NEWS_PATH, news);
   }
 
   let vulns = await readJson<VulnData | null>(VULNS_PATH, null);
@@ -319,13 +327,19 @@ async function main() {
   const liveTopics = new Set(topics.map((t) => t.id));
   const keepPairs = [...checkedPairs].filter((k) => k.split("|").every((id) => liveTopics.has(id)));
   if (!dry) await writeJson(MERGE_CHECKED_PATH, keepPairs);
-  // 언어 점검 2: 토픽 통합 요약의 일본어 필드
+  // 언어 점검 2: 토픽 통합 요약의 일본어·한국어 필드
   if (hasKey()) {
-    const fixed = await auditTopics(topics);
-    if (fixed) console.log(`언어 점검(토픽): 일본어 다시 번역 ${fixed}`);
+    const f = await auditTopics(topics);
+    if (f.ja || f.ko) console.log(`언어 점검(토픽): 일본어 다시 번역 ${f.ja} · 한국어 고쳐 쓰기 ${f.ko}`);
   }
   meta.topicCount = topics.length;
-  if (!dry) await writeJson(TOPICS_PATH, topics);
+  if (!dry) {
+    await writeJson(TOPICS_PATH, topics);
+    const recentCut = Date.now() - RECENT_DAYS * 86400_000;
+    const isRecent = (t: Topic) => Date.parse(t.lastUpdated) >= recentCut;
+    await writeJson(TOPICS_RECENT_PATH, topics.filter(isRecent));
+    await writeJson(TOPICS_ARCHIVE_PATH, topics.filter((t) => !isRecent(t)));
+  }
 
   // 오늘의 브리핑 (일본 시간 아침, 하루 한 번)
   if (hasKey()) {
@@ -333,10 +347,10 @@ async function main() {
       const prev = await readJson<Briefing[]>(BRIEFINGS_PATH, []);
       const { briefings, made } = await maybeBriefing(topics, prev, forceBriefing);
       if (made) console.log(`브리핑 생성: ${briefings[0].date} · ${briefings[0].items.length}건`);
-      // 언어 점검 3: 브리핑의 일본어 문장
-      const fixed = await auditBriefings(briefings);
-      if (fixed) console.log(`언어 점검(브리핑): 일본어 다시 번역 ${fixed}`);
-      if (!dry && (made || fixed)) await writeJson(BRIEFINGS_PATH, briefings);
+      // 언어 점검 3: 브리핑의 일본어·한국어 문장
+      const f = await auditBriefings(briefings);
+      if (f.ja || f.ko) console.log(`언어 점검(브리핑): 일본어 다시 번역 ${f.ja} · 한국어 고쳐 쓰기 ${f.ko}`);
+      if (!dry && (made || f.ja || f.ko)) await writeJson(BRIEFINGS_PATH, briefings);
     } catch (e) {
       console.warn(`  !  브리핑 실패: ${(e as Error).message.slice(0, 160)}`);
     }

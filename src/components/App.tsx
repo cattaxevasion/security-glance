@@ -31,6 +31,7 @@ import { DetailPanel, type Selection } from "./DetailPanel";
 import { useMediaQuery, useNarrow, usePrefersDark } from "./hooks";
 import { BriefingPage } from "./BriefingPage";
 import { IncidentsPage } from "./IncidentsPage";
+import { relativeTime } from "./format";
 import { useMotion } from "./motion";
 import { DEFAULT_FILTERS, TopicsPage, type NewsFilters, type SortMode } from "./TopicsPage";
 import { VulnPage } from "./VulnPage";
@@ -124,6 +125,9 @@ function writeUrl(
   else history.replaceState(null, "", url);
 }
 
+/** 수집은 6시간마다. 두 번 연속 빠지면(+GitHub 예약 실행 지연 여유) 데이터가 멈췄다고 알린다. */
+const STALE_MS = 13 * 3600_000;
+
 const isVulnView = (v: View): v is "kev" | "cve" => v === "kev" || v === "cve";
 const isTopicView = (v: View) => v === "all" || v === "INTL" || v === "JP";
 
@@ -183,9 +187,12 @@ export default function App() {
 
   const t = STRINGS[lang];
 
+  // 토픽은 최근 31일치만 먼저 받고, 오래된 것은 첫 화면이 뜬 뒤에 붙인다 (기사를 90일 보관해서 전체는 무겁다)
+  const archiveRequested = useRef(false);
   const reload = useCallback(() => {
     setLoadError(false);
-    load<Topic[]>("topics.json").then((d) => {
+    archiveRequested.current = false;
+    load<Topic[]>("topics-recent.json").then((d) => {
       if (d === null) setLoadError(true);
       setTopics(d ?? []);
     });
@@ -194,6 +201,28 @@ export default function App() {
     load<Meta>("meta.json").then(setMeta);
   }, []);
   useEffect(reload, [reload]);
+
+  const loadArchive = useCallback(() => {
+    if (archiveRequested.current) return;
+    archiveRequested.current = true;
+    load<Topic[]>("topics-archive.json").then((d) => {
+      if (!d?.length) return;
+      setTopics((prev) => {
+        const have = new Set((prev ?? []).map((x) => x.id));
+        return [...(prev ?? []), ...d.filter((x) => !have.has(x.id))];
+      });
+    });
+  }, []);
+  useEffect(() => {
+    if (!topics) return;
+    // 링크로 연 토픽이 최근 목록에 없으면 바로, 아니면 잠시 뒤에
+    if (selection?.kind === "topic" && !topics.some((x) => x.id === selection.id)) {
+      loadArchive();
+      return;
+    }
+    const timer = window.setTimeout(loadArchive, 1500);
+    return () => window.clearTimeout(timer);
+  }, [topics, selection, loadArchive]);
 
   const articlesRequested = useRef(false);
   const loadArticles = useCallback(() => {
@@ -412,6 +441,11 @@ export default function App() {
                     {t.retry}
                   </Button>
                 </MessageBarActions>
+              </MessageBar>
+            )}
+            {meta?.updatedAt && Date.now() - Date.parse(meta.updatedAt) > STALE_MS && (
+              <MessageBar intent="warning" className={s.bar}>
+                <MessageBarBody>{t.staleData(relativeTime(lang, meta.updatedAt))}</MessageBarBody>
               </MessageBar>
             )}
             {topics === null ? (

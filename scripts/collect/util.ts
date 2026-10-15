@@ -57,7 +57,8 @@ export async function readJson<T>(path: string, fallback: T): Promise<T> {
 
 export async function writeJson(path: string, data: unknown): Promise<void> {
   await mkdir(dirname(path), { recursive: true });
-  await writeFile(path, JSON.stringify(data, null, 1) + "\n", "utf8");
+  // 들여쓰기 없이 쓴다 (화면이 받는 파일 크기가 절반 가까이 준다). 사람이 볼 때는 jq 등으로 펼쳐 보기.
+  await writeFile(path, JSON.stringify(data) + "\n", "utf8");
 }
 
 /** 동시에 최대 limit개씩 처리. 결과 순서는 입력 순서와 같다. */

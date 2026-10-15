@@ -50,6 +50,8 @@ const useStyles = makeStyles({
     gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
     gap: "12px",
     margin: "16px 0 8px",
+    // 휴대폰: 한 줄에 하나씩 쌓이면 첫 화면이 카드로 다 차므로 2열로, 마지막(가장 많은 산업)은 한 줄 전체
+    "@media (max-width: 640px)": { gridTemplateColumns: "1fr 1fr", gap: "8px" },
   },
   stat: {
     display: "grid",
@@ -58,6 +60,14 @@ const useStyles = makeStyles({
     gap: "2px 12px",
     alignItems: "start",
     padding: "14px 16px",
+    "@media (max-width: 640px)": {
+      gridTemplateColumns: "24px 1fr",
+      gridTemplateRows: "auto",
+      alignItems: "center",
+      gap: "4px 8px",
+      padding: "10px 12px",
+      ":last-child": { gridColumn: "1 / -1" },
+    },
   },
   statIcon: {
     gridRow: "1 / 4",
@@ -68,6 +78,13 @@ const useStyles = makeStyles({
     alignItems: "center",
     justifyContent: "center",
     fontSize: "20px",
+    "@media (max-width: 640px)": {
+      gridRow: "auto",
+      width: "24px",
+      height: "24px",
+      fontSize: "16px",
+      borderRadius: tokens.borderRadiusMedium,
+    },
   },
   statLabel: { color: tokens.colorNeutralForeground3 },
   statNum: {
@@ -75,9 +92,19 @@ const useStyles = makeStyles({
     lineHeight: tokens.lineHeightHero700,
     fontWeight: tokens.fontWeightSemibold,
     fontVariantNumeric: "tabular-nums",
+    "@media (max-width: 640px)": {
+      gridColumn: "1 / -1",
+      fontSize: tokens.fontSizeHero700,
+      lineHeight: tokens.lineHeightHero700,
+    },
   },
-  statText: { fontSize: tokens.fontSizeBase400, fontWeight: tokens.fontWeightSemibold, lineHeight: "28px" },
-  statSub: { color: tokens.colorNeutralForeground3 },
+  statText: {
+    fontSize: tokens.fontSizeBase400,
+    fontWeight: tokens.fontWeightSemibold,
+    lineHeight: "28px",
+    "@media (max-width: 640px)": { gridColumn: "1 / -1" },
+  },
+  statSub: { color: tokens.colorNeutralForeground3, "@media (max-width: 640px)": { gridColumn: "1 / -1" } },
   // 목록
   list: { margin: 0, listStyle: "none" },
   row: {

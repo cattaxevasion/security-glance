@@ -32,16 +32,17 @@ npm run collect -- --briefing              # 오늘의 브리핑을 시각과 �
 | `MAX_NEW_PER_RUN` | 선택 | 한 번에 요약할 새 기사 수, 기본 80 |
 | `BRIEFING_MODEL` | 선택 | 브리핑에 쓸 모델, 기본은 `SUMMARY_MODEL`과 같음 |
 
-### 한글 누출 검사
+### 언어 섞임 검사
 
 ```bash
 npm run check:i18n              # 화면 코드·번역표 검사 (배포 전에 Actions에서도 실행, 실패하면 빌드 중단)
-npm run check:i18n -- --data    # 데이터 파일의 일본어 필드도 점검 (경고만)
+npm run check:i18n -- --data    # 데이터 파일의 일본어·한국어 필드도 점검 (경고만)
 ```
 
-- 화면 문구는 반드시 `src/i18n.ts`에 둔다. 컴포넌트에 한글을 직접 쓰면 검사가 실패한다 (주석·태그 값은 예외).
+- 화면 문구는 반드시 `src/i18n.ts`에 둔다. 컴포넌트에 한글·일본어를 직접 쓰면 검사가 실패한다 (주석·태그 값은 예외).
 - 일본어 화면용 글은 `src/components/text.ts`의 `titleOf` / `summaryOf` / `namesOf`로 고른다.
 - 데이터 쪽은 수집기의 언어 점검(`scripts/collect/lang-audit.ts`)이 매번 고친다.
+  일본어 칸의 한글은 다시 번역하고, 한국어 칸에 남은 일본어는 「다이이치생명(第一生命保険)」처럼 한글 읽기 + 괄호 원문으로 고쳐 쓴다.
 
 ### 개발용 도구 (`scripts/dev/`)
 
@@ -69,7 +70,9 @@ shared/                 태그 체계, 데이터 타입 (수집기와 화면이 
 scripts/collect/        수집기: rss → article(본문) → summarize(Claude) / vulns(KEV·NVD·EPSS)
                         → topics(묶기·통합 요약·중요도) → briefing(오늘의 브리핑)
 public/data/            화면이 읽는 JSON (data 브랜치에서 받음, git 추적 안 함)
-                        articles.json(화면용 가벼운 기사 목록), news.json(수집기 내부용, 사이트엔 안 올림)
+                        articles.json(화면용 가벼운 기사 목록), topics-recent.json(최근 31일 토픽, 첫 화면)
+                        topics-archive.json(그 이전 토픽, 화면이 뜬 뒤에 받음)
+                        news.json·topics.json(수집기 내부용 전체본, 사이트엔 안 올림)
 data/                   내부 상태: state.json(제외·실패·다시 판정 기록), merge-checked.json(토픽 합치기 기록)
 scripts/collect/quality.ts  품질 점검: 일반 해설·홍보 글 다시 판정, 본문 다시 읽기
 src/components/         Fluent 2 화면 (React): AppHeader, AppNav, BriefingPage, IncidentsPage, TopicsPage, VulnPage, DetailPanel

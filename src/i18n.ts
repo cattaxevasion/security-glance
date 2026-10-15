@@ -114,6 +114,8 @@ const ko = {
   sourcesFailed: (names: string) => `이번 수집에서 ${names} 소스를 읽지 못했어요.`,
   loadFailed: "데이터를 불러오지 못했어요. 네트워크를 확인하고 다시 시도해 주세요.",
   retry: "다시 시도",
+  staleData: (ago: string) =>
+    `마지막 갱신이 ${ago}이에요. 자동 수집이 멈췄을 수 있어서 최신 소식이 빠져 있을 수 있어요.`,
   // 토픽·브리핑
   sortLatest: "최신순",
   sortImportant: "중요도순",
@@ -275,6 +277,8 @@ const ja: Strings = {
   sourcesFailed: (names: string) => `今回の収集で ${names} を取得できませんでした。`,
   loadFailed: "データを読み込めませんでした。ネットワークを確認して、もう一度お試しください。",
   retry: "再試行",
+  staleData: (ago: string) =>
+    `最終更新は${ago}です。自動収集が止まっている可能性があり、最新のニュースが反映されていないかもしれません。`,
   sortLatest: "新着順",
   sortImportant: "重要度順",
   priority: "注目",
