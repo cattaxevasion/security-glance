@@ -1,7 +1,9 @@
 // 앱 셸: 상단 앱 바 + 왼쪽 탐색 + 본문 + 오른쪽 상세 패널 (Microsoft Defender 포털 구조)
 import {
   FluentProvider,
+  Button,
   MessageBar,
+  MessageBarActions,
   MessageBarBody,
   Skeleton,
   SkeletonItem,
@@ -17,11 +19,11 @@ import {
   type Theme,
 } from "@fluentui/react-components";
 import { CheckmarkCircleFilled } from "@fluentui/react-icons";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "pretendard-jp/dist/web/variable/pretendardvariable-jp-dynamic-subset.css";
 import type { Region } from "../../shared/taxonomy";
-import type { Briefing, Meta, NewsItem, Topic, VulnData } from "../../shared/types";
+import type { ArticleRef, Briefing, Meta, Topic, VulnData } from "../../shared/types";
 import { FONT_STACK, REGION_LABELS, STRINGS, detectLang, saveLang, type Lang } from "../i18n";
 import { AppHeader } from "./AppHeader";
 import { AppNav, VIEWS, type View } from "./AppNav";
@@ -100,7 +102,10 @@ function readUrl(): UrlState {
   };
 }
 
-function writeUrl(st: { view: View; sort: SortMode; q: string; filters: NewsFilters; sel: string | null; lang: Lang }) {
+function writeUrl(
+  st: { view: View; sort: SortMode; q: string; filters: NewsFilters; sel: string | null; lang: Lang },
+  mode: "push" | "replace",
+) {
   const p = new URLSearchParams();
   if (st.view !== "briefing") p.set("view", st.view);
   if (st.q) p.set("q", st.q);
@@ -113,7 +118,10 @@ function writeUrl(st: { view: View; sort: SortMode; q: string; filters: NewsFilt
   }
   if (st.sel) p.set("sel", st.sel);
   p.set("lang", st.lang);
-  history.replaceState(null, "", `?${p.toString()}`);
+  const url = `?${p.toString()}`;
+  if (url === location.search) return;
+  if (mode === "push") history.pushState(null, "", url);
+  else history.replaceState(null, "", url);
 }
 
 const isVulnView = (v: View): v is "kev" | "cve" => v === "kev" || v === "cve";
@@ -165,8 +173,10 @@ export default function App() {
   const [order, setOrder] = useState<string[]>([]);
   const [navOpen, setNavOpen] = useState(!narrow);
 
-  const [news, setNews] = useState<NewsItem[] | null>(null);
+  // 기사 목록은 상세 패널의 '흐름'에만 필요해서 첫 화면이 뜬 뒤에 불러온다
+  const [articles, setArticles] = useState<ArticleRef[] | null>(null);
   const [topics, setTopics] = useState<Topic[] | null>(null);
+  const [loadError, setLoadError] = useState(false);
   const [briefings, setBriefings] = useState<Briefing[]>([]);
   const [vulns, setVulns] = useState<VulnData | null>(null);
   const [meta, setMeta] = useState<Meta | null>(null);
@@ -174,13 +184,32 @@ export default function App() {
   const t = STRINGS[lang];
 
   const reload = useCallback(() => {
-    load<NewsItem[]>("news.json").then((d) => setNews(d ?? []));
-    load<Topic[]>("topics.json").then((d) => setTopics(d ?? []));
+    setLoadError(false);
+    load<Topic[]>("topics.json").then((d) => {
+      if (d === null) setLoadError(true);
+      setTopics(d ?? []);
+    });
     load<Briefing[]>("briefings.json").then((d) => setBriefings(d ?? []));
     load<VulnData>("vulns.json").then(setVulns);
     load<Meta>("meta.json").then(setMeta);
   }, []);
   useEffect(reload, [reload]);
+
+  const articlesRequested = useRef(false);
+  const loadArticles = useCallback(() => {
+    if (articlesRequested.current) return;
+    articlesRequested.current = true;
+    load<ArticleRef[]>("articles.json").then((d) => setArticles(d ?? []));
+  }, []);
+  // 상세 패널을 열면 바로, 아니면 첫 화면이 뜨고 잠시 뒤에 미리 불러둔다
+  useEffect(() => {
+    if (selection?.kind === "topic") loadArticles();
+  }, [selection, loadArticles]);
+  useEffect(() => {
+    if (!topics) return;
+    const timer = window.setTimeout(loadArticles, 1500);
+    return () => window.clearTimeout(timer);
+  }, [topics, loadArticles]);
 
   useEffect(() => setNavOpen(!narrow), [narrow]);
 
@@ -194,9 +223,55 @@ export default function App() {
   }, [lang]);
 
   const query = isVulnView(view) ? vulnQuery : newsQuery;
-  useEffect(
-    () => writeUrl({ view, sort, q: query, filters, sel: selection?.id ?? null, lang }),
-    [view, sort, query, filters, selection, lang],
+
+  // ── 방문 기록 (뒤로 가기) ──
+  // 화면 이동과 '패널 열기'는 기록에 남기고(push), 검색·필터·패널 안에서 다음 항목 넘기기는 덮어쓴다(replace).
+  // 그래서 뒤로 가기 한 번이면 패널이 닫히고, 한 번 더 누르면 이전 화면으로 간다.
+  const fromPop = useRef(false);
+  const panelPushed = useRef(false);
+  const prevNav = useRef<{ view: View; sel: string | null }>({ view, sel: selection?.id ?? null });
+  useEffect(() => {
+    const sel = selection?.id ?? null;
+    const prev = prevNav.current;
+    let mode: "push" | "replace" = "replace";
+    if (fromPop.current) {
+      fromPop.current = false;
+    } else if (prev.view !== view) {
+      mode = "push";
+      panelPushed.current = false;
+    } else if (prev.sel === null && sel !== null) {
+      mode = "push";
+      panelPushed.current = true;
+    }
+    if (sel === null) panelPushed.current = false;
+    writeUrl({ view, sort, q: query, filters, sel, lang }, mode);
+    prevNav.current = { view, sel };
+  }, [view, sort, query, filters, selection, lang]);
+
+  useEffect(() => {
+    const onPop = () => {
+      const u = readUrl();
+      fromPop.current = true;
+      panelPushed.current = false;
+      setViewState(u.view);
+      setSelection(u.sel ? { kind: isVulnView(u.view) ? u.view : "topic", id: u.sel } : null);
+      setFilters(u.filters);
+      setSort(u.sort);
+      if (isVulnView(u.view)) setVulnQuery(u.q);
+      else setNewsQuery(u.q);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  /** 패널 닫기: 패널을 열 때 기록을 남겼으면 기록도 한 칸 되돌린다 (뒤로 가기와 같은 결과) */
+  const closePanel = useCallback(() => {
+    if (panelPushed.current) history.back();
+    else setSelection(null);
+  }, []);
+  const select = useCallback(
+    (sel: Selection | null) => (sel === null ? closePanel() : setSelection(sel)),
+    [closePanel],
   );
 
   // 브리핑 화면에서 검색하면 토픽 전체로 넘어간다
@@ -218,7 +293,7 @@ export default function App() {
     const onKey = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       if (e.key === "Escape") {
-        if (selection) setSelection(null);
+        if (selection) closePanel();
         return;
       }
       if (isEditable(e.target)) return;
@@ -329,7 +404,17 @@ export default function App() {
                 <MessageBarBody>{t.sourcesFailed(failed.map((x) => x.name).join(", "))}</MessageBarBody>
               </MessageBar>
             )}
-            {news === null || topics === null ? (
+            {loadError && (
+              <MessageBar intent="error" className={s.bar}>
+                <MessageBarBody>{t.loadFailed}</MessageBarBody>
+                <MessageBarActions>
+                  <Button size="small" onClick={reload}>
+                    {t.retry}
+                  </Button>
+                </MessageBarActions>
+              </MessageBar>
+            )}
+            {topics === null ? (
               <LoadingSkeleton />
             ) : (
               <div key={view} className={m.fade}>
@@ -362,7 +447,7 @@ export default function App() {
                     lang={lang}
                     kind={view}
                     data={vulns}
-                    news={news}
+                    topics={topics}
                     query={vulnQuery}
                     setQuery={setVulnQuery}
                     narrow={narrow}
@@ -401,11 +486,11 @@ export default function App() {
             inline={wide}
             selection={selection}
             topics={topics ?? []}
-            news={news ?? []}
+            news={articles}
             vulns={vulns}
             order={order}
             onCopied={notifyCopied}
-            onSelect={setSelection}
+            onSelect={select}
             onSearch={searchAll}
           />
         </div>

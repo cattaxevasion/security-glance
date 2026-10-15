@@ -8,8 +8,11 @@
 
 ```bash
 npm install
+npm run data:pull    # data 브랜치에서 최신 수집 데이터 받기 (public/data, data/)
 npm run dev          # http://localhost:4321
 ```
+
+수집 데이터는 main이 아니라 **`data` 브랜치**에 있다. GitHub Actions가 실행마다 커밋 하나로 덮어쓰므로(force push) main 기록과 저장소 크기가 깨끗하게 유지된다.
 
 ### 데이터 수집
 
@@ -65,8 +68,10 @@ sources.json            RSS 소스 목록
 shared/                 태그 체계, 데이터 타입 (수집기와 화면이 같이 씀)
 scripts/collect/        수집기: rss → article(본문) → summarize(Claude) / vulns(KEV·NVD·EPSS)
                         → topics(묶기·통합 요약·중요도) → briefing(오늘의 브리핑)
-public/data/            화면이 읽는 JSON (Actions가 갱신해서 커밋)
-data/state.json         내부 상태 (보안 무관 판정, 실패 횟수)
+public/data/            화면이 읽는 JSON (data 브랜치에서 받음, git 추적 안 함)
+                        articles.json(화면용 가벼운 기사 목록), news.json(수집기 내부용, 사이트엔 안 올림)
+data/                   내부 상태: state.json(제외·실패·다시 판정 기록), merge-checked.json(토픽 합치기 기록)
+scripts/collect/quality.ts  품질 점검: 일반 해설·홍보 글 다시 판정, 본문 다시 읽기
 src/components/         Fluent 2 화면 (React): AppHeader, AppNav, BriefingPage, IncidentsPage, TopicsPage, VulnPage, DetailPanel
                         motion.ts(Fluent 모션 토큰 기반 애니메이션)
 src/i18n.ts             한/日 화면 글자와 태그 라벨

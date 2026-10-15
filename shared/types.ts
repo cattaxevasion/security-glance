@@ -32,6 +32,12 @@ export interface NewsItem {
   basis: Basis;
 }
 
+/** 화면(상세 패널의 '흐름')에 필요한 기사 정보만. articles.json으로 따로 내보내 첫 로딩을 가볍게 한다. */
+export type ArticleRef = Pick<
+  NewsItem,
+  "id" | "url" | "title" | "titleKo" | "titleJa" | "sourceName" | "sourceKind" | "publishedAt" | "basis"
+>;
+
 export interface Technique {
   /** 예: T1190, T1059.001 */
   id: string;

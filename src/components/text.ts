@@ -10,7 +10,7 @@ interface Bilingual {
   summaryJa: string[];
 }
 
-export function titleOf(lang: Lang, x: Bilingual, original?: string): string {
+export function titleOf(lang: Lang, x: Pick<Bilingual, "titleKo" | "titleJa">, original?: string): string {
   if (lang === "ko") return x.titleKo;
   if (x.titleJa && !hasHangul(x.titleJa)) return x.titleJa;
   // 일본어 제목이 아직 없으면 원제목(일본어·영어)을, 그것도 없으면 한국어 제목을 쓴다

@@ -14,7 +14,7 @@ import {
   tokens,
 } from "@fluentui/react-components";
 import { useEffect, useMemo, useState } from "react";
-import type { CveEntry, KevEntry, NewsItem, VulnData } from "../../shared/types";
+import type { CveEntry, KevEntry, Topic, VulnData } from "../../shared/types";
 import { STRINGS, type Lang } from "../i18n";
 import { EpssMark } from "./marks";
 import { PageTitle, usePageStyles } from "./page";
@@ -49,7 +49,7 @@ interface Props {
   lang: Lang;
   kind: "kev" | "cve";
   data: VulnData | null;
-  news: NewsItem[];
+  topics: Topic[];
   query: string;
   setQuery: (q: string) => void;
   narrow: boolean;
@@ -73,9 +73,9 @@ export function VulnPage(p: Props) {
 
   const mentions = useMemo(() => {
     const m = new Map<string, number>();
-    for (const n of p.news) for (const c of n.entities.cves) m.set(c, (m.get(c) ?? 0) + 1);
+    for (const n of p.topics) for (const c of n.entities.cves) m.set(c, (m.get(c) ?? 0) + 1);
     return m;
-  }, [p.news]);
+  }, [p.topics]);
 
   const q = p.query.trim().toLowerCase();
   const sign = sort.dir === "ascending" ? 1 : -1;

@@ -7,7 +7,7 @@
 //   --briefing                   오늘의 브리핑을 시각과 상관없이 다시 만든다
 import Anthropic from "@anthropic-ai/sdk";
 import { readFile } from "node:fs/promises";
-import type { Briefing, Meta, NewsItem, RunStats, Topic, VulnData } from "../../shared/types";
+import type { ArticleRef, Briefing, Meta, NewsItem, RunStats, Topic, VulnData } from "../../shared/types";
 import { BODY_CHARS, extractArticle } from "./article";
 import { maybeBriefing } from "./briefing";
 import { auditArticles, auditBriefings, auditTopics } from "./lang-audit";
@@ -22,6 +22,8 @@ import { collectVulns } from "./vulns";
 const NEWS_PATH = "public/data/news.json";
 const VULNS_PATH = "public/data/vulns.json";
 const META_PATH = "public/data/meta.json";
+/** 화면용 가벼운 기사 목록 (news.json은 수집기 내부용) */
+const ARTICLES_PATH = "public/data/articles.json";
 const TOPICS_PATH = "public/data/topics.json";
 const BRIEFINGS_PATH = "public/data/briefings.json";
 /** 토픽 다시 합치기에서 이미 물어본 토픽 쌍 (다시 묻지 않는다) */
@@ -339,6 +341,19 @@ async function main() {
       console.warn(`  !  브리핑 실패: ${(e as Error).message.slice(0, 160)}`);
     }
   }
+
+  const refs: ArticleRef[] = news.map((n) => ({
+    id: n.id,
+    url: n.url,
+    title: n.title,
+    titleKo: n.titleKo,
+    titleJa: n.titleJa,
+    sourceName: n.sourceName,
+    sourceKind: n.sourceKind,
+    publishedAt: n.publishedAt,
+    basis: n.basis,
+  }));
+  if (!dry) await writeJson(ARTICLES_PATH, refs);
 
   meta.newsCount = news.length;
   meta.updatedAt = new Date().toISOString();

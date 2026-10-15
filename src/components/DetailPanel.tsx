@@ -10,6 +10,7 @@ import {
   InlineDrawer,
   Link,
   OverlayDrawer,
+  Spinner,
   Subtitle1,
   Subtitle2,
   Tag,
@@ -31,7 +32,7 @@ import {
   SparkleRegular,
 } from "@fluentui/react-icons";
 import { useState, type ReactNode } from "react";
-import type { CveEntry, KevEntry, NewsItem, Topic, VulnData } from "../../shared/types";
+import type { ArticleRef, CveEntry, KevEntry, Topic, VulnData } from "../../shared/types";
 import { REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import { fullDateTime, pct, relativeTime, shortDate } from "./format";
 import { EpssMark, NATURE_COLOR, NATURE_ICON, NatureMark } from "./marks";
@@ -207,7 +208,8 @@ interface Props {
   inline: boolean;
   selection: Selection | null;
   topics: Topic[];
-  news: NewsItem[];
+  /** 상세 패널의 흐름에 쓰는 기사 목록. 아직 불러오는 중이면 null */
+  news: ArticleRef[] | null;
   vulns: VulnData | null;
   order: string[];
   onCopied: () => void;
@@ -300,7 +302,7 @@ export function DetailPanel(p: Props) {
 }
 
 /** 대표 출처: 벤더 분석 글이 있으면 그것(가장 자세함), 없으면 최신 기사 */
-function representative(articles: NewsItem[]): NewsItem | undefined {
+function representative(articles: ArticleRef[]): ArticleRef | undefined {
   return articles.find((n) => n.sourceKind === "vendor") ?? articles[0];
 }
 
@@ -308,15 +310,15 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
   const L = p.lang;
   const t = STRINGS[L];
   const Icon = NATURE_ICON[topic.nature];
-  const byId = new Map(p.news.map((n) => [n.id, n]));
-  const articles = topic.articleIds.map((id) => byId.get(id)).filter((n): n is NewsItem => !!n);
+  const byId = new Map((p.news ?? []).map((n) => [n.id, n]));
+  const articles = topic.articleIds.map((id) => byId.get(id)).filter((n): n is ArticleRef => !!n);
   const main = representative(articles);
   const title = titleOf(L, topic);
   const summary = summaryOf(L, topic);
   const actors = namesOf(L, topic.entities.actors);
   const orgs = namesOf(L, topic.entities.orgs);
   const epss = p.vulns?.mentioned ?? {};
-  const articleTitle = (n: NewsItem) => titleOf(L, n, n.title);
+  const articleTitle = (n: ArticleRef) => titleOf(L, n, n.title);
 
   const head = (
     <>
@@ -404,6 +406,7 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
       )}
 
       <Section s={s} title={`${t.timeline} · ${t.articles(articles.length)}`}>
+        {p.news === null && <Spinner size="tiny" />}
         <ol className={s.timeline}>
           {[...articles].reverse().map((n) => (
             <li key={n.id} className={s.tlItem}>

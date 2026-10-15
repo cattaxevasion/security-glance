@@ -16,7 +16,7 @@ const useStyles = makeStyles({
   pill: {
     display: "inline-flex",
     alignItems: "center",
-    height: "28px",
+    minHeight: "28px",
     borderRadius: tokens.borderRadiusMedium,
     backgroundColor: tokens.colorNeutralBackground3,
     color: tokens.colorNeutralForeground1,
@@ -28,7 +28,7 @@ const useStyles = makeStyles({
   },
   main: {
     minWidth: 0,
-    height: "28px",
+    minHeight: "28px",
     paddingLeft: "10px",
     paddingRight: "6px",
     fontWeight: tokens.fontWeightRegular,
@@ -39,7 +39,7 @@ const useStyles = makeStyles({
   value: { fontWeight: tokens.fontWeightSemibold, marginLeft: "4px" },
   clear: {
     minWidth: "28px",
-    height: "28px",
+    minHeight: "28px",
     color: "inherit",
     borderLeft: `1px solid ${tokens.colorNeutralStroke2}`,
     borderRadius: 0,
