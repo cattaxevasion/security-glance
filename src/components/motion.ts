@@ -81,7 +81,16 @@ export function useCountUp(value: number, duration = 700): number {
       if (p < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    // 백그라운드 탭처럼 애니메이션 프레임이 멈춘 환경에서도 0에 머물지 않도록 끝값으로 맞춘다
+    const done = window.setTimeout(() => {
+      cancelAnimationFrame(raf);
+      setShown(value);
+      from.current = value;
+    }, duration + 150);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(done);
+    };
   }, [value, duration]);
   return shown;
 }
