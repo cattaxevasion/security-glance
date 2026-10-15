@@ -487,6 +487,7 @@ export default function App() {
             onClose={() => setNavOpen(false)}
             counts={counts}
             fresh={fresh}
+            dark={dark}
           />
           <main className={s.main}>
             {failed.length > 0 && isTopicView(view) && (

@@ -63,20 +63,24 @@ const useStyles = makeStyles({
     flexShrink: 0,
     borderRadius: tokens.borderRadiusLarge,
   },
+  // 다른 Fluent 아이콘(20px 칸 안에 그림 16px 남짓)과 크기·굵기를 맞춘다
   monogram: {
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    width: "20px",
-    height: "20px",
-    borderRadius: tokens.borderRadiusSmall,
+    width: "16px",
+    height: "16px",
+    borderRadius: "3px",
     border: `1.5px solid currentColor`,
-    fontSize: "9px",
+    fontSize: "8px",
     fontWeight: tokens.fontWeightBold,
     letterSpacing: "0.02em",
     lineHeight: 1,
     boxSizing: "border-box",
   },
+  // 속이 찬 모양: 바탕을 아이콘 색으로 채우고 글자는 바탕색으로 뒤집는다
+  monogramFilled: { backgroundColor: "currentColor" },
+  monogramFilledText: { color: tokens.colorNeutralBackground1 },
   epss: { display: "inline-flex", alignItems: "center", gap: "8px", whiteSpace: "nowrap" },
   bars: { display: "inline-flex", gap: "2px" },
   bar: { width: "6px", height: "10px", borderRadius: "1px", backgroundColor: tokens.colorNeutralStroke2 },
@@ -150,11 +154,12 @@ export function NatureMark({ nature, lang, className }: { nature: Nature; lang: 
 }
 
 /** 탐색 메뉴용 지역 아이콘. 국기 대신 글자 표지를 써서 아이콘 크기·선 두께를 맞춘다. */
-export function RegionMonogram({ region }: { region: Exclude<Region, "INTL"> }) {
+/** 지역 머리글자 아이콘. filled면 선택된 메뉴처럼 속이 찬 모양 (Fluent 아이콘의 Filled와 짝) */
+export function RegionMonogram({ region, filled }: { region: Exclude<Region, "INTL">; filled?: boolean }) {
   const s = useStyles();
   return (
-    <span className={s.monogram} aria-hidden>
-      {region}
+    <span className={mergeClasses(s.monogram, filled && s.monogramFilled)} aria-hidden>
+      <span className={filled ? s.monogramFilledText : undefined}>{region}</span>
     </span>
   );
 }
