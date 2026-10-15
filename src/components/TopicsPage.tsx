@@ -33,7 +33,7 @@ import type { View } from "./AppNav";
 import { FilterPill } from "./FilterPill";
 import { dayKey, dayLabel, shortDate, timeOfDay } from "./format";
 import { useStoredFlag } from "./hooks";
-import { NatureMark } from "./marks";
+import { NatureMark, NatureTile, SourceAvatars } from "./marks";
 import { stagger, useCountUp, useMotion } from "./motion";
 import { PageTitle, usePageStyles } from "./page";
 
@@ -147,8 +147,7 @@ const useStyles = makeStyles({
   row: {
     position: "relative",
     display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "0 16px",
+    gap: "0 14px",
     padding: "14px 12px",
     margin: "0 -12px",
     borderBottom: `1px solid ${tokens.colorNeutralStroke3}`,
@@ -156,7 +155,8 @@ const useStyles = makeStyles({
     cursor: "pointer",
     transitionProperty: "background-color",
     transitionDuration: tokens.durationFaster,
-    "@media (min-width: 641px)": { gridTemplateColumns: "48px 1fr 20px", padding: "16px 12px" },
+    gridTemplateColumns: "32px 1fr",
+    "@media (min-width: 641px)": { gridTemplateColumns: "40px 1fr 20px", padding: "16px 12px" },
     ":hover": { backgroundColor: tokens.colorSubtleBackgroundHover },
     ":focus-visible": { outline: `2px solid ${tokens.colorStrokeFocus2}`, outlineOffset: "-2px" },
   },
@@ -173,15 +173,6 @@ const useStyles = makeStyles({
       borderRadius: "2px",
       backgroundColor: tokens.colorBrandStroke1,
     },
-  },
-  time: {
-    display: "none",
-    paddingTop: "3px",
-    fontSize: tokens.fontSizeBase200,
-    lineHeight: "18px",
-    color: tokens.colorNeutralForeground3,
-    fontVariantNumeric: "tabular-nums",
-    "@media (min-width: 641px)": { display: "block" },
   },
   body: { minWidth: 0 },
   title: {
@@ -241,7 +232,6 @@ const useStyles = makeStyles({
     color: tokens.colorPaletteRedForeground1,
     fontWeight: tokens.fontWeightSemibold,
   },
-  metaTime: { "@media (min-width: 641px)": { display: "none" } },
 });
 
 interface Props {
@@ -530,67 +520,72 @@ export function TopicsPage(p: Props) {
           {items.length > 0 && <Text>{t.emptyHint}</Text>}
         </div>
       ) : (
-        groups.map((g, gi) => (
-          <section key={`${g.key}-${p.sort}`} aria-label={g.label}>
-            <h2 className={s.dayHeader}>
-              {g.label}
-              <span className={s.dayCount}>{t.count(g.items.length)}</span>
-            </h2>
-            <ul className={s.list}>
-              {g.items.map((n, i) => (
-                <li
-                  key={n.id}
-                  className={mergeClasses(s.row, n.id === selectedId && s.selected, gi < 3 && m.enter)}
-                  style={gi < 3 ? stagger(i + gi * 4) : undefined}
-                  onMouseEnter={() => setHoverRow(n.id)}
-                  onMouseLeave={() => setHoverRow(null)}
-                  role="button"
-                  tabIndex={0}
-                  aria-current={n.id === selectedId ? "true" : undefined}
-                  onClick={() => p.onSelect(n.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      p.onSelect(n.id);
-                    }
-                  }}
-                >
-                  <time className={s.time} dateTime={n.lastUpdated}>
-                    {p.sort === "important" ? shortDate(lang, n.lastUpdated) : timeOfDay(lang, n.lastUpdated)}
-                  </time>
-                  <div className={s.body}>
-                    <div className={s.title}>{title(n)}</div>
-                    {summary(n) && <div className={s.summary}>{summary(n)}</div>}
-                    <div className={s.meta}>
-                      {n.importance >= PRIORITY_THRESHOLD && <span className={s.priority}>{t.priority}</span>}
-                      <span className={s.metaTime}>{timeOfDay(lang, n.lastUpdated)}</span>
-                      <NatureMark nature={n.nature} lang={lang} className={s.metaNature} />
-                      {p.showRegion && <span>{n.regions.map((r) => REGION_LABELS[lang][r]).join(" · ")}</span>}
-                      <span>
-                        {n.sources.length > 1
-                          ? `${t.sourcesCount(n.sources.length)} · ${sourcesText(n)}`
-                          : n.sources[0]}
-                      </span>
-                      {n.hasVendor && (
-                        <span className={s.metaIcon}>
-                          <DocumentSearchRegular aria-hidden />
-                          {t.hasAnalysis}
-                        </span>
-                      )}
-                      {n.attackTypes.length > 0 && (
-                        <span>{n.attackTypes.map((a) => tagLabel(lang, a)).join(", ")}</span>
-                      )}
+        <div className={ps.listSurface}>
+          {groups.map((g, gi) => (
+            <section key={`${g.key}-${p.sort}`} aria-label={g.label}>
+              <h2 className={s.dayHeader}>
+                {g.label}
+                <span className={s.dayCount}>{t.count(g.items.length)}</span>
+              </h2>
+              <ul className={s.list}>
+                {g.items.map((n, i) => (
+                  <li
+                    key={n.id}
+                    className={mergeClasses(s.row, n.id === selectedId && s.selected, gi < 3 && m.enter)}
+                    style={gi < 3 ? stagger(i + gi * 4) : undefined}
+                    onMouseEnter={() => setHoverRow(n.id)}
+                    onMouseLeave={() => setHoverRow(null)}
+                    role="button"
+                    tabIndex={0}
+                    aria-current={n.id === selectedId ? "true" : undefined}
+                    onClick={() => p.onSelect(n.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        p.onSelect(n.id);
+                      }
+                    }}
+                  >
+                    <NatureTile nature={n.nature} size={narrow ? 32 : 40} />
+                    <div className={s.body}>
+                      <div className={s.title}>{title(n)}</div>
+                      {summary(n) && <div className={s.summary}>{summary(n)}</div>}
+                      <div className={s.meta}>
+                        {n.importance >= PRIORITY_THRESHOLD && <span className={s.priority}>{t.priority}</span>}
+                        <time dateTime={n.lastUpdated}>
+                          {p.sort === "important" ? shortDate(lang, n.lastUpdated) : timeOfDay(lang, n.lastUpdated)}
+                        </time>
+                        <NatureMark nature={n.nature} lang={lang} className={s.metaNature} />
+                        {p.showRegion && <span>{n.regions.map((r) => REGION_LABELS[lang][r]).join(" · ")}</span>}
+                        {n.sources.length > 1 ? (
+                          <span className={s.metaIcon}>
+                            <SourceAvatars sources={n.sources} />
+                            {t.sourcesCount(n.sources.length)} · {sourcesText(n)}
+                          </span>
+                        ) : (
+                          <span>{n.sources[0]}</span>
+                        )}
+                        {n.hasVendor && (
+                          <span className={s.metaIcon}>
+                            <DocumentSearchRegular aria-hidden />
+                            {t.hasAnalysis}
+                          </span>
+                        )}
+                        {n.attackTypes.length > 0 && (
+                          <span>{n.attackTypes.map((a) => tagLabel(lang, a)).join(", ")}</span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <ChevronRightRegular
-                    className={mergeClasses(s.chevron, (hoverRow === n.id || n.id === selectedId) && s.chevronOn)}
-                    aria-hidden
-                  />
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))
+                    <ChevronRightRegular
+                      className={mergeClasses(s.chevron, (hoverRow === n.id || n.id === selectedId) && s.chevronOn)}
+                      aria-hidden
+                    />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
       )}
 
       {filtered.length > shown && (

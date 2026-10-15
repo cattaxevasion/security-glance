@@ -1,5 +1,5 @@
 // 인시던트: 실제 침해 사고(성격 '사건') 토픽만 모아 보는 화면.
-// 위쪽에 30일 일별 추이(일본/국제 누적 막대)와 핵심 수치, 아래에 피해 조직이 먼저 보이는 목록.
+// 위쪽에 최근 7일 핵심 수치 타일, 아래에 관련 조직이 먼저 보이는 목록 (앞에 달력 모양 날짜 타일).
 import {
   Button,
   Caption1,
@@ -17,173 +17,73 @@ import {
   mergeClasses,
   tokens,
 } from "@fluentui/react-components";
-import { CalendarLtrRegular, ChevronDownRegular, ChevronRightRegular, DismissRegular } from "@fluentui/react-icons";
+import {
+  AlertUrgentRegular,
+  BuildingMultipleRegular,
+  CalendarLtrRegular,
+  ChevronDownRegular,
+  ChevronRightRegular,
+  DatabaseWarningRegular,
+  LockClosedRegular,
+  LocationRegular,
+  type FluentIcon,
+} from "@fluentui/react-icons";
 import { useEffect, useMemo, useState } from "react";
 import { ATTACK_TYPES, SECTORS, type Region } from "../../shared/taxonomy";
 import type { Topic } from "../../shared/types";
 import { LOCALE, REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import { FilterPill } from "./FilterPill";
-import { dayKey, shortDate, timeOfDay } from "./format";
+import { timeOfDay } from "./format";
+import { SourceAvatars } from "./marks";
 import { stagger, useCountUp, useMotion } from "./motion";
 import { PageTitle, usePageStyles } from "./page";
 import { PRIORITY_THRESHOLD, matchesQuery } from "./TopicsPage";
 
-// 두 지역 색: 데이터 시각화 검증기(CVD·밝기·대비)를 통과한 조합. 라이트/다크 각각 따로 고른 단계.
-const SERIES = {
-  light: { JP: "#0F6CBD", INTL: "#DA3B01" },
-  dark: { JP: "#2C8BE0", INTL: "#E36F2E" },
-};
-
-const DAYS = 30;
 const PERIODS = [7, 30, 90];
 
 const useStyles = makeStyles({
   regionTabs: { marginTop: "12px", marginLeft: "-10px" },
-  overview: {
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "16px",
-    marginTop: "16px",
-    "@media (min-width: 1100px)": { gridTemplateColumns: "minmax(0, 1.6fr) minmax(0, 1fr)" },
-  },
-  card: {
-    padding: "16px 20px",
-    borderRadius: tokens.borderRadiusXLarge,
-    border: `1px solid ${tokens.colorNeutralStroke2}`,
-    backgroundColor: tokens.colorNeutralBackground1,
-  },
-  cardHead: {
-    display: "flex",
-    flexWrap: "wrap",
-    alignItems: "baseline",
-    justifyContent: "space-between",
-    gap: "4px 12px",
-  },
-  cardTitle: { fontWeight: tokens.fontWeightSemibold },
-  muted: { color: tokens.colorNeutralForeground3 },
-  legend: {
-    display: "flex",
-    gap: "16px",
-    alignItems: "center",
-    fontSize: tokens.fontSizeBase200,
-    color: tokens.colorNeutralForeground2,
-  },
-  swatch: {
-    width: "10px",
-    height: "10px",
-    borderRadius: "2px",
-    display: "inline-block",
-    marginRight: "6px",
-    verticalAlign: "-1px",
-  },
-  // 차트
-  plot: { position: "relative", display: "grid", gridTemplateColumns: "28px 1fr", gap: "0 8px", marginTop: "16px" },
-  yAxis: {
-    position: "relative",
-    height: "140px",
-    fontSize: tokens.fontSizeBase100,
-    color: tokens.colorNeutralForeground3,
-    textAlign: "right",
-    fontVariantNumeric: "tabular-nums",
-  },
-  yTop: { position: "absolute", top: "-6px", right: 0 },
-  yZero: { position: "absolute", bottom: "-6px", right: 0 },
-  bars: {
-    position: "relative",
-    height: "140px",
-    display: "flex",
-    alignItems: "flex-end",
-    gap: "2px",
-    borderBottom: `1px solid ${tokens.colorNeutralStroke2}`,
-    "::before": {
-      content: '""',
-      position: "absolute",
-      left: 0,
-      right: 0,
-      top: 0,
-      borderTop: `1px dashed ${tokens.colorNeutralStroke3}`,
-    },
-  },
-  col: {
-    flex: 1,
-    minWidth: 0,
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-end",
-    gap: "2px",
-    padding: 0,
-    border: "none",
-    background: "none",
-    cursor: "pointer",
-    borderRadius: "4px 4px 0 0",
-    transitionProperty: "opacity",
-    transitionDuration: tokens.durationFast,
-    ":hover": { backgroundColor: tokens.colorSubtleBackgroundHover },
-    ":focus-visible": { outline: `2px solid ${tokens.colorStrokeFocus2}`, outlineOffset: "1px" },
-  },
-  dim: { opacity: 0.3 },
-  seg: { width: "100%", minHeight: "3px" },
-  segTop: { borderRadius: "4px 4px 0 0" },
-  xAxis: {
-    gridColumn: "2",
-    display: "flex",
-    justifyContent: "space-between",
-    marginTop: "6px",
-    fontSize: tokens.fontSizeBase100,
-    color: tokens.colorNeutralForeground3,
-  },
-  tooltip: {
-    position: "absolute",
-    top: "-8px",
-    transform: "translate(-50%, -100%)",
-    pointerEvents: "none",
-    padding: "6px 10px",
-    borderRadius: tokens.borderRadiusMedium,
-    backgroundColor: tokens.colorNeutralBackground1,
-    boxShadow: tokens.shadow16,
-    fontSize: tokens.fontSizeBase200,
-    lineHeight: "18px",
-    whiteSpace: "nowrap",
-    zIndex: 2,
-  },
-  srOnly: {
-    position: "absolute",
-    width: "1px",
-    height: "1px",
-    overflow: "hidden",
-    clip: "rect(0 0 0 0)",
-    whiteSpace: "nowrap",
-  },
   // 수치 타일
-  stats: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "12px" },
-  stat: { display: "flex", flexDirection: "column", gap: "2px", padding: "12px 16px" },
-  statLead: { gridColumn: "1 / -1" },
+  stats: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
+    gap: "12px",
+    margin: "16px 0 8px",
+  },
+  stat: {
+    display: "grid",
+    gridTemplateColumns: "36px 1fr",
+    gridTemplateRows: "auto auto auto",
+    gap: "2px 12px",
+    alignItems: "start",
+    padding: "14px 16px",
+  },
+  statIcon: {
+    gridRow: "1 / 4",
+    width: "36px",
+    height: "36px",
+    borderRadius: tokens.borderRadiusLarge,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "20px",
+  },
+  statLabel: { color: tokens.colorNeutralForeground3 },
   statNum: {
     fontSize: tokens.fontSizeHero700,
     lineHeight: tokens.lineHeightHero700,
     fontWeight: tokens.fontWeightSemibold,
     fontVariantNumeric: "tabular-nums",
   },
-  statLeadNum: { fontSize: tokens.fontSizeHero900, lineHeight: tokens.lineHeightHero900 },
-  statText: { fontSize: tokens.fontSizeBase400, fontWeight: tokens.fontWeightSemibold, lineHeight: "24px" },
+  statText: { fontSize: tokens.fontSizeBase400, fontWeight: tokens.fontWeightSemibold, lineHeight: "28px" },
+  statSub: { color: tokens.colorNeutralForeground3 },
   // 목록
-  dayChip: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "4px",
-    height: "28px",
-    paddingLeft: "10px",
-    borderRadius: tokens.borderRadiusMedium,
-    backgroundColor: tokens.colorBrandBackground2,
-    color: tokens.colorBrandForeground2,
-  },
-  list: { margin: 0, padding: 0, listStyle: "none" },
+  list: { margin: 0, listStyle: "none" },
   row: {
     position: "relative",
     display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "0 16px",
+    gridTemplateColumns: "44px 1fr",
+    gap: "0 14px",
     padding: "16px 12px",
     margin: "0 -12px",
     borderBottom: `1px solid ${tokens.colorNeutralStroke3}`,
@@ -191,7 +91,8 @@ const useStyles = makeStyles({
     cursor: "pointer",
     transitionProperty: "background-color",
     transitionDuration: tokens.durationFaster,
-    "@media (min-width: 641px)": { gridTemplateColumns: "88px 1fr 20px" },
+    "@media (min-width: 641px)": { gridTemplateColumns: "52px 1fr 20px" },
+    ":last-child": { borderBottom: "none" },
     ":hover": { backgroundColor: tokens.colorSubtleBackgroundHover },
     ":focus-visible": { outline: `2px solid ${tokens.colorStrokeFocus2}`, outlineOffset: "-2px" },
   },
@@ -209,33 +110,50 @@ const useStyles = makeStyles({
       backgroundColor: tokens.colorBrandStroke1,
     },
   },
-  when: {
-    display: "none",
+  // 달력 모양 날짜 타일
+  dateWrap: { position: "relative", alignSelf: "start" },
+  date: {
+    display: "flex",
     flexDirection: "column",
-    gap: "2px",
-    paddingTop: "2px",
-    fontSize: tokens.fontSizeBase200,
-    lineHeight: "16px",
-    color: tokens.colorNeutralForeground3,
+    alignItems: "center",
+    overflow: "hidden",
+    borderRadius: tokens.borderRadiusLarge,
+    border: `1px solid ${tokens.colorNeutralStroke2}`,
+    backgroundColor: tokens.colorNeutralBackground1,
     fontVariantNumeric: "tabular-nums",
-    "@media (min-width: 641px)": { display: "flex" },
   },
-  whenDate: { color: tokens.colorNeutralForeground2, fontWeight: tokens.fontWeightSemibold, whiteSpace: "nowrap" },
-  live: {
-    display: "inline-block",
-    width: "8px",
-    height: "8px",
-    borderRadius: "50%",
+  dateMonth: {
+    width: "100%",
+    textAlign: "center",
+    padding: "1px 0",
+    fontSize: tokens.fontSizeBase100,
+    lineHeight: "14px",
+    fontWeight: tokens.fontWeightSemibold,
+    color: tokens.colorNeutralForegroundOnBrand,
     backgroundColor: tokens.colorPaletteRedBackground3,
-    marginRight: "6px",
-    verticalAlign: "1px",
+  },
+  dateDay: {
+    fontSize: "20px",
+    lineHeight: "28px",
+    fontWeight: tokens.fontWeightSemibold,
+    color: tokens.colorNeutralForeground1,
+  },
+  live: {
+    position: "absolute",
+    top: "-3px",
+    right: "-3px",
+    width: "10px",
+    height: "10px",
+    borderRadius: "50%",
+    border: `2px solid ${tokens.colorNeutralBackground1}`,
+    backgroundColor: tokens.colorPaletteRedBackground3,
   },
   body: { minWidth: 0 },
   orgs: {
     fontSize: tokens.fontSizeBase200,
     lineHeight: "18px",
     fontWeight: tokens.fontWeightSemibold,
-    color: tokens.colorNeutralForeground2,
+    color: tokens.colorPaletteRedForeground1,
     marginBottom: "2px",
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -273,7 +191,7 @@ const useStyles = makeStyles({
     lineHeight: "16px",
     color: tokens.colorNeutralForeground3,
   },
-  metaWhen: { "@media (min-width: 641px)": { display: "none" } },
+  metaIcon: { display: "inline-flex", alignItems: "center", gap: "6px" },
   priority: {
     display: "inline-flex",
     alignItems: "center",
@@ -298,11 +216,8 @@ const useStyles = makeStyles({
   chevronOn: { opacity: 1, transform: "none" },
 });
 
-const regionOf = (t: Topic): Region => (t.regions.includes("JP") ? "JP" : "INTL");
-
 interface Props {
   lang: Lang;
-  dark: boolean;
   topics: Topic[];
   query: string;
   setQuery: (q: string) => void;
@@ -312,20 +227,43 @@ interface Props {
   onOrder: (ids: string[]) => void;
 }
 
+function StatTile(p: {
+  icon: FluentIcon;
+  tint: { bg: string; fg: string };
+  label: string;
+  value?: number;
+  text?: string;
+  sub?: string;
+  index: number;
+}) {
+  const s = useStyles();
+  const ps = usePageStyles();
+  const m = useMotion();
+  const n = useCountUp(p.value ?? 0);
+  const Icon = p.icon;
+  return (
+    <div className={mergeClasses(ps.surface, s.stat, m.enter)} style={stagger(p.index, 50)}>
+      <span className={s.statIcon} style={{ backgroundColor: p.tint.bg, color: p.tint.fg }} aria-hidden>
+        <Icon />
+      </span>
+      <Caption1 className={s.statLabel}>{p.label}</Caption1>
+      {p.text !== undefined ? <span className={s.statText}>{p.text}</span> : <span className={s.statNum}>{n}</span>}
+      {p.sub && <Caption1 className={s.statSub}>{p.sub}</Caption1>}
+    </div>
+  );
+}
+
 export function IncidentsPage(p: Props) {
   const { lang, narrow } = p;
   const s = useStyles();
   const ps = usePageStyles();
   const m = useMotion();
   const t = STRINGS[lang];
-  const colors = p.dark ? SERIES.dark : SERIES.light;
 
   const [region, setRegion] = useState<"all" | Region>("all");
   const [days, setDays] = useState(30);
   const [attack, setAttack] = useState<string[]>([]);
   const [sector, setSector] = useState<string[]>([]);
-  const [day, setDay] = useState<string | null>(null);
-  const [hover, setHover] = useState<number | null>(null);
   const [hoverRow, setHoverRow] = useState<string | null>(null);
 
   const incidents = useMemo(() => p.topics.filter((x) => x.nature === "사건"), [p.topics]);
@@ -334,25 +272,7 @@ export function IncidentsPage(p: Props) {
     [incidents, region],
   );
 
-  // ── 차트 데이터: 오늘 포함 최근 30일, 지역별 개수 ──
-  const series = useMemo(() => {
-    const out: { key: string; date: Date; JP: number; INTL: number }[] = [];
-    const today = new Date();
-    for (let i = DAYS - 1; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(d.getDate() - i);
-      out.push({ key: dayKey(d.toISOString()), date: d, JP: 0, INTL: 0 });
-    }
-    const idx = new Map(out.map((x, i) => [x.key, i]));
-    for (const x of inRegion) {
-      const i = idx.get(dayKey(x.firstSeen));
-      if (i !== undefined) out[i][regionOf(x)]++;
-    }
-    return out;
-  }, [inRegion]);
-  const yMax = Math.max(4, ...series.map((x) => x.JP + x.INTL));
-
-  // ── 수치 ──
+  // ── 최근 7일 수치 ──
   const stats = useMemo(() => {
     const since = Date.now() - 7 * 86400_000;
     const week = inRegion.filter((x) => Date.parse(x.firstSeen) >= since);
@@ -365,12 +285,10 @@ export function IncidentsPage(p: Props) {
       ransom: week.filter((x) => x.attackTypes.includes("랜섬웨어")).length,
       leak: week.filter((x) => x.attackTypes.includes("정보유출")).length,
       topSector: top ? tagLabel(lang, top[0]) : t.noSector,
+      topSectorN: top?.[1] ?? 0,
     };
   }, [inRegion, lang, t.noSector]);
-  const weekN = useCountUp(stats.week);
-  const jpN = useCountUp(stats.jp);
-  const ransomN = useCountUp(stats.ransom);
-  const leakN = useCountUp(stats.leak);
+  const pctOf = (n: number) => (stats.week ? `${Math.round((n / stats.week) * 100)}%` : "–");
 
   // ── 목록 ──
   const list = useMemo(() => {
@@ -378,200 +296,101 @@ export function IncidentsPage(p: Props) {
     return inRegion
       .filter(
         (x) =>
-          (day ? dayKey(x.firstSeen) === day : Date.parse(x.lastUpdated) >= since) &&
+          Date.parse(x.lastUpdated) >= since &&
           matchesQuery(x, p.query) &&
           attack.every((a) => (x.attackTypes as string[]).includes(a)) &&
           (sector.length === 0 || sector.some((v) => (x.sectors as string[]).includes(v))),
       )
       .sort((a, b) => b.firstSeen.localeCompare(a.firstSeen));
-  }, [inRegion, days, day, p.query, attack, sector]);
+  }, [inRegion, days, p.query, attack, sector]);
 
   const ids = useMemo(() => list.map((x) => x.id), [list]);
   useEffect(() => p.onOrder(ids), [ids]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const fmtDay = (d: Date) => new Intl.DateTimeFormat(LOCALE[lang], { month: "numeric", day: "numeric" }).format(d);
-  const fmtDayLong = (d: Date) =>
-    new Intl.DateTimeFormat(LOCALE[lang], { month: "long", day: "numeric", weekday: "short" }).format(d);
+  const month = (d: Date) => new Intl.DateTimeFormat(LOCALE[lang], { month: "short" }).format(d);
   const title = (x: Topic) => (lang === "ja" ? x.titleJa || x.titleKo : x.titleKo);
   const summary = (x: Topic) => (lang === "ja" && x.summaryJa.length ? x.summaryJa : x.summaryKo)[0] ?? "";
   const isLive = (x: Topic) => Date.now() - Date.parse(x.lastUpdated) < 86400_000;
-  const selectedDay = day ? series.find((x) => x.key === day) : undefined;
-  const pctOf = (n: number) => (stats.week ? `${Math.round((n / stats.week) * 100)}%` : "–");
 
   return (
-    <div className={mergeClasses(ps.page, ps.reading)} style={{ maxWidth: 1180 }}>
+    <div className={mergeClasses(ps.page, ps.reading)}>
       <PageTitle>{t.incidentsTitle}</PageTitle>
       <Text className={ps.desc}>{t.incidentsDesc}</Text>
 
       <TabList
         className={s.regionTabs}
         selectedValue={region}
-        onTabSelect={(_, d) => {
-          setRegion(d.value as "all" | Region);
-          setDay(null);
-        }}
+        onTabSelect={(_, d) => setRegion(d.value as "all" | Region)}
       >
         <Tab value="all">{t.regionAll}</Tab>
         <Tab value="JP">{REGION_LABELS[lang].JP}</Tab>
         <Tab value="INTL">{REGION_LABELS[lang].INTL}</Tab>
       </TabList>
 
-      <div className={s.overview}>
-        {/* 일별 추이 */}
-        <section className={mergeClasses(s.card, m.enter)} aria-label={t.chartTitle}>
-          <div className={s.cardHead}>
-            <Text className={s.cardTitle}>{t.chartTitle}</Text>
-            <span className={s.legend}>
-              {(["JP", "INTL"] as Region[])
-                .filter((r) => region === "all" || region === r)
-                .map((r) => (
-                  <span key={r}>
-                    <span className={s.swatch} style={{ backgroundColor: colors[r] }} />
-                    {REGION_LABELS[lang][r]}
-                  </span>
-                ))}
-            </span>
-          </div>
-          <Caption1 className={s.muted}>{t.chartHint}</Caption1>
-
-          <div className={s.plot}>
-            <div className={s.yAxis} aria-hidden>
-              <span className={s.yTop}>{yMax}</span>
-              <span className={s.yZero}>0</span>
-            </div>
-            <div className={s.bars} onMouseLeave={() => setHover(null)}>
-              {series.map((x, i) => {
-                const total = x.JP + x.INTL;
-                const jpH = (x.JP / yMax) * 100;
-                const intlH = (x.INTL / yMax) * 100;
-                return (
-                  <button
-                    key={x.key}
-                    className={mergeClasses(s.col, day !== null && day !== x.key ? s.dim : undefined)}
-                    onMouseEnter={() => setHover(i)}
-                    onFocus={() => setHover(i)}
-                    onBlur={() => setHover(null)}
-                    onClick={() => setDay(day === x.key ? null : x.key)}
-                    aria-pressed={day === x.key}
-                    aria-label={`${fmtDayLong(x.date)}: ${REGION_LABELS[lang].JP} ${x.JP}, ${REGION_LABELS[lang].INTL} ${x.INTL}`}
-                  >
-                    {x.INTL > 0 && (
-                      <span
-                        className={mergeClasses(s.seg, s.segTop, m.grow)}
-                        style={{ height: `${intlH}%`, backgroundColor: colors.INTL, ...stagger(i, 14, 30) }}
-                      />
-                    )}
-                    {x.JP > 0 && (
-                      <span
-                        className={mergeClasses(s.seg, x.INTL === 0 && s.segTop, m.grow)}
-                        style={{ height: `${jpH}%`, backgroundColor: colors.JP, ...stagger(i, 14, 30) }}
-                      />
-                    )}
-                    {total === 0 && <span style={{ height: 0 }} />}
-                  </button>
-                );
-              })}
-              {hover !== null && (
-                <div className={s.tooltip} style={{ left: `clamp(70px, ${((hover + 0.5) / DAYS) * 100}%, calc(100% - 70px))` }} role="status">
-                  <div style={{ fontWeight: 600 }}>{fmtDayLong(series[hover].date)}</div>
-                  {(["JP", "INTL"] as Region[]).map((r) => (
-                    <div key={r}>
-                      <span className={s.swatch} style={{ backgroundColor: colors[r] }} />
-                      {REGION_LABELS[lang][r]} {series[hover][r]}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div className={s.xAxis} aria-hidden>
-              <span>{fmtDay(series[0].date)}</span>
-              <span>{fmtDay(series[Math.floor(DAYS / 2)].date)}</span>
-              <span>{fmtDay(series[DAYS - 1].date)}</span>
-            </div>
-          </div>
-
-          {/* 화면 낭독기·표로 보고 싶은 사람을 위한 같은 데이터 */}
-          <table className={s.srOnly}>
-            <caption>{t.chartTitle}</caption>
-            <tbody>
-              {series.map((x) => (
-                <tr key={x.key}>
-                  <th>{fmtDayLong(x.date)}</th>
-                  <td>
-                    {REGION_LABELS[lang].JP} {x.JP}
-                  </td>
-                  <td>
-                    {REGION_LABELS[lang].INTL} {x.INTL}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-
-        {/* 핵심 수치 */}
-        <div className={s.stats}>
-          <div className={mergeClasses(s.card, s.stat, s.statLead, m.enter)} style={stagger(1, 60)}>
-            <Caption1 className={s.muted}>{t.incidents7d}</Caption1>
-            <span className={mergeClasses(s.statNum, s.statLeadNum)}>{weekN}</span>
-          </div>
-          <div className={mergeClasses(s.card, s.stat, m.enter)} style={stagger(2, 60)}>
-            <Caption1 className={s.muted}>{t.jpShare}</Caption1>
-            <span className={s.statNum}>{jpN}</span>
-            <Caption1 className={s.muted}>{pctOf(stats.jp)}</Caption1>
-          </div>
-          <div className={mergeClasses(s.card, s.stat, m.enter)} style={stagger(3, 60)}>
-            <Caption1 className={s.muted}>{t.ransomShare}</Caption1>
-            <span className={s.statNum}>{ransomN}</span>
-            <Caption1 className={s.muted}>{pctOf(stats.ransom)}</Caption1>
-          </div>
-          <div className={mergeClasses(s.card, s.stat, m.enter)} style={stagger(4, 60)}>
-            <Caption1 className={s.muted}>{t.leakShare}</Caption1>
-            <span className={s.statNum}>{leakN}</span>
-            <Caption1 className={s.muted}>{pctOf(stats.leak)}</Caption1>
-          </div>
-          <div className={mergeClasses(s.card, s.stat, m.enter)} style={stagger(5, 60)}>
-            <Caption1 className={s.muted}>{t.topSector}</Caption1>
-            <span className={s.statText}>{stats.topSector}</span>
-          </div>
-        </div>
+      <div className={s.stats} key={region}>
+        <StatTile
+          index={0}
+          icon={AlertUrgentRegular}
+          tint={{ bg: tokens.colorPaletteRedBackground1, fg: tokens.colorPaletteRedForeground1 }}
+          label={t.incidents7d}
+          value={stats.week}
+        />
+        <StatTile
+          index={1}
+          icon={LocationRegular}
+          tint={{ bg: tokens.colorBrandBackground2, fg: tokens.colorBrandForeground2 }}
+          label={t.jpShare}
+          value={stats.jp}
+          sub={pctOf(stats.jp)}
+        />
+        <StatTile
+          index={2}
+          icon={LockClosedRegular}
+          tint={{ bg: tokens.colorPaletteBerryBackground1, fg: tokens.colorPaletteBerryForeground1 }}
+          label={t.ransomShare}
+          value={stats.ransom}
+          sub={pctOf(stats.ransom)}
+        />
+        <StatTile
+          index={3}
+          icon={DatabaseWarningRegular}
+          tint={{ bg: tokens.colorPaletteDarkOrangeBackground1, fg: tokens.colorPaletteDarkOrangeForeground1 }}
+          label={t.leakShare}
+          value={stats.leak}
+          sub={pctOf(stats.leak)}
+        />
+        <StatTile
+          index={4}
+          icon={BuildingMultipleRegular}
+          tint={{ bg: tokens.colorPaletteTealBackground2, fg: tokens.colorPaletteTealForeground2 }}
+          label={t.topSector}
+          text={stats.topSector}
+          sub={stats.topSectorN ? t.count(stats.topSectorN) : undefined}
+        />
       </div>
 
       <div className={ps.command}>
         <div className={ps.commandGroup}>
-          {selectedDay ? (
-            <span className={s.dayChip}>
-              {t.dayFilter(fmtDayLong(selectedDay.date))}
-              <Button
-                appearance="transparent"
-                size="small"
-                icon={<DismissRegular />}
-                aria-label={t.clearDay}
-                onClick={() => setDay(null)}
-              />
-            </span>
-          ) : (
-            <Menu
-              checkedValues={{ days: [String(days)] }}
-              onCheckedValueChange={(_, d) => setDays(Number(d.checkedItems[0]))}
-            >
-              <MenuTrigger disableButtonEnhancement>
-                <Button appearance="subtle" icon={<CalendarLtrRegular />}>
-                  {t.periods[days] ?? `${days}`}
-                  <ChevronDownRegular style={{ marginLeft: 4 }} />
-                </Button>
-              </MenuTrigger>
-              <MenuPopover>
-                <MenuList>
-                  {PERIODS.map((d) => (
-                    <MenuItemRadio key={d} name="days" value={String(d)}>
-                      {t.periods[d] ?? `${d}`}
-                    </MenuItemRadio>
-                  ))}
-                </MenuList>
-              </MenuPopover>
-            </Menu>
-          )}
+          <Menu
+            checkedValues={{ days: [String(days)] }}
+            onCheckedValueChange={(_, d) => setDays(Number(d.checkedItems[0]))}
+          >
+            <MenuTrigger disableButtonEnhancement>
+              <Button appearance="subtle" icon={<CalendarLtrRegular />}>
+                {t.periods[days] ?? `${days}`}
+                <ChevronDownRegular style={{ marginLeft: 4 }} />
+              </Button>
+            </MenuTrigger>
+            <MenuPopover>
+              <MenuList>
+                {PERIODS.map((d) => (
+                  <MenuItemRadio key={d} name="days" value={String(d)}>
+                    {t.periods[d] ?? `${d}`}
+                  </MenuItemRadio>
+                ))}
+              </MenuList>
+            </MenuPopover>
+          </Menu>
           <Text className={ps.count}>{t.count(list.length)}</Text>
         </div>
         {narrow && (
@@ -619,7 +438,7 @@ export function IncidentsPage(p: Props) {
           <Text>{t.emptyHint}</Text>
         </div>
       ) : (
-        <ul className={s.list} key={`${region}-${day}-${days}`}>
+        <ul className={mergeClasses(s.list, ps.listSurface)} key={`${region}-${days}`}>
           {list.slice(0, 80).map((x, i) => {
             const d = new Date(x.firstSeen);
             const sel = x.id === p.selectedId;
@@ -641,13 +460,13 @@ export function IncidentsPage(p: Props) {
                   }
                 }}
               >
-                <div className={s.when}>
-                  <span className={s.whenDate}>
-                    {isLive(x) && <span className={mergeClasses(s.live, m.pulse)} aria-hidden />}
-                    {shortDate(lang, x.firstSeen)}
-                  </span>
-                  <span>{timeOfDay(lang, x.firstSeen)}</span>
-                </div>
+                <span className={s.dateWrap}>
+                  <time className={s.date} dateTime={x.firstSeen} style={{ width: narrow ? 44 : 52 }}>
+                    <span className={s.dateMonth}>{month(d)}</span>
+                    <span className={s.dateDay}>{d.getDate()}</span>
+                  </time>
+                  {isLive(x) && <span className={mergeClasses(s.live, m.pulse)} aria-hidden />}
+                </span>
                 <div className={s.body}>
                   {x.entities.orgs.length > 0 && (
                     <div className={s.orgs}>
@@ -658,14 +477,18 @@ export function IncidentsPage(p: Props) {
                   {summary(x) && <div className={s.summary}>{summary(x)}</div>}
                   <div className={s.meta}>
                     {x.importance >= PRIORITY_THRESHOLD && <span className={s.priority}>{t.priority}</span>}
-                    <span className={s.metaWhen}>
-                      {isLive(x) && <span className={mergeClasses(s.live, m.pulse)} aria-hidden />}
-                      {fmtDay(d)}
-                    </span>
+                    <span>{timeOfDay(lang, x.firstSeen)}</span>
                     <span>{x.regions.map((r) => REGION_LABELS[lang][r]).join(" · ")}</span>
                     {x.sectors.length > 0 && <span>{x.sectors.map((v) => tagLabel(lang, v)).join(", ")}</span>}
                     {x.attackTypes.length > 0 && <span>{x.attackTypes.map((v) => tagLabel(lang, v)).join(", ")}</span>}
-                    <span>{x.sources.length > 1 ? t.sourcesCount(x.sources.length) : x.sources[0]}</span>
+                    {x.sources.length > 1 ? (
+                      <span className={s.metaIcon}>
+                        <SourceAvatars sources={x.sources} />
+                        {t.sourcesCount(x.sources.length)}
+                      </span>
+                    ) : (
+                      <span>{x.sources[0]}</span>
+                    )}
                   </div>
                 </div>
                 <ChevronRightRegular

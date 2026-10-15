@@ -15,7 +15,9 @@ export function fullDateTime(lang: Lang, iso: string): string {
 }
 
 export function timeOfDay(lang: Lang, iso: string): string {
-  return new Intl.DateTimeFormat(LOCALE[lang], { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(iso));
+  return new Intl.DateTimeFormat(LOCALE[lang], { hour: "2-digit", minute: "2-digit", hour12: false }).format(
+    new Date(iso),
+  );
 }
 
 export function shortDate(lang: Lang, iso: string): string {
@@ -31,7 +33,12 @@ export function dayKey(iso: string): string {
 }
 
 /** "오늘", "어제", 또는 "10월 13일 (월)" */
-export function dayLabel(lang: Lang, iso: string, labels: { today: string; yesterday: string }, now = new Date()): string {
+export function dayLabel(
+  lang: Lang,
+  iso: string,
+  labels: { today: string; yesterday: string },
+  now = new Date(),
+): string {
   const d = new Date(iso);
   if (localDayKey(d) === localDayKey(now)) return labels.today;
   const y = new Date(now);

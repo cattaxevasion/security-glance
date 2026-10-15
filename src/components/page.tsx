@@ -10,6 +10,20 @@ export const usePageStyles = makeStyles({
   },
   /** 기사 목록은 한 줄이 너무 길어지지 않게 폭을 제한한다 */
   reading: { maxWidth: "1040px" },
+  /** 캔버스 위에 올리는 카드 면 */
+  surface: {
+    backgroundColor: tokens.colorNeutralBackground1,
+    borderRadius: tokens.borderRadiusXLarge,
+    boxShadow: tokens.shadow4,
+  },
+  /** 목록을 담는 카드: 좌우 여백 안에서 행이 hover 배경을 가진다 */
+  listSurface: {
+    backgroundColor: tokens.colorNeutralBackground1,
+    borderRadius: tokens.borderRadiusXLarge,
+    boxShadow: tokens.shadow4,
+    padding: "4px 20px 8px",
+    "@media (max-width: 640px)": { padding: "4px 12px 8px", borderRadius: tokens.borderRadiusLarge },
+  },
   titleRow: { display: "flex", alignItems: "baseline", gap: "12px", marginBottom: "4px" },
   title: { margin: 0 },
   desc: { color: tokens.colorNeutralForeground3, maxWidth: "760px", marginTop: "4px", display: "block" },
@@ -27,8 +41,11 @@ export const usePageStyles = makeStyles({
   pageSearch: { width: "100%", marginTop: "12px" },
   filters: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px", marginBottom: "12px" },
   tableWrap: {
-    borderTop: `1px solid ${tokens.colorNeutralStroke2}`,
     overflowX: "auto",
+    backgroundColor: tokens.colorNeutralBackground1,
+    borderRadius: tokens.borderRadiusXLarge,
+    boxShadow: tokens.shadow4,
+    padding: "4px 8px",
   },
   row: {
     cursor: "pointer",
@@ -63,7 +80,7 @@ export const usePageStyles = makeStyles({
     color: tokens.colorNeutralForeground3,
   },
   more: { display: "flex", justifyContent: "center", padding: "16px 0" },
-  footer: { display: "block", marginTop: "32px", color: tokens.colorNeutralForeground3, maxWidth: "760px" },
+  footer: { display: "block", marginTop: "24px", color: tokens.colorNeutralForeground3, maxWidth: "760px" },
 });
 
 export function PageTitle({ children, aside }: { children: ReactNode; aside?: ReactNode }) {

@@ -42,7 +42,7 @@ export const useMotion = makeStyles({
     },
     animationDuration: "2s",
     animationTimingFunction: tokens.curveEasyEase,
-    animationIterationCount: "infinite",
+    animationIterationCount: 3,
     [REDUCED]: { animationName: "none" },
   },
 });

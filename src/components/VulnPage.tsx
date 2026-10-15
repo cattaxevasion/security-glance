@@ -66,7 +66,10 @@ export function VulnPage(p: Props) {
   const [sort, setSort] = useState<{ key: string; dir: SortDir }>(
     kind === "kev" ? { key: "dateAdded", dir: "descending" } : { key: "cvss", dir: "descending" },
   );
-  useEffect(() => setSort(kind === "kev" ? { key: "dateAdded", dir: "descending" } : { key: "cvss", dir: "descending" }), [kind]);
+  useEffect(
+    () => setSort(kind === "kev" ? { key: "dateAdded", dir: "descending" } : { key: "cvss", dir: "descending" }),
+    [kind],
+  );
 
   const mentions = useMemo(() => {
     const m = new Map<string, number>();
@@ -76,7 +79,10 @@ export function VulnPage(p: Props) {
 
   const q = p.query.trim().toLowerCase();
   const sign = sort.dir === "ascending" ? 1 : -1;
-  const cmp = <T,>(val: (x: T) => string | number) => (a: T, b: T) => (val(a) > val(b) ? sign : val(a) < val(b) ? -sign : 0);
+  const cmp =
+    <T,>(val: (x: T) => string | number) =>
+    (a: T, b: T) =>
+      val(a) > val(b) ? sign : val(a) < val(b) ? -sign : 0;
 
   const kevRows = useMemo(() => {
     if (kind !== "kev") return [];
@@ -84,7 +90,13 @@ export function VulnPage(p: Props) {
       (k) => !q || `${k.cveID} ${k.vendorProject} ${k.product} ${k.vulnerabilityName}`.toLowerCase().includes(q),
     );
     const val = (k: KevEntry) =>
-      sort.key === "epss" ? (k.epss ?? -1) : sort.key === "news" ? (mentions.get(k.cveID) ?? 0) : sort.key === "dueDate" ? k.dueDate : k.dateAdded;
+      sort.key === "epss"
+        ? (k.epss ?? -1)
+        : sort.key === "news"
+          ? (mentions.get(k.cveID) ?? 0)
+          : sort.key === "dueDate"
+            ? k.dueDate
+            : k.dateAdded;
     return [...rows].sort(cmp(val));
   }, [kind, p.data, q, sort, mentions]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -92,11 +104,20 @@ export function VulnPage(p: Props) {
     if (kind !== "cve") return [];
     const rows = (p.data?.cves ?? []).filter((c) => !q || `${c.id} ${c.description}`.toLowerCase().includes(q));
     const val = (c: CveEntry) =>
-      sort.key === "epss" ? (c.epss ?? -1) : sort.key === "published" ? c.published : sort.key === "news" ? (mentions.get(c.id) ?? 0) : (c.cvss ?? -1);
+      sort.key === "epss"
+        ? (c.epss ?? -1)
+        : sort.key === "published"
+          ? c.published
+          : sort.key === "news"
+            ? (mentions.get(c.id) ?? 0)
+            : (c.cvss ?? -1);
     return [...rows].sort(cmp(val)).slice(0, 400);
   }, [kind, p.data, q, sort, mentions]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const ids = useMemo(() => (kind === "kev" ? kevRows.map((k) => k.cveID) : cveRows.map((c) => c.id)), [kind, kevRows, cveRows]);
+  const ids = useMemo(
+    () => (kind === "kev" ? kevRows.map((k) => k.cveID) : cveRows.map((c) => c.id)),
+    [kind, kevRows, cveRows],
+  );
   useEffect(() => p.onOrder(ids), [ids]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const sortable = (key: string) => ({
@@ -134,7 +155,12 @@ export function VulnPage(p: Props) {
         <span />
         <Caption1 className={ps.count}>{t.count(count)}</Caption1>
         {narrow && (
-          <SearchBox className={ps.pageSearch} placeholder={t.vulnSearch} value={p.query} onChange={(_, d) => p.setQuery(d.value)} />
+          <SearchBox
+            className={ps.pageSearch}
+            placeholder={t.vulnSearch}
+            value={p.query}
+            onChange={(_, d) => p.setQuery(d.value)}
+          />
         )}
       </div>
 
@@ -144,7 +170,12 @@ export function VulnPage(p: Props) {
             <Subtitle1>{t.empty}</Subtitle1>
           </div>
         ) : kind === "kev" ? (
-          <Table size="small" sortable aria-label={t.kevTitle} style={{ tableLayout: "fixed", minWidth: narrow ? 640 : 900 }}>
+          <Table
+            size="small"
+            sortable
+            aria-label={t.kevTitle}
+            style={{ tableLayout: "fixed", minWidth: narrow ? 640 : 900 }}
+          >
             <TableHeader>
               <TableRow>
                 <TableHeaderCell className={s.colDate} {...sortable("dateAdded")}>
@@ -202,7 +233,12 @@ export function VulnPage(p: Props) {
             </TableBody>
           </Table>
         ) : (
-          <Table size="small" sortable aria-label={t.cveTitle} style={{ tableLayout: "fixed", minWidth: narrow ? 640 : 900 }}>
+          <Table
+            size="small"
+            sortable
+            aria-label={t.cveTitle}
+            style={{ tableLayout: "fixed", minWidth: narrow ? 640 : 900 }}
+          >
             <TableHeader>
               <TableRow>
                 <TableHeaderCell className={s.colCve}>{t.colCve}</TableHeaderCell>

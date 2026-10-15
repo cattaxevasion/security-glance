@@ -144,6 +144,12 @@ const ko = {
   shortcuts: "단축키: / 검색 · j·k 이전·다음 · Esc 닫기",
   linkCopied: "링크를 복사했어요",
   aiGenerated: "AI 요약",
+  railIncidents: "주목 인시던트",
+  railKev: "새로 악용이 확인된 취약점",
+  railActors: "많이 언급된 위협 그룹",
+  railWindow: "최근 7일",
+  viewAll: "모두 보기",
+  noneYet: "아직 없어요",
 };
 
 export type Strings = typeof ko;
@@ -284,6 +290,12 @@ const ja: Strings = {
   shortcuts: "ショートカット: / 検索 · j・k 前後 · Esc 閉じる",
   linkCopied: "リンクをコピーしました",
   aiGenerated: "AI 要約",
+  railIncidents: "注目のインシデント",
+  railKev: "新たに悪用が確認された脆弱性",
+  railActors: "よく言及される脅威グループ",
+  railWindow: "直近7日",
+  viewAll: "すべて表示",
+  noneYet: "まだありません",
 };
 
 export const STRINGS: Record<Lang, Strings> = { ko, ja };

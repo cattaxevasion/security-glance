@@ -81,14 +81,25 @@ export function FilterPill({ name, label, anyLabel, options, selected, onChange,
         positioning="below-start"
       >
         <MenuTrigger disableButtonEnhancement>
-          <Button appearance="transparent" size="small" className={s.main} icon={<ChevronDownRegular />} iconPosition="after">
+          <Button
+            appearance="transparent"
+            size="small"
+            className={s.main}
+            icon={<ChevronDownRegular />}
+            iconPosition="after"
+          >
             {label}:<span className={s.value}>{shown}</span>
           </Button>
         </MenuTrigger>
         <MenuPopover>
           <MenuList>
             {options.map((o) => (
-              <MenuItemCheckbox key={o.value} name={name} value={o.value} disabled={!selected.includes(o.value) && o.count === 0}>
+              <MenuItemCheckbox
+                key={o.value}
+                name={name}
+                value={o.value}
+                disabled={!selected.includes(o.value) && o.count === 0}
+              >
                 <span style={{ display: "flex", width: "100%" }}>
                   {o.label}
                   {o.count !== undefined && <span className={s.count}>{o.count}</span>}

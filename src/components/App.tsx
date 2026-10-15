@@ -44,7 +44,8 @@ const useStyles = makeStyles({
     color: tokens.colorNeutralForeground1,
   },
   body: { flex: 1, minHeight: 0, display: "flex" },
-  main: { flex: 1, minWidth: 0, overflowY: "auto", backgroundColor: tokens.colorNeutralBackground1 },
+  // 본문은 한 단계 어두운 캔버스, 내용은 그 위의 흰 카드 (Microsoft 365의 층 구조)
+  main: { flex: 1, minWidth: 0, overflowY: "auto", backgroundColor: tokens.colorNeutralBackground3 },
   center: { display: "flex", justifyContent: "center", padding: "96px 0" },
   skeleton: { display: "flex", flexDirection: "column", gap: "12px", padding: "32px", maxWidth: "1040px" },
   skTitle: { width: "220px", height: "32px", marginBottom: "16px" },
@@ -247,6 +248,14 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, [selection, order, view]);
 
+  /** 위협 그룹 이름 등으로 토픽 전체를 검색 (기간 제한 없이) */
+  const searchAll = (q: string) => {
+    setSelection(null);
+    setViewState("all");
+    setFilters({ ...DEFAULT_FILTERS, days: 0 });
+    setNewsQuery(q);
+  };
+
   const setLang = (l: Lang) => {
     setLangState(l);
     saveLang(l);
@@ -329,13 +338,16 @@ export default function App() {
                     lang={lang}
                     briefings={briefings}
                     topics={topics}
+                    vulns={vulns}
                     onOpen={(id) => setSelection({ kind: "topic", id })}
+                    onVuln={(id) => setSelection({ kind: "kev", id })}
+                    onSearch={searchAll}
+                    onGo={setView}
                     onOrder={setOrder}
                   />
                 ) : view === "incidents" ? (
                   <IncidentsPage
                     lang={lang}
-                    dark={dark}
                     topics={topics}
                     query={newsQuery}
                     setQuery={setNewsQuery}
@@ -393,12 +405,7 @@ export default function App() {
             order={order}
             onCopied={notifyCopied}
             onSelect={setSelection}
-            onSearch={(q) => {
-              setSelection(null);
-              setViewState("all");
-              setFilters({ ...DEFAULT_FILTERS, days: 0 });
-              setNewsQuery(q);
-            }}
+            onSearch={searchAll}
           />
         </div>
       </div>

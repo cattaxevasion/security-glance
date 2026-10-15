@@ -98,7 +98,18 @@ interface Props {
   meta: Meta | null;
 }
 
-export function AppHeader({ lang, setLang, dark, narrow, navOpen, toggleNav, query, setQuery, searchPlaceholder, meta }: Props) {
+export function AppHeader({
+  lang,
+  setLang,
+  dark,
+  narrow,
+  navOpen,
+  toggleNav,
+  query,
+  setQuery,
+  searchPlaceholder,
+  meta,
+}: Props) {
   const s = useStyles();
   const t = STRINGS[lang];
   const failed = meta?.sources.filter((x) => !x.ok) ?? [];
@@ -154,7 +165,12 @@ export function AppHeader({ lang, setLang, dark, narrow, navOpen, toggleNav, que
         {meta?.updatedAt && (
           <Popover withArrow positioning="below-end">
             <PopoverTrigger disableButtonEnhancement>
-              <Button appearance="transparent" className={s.onBrand} icon={<ArrowSyncRegular />} aria-label={t.navStatus}>
+              <Button
+                appearance="transparent"
+                className={s.onBrand}
+                icon={<ArrowSyncRegular />}
+                aria-label={t.navStatus}
+              >
                 {narrow ? null : t.updated(relativeTime(lang, meta.updatedAt))}
                 {failed.length > 0 && <span className={s.dot} aria-hidden />}
               </Button>
