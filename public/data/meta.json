@@ -1,16 +1,16 @@
 {
- "updatedAt": "2026-10-14T18:49:13.015Z",
+ "updatedAt": "2026-10-15T00:48:59.505Z",
  "lastRun": {
-  "candidates": 0,
-  "added": 0,
+  "candidates": 27,
+  "added": 20,
   "keywordExcluded": 0,
-  "notSecurity": 0,
+  "notSecurity": 7,
   "failed": 0,
   "deferred": 0
  },
- "newsCount": 276,
- "kevCount": 94,
- "cveCount": 0,
+ "newsCount": 296,
+ "kevCount": 98,
+ "cveCount": 401,
  "sources": [
   {
    "id": "bleepingcomputer",
@@ -52,7 +52,7 @@
    "name": "JPCERT/CC",
    "region": "JP",
    "ok": true,
-   "items": 21
+   "items": 24
   },
   {
    "id": "ipa",
@@ -115,7 +115,7 @@
    "name": "ZDNet Korea",
    "region": "KR",
    "ok": true,
-   "items": 11
+   "items": 13
   }
  ]
 }

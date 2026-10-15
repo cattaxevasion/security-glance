@@ -1,5 +1,772 @@
 [
  {
+  "id": "7bc0a07087d16719",
+  "url": "https://www.security-next.com/191485",
+  "title": "Palo Alto機器に搭載される「PAN-OS」に脆弱性 - 一部悪用を確認",
+  "titleKo": "Palo Alto 기기에 탑재된 'PAN-OS'에 취약점 - 일부 악용 확인",
+  "titleJa": "Palo Alto機器に搭載される「PAN-OS」に脆弱性 - 一部悪用を確認",
+  "sourceId": "securitynext",
+  "sourceName": "Security NEXT",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-15T00:31:14.000Z",
+  "collectedAt": "2026-10-15T00:48:29.371Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "Palo Alto Networks가 방화벽 OS 'PAN-OS'의 취약점 7건을 담은 보안 권고 7건을 공개하고, 일부 취약점이 이미 악용된 사실을 밝혔다.",
+   "가장 주의가 필요한 CVE-2026-0322는 관리 인터페이스의 코드 인젝션 취약점으로, 인증이 필요하지만 네트워크를 통해 root 권한으로 임의 코드를 실행할 수 있다.",
+   "제품 측은 악용 범위를 '제한적'이라고 밝혔고, CVSSv4.0 기본 점수는 8.6이며 최고 우선순위로 즉시 대응을 권고했다. Cloud NGFW와 Prisma Access는 영향을 받지 않는다."
+  ],
+  "summaryJa": [
+   "Palo Alto Networksは、ファイアウォール向けOS「PAN-OS」の脆弱性7件に対応するセキュリティアドバイザリを公開し、一部がすでに悪用されていることを明らかにした。",
+   "最も注意が必要なCVE-2026-0322は管理インタフェースのコードインジェクション脆弱性である。認証が必要だが、ネットワーク経由でroot権限による任意のコード実行が可能になる。",
+   "同社は悪用範囲を限定的としている。CVSSv4.0のベーススコアは8.6で、対応優先度は最高に設定され、早急な対応が求められている。Cloud NGFWとPrisma Accessは影響を受けない。"
+  ],
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-0322",
+    "CVE-2026-0321",
+    "CVE-2026-0320",
+    "CVE-2026-0319",
+    "CVE-2026-0318",
+    "CVE-2026-0317",
+    "CVE-2026-0316"
+   ],
+   "actors": [],
+   "orgs": [
+    "Palo Alto Networks",
+    "PAN-OS",
+    "PA시리즈",
+    "VM시리즈",
+    "Panorama"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "c40c8fd301fb9f72",
+  "url": "https://www.jpcert.or.jp/wr/2026/wr261015.html",
+  "title": "Weekly Report: Drupalの複数のモジュールに脆弱性",
+  "titleKo": "Drupal 여러 모듈에 취약점",
+  "titleJa": "Weekly Report: Drupalの複数のモジュールに脆弱性",
+  "sourceId": "jpcert",
+  "sourceName": "JPCERT/CC",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-15T00:29:00.000Z",
+  "collectedAt": "2026-10-15T00:48:28.779Z",
+  "regions": [
+   "JP"
+  ],
+  "summaryKo": [
+   "JPCERT/CC가 2026년 10월 4일~10일 주간 보안 정보를 정리하며 Drupal 여러 모듈의 취약점을 소개했습니다.",
+   "원문은 취약점의 구체적인 유형, 공격 수법, 영향 범위를 밝히지 않았습니다.",
+   "해결 방법은 해당 모듈을 수정된 버전으로 업데이트하는 것이며, 자세한 내용은 개발자 공지를 참고하도록 안내합니다."
+  ],
+  "summaryJa": [
+   "JPCERT/CCは2026年10月4日〜10日のセキュリティ関連情報を取りまとめ、Drupalの複数のモジュールに存在する脆弱性を紹介した。",
+   "原文では脆弱性の具体的な種類や攻撃手法、影響範囲は示されていない。",
+   "対処は修正済みバージョンへのアップデートであり、詳細は開発者の提供する情報を参照するよう案内されている。"
+  ],
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Drupal"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "9da0b9d79e7b2333",
+  "url": "https://www.security-next.com/191479",
+  "title": "Ciscoメールセキュリティ製品の添付ファイル処理に脆弱性 - すでに悪用も",
+  "titleKo": "Cisco 메일 보안 제품의 첨부파일 처리 취약점 - 이미 악용도 확인",
+  "titleJa": "Ciscoメールセキュリティ製品の添付ファイル処理に脆弱性 - すでに悪用も",
+  "sourceId": "securitynext",
+  "sourceName": "Security NEXT",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-14T23:36:27.000Z",
+  "collectedAt": "2026-10-15T00:48:29.377Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "Cisco Secure Email Gateway에서 임의 파일 쓰기가 가능한 심각한 취약점 CVE-2026-76519가 공개되었고, 2026년 10월 실제 악용이 확인되었다.",
+   "AMP 악성코드 검사 기능의 메일 첨부파일 처리 결함으로, 세션 인증 없이 조작된 첨부파일을 처리시키면 공격이 가능하다.",
+   "공격 성공 시 기반 OS에 임의 파일이 기록되고 root 권한으로 명령이 실행될 수 있으며, CVSS v3.1 기준 9.8(Critical)이다."
+  ],
+  "summaryJa": [
+   "Cisco Secure Email GatewayにCVE-2026-76519として識別される任意ファイル書き込みの深刻な脆弱性が公表され、2026年10月に悪用が確認されたという。",
+   "AMPのメール添付ファイル処理に存在する欠陥で、認証なしに細工した添付ファイルを含むメールを処理させるだけで悪用できる。",
+   "攻撃に成功するとOS上に任意のファイルを書き込まれ、root権限でコマンドを実行されるおそれがある。CVSS v3.1のベーススコアは9.8で、最上位のクリティカルと評価されている。"
+  ],
+  "attackTypes": [
+   "취약점 악용"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-76519"
+   ],
+   "actors": [],
+   "orgs": [
+    "Cisco Systems",
+    "Cisco Secure Email Gateway",
+    "Advanced Malware Protection(AMP)"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "91abba65d45e0cc3",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/15/56465.html",
+  "title": "今後は侵入経路と考えられるリモートデスクトップ接続を遮断 ～ 八王子学園 ランサムウェア攻撃 2報",
+  "titleKo": "향후 침입 경로로 추정되는 원격 데스크톱 연결 차단 ～ 하치오지 학원 랜섬웨어 공격 2보",
+  "titleJa": "今後は侵入経路と考えられるリモートデスクトップ接続を遮断 ～ 八王子学園 ランサムウェア攻撃 2報",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-14T23:05:25.000Z",
+  "collectedAt": "2026-10-15T00:48:36.555Z",
+  "regions": [
+   "JP"
+  ],
+  "summaryKo": [
+   "하치오지 학원 하치오지 중·고등학교가 7월 공표한 랜섬웨어 공격에 대해 2보를 발표했다.",
+   "공격자는 4월 26일 방화벽을 우회해 원격 데스크톱 접속으로 내부에 침입했고, 7월 10일 새벽 서버를 장악해 랜섬웨어로 파일을 암호화했다.",
+   "개인정보가 담긴 파일의 외부 유출은 확인되지 않았으나 일부 로그가 삭제돼 유출을 완전히 배제할 수는 없으며, 학교는 원격 데스크톱 접속을 차단하고 네트워크를 재구축할 방침이다."
+  ],
+  "summaryJa": [
+   "八王子学園八王子中学校・高等学校は、7月に公表したランサムウェア攻撃について第2報を発表した。",
+   "攻撃者は4月26日に不正な手段でファイアウォールを突破し、リモートデスクトップ接続で内部に侵入した後、7月10日未明にサーバへ侵入してランサムウェアで暗号化した。",
+   "個人情報を含むファイルの外部流出は確認されていないが、一部ログが消去されているため流出を完全には否定できないとされる。学校は侵入経路と見られるリモートデスクトップ接続を遮断し、ネットワークを再構築する方針である。"
+  ],
+  "attackTypes": [
+   "랜섬웨어",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "교육"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "八王子学園八王子中学校・高等学校",
+    "八王子警察署"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "6f75c587190a7da1",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/15/56464.html",
+  "title": "「バイトル」「バイトルNEXT」に不正アクセス、最大3,885,771件のメールアドレスが漏えい",
+  "titleKo": "「바이트루」「바이트루 NEXT」에 불법 접근, 최대 3,885,771건의 이메일 주소 유출",
+  "titleJa": "「バイトル」「バイトルNEXT」に不正アクセス、最大3,885,771件のメールアドレスが漏えい",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-14T23:05:21.000Z",
+  "collectedAt": "2026-10-15T00:48:38.338Z",
+  "regions": [
+   "JP"
+  ],
+  "summaryKo": [
+   "디프 주식회사가 운영하는 구인 서비스 '바이트루'와 '바이트루 NEXT'에 제3자의 불법 접근이 있었다고 발표했습니다.",
+   "시스템 일부 기능의 사양 불비를 노린 해외발 접근으로 확인되었으며, 회원 이메일 주소가 일부 유출되었습니다.",
+   "유출 규모는 최대 3,885,771건이며, 해외 접근 차단과 프로그램 개선으로 기술적 방어 조치를 마치고 대상 회원에게 개별 안내를 진행했습니다."
+  ],
+  "summaryJa": [
+   "ディップ株式会社は、同社が運営する求人サービス「バイトル」「バイトルNEXT」への第三者による不正アクセスを発表した。",
+   "システムの一部機能の仕様不備を突いた海外からの不正アクセスであり、会員のメールアドレスが一部漏えいした。",
+   "漏えい件数は最大3,885,771件。同社は海外からのアクセスを全面遮断し、プログラムを改修したうえで、対象会員へ個別に案内しているという。"
+  ],
+  "attackTypes": [
+   "취약점 악용",
+   "정보유출"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "ディップ株式会社",
+    "バイトル",
+    "バイトルNEXT"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "5430af2fb18a3b58",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/15/56463.html",
+  "title": "第一ライフグループと第一生命保険の人事システムに不正アクセス、約12万名の従業員情報が流出した可能性",
+  "titleKo": "第一ライフグループ과 第一生命保険의 인사 시스템 불법 접근, 약 12만 명 직원 정보 유출 가능성",
+  "titleJa": "第一ライフグループと第一生命保険の人事システムに不正アクセス、約12万名の従業員情報が流出した可能性",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-14T23:05:18.000Z",
+  "collectedAt": "2026-10-15T00:48:38.658Z",
+  "regions": [
+   "JP"
+  ],
+  "summaryKo": [
+   "第一ライフグループと第一生命保険은 9월 24일 직원용 인사 시스템에 대한 불법 접근을 탐지했다고 10월 2일 발표했다.",
+   "시스템에 저장된 직원과 퇴직자의 개인정보가 제3자에게 열람되어 외부로 유출되었을 가능성이 있다.",
+   "직원과 퇴직자 약 12만 명의 사원번호, 이름, 주소, 전화번호 등이 대상이며 현재 고객정보 침해는 확인되지 않았다."
+  ],
+  "summaryJa": [
+   "第一ライフグループと第一生命保険は9月24日、従業員向け人事システムへの不正アクセスを検知したと10月2日に発表した。",
+   "同システムに保存されていた従業員と退職者の個人情報が第三者に閲覧され、外部に流出した可能性がある。",
+   "対象は約12万名の従業員番号、氏名、住所、電話番号などで、現時点で顧客情報への不正アクセスは確認されていないという。"
+  ],
+  "attackTypes": [
+   "정보유출",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "금융"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "第一ライフグループ",
+    "第一生命保険"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "940cc9fbc096ae02",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/15/56462.html",
+  "title": "東洋紡せんいのメールアカウントに不正アクセス、約1,500件の不審メール送信",
+  "titleKo": "도요보세키 섬유 계열사 메일 계정 불법 접속, 약 1,500건 의심 메일 발송",
+  "titleJa": "東洋紡せんいのメールアカウントに不正アクセス、約1,500件の不審メール送信",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-14T23:05:14.000Z",
+  "collectedAt": "2026-10-15T00:48:39.635Z",
+  "regions": [
+   "JP"
+  ],
+  "summaryKo": [
+   "도요보세키 그룹 계열사 도요보세키섬유의 직원 메일 계정이 제3자에게 불법 접속되어 약 1,500건의 의심 메일이 내부외 외부 관계자에게 발송되었다.",
+   "메일에는 PDF 첨부파일이 있었고, 열면 외부 사이트로 유도되어 메일 주소, ID, 비밀번호 등 인증 정보를 입력하게 하는 방식이었다.",
+   "회사는 발견 직후 비밀번호 변경과 인증 세션 만료 등 피해 확산 방지 조치를 했고, 기간 시스템 침해는 현재까지 확인되지 않았으며 원인과 영향 범위를 조사 중이다."
+  ],
+  "summaryJa": [
+   "東洋紡の子会社である東洋紡せんいの従業員のメールアカウントが第三者に不正アクセスされ、約1,500件の不審メールが社内外の関係者に送信された。",
+   "メールにはPDFファイルが添付されており、開くと外部サイトに誘導されてメールアドレスやID、パスワードなどの認証情報を入力させる手口だった。",
+   "同社はパスワード変更とセッション失効で被害拡大を防止し、基幹・業務システムへの侵入は現時点で確認されていない。原因と影響範囲を調査中である。"
+  ],
+  "attackTypes": [
+   "계정 탈취",
+   "피싱"
+  ],
+  "sectors": [
+   "제조"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "東洋紡株式会社",
+    "東洋紡せんい株式会社"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "ca2b0d9c1dc35141",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/15/56461.html",
+  "title": "両毛システムズにランサムウェア攻撃",
+  "titleKo": "Ryomo Systems에 랜섬웨어 공격",
+  "titleJa": "両毛システムズにランサムウェア攻撃",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-14T23:05:12.000Z",
+  "collectedAt": "2026-10-15T00:48:40.248Z",
+  "regions": [
+   "JP"
+  ],
+  "summaryKo": [
+   "両毛시스템즈는 8월 14일 사내 시스템에 대한 불법 접근을 확인하고 네트워크를 차단했으며, 이후 외부 전문기관과 함께 조사를 진행했다.",
+   "조사 결과 8월 12일 외부 공격자가 VPN 계정을 악용해 내부망에 침입했고, 이는 랜섬웨어 공격으로 확인됐다.",
+   "일부 서버에서 불법 접근 흔적이 확인됐으며, 영업·거래 정보와 개인정보가 유출됐을 우려가 있다. 회사는 대상자를 확인해 개별 연락할 예정이다."
+  ],
+  "summaryJa": [
+   "両毛システムズは8月14日に社内システムへの不正アクセスを確認し、ネットワークを遮断したうえで外部専門機関と調査を進めてきた。",
+   "調査の結果、8月12日に外部の第三者がVPNアカウントを悪用して社内ネットワークに侵入し、ランサムウェア攻撃であったことが確認された。",
+   "一部サーバで不正アクセスの痕跡が見つかり、営業情報、取引情報、個人情報が漏えいのおそれがある。個人情報の件数を精査中で、対象者には順次個別に連絡する予定である。"
+  ],
+  "attackTypes": [
+   "랜섬웨어"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "両毛システムズ"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "a7ac18ff5df5ee06",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/15/56460.html",
+  "title": "レゴランド・ジャパン・ホテルが利用するオンライン予約プラットフォームに不正アクセス",
+  "titleKo": "레고랜드 재팬 호텔이 이용하는 온라인 예약 플랫폼에 무단 접속",
+  "titleJa": "レゴランド・ジャパン・ホテルが利用するオンライン予約プラットフォームに不正アクセス",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-14T23:05:07.000Z",
+  "collectedAt": "2026-10-15T00:48:41.878Z",
+  "regions": [
+   "JP"
+  ],
+  "summaryKo": [
+   "레고랜드 재팬 합동회사는 호텔 공식 예약 사이트가 쓰는 온라인 예약 플랫폼에 대한 무단 접속을 발표했다.",
+   "플랫폼 운영사 Amadeus IT Group이 예약 정보 중 이름, 이메일, 전화번호가 유출되었다고 보고했다.",
+   "영향을 받았을 수 있는 예약은 1,557건으로 확인되었으며, 고객에게 예약 정보를 사칭한 피싱 연락에 주의하라고 안내했다."
+  ],
+  "summaryJa": [
+   "LEGOLAND Japan合同会社は、ホテルの公式予約サイトが利用するオンライン予約プラットフォームへの不正アクセスを公表した。",
+   "プラットフォーム運営元のAmadeus IT Group, S.A.から、予約情報に含まれる氏名・メールアドレス・電話番号が不正アクセスされたと報告があったという。",
+   "影響を受けた可能性のある予約は1,557件と確認された。同社は予約情報を悪用したフィッシングメールやSMS、WhatsAppによる不正連絡への注意を呼びかけている。"
+  ],
+  "attackTypes": [
+   "정보유출",
+   "피싱"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "LEGOLAND Japan合同会社",
+    "レゴランド・ジャパン・ホテル",
+    "Amadeus IT Group, S.A."
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "6a8c96dcbbb3824b",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/15/56459.html",
+  "title": "ファインズの予約システムに不正アクセス、1,536,322件の予約者情報が影響",
+  "titleKo": "ファインズ 예약 시스템에 불법 접근, 1,536,322건의 예약자 정보 영향",
+  "titleJa": "ファインズの予約システムに不正アクセス、1,536,322件の予約者情報が影響",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-14T23:05:05.000Z",
+  "collectedAt": "2026-10-15T00:48:41.612Z",
+  "regions": [
+   "JP"
+  ],
+  "summaryKo": [
+   "주식회사 ファインズ가 자사 예약 시스템에 대한 불법 접근 사실을 9월 25일 발표했다.",
+   "9월 22일 예약 시스템 이상을 조사하던 중 제3자의 불법 접근이 확인되었으며, 원인과 수법은 기사에 공개되지 않았다.",
+   "예약자 1,536,322명의 이름, 전화번호, 메일 주소, 예약 매장·메뉴·일시가 영향을 받았으며, 회사는 접근 차단과 영향 범위 확인을 진행 중이다."
+  ],
+  "summaryJa": [
+   "株式会社ファインズは9月25日、同社の予約システムへの不正アクセスを発表した。",
+   "9月22日に予約システムの異常を調査したところ、第三者による不正アクセスが判明したが、手口や原因は公表されていない。",
+   "氏名、電話番号、メールアドレス、予約店舗・メニュー・日時など1,536,322件の予約者情報が影響を受けた。会社はアクセス遮断と影響範囲の特定を進めている。"
+  ],
+  "attackTypes": [
+   "정보유출",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "株式会社ファインズ"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "adc6237dfa89dd6c",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/15/56458.html",
+  "title": "キングプリンターズに不正アクセス、認証情報を用いた生成 AI サービスの不正利用が目的",
+  "titleKo": "킹프린터즈에 대한 불정 접근, 인증 정보를 이용한 생성 AI 서비스 불법 이용이 목적",
+  "titleJa": "キングプリンターズに不正アクセス、認証情報を用いた生成 AI サービスの不正利用が目的",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-14T23:05:02.000Z",
+  "collectedAt": "2026-10-15T00:48:42.973Z",
+  "regions": [
+   "JP"
+  ],
+  "summaryKo": [
+   "킹프린터즈는 9월 10일 관리 중인 시스템 기반에 대한 제3자 불법 접근을 탐지하고 사이트와 관련 기능을 일시 중단했다.",
+   "회사 조사에서 외부로 데이터가 전송된 흔적은 확인되지 않았으며, 회사가 보유한 인증 정보로 생성 AI 서비스를 불법 이용하려는 목적으로 보고 있다.",
+   "고객 개인정보와 각종 데이터의 유출은 9월 25일 기준 확인되지 않았으며, 10월 초 외부 전문기관의 포렌식 조사가 예정되어 있다."
+  ],
+  "summaryJa": [
+   "キングプリンターズは9月10日、管理するシステム基盤への第三者による不正アクセスを検知し、サイトと関連機能を一時停止した。",
+   "社内調査では外部へのデータ送信の痕跡は認められず、保有する認証情報を悪用した生成AIサービスの不正利用が目的と見られるとしている。",
+   "9月25日時点で顧客の個人情報や各種データの漏えいは確認されておらず、10月初旬から外部専門機関によるフォレンジック調査を実施する予定である。"
+  ],
+  "attackTypes": [
+   "계정 탈취"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "キングプリンターズ"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "7f907a1754db37db",
+  "url": "https://scan.netsecurity.ne.jp/article/2026/10/15/56455.html",
+  "title": "おとり技術で早期検知 ～ 米 CISA が「サイバーデコイ」導入ガイドを発表",
+  "titleKo": "미끼 기술로 조기 탐지 ～ 미 CISA, '사이버 데코이' 도입 가이드 발표",
+  "titleJa": "おとり技術で早期検知 ～ 米 CISA が「サイバーデコイ」導入ガイドを発表",
+  "sourceId": "scannetsecurity",
+  "sourceName": "ScanNetSecurity",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-14T23:00:07.000Z",
+  "collectedAt": "2026-10-15T00:48:46.036Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "미국 CISA가 9월 16일 사이버 데코이를 활용한 탐지·대응 역량 강화 가이드를 발표했다.",
+   "공격자가 결국 일정 수준의 접근 권한을 얻는다는 전제로, 내부망에 허니팟 등 미끼를 배치해 침투 초기 단계에서 공격자를 찾아내도록 권고한다.",
+   "가이드는 제로트러스트 모델과 함께 도입할 것을 권장하며, 공격 정보 수집과 평균 탐지 시간(MTTD) 단축 효과를 설명한다."
+  ],
+  "summaryJa": [
+   "米CISAは9月16日、サイバーデコイを活用した検知・対応能力の強化に関するガイダンスを公表した。",
+   "攻撃者が最終的に一定のアクセス権限を得るという前提に立ち、内部ネットワークに囮のハニーポットなどを配置して侵入初期段階で攻撃者を検知するよう勧めている。",
+   "同ガイダンスは既存のゼロトラストモデルと併用することを推奨し、攻撃情報の収集やMTTDの短縮が期待できるとしている。"
+  ],
+  "attackTypes": [],
+  "sectors": [
+   "정부·공공"
+  ],
+  "nature": "연구·리포트",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "CISA"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "c9a3f02d710caec5",
+  "url": "https://www.bleepingcomputer.com/news/security/palo-alto-networks-warns-of-pan-os-rce-flaw-exploited-in-attacks/",
+  "title": "Palo Alto Networks warns of PAN-OS RCE flaw exploited in attacks",
+  "titleKo": "Palo Alto Networks, 공격에 악용된 PAN-OS 원격 코드 실행 취약점 경고",
+  "titleJa": "Palo Alto Networks、攻撃に悪用されたPAN-OSのリモートコード実行の脆弱性に警告",
+  "sourceId": "bleepingcomputer",
+  "sourceName": "BleepingComputer",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-14T22:56:47.000Z",
+  "collectedAt": "2026-10-15T00:48:47.494Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "Palo Alto Networks가 공격에 악용된 PAN-OS 관리 인터페이스의 원격 코드 실행 취약점 CVE-2026-0322 패치를 공개했습니다.",
+   "인증된 공격자가 네트워크 접근 권한을 가진 상태에서 취약한 장비에서 root 권한으로 코드를 실행할 수 있으며, 공격자는 기존 자격증명이 필요합니다.",
+   "제한적인 악용이 확인됐고, 회사는 관리 인터페이스 접근을 내부 IP로 제한하고 지원 버전으로 업그레이드할 것을 권고했습니다. 미국 CISA는 연방 기관에 10월 17일까지 조치를 요구했습니다."
+  ],
+  "summaryJa": [
+   "Palo Alto Networksは、攻撃に悪用されたPAN-OS管理インターフェースのリモートコード実行の脆弱性CVE-2026-0322の修正版を公開した。",
+   "認証済みの攻撃者がネットワーク接続を持つ状態で、脆弱な機器上でrootとしてコードを実行できる。攻撃には既存の認証情報が必要である。",
+   "限定的な悪用が確認されており、同社は管理インターフェースへのアクセスを信頼できる内部IPに制限し、サポート版へのアップグレードを推奨している。米CISAは連邦機関に10月17日までの対応を求めた。"
+  ],
+  "attackTypes": [
+   "제로데이",
+   "취약점 악용"
+  ],
+  "sectors": [
+   "통신",
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-0322"
+   ],
+   "actors": [],
+   "orgs": [
+    "Palo Alto Networks",
+    "PAN-OS",
+    "CISA"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "dfb6f8cb6997450b",
+  "url": "https://piyolog.hatenadiary.jp/entry/2026/10/15/065625",
+  "title": "産婦人科向けシステム「アットリンク」への不正アクセスの可能性についてまとめてみた",
+  "titleKo": "산부인과 시스템 '아트링크'에 대한 불법 접근 가능성 정리",
+  "titleJa": "産婦人科向けシステム「アットリンク」への不正アクセスの可能性についてまとめてみた",
+  "sourceId": "piyolog",
+  "sourceName": "piyolog",
+  "sourceRegion": "JP",
+  "publishedAt": "2026-10-14T21:56:25.000Z",
+  "collectedAt": "2026-10-15T00:48:49.223Z",
+  "regions": [
+   "JP"
+  ],
+  "summaryKo": [
+   "메드레이는 산부인과용 업무 시스템 '아트링크'에서 제3자의 불법 접근 가능성을 확인했다고 발표했다.",
+   "피해 원인과 범위를 조사하기 위해 10월 15일 0시부터 앱, 웹 예약 사이트 등 관련 서비스를 일시 중단했다.",
+   "개인정보 영향 여부는 외부 전문기관과 함께 조사 중이며, 복구 시기와 조사 결과는 추후 안내할 예정이다."
+  ],
+  "summaryJa": [
+   "メドレーは産婦人科向けシステム「アットリンク」で第三者による不正アクセスの可能性を確認したと発表した。",
+   "原因と影響範囲の調査のため、10月15日0時からアプリやWEB予約サイトなど関連サービスを一時停止した。",
+   "個人情報への影響は外部の専門機関と調査中で、再開時期と調査結果は改めて案内するとしている。"
+  ],
+  "attackTypes": [
+   "정보유출"
+  ],
+  "sectors": [
+   "의료"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "메드레이",
+    "아트링크",
+    "오프쇼어"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "e634a1670f02cf9e",
+  "url": "https://therecord.media/olvx-cybercrime-marketplace-arrest-north-macedonia",
+  "title": "North Macedonian police arrest alleged administrator behind OLVX cybercrime market",
+  "titleKo": "북마케도니아 경찰, 사이버범죄 시장 OLVX 운영자 체포",
+  "titleJa": "北マケドニア警察、サイバー犯罪市場OLVXの運営者を逮捕",
+  "sourceId": "therecord",
+  "sourceName": "The Record",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-14T21:10:00.000Z",
+  "collectedAt": "2026-10-15T00:48:50.298Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "북마케도니아 경찰이 FBI와 공조해 사이버범죄 장터 OLVX의 운영자로 지목된 용의자를 체포했고, 자택 압수수색이 이루어졌다.",
+   "OLVX는 2023년부터 2025년까지 운영되며 1,500곳 이상의 판매자 계정을 통해 개인식별정보와 로그인 자격증명을 불법 판매한 것으로 알려졌다.",
+   "FBI는 미국인 수천 명의 계정 보안이 위협받았다고 밝혔고, 용의자가 텔레그램에서 환불 사기 도구 판매 그룹도 운영했다는 점과 함께 아동성착취물 소지 혐의도 추가로 제기되었다."
+  ],
+  "summaryJa": [
+   "北マケドニア警察はFBIと共同で、サイバー犯罪マーケットOLVXの運営者とみられる容疑者を逮捕し、自宅の家宅捜索を行ったということである。",
+   "OLVXは2023年から2025年まで運営され、1,500以上の販売者アカウントを通じて個人識別情報と認証情報を違法に売買していたとされる。",
+   "FBIは米国人数千人のアカウント安全性が脅かされたと発表した。容疑者はテレグラムで返金詐欺ツールを扱うグループも運営し、児童性的虐待素材の所持も問題になっている。"
+  ],
+  "attackTypes": [
+   "정보유출",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "개인"
+  ],
+  "nature": "체포·수사",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "ONEMILI"
+   ],
+   "orgs": [
+    "OLVX",
+    "FBI",
+    "ZeroFox",
+    "Telegram",
+    "Empire Market"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "f2c5c74b7401be58",
+  "url": "https://therecord.media/brooklyn-da-server-takedowns-crypto-scam-russian-speakers",
+  "title": "Brooklyn DA’s office disrupts crypto scam targeting Russian community",
+  "titleKo": "브루클린 지방검찰청, 러시아어권 커뮤니티를 노린 암호화폐 사기 조직 적발",
+  "titleJa": "ブルックリン地方検事局、ロシア語圏コミュニティを狙った暗号資産詐欺を摘発",
+  "sourceId": "therecord",
+  "sourceName": "The Record",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-14T20:33:00.000Z",
+  "collectedAt": "2026-10-15T00:48:50.531Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "뉴욕 법집행기관이 브루클린 러시아어권 주민을 겨냥한 암호화폐 투자 사기 조직의 웹도메인 241개와 서버 112개를 압수하거나 차단했습니다.",
+   "페이스북 러시아어 광고로 투자자를 모집한 뒤 가짜 투자 플랫폼에서 자금을 빼앗고, 출금 시 추가 수수료와 세금을 요구하는 방식이었습니다.",
+   "피해액은 수백만 달러로 추정되며 약 30만 달러를 회수했고, 조직은 피해자에게 회수를 미끼로 2차 사기도 벌였습니다."
+  ],
+  "summaryJa": [
+   "ニューヨークの法執行機関が、ブルックリンのロシア語話者を狙った暗号資産投資詐欺グループのドメイン241件とサーバー112台を押収・遮断した。",
+   "ロシア語のFacebook広告で投資家を集め、偽の投資プラットフォームで資金を奪い、出金時には追加の手数料や税金を要求する手口だった。",
+   "被害額は数百万ドルと見られ、約30万ドルを取り戻した。さらに組織は、被害者に資金回収を持ちかける二次詐欺も行っていた。"
+  ],
+  "attackTypes": [
+   "정보유출",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "개인"
+  ],
+  "nature": "체포·수사",
+  "entities": {
+   "cves": [],
+   "actors": [],
+   "orgs": [
+    "Brooklyn District Attorney's Office",
+    "FBI",
+    "Facebook",
+    "Recorded Future News"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "8ab3c51ec3714565",
+  "url": "https://www.bleepingcomputer.com/news/security/fbi-raids-dprk-it-worker-laptop-farms-in-texas-us-nationals-arrested/",
+  "title": "FBI raids DPRK IT worker laptop farms in Texas, US nationals arrested",
+  "titleKo": "FBI, 텍사스 북한 IT 인력 노트북 팜 급습… 미국인 2명 체포",
+  "titleJa": "FBI、テキサスの北朝鮮IT人材によるラップトップファームを急襲、米国人2名を逮捕",
+  "sourceId": "bleepingcomputer",
+  "sourceName": "BleepingComputer",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-14T19:41:43.000Z",
+  "collectedAt": "2026-10-15T00:48:52.288Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "미 법무부는 북한 연계 Famous Chollima 조직의 원격 IT 인력 사기 작전을 수사해 2명을 체포하고 14명을 기소했으며 노트북 약 187대를 압수했다.",
+   "북한 요원들은 도용하거나 조작한 신원으로 미국 기업에 취업하고, 미국 내 노트북 팜을 통해 원격 접속하는 방식으로 위치를 속였다.",
+   "FBI는 9월 21~25일 텍사스 주택 40곳을 수색했다. 오하이오 기소장에 따르면 2019~2025년 70개 기업이 피해를 입었고 약 300만 달러가 북한으로 흘러갔다."
+  ],
+  "summaryJa": [
+   "米司法省は北朝鮮系のFamous Chollimaによる遠隔IT人材詐欺を摘発し、2名を逮捕、14名を起訴、約187台のノートPCを押収したである。",
+   "北朝鮮の工作員は盗用または偽造した身分で米企業に就職し、米国内のラップトップファームを経由して遠隔接続することで所在を偽装したである。",
+   "FBIはテキサス州の住宅40カ所を捜索した。オハイオ州の起訴状によると、2019年から2025年にかけて70社が被害を受け、約300万ドルが北朝鮮側に渡ったとされるである。"
+  ],
+  "attackTypes": [
+   "계정 탈취"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "체포·수사",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "Famous Chollima",
+    "WageMole"
+   ],
+   "orgs": [
+    "CrowdStrike",
+    "U.S. Department of Justice"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "976f4f5fb239546a",
+  "url": "https://thehackernews.com/2026/10/cisco-warns-of-active-attacks.html",
+  "title": "Cisco Warns of Active Attacks Exploiting New Critical Secure Email Gateway Vulnerability",
+  "titleKo": "Cisco, 신규 치명적 Secure Email Gateway 취약점 악용 공격 활성 확인 경고",
+  "titleJa": "Cisco、新たな重大脆弱性を悪用する攻撃が進行中と警告 Secure Email Gateway",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-14T18:38:56.000Z",
+  "collectedAt": "2026-10-15T00:48:54.215Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "Cisco는 Secure Email Gateway의 치명적 취약점 CVE-2026-76519(CVSS 9.8)가 실제 공격에 악용되고 있다고 권고문을 통해 밝혔다.",
+   "로그인 없이 악성 첨부파일이 담긴 이메일을 보내 어플라이언스 OS에 파일을 쓰고, 성공하면 root 권한으로 명령을 실행할 수 있다. File Reputation이 켜져 있고 Content Scanner Tools가 25.3.0.5525 미만인 장비가 대상이다.",
+   "피해 규모와 공격 주체는 공개되지 않았다. Content Scanner Tools 25.3.0.5525 이상으로 업데이트하고, contentscannerstatus와 system_logs 점검을 수행하는 것이 권장된다."
+  ],
+  "summaryJa": [
+   "Ciciscoは、Secure Email Gatewayの重大脆弱性CVE-2026-76519(CVSS 9.8)が実際の攻撃に悪用されていると権告で明らかにした。",
+   "ログイン不要で、悪意ある添付ファイルを含むメールを送るだけで、アプライアンスのOSにファイルを書き込み、成功すればroot権限でコマンドを実行されるおそれがある。",
+   "被害台数と攻撃者は公表されていない。Content Scanner Tools 25.3.0.5525以降への更新と、contentscannerstatusおよびsystem_logsによる侵害確認が推奨される。"
+  ],
+  "attackTypes": [],
+  "sectors": [],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-76519"
+   ],
+   "actors": [],
+   "orgs": [
+    "Cisco",
+    "Secure Email Gateway",
+    "Content Scanner Tools",
+    "AsyncOS"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
   "id": "91d989b5fb66289f",
   "url": "https://www.bleepingcomputer.com/news/security/ledger-asks-sellers-across-asia-to-halt-sales-after-supply-chain-attack/",
   "title": "Ledger asks sellers across Asia to halt sales after supply-chain attack",
@@ -40,6 +807,52 @@
     "Trezor",
     "MediaMarkt",
     "Aqipa GmbH"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "639d0d6e00a7eca3",
+  "url": "https://thehackernews.com/2026/10/hackers-backdoor-nextcloud-servers.html",
+  "title": "Hackers Backdoor Nextcloud Servers Through Critical Flaw in Collabora’s Built-in CODE App",
+  "titleKo": "해커들, Collabora 내장 CODE 앱의 치명적 결함으로 Nextcloud 서버에 백도어 설치",
+  "titleJa": "ハッカー、CollaboraのCODE内蔵アプリの重大な欠陥を悪用しNextcloudサーバーにバックドアを設置",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-14T17:38:31.000Z",
+  "collectedAt": "2026-10-15T00:48:54.041Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "공격자들이 Nextcloud의 선택 앱 Collabora Online - Built-in CODE Server의 결함을 악용해 서버에 웹셸을 심었다.",
+   "proxy.php 스크립트가 요청 경로를 쉘 명령에 그대로 넣어, 로컬 문서 서버가 꺼진 상태에서 인증 없이 명령이 실행된다.",
+   "버전 26.4.303에서 수정됐으며 CVE-2026-110447이 부여됐다. 앱 비활성화로는 해결되지 않고, 일부 관리자 서버가 침해된 것으로 확인됐다."
+  ],
+  "summaryJa": [
+   "攻撃者はNextcloudの任意アプリCollabora Online - Built-in CODE Serverの脆弱性を悪用し、サーバーにWebシェルを設置した。",
+   "proxy.phpスクリプトがリクエストのパスをシェルコマンドにそのまま埋め込むため、ローカル文書サーバーが停止中は認証なしでコマンドが実行される。",
+   "バージョン26.4.303で修正され、CVE-2026-110447が付与された。アプリを無効化しても解決せず、一部の管理者のサーバーが侵害されたことが確認されている。"
+  ],
+  "attackTypes": [
+   "취약점 악용",
+   "악성코드"
+  ],
+  "sectors": [
+   "IT·클라우드"
+  ],
+  "nature": "취약점 공지",
+  "entities": {
+   "cves": [
+    "CVE-2026-110447",
+    "CVE-2025-66208"
+   ],
+   "actors": [],
+   "orgs": [
+    "Collabora",
+    "Nextcloud",
+    "richdocumentscode"
    ]
   },
   "basis": "본문"
@@ -89,6 +902,56 @@
     "Secure Email Gateway",
     "Shadowserver",
     "CISA"
+   ]
+  },
+  "basis": "본문"
+ },
+ {
+  "id": "78b0d9b2dfa117c3",
+  "url": "https://thehackernews.com/2026/10/microsoft-disrupts-3-phishing-kits.html",
+  "title": "Microsoft Disrupts 3 Phishing Kits Linked to Over 1 Billion Scam Messages",
+  "titleKo": "Microsoft, 1억 건 이상의 사기 메시지와 연관된 피싱 키트 3종 무력화",
+  "titleJa": "Microsoft、10億通超の詐欺メッセージに関連するフィッシングキット3種を無力化",
+  "sourceId": "thehackernews",
+  "sourceName": "The Hacker News",
+  "sourceRegion": "INTL",
+  "publishedAt": "2026-10-14T17:09:15.000Z",
+  "collectedAt": "2026-10-15T00:48:54.421Z",
+  "regions": [
+   "INTL",
+   "JP"
+  ],
+  "summaryKo": [
+   "Microsoft, Health-ISAC, JC3 및 민간 기업 연합이 CoGUI, Haozi, Iron Man System 등 피싱 키트 3종의 운영을 무력화했다.",
+   "중국어권 PhaaS 생태계와 YAM Store 암시장이 침해된 Microsoft·Google 환경을 악용해 브랜드 사칭 피싱을 대량으로 유포했다.",
+   "2026년 1월 이후 10억 건 이상의 피싱 이메일과 SMS가 7만 5천여 개 기관으로 발송됐으며, 일본 등 여러 국가가 피해 대상이었다."
+  ],
+  "summaryJa": [
+   "Microsoft、Health-ISAC、JC3および民間企業の連合が、CoGUI、Haozi、Iron Man Systemの3種のフィッシングキットの運用を停止させた。",
+   "中国語圏のPhaaSエコシステムとYAM Storeが、侵害されたMicrosoftやGoogleの環境を悪用し、ブランドを装ったフィッシングを大規模に展開していた。",
+   "2026年1月以降、10億通を超えるフィッシングメールとSMSが7万5千以上の組織に送られ、日本も標的国の一つだった。"
+  ],
+  "attackTypes": [
+   "피싱",
+   "계정 탈취"
+  ],
+  "sectors": [
+   "금융",
+   "의료"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "Storm-3119",
+    "Storm-2990"
+   ],
+   "orgs": [
+    "Microsoft",
+    "Health-ISAC",
+    "JC3",
+    "Proofpoint",
+    "Resecurity"
    ]
   },
   "basis": "본문"
