@@ -187,6 +187,11 @@ async function checkData() {
     [b.headlineJa, ...b.items.flatMap((i) => [i.titleJa, i.bodyJa, i.whyJa])].forEach((x) => ja("브리핑", x));
     [b.headlineKo, ...b.items.flatMap((i) => [i.titleKo, i.bodyKo, i.whyKo])].forEach((x) => ko("브리핑", x));
   }
+  // 데이터 무결성: 토픽 id가 겹치면 하나를 누를 때 여러 개가 선택되고 엉뚱한 토픽이 열린다
+  const idCount = new Map<string, number>();
+  for (const t of topics) idCount.set(t.id, (idCount.get(t.id) ?? 0) + 1);
+  for (const [id, n] of idCount) if (n > 1) problems.push(`[데이터] 토픽 id ${id}가 ${n}개 토픽에 겹침`);
+
   for (const [name, r] of Object.entries(readings))
     if (!hasHangul(r) || JAPANESE.test(r)) leaks.push(["이름 한국어 읽기가 한글이 아님", `${name} → ${r}`]);
 

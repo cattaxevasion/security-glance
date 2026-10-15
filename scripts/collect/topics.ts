@@ -8,7 +8,7 @@ import { z } from "zod";
 import { ATTACK_TYPES, NATURES, REGIONS, SECTORS, type Nature } from "../../shared/taxonomy";
 import type { NewsItem, Technique, Topic, VulnData } from "../../shared/types";
 import { anthropic, MODEL, pickTags, SummaryRefused } from "./summarize";
-import { idFor, mapLimit } from "./util";
+import { mapLimit, sha1 } from "./util";
 
 /** 배정 후보로 보여줄 최근 토픽 범위 */
 const CANDIDATE_DAYS = 10;
@@ -59,9 +59,43 @@ function refreshDerived(t: Topic, members: NewsItem[]) {
   }
 }
 
+/**
+ * 토픽 id: 처음 만든 기사 id에서. (주소용 idFor를 쓰면 안 된다: 주소 정리가 http·https가 아닌 값을 빈 문자열로
+ * 바꾸면서 2026-10-15에 새 토픽 44개가 모두 같은 id를 받은 적이 있다)
+ */
+export function topicIdFor(articleId: string): string {
+  return sha1(`topic:${articleId}`);
+}
+
+/** 그 버그로 생긴 id (빈 문자열의 해시) */
+const BROKEN_ID = sha1("");
+
+/** 겹치거나 깨진 토픽 id를 처음 기사 기준으로 다시 붙인다. 바꾼 수를 돌려준다. */
+function repairIds(topics: Topic[], byId: Map<string, NewsItem>): number {
+  const count = new Map<string, number>();
+  for (const t of topics) count.set(t.id, (count.get(t.id) ?? 0) + 1);
+  const used = new Set(topics.map((t) => t.id));
+  let fixed = 0;
+  for (const t of topics) {
+    if (t.id !== BROKEN_ID && count.get(t.id) === 1) continue;
+    // 가장 먼저 보도된 기사 = 토픽을 만든 기사 (기사는 보도 순서대로 배정된다)
+    const seed = [...t.articleIds].sort((a, b) =>
+      (byId.get(a)?.publishedAt ?? "").localeCompare(byId.get(b)?.publishedAt ?? ""),
+    )[0];
+    let id = topicIdFor(seed);
+    for (let i = 1; used.has(id) && id !== t.id; i++) id = topicIdFor(`${seed}#${i}`);
+    if (id === t.id) continue;
+    count.set(t.id, (count.get(t.id) ?? 1) - 1);
+    used.add(id);
+    t.id = id;
+    fixed++;
+  }
+  return fixed;
+}
+
 function newTopic(n: NewsItem): Topic {
   const t: Topic = {
-    id: idFor(`topic:${n.id}`),
+    id: topicIdFor(n.id),
     titleKo: n.titleKo,
     titleJa: n.titleJa || n.titleKo,
     summaryKo: n.summaryKo,
@@ -394,6 +428,8 @@ export async function updateTopics(
   const topics = prev
     .map((t) => ({ ...t, articleIds: t.articleIds.filter((id) => byId.has(id)) }))
     .filter((t) => t.articleIds.length > 0);
+  const repaired = repairIds(topics, byId);
+  if (repaired) console.log(`토픽 id 바로잡기 ${repaired}개 (겹치거나 깨진 id)`);
   const topicOf = new Map<string, Topic>();
   for (const t of topics) for (const id of t.articleIds) topicOf.set(id, t);
 
