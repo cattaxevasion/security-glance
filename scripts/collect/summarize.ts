@@ -89,6 +89,11 @@ const ALIASES: Record<string, string> = {
   エネルギー重要インフラ: "에너지·기반시설",
   重要インフラ: "에너지·기반시설",
   個人: "개인",
+  // IoC 종류의 흔한 다른 표현
+  해시: "파일 해시",
+  hash: "파일 해시",
+  ip주소: "IP",
+  url: "URL",
 };
 
 function pick<T extends string>(allowed: readonly T[], values: string[], field: string): T[] {
