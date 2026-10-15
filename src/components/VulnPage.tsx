@@ -72,6 +72,16 @@ const useStyles = makeStyles({
   cvssCritical: { fontWeight: tokens.fontWeightBold },
 });
 
+/** 목록의 가장 오래된 공개일부터 오늘까지의 날 수 (14~21) */
+function cveSpan(cves: CveEntry[]): number {
+  if (!cves.length) return 14;
+  const oldest = Math.min(...cves.map((c) => Date.parse(c.published)));
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const span = Math.floor((today.getTime() - oldest) / 86400_000) + 2;
+  return Math.min(21, Math.max(14, span));
+}
+
 /** 오늘 0시 기준 남은 날 수 (음수면 지남) */
 function daysLeft(date: string): number {
   const today = new Date();
@@ -231,7 +241,9 @@ export function VulnPage(p: Props) {
       kevOverdue: dueIn.filter((d) => d < 0).length,
       kevEpss: kev.filter(top10).length,
       kevNews: kev.filter((k) => mentions.has(k.cveID)).length,
-      cveBars: dailyBars(lang, cves, (c) => Date.parse(c.published), 14),
+      // NVD는 '수집 시점부터 14일'을 받아 와서 달력 14일보다 하루 이틀 앞선 항목이 섞인다.
+      // 막대 합이 목록 수와 같도록 가장 오래된 항목의 날부터 그린다 (최대 21일)
+      cveBars: dailyBars(lang, cves, (c) => Date.parse(c.published), cveSpan(cves)),
       cveAll: cves.length,
       cveCritical: cves.filter((c) => (c.cvss ?? 0) >= 9).length,
       cveEpss: cves.filter(top10).length,
