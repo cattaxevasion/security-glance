@@ -1,7 +1,7 @@
 import Parser from "rss-parser";
 import type { Region, SourceKind } from "../../shared/taxonomy";
 import type { SourceStatus } from "../../shared/types";
-import { cleanText, fetchText, normalizeUrl } from "./util";
+import { cleanText, fetchText, MAX_FEED_BYTES, normalizeUrl } from "./util";
 
 export interface Source {
   id: string;
@@ -49,7 +49,7 @@ export async function fetchFeeds(sources: Source[]): Promise<{ items: RawItem[];
   await Promise.all(
     sources.map(async (source) => {
       try {
-        const xml = await fetchText(source.url);
+        const xml = await fetchText(source.url, 30000, MAX_FEED_BYTES);
         const feed = await parser.parseString(xml);
         let count = 0;
         for (const entry of feed.items) {

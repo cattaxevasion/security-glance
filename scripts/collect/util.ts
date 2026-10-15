@@ -6,16 +6,18 @@ export const USER_AGENT =
   "Mozilla/5.0 (compatible; security-glance/0.1; personal security news digest)";
 
 /** 한 번에 받는 응답의 최대 크기. 비정상적으로 큰 페이지가 수집을 멈추거나 메모리를 다 쓰지 않게 */
-const MAX_BYTES = 5 * 1024 * 1024;
+export const MAX_PAGE_BYTES = 5 * 1024 * 1024;
+/** 피드는 본문 전체를 수백 건씩 싣는 곳(Elastic 등)이 있어 더 넉넉하게 */
+export const MAX_FEED_BYTES = 30 * 1024 * 1024;
 
-export async function fetchText(url: string, timeoutMs = 15000): Promise<string> {
+export async function fetchText(url: string, timeoutMs = 15000, maxBytes = MAX_PAGE_BYTES): Promise<string> {
   const res = await fetch(url, {
     headers: { "User-Agent": USER_AGENT, Accept: "*/*" },
     signal: AbortSignal.timeout(timeoutMs),
     redirect: "follow",
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  if (Number(res.headers.get("content-length") ?? 0) > MAX_BYTES) {
+  if (Number(res.headers.get("content-length") ?? 0) > maxBytes) {
     await res.body?.cancel();
     throw new Error(`응답이 너무 큼 (${res.headers.get("content-length")} bytes)`);
   }
@@ -28,9 +30,9 @@ export async function fetchText(url: string, timeoutMs = 15000): Promise<string>
     const { done, value } = await reader.read();
     if (done) break;
     size += value.byteLength;
-    if (size > MAX_BYTES) {
+    if (size > maxBytes) {
       await reader.cancel();
-      throw new Error(`응답이 너무 큼 (${MAX_BYTES} bytes 넘음)`);
+      throw new Error(`응답이 너무 큼 (${maxBytes} bytes 넘음)`);
     }
     chunks.push(value);
   }
