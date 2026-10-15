@@ -45,6 +45,8 @@ export type Selection = { kind: "topic"; id: string } | { kind: "kev" | "cve"; i
 
 const useStyles = makeStyles({
   surface: { boxShadow: tokens.shadow64 },
+  // 넓은 화면: 상단 바(48px) 아래부터 열어서 언어 전환·수집 상태 버튼을 가리지 않는다
+  belowHeader: { top: "48px", height: "calc(100% - 48px)", maxHeight: "calc(100% - 48px)" },
   topBar: { display: "flex", justifyContent: "flex-end", gap: "2px", marginRight: "-8px", marginTop: "-8px" },
   heading: { display: "flex", gap: "16px", alignItems: "flex-start", marginTop: "4px" },
   iconCircle: {
@@ -279,7 +281,7 @@ export function DetailPanel(p: Props) {
   // 넓은 화면에서는 뒤의 목록을 계속 누를 수 있게 둔다(non-modal).
   return (
     <OverlayDrawer
-      className={s.surface}
+      className={mergeClasses(s.surface, !p.narrow && s.belowHeader)}
       open={!!content}
       onOpenChange={(_, d) => !d.open && p.onSelect(null)}
       position="end"

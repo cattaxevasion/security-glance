@@ -68,6 +68,8 @@ export interface Topic {
   lastUpdated: string;
   /** 이 토픽의 기사가 마지막으로 수집된 시각 (지난 방문 이후 새 소식 판단용) */
   collectedAt?: string;
+  /** 이 토픽에 합쳐진 토픽들의 예전 id (공유 링크·브리핑이 예전 id를 가리켜도 찾아갈 수 있게) */
+  aliases?: string[];
   /** 시간 감쇠 전 중요도 (0~100 남짓). 화면에서 최신성을 곱해 정렬한다. */
   importance: number;
   /** 통합 요약을 만들 때의 기사 수. 기사가 늘면 다시 만든다. */

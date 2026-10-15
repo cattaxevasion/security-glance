@@ -1,5 +1,6 @@
 import {
   Badge,
+  Button,
   Body1,
   Caption1,
   SearchBox,
@@ -22,6 +23,8 @@ import { EpssMark } from "./marks";
 import { PageTitle, usePageStyles } from "./page";
 
 type SortDir = "ascending" | "descending";
+
+const PAGE = 100;
 
 const useStyles = makeStyles({
   colDate: { width: "104px" },
@@ -130,12 +133,18 @@ export function VulnPage(p: Props) {
           : sort.key === "news"
             ? (mentions.get(c.id) ?? 0)
             : (c.cvss ?? -1);
-    return [...rows].sort(cmp(val)).slice(0, 400);
+    return [...rows].sort(cmp(val));
   }, [kind, p.data, q, sort, mentions]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // 표는 한 번에 PAGE행씩 그리고 '더 보기'로 늘린다 (예전엔 400행에서 말없이 잘렸다)
+  const [shown, setShown] = useState(PAGE);
+  useEffect(() => setShown(PAGE), [kind, q, sort]);
+  const kevVisible = useMemo(() => kevRows.slice(0, shown), [kevRows, shown]);
+  const cveVisible = useMemo(() => cveRows.slice(0, shown), [cveRows, shown]);
+
   const ids = useMemo(
-    () => (kind === "kev" ? kevRows.map((k) => k.cveID) : cveRows.map((c) => c.id)),
-    [kind, kevRows, cveRows],
+    () => (kind === "kev" ? kevVisible.map((k) => k.cveID) : cveVisible.map((c) => c.id)),
+    [kind, kevVisible, cveVisible],
   );
   useEffect(() => p.onOrder(ids), [ids]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -215,7 +224,7 @@ export function VulnPage(p: Props) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {kevRows.map((k) => (
+              {kevVisible.map((k) => (
                 <TableRow key={k.cveID} {...rowProps(k.cveID)}>
                   <TableCell className={ps.nowrap}>
                     <Caption1>{k.dateAdded}</Caption1>
@@ -277,7 +286,7 @@ export function VulnPage(p: Props) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {cveRows.map((c) => (
+              {cveVisible.map((c) => (
                 <TableRow key={c.id} {...rowProps(c.id)}>
                   <TableCell>
                     <Caption1 className={ps.mono}>{c.id}</Caption1>
@@ -321,6 +330,12 @@ export function VulnPage(p: Props) {
           </Table>
         )}
       </div>
+
+      {count > shown && (
+        <div className={ps.more}>
+          <Button onClick={() => setShown(shown + PAGE)}>{t.more(count - shown)}</Button>
+        </div>
+      )}
 
       <Caption1 className={ps.footer}>{t.footer}</Caption1>
     </div>

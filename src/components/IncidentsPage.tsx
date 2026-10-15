@@ -45,6 +45,8 @@ import { nb } from "./NoBreak";
 
 const PERIODS = [7, 30, 90];
 
+const PAGE = 50;
+
 const useStyles = makeStyles({
   regionTabs: { marginTop: "12px", marginLeft: "-10px" },
   // 수치 타일
@@ -339,7 +341,11 @@ export function IncidentsPage(p: Props) {
       .sort((a, b) => b.firstSeen.localeCompare(a.firstSeen));
   }, [inRegion, days, p.query, attack, sector]);
 
-  const ids = useMemo(() => list.map((x) => x.id), [list]);
+  // 한 번에 PAGE개씩 그리고 '더 보기'로 늘린다 (예전엔 80개에서 잘려 나머지를 볼 수 없었다)
+  const [shown, setShown] = useState(PAGE);
+  useEffect(() => setShown(PAGE), [region, days, p.query, attack, sector]);
+  const visible = useMemo(() => list.slice(0, shown), [list, shown]);
+  const ids = useMemo(() => visible.map((x) => x.id), [visible]);
   useEffect(() => p.onOrder(ids), [ids]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const month = (d: Date) => new Intl.DateTimeFormat(LOCALE[lang], { month: "short" }).format(d);
@@ -476,7 +482,7 @@ export function IncidentsPage(p: Props) {
         </div>
       ) : (
         <ul className={mergeClasses(s.list, ps.listSurface)} key={`${region}-${days}`}>
-          {list.slice(0, 80).map((x, i) => {
+          {visible.map((x, i) => {
             const d = new Date(x.firstSeen);
             const sel = x.id === p.selectedId;
             return (
@@ -537,6 +543,12 @@ export function IncidentsPage(p: Props) {
             );
           })}
         </ul>
+      )}
+
+      {list.length > shown && (
+        <div className={ps.more}>
+          <Button onClick={() => setShown(shown + PAGE)}>{t.more(list.length - shown)}</Button>
+        </div>
       )}
 
       <Caption1 className={ps.footer}>{t.footer}</Caption1>

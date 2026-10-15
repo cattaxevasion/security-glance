@@ -160,6 +160,7 @@ const ko = {
   // 단축키·알림
   shortcuts: "단축키: / 검색 · j·k 이전·다음 · Esc 닫기",
   linkCopied: "링크를 복사했어요",
+  topicGone: "이 토픽을 찾을 수 없어요. 보관 기간(90일)이 지났거나 정리되었을 수 있어요.",
   railSinceBriefing: "브리핑 이후 새로 뜬 주목 토픽",
   railSinceBriefingSub: (time: string) => `${time} 이후`,
   railLeaks: "랜섬웨어 유출 사이트 게시",
@@ -333,6 +334,7 @@ const ja: Strings = {
   noSector: "–",
   shortcuts: "ショートカット: / 検索 · j・k 前後 · Esc 閉じる",
   linkCopied: "リンクをコピーしました",
+  topicGone: "このトピックは見つかりませんでした。保存期間（90日）を過ぎたか、整理された可能性があります。",
   railSinceBriefing: "ブリーフィング後に浮上した注目トピック",
   railSinceBriefingSub: (time: string) => `${time}以降`,
   railLeaks: "ランサムウェアのリークサイト掲載",

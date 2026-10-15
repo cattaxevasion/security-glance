@@ -229,10 +229,12 @@ export default function App() {
     return () => window.clearTimeout(timer);
   }, [vulns, view, selection, loadCves]);
 
+  const [archiveLoaded, setArchiveLoaded] = useState(false);
   const loadArchive = useCallback(() => {
     if (archiveRequested.current) return;
     archiveRequested.current = true;
     load<Topic[]>("topics-archive.json").then((d) => {
+      setArchiveLoaded(true);
       if (!d?.length) return;
       setTopics((prev) => {
         const have = new Set((prev ?? []).map((x) => x.id));
@@ -250,6 +252,24 @@ export default function App() {
     const timer = window.setTimeout(loadArchive, 1500);
     return () => window.clearTimeout(timer);
   }, [topics, selection, loadArchive]);
+
+  // 링크로 연 토픽이 없을 때: 다른 토픽에 합쳐졌으면 그쪽으로, 정말 없으면(보관 기간 지남 등) 안내하고 닫는다
+  useEffect(() => {
+    if (!topics || !archiveLoaded || selection?.kind !== "topic") return;
+    if (topics.some((x) => x.id === selection.id)) return;
+    const merged = topics.find((x) => x.aliases?.includes(selection.id));
+    if (merged) {
+      setSelection({ kind: "topic", id: merged.id });
+      return;
+    }
+    setSelection(null);
+    dispatchToast(
+      <Toast>
+        <ToastTitle>{STRINGS[lang].topicGone}</ToastTitle>
+      </Toast>,
+      { intent: "info", timeout: 5000, position: "bottom" },
+    );
+  }, [topics, archiveLoaded, selection]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const articlesRequested = useRef(false);
   const loadArticles = useCallback(() => {

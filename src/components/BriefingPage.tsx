@@ -342,7 +342,11 @@ export function BriefingPage(p: Props) {
   const t = STRINGS[lang];
   const [date, setDate] = useState<string | null>(null);
   const b = briefings.find((x) => x.date === date) ?? briefings[0];
-  const byId = useMemo(() => new Map(topics.map((x) => [x.id, x])), [topics]);
+  // 브리핑 뒤에 다른 토픽에 합쳐진 항목도 찾아가도록 예전 id(aliases)도 함께
+  const byId = useMemo(
+    () => new Map(topics.flatMap((x) => [[x.id, x] as const, ...(x.aliases ?? []).map((a) => [a, x] as const)])),
+    [topics],
+  );
 
   const ids = useMemo(() => (b ? b.items.map((i) => i.topicId).filter((id) => byId.has(id)) : []), [b, byId]);
   useEffect(() => p.onOrder(ids), [ids]); // eslint-disable-line react-hooks/exhaustive-deps

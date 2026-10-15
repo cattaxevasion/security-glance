@@ -368,6 +368,7 @@ async function mergePass(topics: Topic[], checked: Set<string>): Promise<number>
     const [keep, gone] = ra.articleIds.length >= rb.articleIds.length ? [ra, rb] : [rb, ra];
     keep.articleIds = [...new Set([...keep.articleIds, ...gone.articleIds])];
     keep.summarizedCount = 0; // 통합 요약을 다시 만들게 한다
+    keep.aliases = [...new Set([...(keep.aliases ?? []), gone.id, ...(gone.aliases ?? [])])];
     gone.articleIds = [];
     into.set(gone.id, keep);
     merged++;
