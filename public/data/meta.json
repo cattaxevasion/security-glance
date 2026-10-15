@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-15T04:44:01.269Z",
+ "updatedAt": "2026-10-15T06:07:45.579Z",
  "lastRun": {
   "candidates": 0,
   "added": 0,
@@ -8,9 +8,9 @@
   "failed": 0,
   "deferred": 0
  },
- "newsCount": 439,
+ "newsCount": 369,
  "kevCount": 98,
- "cveCount": 381,
+ "cveCount": 383,
  "sources": [
   {
    "id": "bleepingcomputer",
@@ -125,13 +125,6 @@
    "items": 10
   },
   {
-   "id": "proofpoint",
-   "name": "Proofpoint",
-   "region": "INTL",
-   "ok": true,
-   "items": 10
-  },
-  {
    "id": "dfirreport",
    "name": "The DFIR Report",
    "region": "INTL",
@@ -216,5 +209,5 @@
    "items": 3
   }
  ],
- "topicCount": 371
+ "topicCount": 303
 }
