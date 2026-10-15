@@ -40,6 +40,7 @@ import { stagger, useMotion } from "./motion";
 import { usePageStyles } from "./page";
 import { namesOf, textOf, titleOf } from "./text";
 import { PRIORITY_THRESHOLD, rankScore } from "./TopicsPage";
+import { nb } from "./NoBreak";
 
 // 휴대폰에서만 쓰는 스토리 카드는 그때 받는다
 const BriefingStories = lazy(() => import("./BriefingStories").then((m) => ({ default: m.BriefingStories })));
@@ -427,7 +428,7 @@ export function BriefingPage(p: Props) {
               )}
             </div>
             <h1 className={s.heroTitle}>{t.briefingTitle}</h1>
-            <p className={s.heroText}>{b ? textOf(lang, b.headlineKo, b.headlineJa) : t.briefingEmpty}</p>
+            <p className={s.heroText}>{b ? nb(textOf(lang, b.headlineKo, b.headlineJa)) : t.briefingEmpty}</p>
           </header>
         </>
       )}
@@ -458,13 +459,13 @@ export function BriefingPage(p: Props) {
                     )}
                   </div>
                   <div className={s.cardBody}>
-                    <h2 className={s.title}>{textOf(lang, it.titleKo, it.titleJa)}</h2>
-                    <p className={s.body}>{textOf(lang, it.bodyKo, it.bodyJa)}</p>
+                    <h2 className={s.title}>{nb(textOf(lang, it.titleKo, it.titleJa))}</h2>
+                    <p className={s.body}>{nb(textOf(lang, it.bodyKo, it.bodyJa))}</p>
                     <div className={s.why}>
                       <LightbulbRegular className={s.whyIcon} aria-hidden />
                       <span>
                         <span className={s.whyLabel}>{t.briefingWhy}</span>
-                        {textOf(lang, it.whyKo, it.whyJa)}
+                        {nb(textOf(lang, it.whyKo, it.whyJa))}
                       </span>
                     </div>
                     {topic && (
@@ -504,7 +505,7 @@ export function BriefingPage(p: Props) {
                 {rail.sinceBriefing.map((x) => (
                   <li key={x.id}>
                     <button className={s.wItem} onClick={() => p.onOpen(x.id)}>
-                      <span className={s.wTitle}>{topicTitle(x)}</span>
+                      <span className={s.wTitle}>{nb(topicTitle(x))}</span>
                       <span className={s.wMeta}>
                         {tagLabel(lang, x.nature)} · {x.regions.map((r) => REGION_LABELS[lang][r]).join(" · ")} ·{" "}
                         {relativeTime(lang, x.collectedAt ?? x.firstSeen)}
@@ -533,7 +534,7 @@ export function BriefingPage(p: Props) {
                       {namesOf(lang, x.entities.orgs).length > 0 && (
                         <span className={s.wOrg}>{namesOf(lang, x.entities.orgs).slice(0, 2).join(", ")}</span>
                       )}
-                      <span className={s.wTitle}>{topicTitle(x)}</span>
+                      <span className={s.wTitle}>{nb(topicTitle(x))}</span>
                       <span className={s.wMeta}>
                         {x.regions.map((r) => REGION_LABELS[lang][r]).join(" · ")} · {relativeTime(lang, x.lastUpdated)}
                       </span>

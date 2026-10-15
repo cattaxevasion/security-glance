@@ -16,6 +16,7 @@ import type { Briefing, Topic } from "../../shared/types";
 import { REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import { NATURE_ICON, natureGradient } from "./marks";
 import { textOf } from "./text";
+import { nb } from "./NoBreak";
 
 const COVER_MS = 5000;
 const ITEM_MS = 9000;
@@ -316,7 +317,7 @@ export function BriefingStories({ lang, briefing, topics, dateLabel, onOpen }: P
             <>
               <span className={s.coverDate}>{dateLabel}</span>
               <h2 className={s.coverTitle}>{t.briefingTitle}</h2>
-              <p className={s.coverText}>{textOf(lang, briefing.headlineKo, briefing.headlineJa)}</p>
+              <p className={s.coverText}>{nb(textOf(lang, briefing.headlineKo, briefing.headlineJa))}</p>
             </>
           ) : (
             <>
@@ -330,13 +331,13 @@ export function BriefingStories({ lang, briefing, topics, dateLabel, onOpen }: P
                   {t.sourcesCount(slide.topic.sources.length)}
                 </span>
               )}
-              <h2 className={s.title}>{textOf(lang, slide.item.titleKo, slide.item.titleJa)}</h2>
-              <p className={s.body}>{textOf(lang, slide.item.bodyKo, slide.item.bodyJa)}</p>
+              <h2 className={s.title}>{nb(textOf(lang, slide.item.titleKo, slide.item.titleJa))}</h2>
+              <p className={s.body}>{nb(textOf(lang, slide.item.bodyKo, slide.item.bodyJa))}</p>
               <div className={s.why}>
                 <LightbulbRegular style={{ fontSize: 18, flexShrink: 0, marginTop: 2 }} aria-hidden />
                 <span>
                   <span className={s.whyLabel}>{t.briefingWhy}</span>
-                  {textOf(lang, slide.item.whyKo, slide.item.whyJa)}
+                  {nb(textOf(lang, slide.item.whyKo, slide.item.whyJa))}
                 </span>
               </div>
             </>

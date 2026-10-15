@@ -39,6 +39,7 @@ import { useMotion } from "./motion";
 import { namesOf, safeUrl, sourceLabel, summaryOf, titleOf, vulnTypeOf } from "./text";
 import { shareUrl } from "./share";
 import { PRIORITY_THRESHOLD } from "./TopicsPage";
+import { nb } from "./NoBreak";
 
 export type Selection = { kind: "topic"; id: string } | { kind: "kev" | "cve"; id: string };
 
@@ -317,7 +318,7 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
         </span>
         <div className={s.headText}>
           <Subtitle1 as="h2" className={s.title}>
-            {title}
+            {nb(title)}
           </Subtitle1>
           <Caption1 className={s.metaRow}>
             {topic.importance >= PRIORITY_THRESHOLD && <span className={s.priority}>{t.priority}</span>}
@@ -367,7 +368,7 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
       <Section s={s} title={t.summary}>
         <ul className={s.summary}>
           {summary.map((line, i) => (
-            <li key={i}>{line}</li>
+            <li key={i}>{nb(line)}</li>
           ))}
         </ul>
       </Section>
@@ -416,7 +417,7 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
                 <span>{t.kind[n.sourceKind]}</span>
               </div>
               <Link className={s.tlTitle} href={safeUrl(n.url)} target="_blank" rel="noopener noreferrer">
-                {articleTitle(n)}
+                {nb(articleTitle(n))}
               </Link>
             </li>
           ))}

@@ -119,6 +119,8 @@ export interface CveEntry {
 }
 
 export interface VulnData {
+  /** 고위험 CVE 가운데 CVSS 9.0 이상 수 (CVE 목록을 나중에 받는 첫 화면에서 쓰려고 따로 둔다) */
+  criticalCount?: number;
   kev: KevEntry[];
   cves: CveEntry[];
   /** 기사에 나온 CVE의 EPSS. 카드의 CVE 칩에 표시한다. */

@@ -41,6 +41,7 @@ import { LeaksSection } from "./Leaks";
 import { namesOf, sourceLabel, summaryOf, titleOf } from "./text";
 import { isFresh } from "./visit";
 import { PRIORITY_THRESHOLD, matchesQuery } from "./TopicsPage";
+import { nb } from "./NoBreak";
 
 const PERIODS = [7, 30, 90];
 
@@ -509,8 +510,8 @@ export function IncidentsPage(p: Props) {
                       {t.orgsLabel} · {namesOf(lang, x.entities.orgs).slice(0, 3).join(", ")}
                     </div>
                   )}
-                  <div className={s.title}>{title(x)}</div>
-                  {summary(x) && <div className={s.summary}>{summary(x)}</div>}
+                  <div className={s.title}>{nb(title(x))}</div>
+                  {summary(x) && <div className={s.summary}>{nb(summary(x))}</div>}
                   <div className={s.meta}>
                     {isFresh(x, p.lastVisit) && <FreshMark lang={lang} />}
                     {x.importance >= PRIORITY_THRESHOLD && <span className={s.priority}>{t.priority}</span>}

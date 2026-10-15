@@ -346,7 +346,11 @@ async function main() {
     if (!dry) await writeJson(VULNS_PATH, vulns);
   }
   if (vulns && !dry) {
-    await writeJson(VULNS_CORE_PATH, { ...vulns, cves: [] });
+    await writeJson(VULNS_CORE_PATH, {
+      ...vulns,
+      cves: [],
+      criticalCount: vulns.cves.filter((c) => (c.cvss ?? 0) >= 9).length,
+    });
     await writeJson(CVES_PATH, vulns.cves);
   }
 

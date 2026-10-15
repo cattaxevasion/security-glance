@@ -38,6 +38,7 @@ import { stagger, useCountUp, useMotion } from "./motion";
 import { PageTitle, usePageStyles } from "./page";
 import { namesOf, sourceLabel, summaryOf, titleOf } from "./text";
 import { isFresh } from "./visit";
+import { nb } from "./NoBreak";
 
 export interface NewsFilters {
   attack: string[];
@@ -339,7 +340,10 @@ export function TopicsPage(p: Props) {
       today: items.filter((n) => Date.parse(n.lastUpdated) >= day(1)).length,
       ransom: items.filter((n) => Date.parse(n.lastUpdated) >= day(7) && n.attackTypes.includes("랜섬웨어")).length,
       kev: (p.vulns?.kev ?? []).filter((k) => Date.parse(k.dateAdded) >= day(7)).length,
-      critical: (p.vulns?.cves ?? []).filter((c) => (c.cvss ?? 0) >= 9).length,
+      // CVE 목록을 아직 안 받았으면 첫 화면용 데이터의 개수를 쓴다
+      critical: p.vulns?.cves.length
+        ? p.vulns.cves.filter((c) => (c.cvss ?? 0) >= 9).length
+        : (p.vulns?.criticalCount ?? 0),
     };
   }, [items, p.vulns]);
 
@@ -556,8 +560,8 @@ export function TopicsPage(p: Props) {
                   >
                     <NatureTile nature={n.nature} size={narrow ? 32 : 40} />
                     <div className={s.body}>
-                      <div className={s.title}>{title(n)}</div>
-                      {summary(n) && <div className={s.summary}>{summary(n)}</div>}
+                      <div className={s.title}>{nb(title(n))}</div>
+                      {summary(n) && <div className={s.summary}>{nb(summary(n))}</div>}
                       <div className={s.meta}>
                         {isFresh(n, p.lastVisit) && <FreshMark lang={lang} />}
                         {n.importance >= PRIORITY_THRESHOLD && <span className={s.priority}>{t.priority}</span>}
