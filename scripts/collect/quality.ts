@@ -11,7 +11,7 @@ import { anthropic, MODEL, NATURE_RULES, SummaryRefused, summarize } from "./sum
 import { mapLimit } from "./util";
 
 /** 다시 판정 기준의 판. 기준을 바꾸면 올려서 다시 판정하게 한다. */
-export const RULES_VERSION = 2;
+export const RULES_VERSION = 3;
 const REJUDGE_BATCH = 15;
 const RETRY_DAYS = 14;
 const MAX_BODY_RETRIES = 3;
