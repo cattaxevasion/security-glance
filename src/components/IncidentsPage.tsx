@@ -27,7 +27,7 @@ import { ATTACK_TYPES, SECTORS, type Region } from "../../shared/taxonomy";
 import type { LeakPost, Topic } from "../../shared/types";
 import { LOCALE, REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import { FilterPill } from "./FilterPill";
-import { timeOfDay } from "./format";
+import { dayStart, timeOfDay } from "./format";
 import { FreshMark, SourceAvatars } from "./marks";
 import { stagger, useCountUp, useMotion } from "./motion";
 import { PageTitle, usePageStyles } from "./page";
@@ -308,7 +308,7 @@ function HeroStat(p: { lang: Lang; label: string; value: number; daily: { day: D
   const t = STRINGS[p.lang];
   const n = useCountUp(p.value);
   const max = Math.max(1, ...p.daily.map((d) => d.n));
-  const fmt = new Intl.DateTimeFormat(LOCALE[p.lang], { month: "numeric", day: "numeric" });
+  const fmt = new Intl.DateTimeFormat(LOCALE[p.lang], { month: "short", day: "numeric" });
   const desc = p.daily.map((d) => `${fmt.format(d.day)} ${t.count(d.n)}`).join(", ");
   return (
     <div className={mergeClasses(s.hero, m.enter)} style={stagger(0, 50)}>
@@ -351,7 +351,8 @@ export function IncidentsPage(p: Props) {
 
   // ── 최근 7일 수치 ──
   const stats = useMemo(() => {
-    const since = Date.now() - 7 * 86400_000;
+    // '최근 7일' = 오늘을 포함한 달력 7일 (대표 칸의 일별 막대 합과 같게)
+    const since = dayStart(6).getTime();
     const week = inRegion.filter((x) => Date.parse(x.firstSeen) >= since);
     const sectorCount = new Map<string, number>();
     for (const x of week) for (const v of x.sectors) sectorCount.set(v, (sectorCount.get(v) ?? 0) + 1);
@@ -365,10 +366,8 @@ export function IncidentsPage(p: Props) {
       topSectorN: top?.[1] ?? 0,
       // 최근 7일 일별 (이 브라우저의 날짜 기준, 오늘이 마지막)
       daily: Array.from({ length: 7 }, (_, i) => {
-        const day = new Date();
-        day.setHours(0, 0, 0, 0);
-        day.setDate(day.getDate() - (6 - i));
-        const end = day.getTime() + 86400_000;
+        const day = dayStart(6 - i);
+        const end = dayStart(5 - i).getTime();
         return {
           day,
           n: inRegion.filter((x) => {

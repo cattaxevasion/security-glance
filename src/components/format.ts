@@ -50,3 +50,11 @@ export function dayLabel(
 export function pct(x: number | null | undefined, digits = 1): string {
   return x == null ? "–" : `${(x * 100).toFixed(digits)}%`;
 }
+
+/** n일 전 날짜의 0시 (이 브라우저의 날짜 기준). '최근 7일'은 오늘을 포함한 달력 7일 = dayStart(6)부터 */
+export function dayStart(daysAgo: number): Date {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - daysAgo);
+  return d;
+}

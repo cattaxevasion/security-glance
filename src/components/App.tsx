@@ -30,7 +30,7 @@ import { AppNav, VIEWS, type View } from "./AppNav";
 import { DetailPanel, type Selection } from "./DetailPanel";
 import { useNarrow, usePrefersDark } from "./hooks";
 import { BriefingPage } from "./BriefingPage";
-import { relativeTime } from "./format";
+import { dayStart, relativeTime } from "./format";
 import { setNameReadings, sourceLabel } from "./text";
 import { useMotion } from "./motion";
 import { DEFAULT_FILTERS, TopicsPage, type NewsFilters, type SortMode } from "./TopicsPage";
@@ -427,7 +427,8 @@ export default function App() {
     };
     if (topics) {
       c.all = topics.length;
-      const week = Date.now() - 7 * 86400_000;
+      // 인시던트 화면의 '최근 7일'과 같은 기준 (오늘 포함 달력 7일)
+      const week = dayStart(6).getTime();
       c.incidents = topics.filter((n) => n.nature === "사건" && Date.parse(n.firstSeen) >= week).length;
       for (const r of ["INTL", "JP"] as Region[]) c[r] = topics.filter((n) => n.regions.includes(r)).length;
     }
