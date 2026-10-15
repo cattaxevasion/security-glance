@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-15T06:07:45.579Z",
+ "updatedAt": "2026-10-15T06:10:41.859Z",
  "lastRun": {
   "candidates": 0,
   "added": 0,
@@ -8,7 +8,7 @@
   "failed": 0,
   "deferred": 0
  },
- "newsCount": 369,
+ "newsCount": 384,
  "kevCount": 98,
  "cveCount": 383,
  "sources": [
@@ -209,5 +209,5 @@
    "items": 3
   }
  ],
- "topicCount": 303
+ "topicCount": 319
 }
