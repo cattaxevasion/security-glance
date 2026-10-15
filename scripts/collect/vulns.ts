@@ -116,14 +116,38 @@ async function fetchEpss(cves: string[]): Promise<Map<string, { epss: number; pe
   return result;
 }
 
-/** extraCves: 기사에서 나온 CVE. EPSS만 조회해서 mentioned에 담는다. */
-export async function collectVulns(extraCves: string[]): Promise<VulnData> {
-  const kev = await fetchKev();
+/** 한 번 실패하면 잠시 뒤 한 번 더 (NVD·CISA는 가끔 503을 낸다) */
+async function retryOnce<T>(label: string, fn: () => Promise<T>): Promise<T> {
+  try {
+    return await fn();
+  } catch (e) {
+    console.warn(`${label} 실패, 20초 뒤 다시 시도: ${(e as Error).message.slice(0, 160)}`);
+    await sleep(20000);
+    return fn();
+  }
+}
+
+/**
+ * extraCves: 기사에서 나온 CVE. EPSS만 조회해서 mentioned에 담는다.
+ * prev: 지난 실행의 결과. 어느 출처가 끝내 실패하면 그 부분은 지난 결과를 그대로 쓴다 (빈 목록으로 덮어쓰지 않게).
+ */
+export async function collectVulns(extraCves: string[], prev: VulnData | null): Promise<VulnData> {
+  let kev: KevEntry[];
+  try {
+    kev = await retryOnce("CISA KEV 수집", fetchKev);
+  } catch (e) {
+    if (!prev) throw e;
+    console.warn(`CISA KEV 수집 실패 → 지난 결과 ${prev.kev.length}건 유지: ${(e as Error).message.slice(0, 120)}`);
+    kev = prev.kev;
+  }
   let cves: CveEntry[] = [];
   try {
-    cves = await fetchNvd();
+    cves = await retryOnce("NVD 수집", fetchNvd);
   } catch (e) {
-    console.warn(`NVD 수집 실패: ${(e as Error).message}`);
+    // 지난 결과 가운데 아직 기간 안의 것만
+    const cutoff = Date.now() - NVD_DAYS * 86400_000;
+    cves = (prev?.cves ?? []).filter((c) => Date.parse(c.published) >= cutoff);
+    console.warn(`NVD 수집 실패 → 지난 결과 ${cves.length}건 유지: ${(e as Error).message.slice(0, 120)}`);
   }
 
   const kevIds = new Set(kev.map((k) => k.cveID));
@@ -145,7 +169,8 @@ export async function collectVulns(extraCves: string[]): Promise<VulnData> {
       if (e) mentioned[id] = e;
     }
   } catch (e) {
-    console.warn(`EPSS 수집 실패: ${(e as Error).message}`);
+    console.warn(`EPSS 수집 실패 → 지난 값 유지: ${(e as Error).message}`);
+    Object.assign(mentioned, prev?.mentioned ?? {});
   }
 
   cves.sort((a, b) => (b.cvss ?? 0) - (a.cvss ?? 0) || b.published.localeCompare(a.published));

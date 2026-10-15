@@ -337,7 +337,7 @@ async function main() {
   let vulns = await readJson<VulnData | null>(VULNS_PATH, null);
   if (mode !== "news") {
     const mentionedCves = [...new Set(news.flatMap((n) => n.entities.cves))];
-    vulns = await collectVulns(mentionedCves);
+    vulns = await collectVulns(mentionedCves, vulns);
     console.log(
       `KEV ${vulns.kev.length}건 · 고위험 CVE ${vulns.cves.length}건 · 기사 속 CVE EPSS ${Object.keys(vulns.mentioned).length}건`,
     );
