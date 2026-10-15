@@ -65,6 +65,13 @@ const useStyles = makeStyles({
     fontWeight: tokens.fontWeightSemibold,
     whiteSpace: "nowrap",
     paddingLeft: "4px",
+    // 사이트 이름을 누르면 첫 화면(오늘의 브리핑)으로
+    color: "inherit",
+    textDecorationLine: "none",
+    borderRadius: tokens.borderRadiusMedium,
+    paddingRight: "6px",
+    ":hover": { backgroundColor: "rgba(255,255,255,0.12)" },
+    ":focus-visible": { outline: "2px solid #fff", outlineOffset: "2px" },
   },
   brandIcon: { fontSize: "20px" },
   center: { display: "flex", justifyContent: "center", minWidth: 0 },
@@ -97,6 +104,8 @@ interface Props {
   setQuery: (q: string) => void;
   searchPlaceholder: string;
   meta: Meta | null;
+  /** 사이트 이름을 눌렀을 때: 오늘의 브리핑으로 */
+  onHome: () => void;
 }
 
 export function AppHeader({
@@ -110,6 +119,7 @@ export function AppHeader({
   setQuery,
   searchPlaceholder,
   meta,
+  onHome,
 }: Props) {
   const s = useStyles();
   const t = STRINGS[lang];
@@ -121,10 +131,19 @@ export function AppHeader({
         <Tooltip content={navOpen ? t.collapseNav : t.expandNav} relationship="label">
           <Hamburger className={s.onBrand} onClick={toggleNav} aria-expanded={navOpen} />
         </Tooltip>
-        <span className={s.brand}>
+        <a
+          className={s.brand}
+          href={`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}?lang=${lang}`}
+          onClick={(e) => {
+            // 새 탭으로 열기(가운데·Ctrl 클릭)는 그대로 두고, 그냥 클릭은 페이지를 다시 읽지 않고 이동
+            if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+            e.preventDefault();
+            onHome();
+          }}
+        >
           <ShieldRegular className={s.brandIcon} aria-hidden />
           {t.appName}
-        </span>
+        </a>
       </div>
 
       <div className={s.center}>

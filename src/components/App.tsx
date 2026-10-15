@@ -471,6 +471,11 @@ export default function App() {
           setQuery={isVulnView(view) ? setVulnQuery : setTopicQuery}
           searchPlaceholder={isVulnView(view) ? t.vulnSearch : t.search}
           meta={meta}
+          onHome={() => {
+            setNewsQuery("");
+            setVulnQuery("");
+            setView("briefing");
+          }}
         />
         <div className={s.body}>
           <AppNav
