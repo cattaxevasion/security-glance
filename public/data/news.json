@@ -13432,6 +13432,69 @@
   "basis": "본문"
  },
  {
+  "id": "2be2e79555e5a2f7",
+  "url": "https://www.microsoft.com/en-us/security/blog/2026/09/29/star-blizzard-refines-phishing-and-malware-delivery-with-the-redflick-technique/",
+  "title": "Star Blizzard refines phishing and malware delivery with the RedFlick technique",
+  "titleKo": "Star Blizzard, RedFlick 기법으로 피싱 및 악성코드 배포 방식 고도화",
+  "titleJa": "Star Blizzard、RedFlick技術でフィッシングとマルウェア配布手法を高度化",
+  "sourceId": "mstic",
+  "sourceName": "Microsoft Threat Intelligence",
+  "sourceRegion": "INTL",
+  "sourceKind": "vendor",
+  "publishedAt": "2026-09-29T15:00:00.000Z",
+  "collectedAt": "2026-10-15T03:15:23.628Z",
+  "regions": [
+   "INTL"
+  ],
+  "summaryKo": [
+   "러시아 국가 지원 위협 그룹 Star Blizzard가 2026년 대규모 피싱 캠페인과 RedFlick 악성코드 배포 기법을 도입했다.",
+   "예약 작업으로 CosmicPulse 백도어를 설치하며, 사용자 조작을 한 번만 요구해 감염 과정을 단순화했다.",
+   "우크라이나 관련 개인·기관과 서방 NGO, 싱크탱크, 정부 등 100여 개 조직이 표적이 된 것으로 확인됐다."
+  ],
+  "summaryJa": [
+   "ロシア国家支援の脅威グループStar Blizzardが、2026年に大規模フィッシングキャンペーンとRedFlick配布手法を導入したものである。",
+   "スケジュールタスクでCosmicPulseバックドアを導入し、利用者の操作を一度に減らして感染過程を単純化したものである。",
+   "ウクライナ関連の個人・機関や欧米のNGO、シンクタンク、政府など100以上の組織が標的となったことが確認されている。"
+  ],
+  "attackTypes": [
+   "피싱",
+   "악성코드"
+  ],
+  "sectors": [
+   "정부·공공",
+   "유통·서비스"
+  ],
+  "nature": "사건",
+  "entities": {
+   "cves": [],
+   "actors": [
+    "Star Blizzard"
+   ],
+   "orgs": [
+    "Microsoft Threat Intelligence",
+    "CISA",
+    "Google Threat Intelligence Group",
+    "Digital Security Lab Ukraine"
+   ]
+  },
+  "techniques": [
+   {
+    "id": "T1566.001",
+    "name": "Spearphishing Attachment"
+   },
+   {
+    "id": "T1053.005",
+    "name": "Scheduled Task"
+   }
+  ],
+  "iocTypes": [
+   "파일 해시",
+   "파일명",
+   "레지스트리"
+  ],
+  "basis": "본문"
+ },
+ {
   "id": "b277807dfde7d32d",
   "url": "https://www.itmedia.co.jp/news/article/2609/29/2000001861/",
   "title": "チケット販売サイト「イープラス」に不正アクセス、個人情報1463件漏えい 口座情報や住所なども一部流出",
