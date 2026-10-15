@@ -21,6 +21,7 @@ import { STRINGS, type Lang } from "../i18n";
 import { vulnTypeOf } from "./text";
 import { EpssMark } from "./marks";
 import { PageTitle, usePageStyles } from "./page";
+import { dailyBars, HeroStat, StatGrid, StatTile } from "./Stats";
 
 type SortDir = "ascending" | "descending";
 
@@ -51,8 +52,32 @@ const useStyles = makeStyles({
     lineHeight: "20px",
     color: tokens.colorNeutralForeground1,
   },
-  newsCount: { color: tokens.colorBrandForeground1, fontWeight: tokens.fontWeightSemibold },
+  // 관련 토픽 수: 알약 모양
+  newsCount: {
+    display: "inline-block",
+    minWidth: "22px",
+    padding: "0 7px",
+    borderRadius: tokens.borderRadiusCircular,
+    textAlign: "center",
+    lineHeight: "20px",
+    backgroundColor: tokens.colorBrandBackground2,
+    color: tokens.colorBrandForeground2,
+    fontWeight: tokens.fontWeightSemibold,
+  },
+  // 조치 기한: 임박하면 주황, 지났으면 빨강
+  due: { display: "flex", flexDirection: "column", gap: "1px" },
+  dueSoon: { color: tokens.colorPaletteDarkOrangeForeground1, fontWeight: tokens.fontWeightSemibold },
+  dueOver: { color: tokens.colorPaletteRedForeground1, fontWeight: tokens.fontWeightSemibold },
+  // 치명적(CVSS 9.0+)은 진하게
+  cvssCritical: { fontWeight: tokens.fontWeightBold },
 });
+
+/** 오늘 0시 기준 남은 날 수 (음수면 지남) */
+function daysLeft(date: string): number {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return Math.round((new Date(`${date}T00:00:00`).getTime() - today.getTime()) / 86400_000);
+}
 
 interface Props {
   lang: Lang;
@@ -76,6 +101,23 @@ function VulnName({ lang, english }: { lang: Lang; english: string }) {
     <span className={s.nameStack}>
       <span className={s.vulnType}>{type}</span>
       <span className={mergeClasses(s.clamp2, s.vulnEn)}>{english}</span>
+    </span>
+  );
+}
+
+/** 조치 기한: 날짜 + 남은 날 (7일 이내 주황, 지났으면 빨강) */
+function DueCell({ lang, date }: { lang: Lang; date: string }) {
+  const s = useStyles();
+  const t = STRINGS[lang];
+  const d = daysLeft(date);
+  return (
+    <span className={s.due}>
+      <Caption1>{date}</Caption1>
+      {d < 0 ? (
+        <Caption1 className={s.dueOver}>{t.dueOverdue}</Caption1>
+      ) : d <= 7 ? (
+        <Caption1 className={s.dueSoon}>{t.dueSoon(d)}</Caption1>
+      ) : null}
     </span>
   );
 }
@@ -174,10 +216,106 @@ export function VulnPage(p: Props) {
 
   const count = kind === "kev" ? kevRows.length : cveRows.length;
 
+  // ── 요약 줄 ──
+  const summary = useMemo(() => {
+    const kev = p.data?.kev ?? [];
+    const cves = p.data?.cves ?? [];
+    const top10 = (x: { epssPercentile: number | null }) => (x.epssPercentile ?? 0) >= 0.9;
+    const kevBars = dailyBars(lang, kev, (k) => new Date(`${k.dateAdded}T00:00:00`).getTime(), 7);
+    const dueIn = kev.map((k) => daysLeft(k.dueDate));
+    return {
+      kevBars,
+      kevNew: kevBars.reduce((a, b) => a + b.n, 0),
+      kevRansom: kev.filter((k) => k.ransomware).length,
+      kevDue: dueIn.filter((d) => d >= 0 && d <= 7).length,
+      kevOverdue: dueIn.filter((d) => d < 0).length,
+      kevEpss: kev.filter(top10).length,
+      kevNews: kev.filter((k) => mentions.has(k.cveID)).length,
+      cveBars: dailyBars(lang, cves, (c) => Date.parse(c.published), 14),
+      cveAll: cves.length,
+      cveCritical: cves.filter((c) => (c.cvss ?? 0) >= 9).length,
+      cveEpss: cves.filter(top10).length,
+      cveKev: cves.filter((c) => c.inKev).length,
+      cveNews: cves.filter((c) => mentions.has(c.id)).length,
+    };
+  }, [p.data, mentions, lang]);
+
   return (
     <div className={ps.page}>
       <PageTitle>{kind === "kev" ? t.kevTitle : t.cveTitle}</PageTitle>
       <Body1 className={ps.desc}>{kind === "kev" ? t.kevDesc : t.cveDesc}</Body1>
+
+      {kind === "kev" ? (
+        <StatGrid tiles={4} key="kev">
+          <HeroStat lang={lang} label={t.kevStatNew} sub="CISA KEV" value={summary.kevNew} bars={summary.kevBars} />
+          <StatTile
+            index={1}
+            color={tokens.colorPaletteRedForeground1}
+            label={t.kevStatRansom}
+            value={summary.kevRansom}
+            sub={t.windowDays(90)}
+          />
+          <StatTile
+            index={2}
+            color={tokens.colorPaletteDarkOrangeForeground1}
+            label={t.kevStatDue}
+            value={summary.kevDue}
+            sub={t.kevStatDueSub(summary.kevOverdue)}
+          />
+          <StatTile
+            index={3}
+            color={tokens.colorPaletteBerryForeground1}
+            label={t.statEpssTop}
+            value={summary.kevEpss}
+            sub={t.statEpssTopSub}
+          />
+          <StatTile
+            index={4}
+            color={tokens.colorPaletteTealForeground2}
+            label={t.statNews}
+            value={summary.kevNews}
+            sub={t.statNewsSub}
+          />
+        </StatGrid>
+      ) : (
+        <StatGrid tiles={4} key="cve">
+          <HeroStat
+            lang={lang}
+            label={t.cveStatNew}
+            sub={t.cveStatNewSub}
+            value={summary.cveAll}
+            bars={summary.cveBars}
+          />
+          <StatTile
+            index={1}
+            color={tokens.colorPaletteRedForeground1}
+            label={t.cveStatCritical}
+            value={summary.cveCritical}
+            sub={t.cveStatCriticalSub}
+          />
+          <StatTile
+            index={2}
+            color={tokens.colorPaletteBerryForeground1}
+            label={t.statEpssTop}
+            value={summary.cveEpss}
+            sub={t.statEpssTopSub}
+          />
+          <StatTile
+            index={3}
+            color={tokens.colorPaletteDarkOrangeForeground1}
+            label={t.cveStatKev}
+            value={summary.cveKev}
+            sub={t.cveStatKevSub}
+          />
+          <StatTile
+            index={4}
+            color={tokens.colorPaletteTealForeground2}
+            label={t.statNews}
+            value={summary.cveNews}
+            sub={t.statNewsSub}
+          />
+        </StatGrid>
+      )}
 
       <div className={ps.command}>
         <span />
@@ -253,7 +391,7 @@ export function VulnPage(p: Props) {
                     </Caption1>
                   </TableCell>
                   <TableCell className={ps.nowrap}>
-                    <Caption1>{k.dueDate}</Caption1>
+                    <DueCell lang={lang} date={k.dueDate} />
                   </TableCell>
                   <TableCell>{newsCell(k.cveID)}</TableCell>
                 </TableRow>
@@ -301,7 +439,12 @@ export function VulnPage(p: Props) {
                   </TableCell>
                   <TableCell>
                     {c.cvss != null ? (
-                      <Badge appearance="tint" color={c.cvss >= 9 ? "danger" : "warning"} size="medium">
+                      <Badge
+                        appearance={c.cvss >= 9 ? "filled" : "tint"}
+                        color={c.cvss >= 9 ? "danger" : "warning"}
+                        size="medium"
+                        className={c.cvss >= 9 ? s.cvssCritical : undefined}
+                      >
                         {c.cvss.toFixed(1)}
                       </Badge>
                     ) : (

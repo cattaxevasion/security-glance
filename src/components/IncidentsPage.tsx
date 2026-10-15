@@ -29,13 +29,14 @@ import { LOCALE, REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import { FilterPill } from "./FilterPill";
 import { dayStart, timeOfDay } from "./format";
 import { FreshMark, SourceAvatars } from "./marks";
-import { stagger, useCountUp, useMotion } from "./motion";
+import { stagger, useMotion } from "./motion";
 import { PageTitle, usePageStyles } from "./page";
 import { LeaksSection } from "./Leaks";
 import { namesOf, sourceLabel, summaryOf, titleOf } from "./text";
 import { isFresh } from "./visit";
 import { PRIORITY_THRESHOLD, matchesQuery } from "./TopicsPage";
 import { nb } from "./NoBreak";
+import { dailyBars, HeroStat, StatGrid, StatTile } from "./Stats";
 
 const PERIODS = [7, 30, 90];
 
@@ -43,80 +44,6 @@ const PAGE = 50;
 
 const useStyles = makeStyles({
   regionTabs: { marginTop: "12px", marginLeft: "-10px" },
-  // 수치 타일 (D안): 첫 칸은 두 배 폭 + 배너 그라데이션 + 최근 7일 막대, 나머지는 색 숫자만
-  stats: {
-    display: "grid",
-    gridTemplateColumns: "repeat(6, minmax(0, 1fr))",
-    gap: "12px",
-    margin: "16px 0 8px",
-    "@media (max-width: 1100px)": { gridTemplateColumns: "repeat(4, minmax(0, 1fr))" },
-    // 휴대폰: 대표 칸이 한 줄 전체, 나머지 넷이 2×2
-    "@media (max-width: 640px)": { gridTemplateColumns: "1fr 1fr", gap: "8px" },
-  },
-  stat: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "2px",
-    padding: "14px 16px",
-    minWidth: 0,
-    "@media (max-width: 640px)": { padding: "10px 12px" },
-  },
-  statLabel: { color: tokens.colorNeutralForeground3 },
-  statNum: {
-    fontSize: tokens.fontSizeHero700,
-    lineHeight: tokens.lineHeightHero700,
-    fontWeight: tokens.fontWeightSemibold,
-    fontVariantNumeric: "tabular-nums",
-  },
-  statText: {
-    fontSize: tokens.fontSizeBase500,
-    lineHeight: tokens.lineHeightHero700,
-    fontWeight: tokens.fontWeightSemibold,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-  },
-  statSub: { color: tokens.colorNeutralForeground3 },
-  // 대표 칸
-  hero: {
-    gridColumn: "span 2",
-    display: "grid",
-    gridTemplateColumns: "auto minmax(0, 1fr)",
-    alignItems: "end",
-    gap: "16px",
-    padding: "16px 18px",
-    borderRadius: tokens.borderRadiusXLarge,
-    color: "#fff",
-    backgroundImage: "linear-gradient(120deg, #0c3b5e 0%, #0f548c 40%, #4a3a9c 100%)",
-    boxShadow: tokens.shadow8,
-    "@media (max-width: 1100px)": { gridColumn: "span 4" },
-    "@media (max-width: 640px)": { gridColumn: "1 / -1", padding: "14px 16px" },
-  },
-  heroText: { display: "flex", flexDirection: "column", gap: "2px", minWidth: 0 },
-  heroLabel: { color: "rgba(255,255,255,0.85)", fontWeight: tokens.fontWeightSemibold },
-  heroNum: {
-    fontSize: "40px",
-    lineHeight: "46px",
-    fontWeight: tokens.fontWeightBold,
-    fontVariantNumeric: "tabular-nums",
-  },
-  // 최근 7일 막대 (오늘이 맨 오른쪽, 오늘만 흰색)
-  bars: {
-    display: "flex",
-    alignItems: "flex-end",
-    gap: "4px",
-    height: "56px",
-    justifySelf: "end",
-    width: "100%",
-    maxWidth: "190px",
-  },
-  bar: {
-    flex: 1,
-    minHeight: "3px",
-    borderRadius: "2px 2px 0 0",
-    backgroundColor: "rgba(255,255,255,0.35)",
-    ":last-child": { backgroundColor: "#fff" },
-  },
   // 목록
   list: { margin: 0, listStyle: "none" },
   row: {
@@ -271,65 +198,6 @@ interface Props {
   onOrder: (ids: string[]) => void;
 }
 
-function StatTile(p: {
-  label: string;
-  value?: number;
-  text?: string;
-  sub?: string;
-  /** 숫자 색 (테마 토큰이라 다크 모드에서도 맞는다) */
-  color: string;
-  index: number;
-}) {
-  const s = useStyles();
-  const ps = usePageStyles();
-  const m = useMotion();
-  const n = useCountUp(p.value ?? 0);
-  return (
-    <div className={mergeClasses(ps.surface, s.stat, m.enter)} style={stagger(p.index, 50)}>
-      <Caption1 className={s.statLabel}>{p.label}</Caption1>
-      {p.text !== undefined ? (
-        <span className={s.statText} style={{ color: p.color }} title={p.text}>
-          {p.text}
-        </span>
-      ) : (
-        <span className={s.statNum} style={{ color: p.color }}>
-          {n}
-        </span>
-      )}
-      {p.sub && <Caption1 className={s.statSub}>{p.sub}</Caption1>}
-    </div>
-  );
-}
-
-/** 대표 칸: 최근 7일 인시던트 수 + 일별 막대 */
-function HeroStat(p: { lang: Lang; label: string; value: number; daily: { day: Date; n: number }[] }) {
-  const s = useStyles();
-  const m = useMotion();
-  const t = STRINGS[p.lang];
-  const n = useCountUp(p.value);
-  const max = Math.max(1, ...p.daily.map((d) => d.n));
-  const fmt = new Intl.DateTimeFormat(LOCALE[p.lang], { month: "short", day: "numeric" });
-  const desc = p.daily.map((d) => `${fmt.format(d.day)} ${t.count(d.n)}`).join(", ");
-  return (
-    <div className={mergeClasses(s.hero, m.enter)} style={stagger(0, 50)}>
-      <div className={s.heroText}>
-        <Caption1 className={s.heroLabel}>{p.label}</Caption1>
-        <span className={s.heroNum}>{n}</span>
-      </div>
-      <div className={s.bars} role="img" aria-label={desc}>
-        {p.daily.map((d) => (
-          <span
-            key={d.day.getTime()}
-            className={s.bar}
-            style={{ height: `${Math.max(6, (d.n / max) * 100)}%` }}
-            title={`${fmt.format(d.day)} · ${t.count(d.n)}`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export function IncidentsPage(p: Props) {
   const { lang, narrow } = p;
   const s = useStyles();
@@ -364,18 +232,8 @@ export function IncidentsPage(p: Props) {
       leak: week.filter((x) => x.attackTypes.includes("정보유출")).length,
       topSector: top ? tagLabel(lang, top[0]) : t.noSector,
       topSectorN: top?.[1] ?? 0,
-      // 최근 7일 일별 (이 브라우저의 날짜 기준, 오늘이 마지막)
-      daily: Array.from({ length: 7 }, (_, i) => {
-        const day = dayStart(6 - i);
-        const end = dayStart(5 - i).getTime();
-        return {
-          day,
-          n: inRegion.filter((x) => {
-            const at = Date.parse(x.firstSeen);
-            return at >= day.getTime() && at < end;
-          }).length,
-        };
-      }),
+      // 최근 7일 일별 막대 (오늘 포함 달력 7일, 합 = week)
+      daily: dailyBars(lang, inRegion, (x) => Date.parse(x.firstSeen), 7),
     };
   }, [inRegion, lang, t.noSector]);
   const pctOf = (n: number) => (stats.week ? `${Math.round((n / stats.week) * 100)}%` : "–");
@@ -421,8 +279,8 @@ export function IncidentsPage(p: Props) {
         <Tab value="INTL">{REGION_LABELS[lang].INTL}</Tab>
       </TabList>
 
-      <div className={s.stats} key={region}>
-        <HeroStat lang={lang} label={t.incidents7d} value={stats.week} daily={stats.daily} />
+      <StatGrid tiles={4} key={region}>
+        <HeroStat lang={lang} label={t.incidents7d} value={stats.week} bars={stats.daily} />
         <StatTile index={1} color={tokens.colorBrandForeground1} label={t.jpShare} value={stats.jp} sub={pctOf(stats.jp)} />
         <StatTile
           index={2}
@@ -445,7 +303,7 @@ export function IncidentsPage(p: Props) {
           text={stats.topSector}
           sub={stats.topSectorN ? t.count(stats.topSectorN) : undefined}
         />
-      </div>
+      </StatGrid>
 
       <div className={ps.command}>
         <div className={ps.commandGroup}>
