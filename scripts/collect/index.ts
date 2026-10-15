@@ -11,6 +11,7 @@ import type { Briefing, Meta, NewsItem, RunStats, Topic, VulnData } from "../../
 import { BODY_CHARS, extractArticle } from "./article";
 import { maybeBriefing } from "./briefing";
 import { auditArticles, auditBriefings, auditTopics } from "./lang-audit";
+import { RULES_VERSION, rejudgeResearch, retryWeakBodies } from "./quality";
 import { keywordExclusion } from "./filter";
 import { fetchFeeds, type RawItem, type Source } from "./rss";
 import { EXCLUDED_NATURE, SummaryRefused, summarize, translateToJa } from "./summarize";
@@ -23,6 +24,8 @@ const VULNS_PATH = "public/data/vulns.json";
 const META_PATH = "public/data/meta.json";
 const TOPICS_PATH = "public/data/topics.json";
 const BRIEFINGS_PATH = "public/data/briefings.json";
+/** 토픽 다시 합치기에서 이미 물어본 토픽 쌍 (다시 묻지 않는다) */
+const MERGE_CHECKED_PATH = "data/merge-checked.json";
 /** 공개하지 않는 내부 상태: 제외 판정, 실패 횟수 */
 const STATE_PATH = "data/state.json";
 
@@ -37,6 +40,10 @@ interface State {
   excluded: Record<string, string>;
   /** 요약 실패 횟수. MAX_FAILURES 이상이면 포기한다. */
   failures: Record<string, number>;
+  /** 기사 id → 판정한 기준 판 (quality.ts) */
+  rejudged: Record<string, number>;
+  /** 기사 id → 본문 다시 읽기 시도 횟수 (quality.ts) */
+  bodyRetries: Record<string, number>;
 }
 
 type LegacyNewsItem = Omit<NewsItem, "sourceRegion" | "regions"> & {
@@ -92,7 +99,6 @@ function isConfigError(e: unknown): e is Error {
   );
 }
 
-
 const args = process.argv.slice(2);
 const mode = args.find((a) => a === "news" || a === "vulns") ?? "all";
 const dry = args.includes("--dry");
@@ -110,9 +116,14 @@ const hasKey = () => Boolean(process.env.ANTHROPIC_API_KEY || process.env.ANTHRO
 
 async function runNews(meta: Meta): Promise<NewsItem[]> {
   const sources = await loadSources();
-  const existing = migrate(await readJson<LegacyNewsItem[]>(NEWS_PATH, []), sources);
+  let existing = migrate(await readJson<LegacyNewsItem[]>(NEWS_PATH, []), sources);
   const saved = await readJson<Partial<State> & { notSecurity?: Record<string, string> }>(STATE_PATH, {});
-  const state: State = { excluded: { ...saved.notSecurity, ...saved.excluded }, failures: saved.failures ?? {} };
+  const state: State = {
+    excluded: { ...saved.notSecurity, ...saved.excluded },
+    failures: saved.failures ?? {},
+    rejudged: saved.rejudged ?? {},
+    bodyRetries: saved.bodyRetries ?? {},
+  };
 
   const { items, statuses } = await fetchFeeds(sources);
   meta.sources = statuses;
@@ -149,7 +160,9 @@ async function runNews(meta: Meta): Promise<NewsItem[]> {
   // 키가 없으면 요약을 건너뛰고 다음 실행으로 미룬다 (취약점 수집은 계속)
   if (!hasKey()) console.warn("\nANTHROPIC_API_KEY가 없어 기사 요약을 건너뜁니다.");
   const batch = hasKey() ? queue.slice(0, limit) : [];
-  console.log(`\n새 기사 ${queue.length}건 중 ${batch.length}건 요약 시작 (모델 ${process.env.SUMMARY_MODEL ?? "claude-haiku-5-5"})`);
+  console.log(
+    `\n새 기사 ${queue.length}건 중 ${batch.length}건 요약 시작 (모델 ${process.env.SUMMARY_MODEL ?? "claude-haiku-5-5"})`,
+  );
 
   const stats: RunStats = {
     candidates: queue.length + keywordExcluded,
@@ -176,6 +189,7 @@ async function runNews(meta: Meta): Promise<NewsItem[]> {
       }
       const item = result.item;
       item.id = id;
+      state.rejudged[id] = RULES_VERSION; // 새 기준으로 요약했으니 다시 판정할 필요 없음
       added.push(item);
       delete state.failures[id];
       stats.added++;
@@ -225,9 +239,25 @@ async function runNews(meta: Meta): Promise<NewsItem[]> {
     console.log(`기존 기사 일본어 채움 ${filled}/${missingJa.length}`);
   }
 
+  // 품질 점검: 본문 다시 읽기, 새 기준으로 '연구·리포트' 다시 판정 (일반 해설·홍보 제외)
+  if (hasKey() && !configFailed) {
+    const retry = await retryWeakBodies(existing, sources, state);
+    const drop = await rejudgeResearch(existing, state);
+    for (const id of retry.dropped) drop.add(id);
+    const now = new Date().toISOString();
+    for (const id of drop) state.excluded[id] = now;
+    existing = existing.filter((n) => !drop.has(n.id));
+    console.log(`품질 점검: 본문 다시 읽기 성공 ${retry.improved} · 제외 ${drop.size}`);
+  }
+
   const merged = [...added, ...existing]
     .filter((n) => Date.parse(n.publishedAt) >= cutoff)
     .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+
+  // 더 이상 없는 기사의 품질 점검 기록은 지운다
+  const alive = new Set(merged.map((n) => n.id));
+  for (const id of Object.keys(state.rejudged)) if (!alive.has(id)) delete state.rejudged[id];
+  for (const id of Object.keys(state.bodyRetries)) if (!alive.has(id)) delete state.bodyRetries[id];
 
   // 오래된 내부 상태 정리 (피드에서 이미 사라졌을 기사)
   for (const [id, at] of Object.entries(state.excluded)) if (Date.parse(at) < cutoff) delete state.excluded[id];
@@ -264,7 +294,9 @@ async function main() {
   if (mode !== "news") {
     const mentionedCves = [...new Set(news.flatMap((n) => n.entities.cves))];
     vulns = await collectVulns(mentionedCves);
-    console.log(`KEV ${vulns.kev.length}건 · 고위험 CVE ${vulns.cves.length}건 · 기사 속 CVE EPSS ${Object.keys(vulns.mentioned).length}건`);
+    console.log(
+      `KEV ${vulns.kev.length}건 · 고위험 CVE ${vulns.cves.length}건 · 기사 속 CVE EPSS ${Object.keys(vulns.mentioned).length}건`,
+    );
     meta.kevCount = vulns.kev.length;
     meta.cveCount = vulns.cves.length;
     if (!dry) await writeJson(VULNS_PATH, vulns);
@@ -272,10 +304,19 @@ async function main() {
 
   // 토픽(まとめ): 기사 묶기, 통합 요약, 중요도
   const prevTopics = await readJson<Topic[]>(TOPICS_PATH, []);
-  const { topics, stats } = await updateTopics(news, prevTopics, vulns, { useLlm: hasKey(), isConfigError });
+  const checkedPairs = new Set(await readJson<string[]>(MERGE_CHECKED_PATH, []));
+  const { topics, stats } = await updateTopics(news, prevTopics, vulns, {
+    useLlm: hasKey(),
+    isConfigError,
+    checkedPairs,
+  });
   console.log(
-    `토픽 ${topics.length}개 · 기존 토픽에 배정 ${stats.assigned} · 새 토픽 ${stats.created} · 통합 요약 ${stats.synthesized} · 실패 ${stats.failed}`,
+    `토픽 ${topics.length}개 · 기존 토픽에 배정 ${stats.assigned} · 새 토픽 ${stats.created} · 다시 합침 ${stats.merged} · 통합 요약 ${stats.synthesized} · 실패 ${stats.failed}`,
   );
+  // 지금 있는 토픽의 쌍만 기억한다 (파일이 끝없이 커지지 않게)
+  const liveTopics = new Set(topics.map((t) => t.id));
+  const keepPairs = [...checkedPairs].filter((k) => k.split("|").every((id) => liveTopics.has(id)));
+  if (!dry) await writeJson(MERGE_CHECKED_PATH, keepPairs);
   // 언어 점검 2: 토픽 통합 요약의 일본어 필드
   if (hasKey()) {
     const fixed = await auditTopics(topics);

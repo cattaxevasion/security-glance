@@ -56,6 +56,8 @@ export interface Topic {
   articleIds: string[];
   sources: string[];
   hasVendor: boolean;
+  /** 모든 기사가 본문을 못 읽고 제목·요지로만 요약됐으면 true (중요도를 낮춘다) */
+  weak?: boolean;
   firstSeen: string;
   lastUpdated: string;
   /** 시간 감쇠 전 중요도 (0~100 남짓). 화면에서 최신성을 곱해 정렬한다. */

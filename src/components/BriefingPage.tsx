@@ -27,12 +27,13 @@ import {
   type FluentIcon,
 } from "@fluentui/react-icons";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import type { Nature } from "../../shared/taxonomy";
 import type { Briefing, Topic, VulnData } from "../../shared/types";
-import { LOCALE, REGION_LABELS, STRINGS, type Lang } from "../i18n";
+import { LOCALE, REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import type { View } from "./AppNav";
 import { relativeTime } from "./format";
 import { BriefingStories } from "./BriefingStories";
-import { NatureMark, NatureTile } from "./marks";
+import { NATURE_ICON, natureGradient } from "./marks";
 import { stagger, useMotion } from "./motion";
 import { usePageStyles } from "./page";
 import { namesOf, titleOf } from "./text";
@@ -130,41 +131,35 @@ const useStyles = makeStyles({
     "@media (min-width: 1180px)": { gridTemplateColumns: "minmax(0, 1fr) 340px", alignItems: "start" },
   },
   items: { display: "flex", flexDirection: "column", gap: "12px", margin: 0, padding: 0, listStyle: "none" },
-  item: {
-    display: "grid",
-    gridTemplateColumns: "40px 1fr",
-    gap: "0 16px",
-    padding: "20px 24px",
-    "@media (max-width: 640px)": { gridTemplateColumns: "1fr", padding: "16px" },
-  },
-  itemSide: {
+  // B안: 카드 위쪽 그라데이션 머리띠 (모바일 스토리 카드와 같은 성격별 색)
+  card: { overflow: "hidden" },
+  band: {
     display: "flex",
-    flexDirection: "column",
     alignItems: "center",
     gap: "10px",
-    "@media (max-width: 640px)": { flexDirection: "row", marginBottom: "8px" },
+    padding: "10px 24px",
+    color: "#fff",
+    fontSize: tokens.fontSizeBase200,
+    backgroundImage: "linear-gradient(100deg, #0c3b5e 0%, #0f548c 55%, #4a3a9c 100%)",
+    "@media (max-width: 640px)": { padding: "10px 16px" },
   },
-  num: {
-    width: "28px",
-    height: "28px",
+  bandNum: {
+    width: "26px",
+    height: "26px",
     borderRadius: "50%",
-    display: "flex",
+    display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: tokens.colorBrandBackground,
-    color: tokens.colorNeutralForegroundOnBrand,
+    backgroundColor: "rgba(255,255,255,0.22)",
     fontWeight: tokens.fontWeightSemibold,
     fontVariantNumeric: "tabular-nums",
   },
-  meta: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "4px 12px",
-    color: tokens.colorNeutralForeground3,
-    fontSize: tokens.fontSizeBase200,
-  },
+  bandIcon: { fontSize: "16px", display: "inline-flex" },
+  bandNature: { fontWeight: tokens.fontWeightSemibold, fontSize: tokens.fontSizeBase300 },
+  bandMeta: { color: "rgba(255,255,255,0.85)" },
+  cardBody: { padding: "16px 24px 18px", "@media (max-width: 640px)": { padding: "14px 16px 16px" } },
   title: {
-    margin: "6px 0 8px",
+    margin: "0 0 8px",
     fontSize: "18px",
     lineHeight: "26px",
     fontWeight: tokens.fontWeightSemibold,
@@ -321,6 +316,16 @@ function Widget(p: {
   );
 }
 
+function BandIcon({ nature }: { nature: Nature }) {
+  const s = useStyles();
+  const Icon = NATURE_ICON[nature];
+  return (
+    <span className={s.bandIcon} aria-hidden>
+      <Icon />
+    </span>
+  );
+}
+
 export function BriefingPage(p: Props) {
   const { lang, briefings, topics } = p;
   const s = useStyles();
@@ -412,21 +417,25 @@ export function BriefingPage(p: Props) {
             {b.items.map((it, i) => {
               const topic = byId.get(it.topicId);
               return (
-                <li key={it.topicId} className={mergeClasses(ps.surface, s.item, m.enter)} style={stagger(i + 1, 90)}>
-                  <div className={s.itemSide}>
-                    <span className={s.num} aria-hidden>
-                      {i + 1}
-                    </span>
-                    {topic && <NatureTile nature={topic.nature} size={32} />}
-                  </div>
-                  <div>
+                <li key={it.topicId} className={mergeClasses(ps.surface, s.card, m.enter)} style={stagger(i + 1, 90)}>
+                  {/* 머리띠: 성격별 그라데이션 위에 번호·성격·지역·출처 (모바일 스토리와 같은 색) */}
+                  <div
+                    className={s.band}
+                    style={{ backgroundImage: topic ? natureGradient(topic.nature, 100) : undefined }}
+                  >
+                    <span className={s.bandNum}>{i + 1}</span>
                     {topic && (
-                      <div className={s.meta}>
-                        <NatureMark nature={topic.nature} lang={lang} />
-                        <span>{topic.regions.map((r) => REGION_LABELS[lang][r]).join(" · ")}</span>
-                        <span>{t.sourcesCount(topic.sources.length)}</span>
-                      </div>
+                      <>
+                        <BandIcon nature={topic.nature} />
+                        <span className={s.bandNature}>{tagLabel(lang, topic.nature)}</span>
+                        <span className={s.bandMeta}>
+                          {topic.regions.map((r) => REGION_LABELS[lang][r]).join(" · ")} ·{" "}
+                          {t.sourcesCount(topic.sources.length)}
+                        </span>
+                      </>
                     )}
+                  </div>
+                  <div className={s.cardBody}>
                     <h2 className={s.title}>{lang === "ja" ? it.titleJa : it.titleKo}</h2>
                     <p className={s.body}>{lang === "ja" ? it.bodyJa : it.bodyKo}</p>
                     <div className={s.why}>

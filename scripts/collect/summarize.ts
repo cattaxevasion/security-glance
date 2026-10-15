@@ -8,7 +8,18 @@ import type { RawItem } from "./rss";
 // 기획 단계에서 정한 저비용 모델. 바꾸려면 SUMMARY_MODEL 환경변수로.
 export const MODEL = process.env.SUMMARY_MODEL ?? "claude-haiku-5-5";
 
-/** 이 성격으로 분류된 기사는 저장하지 않는다 (행사, 제품 홍보, 인터뷰, 주가·인사 등). */
+/**
+ * '연구·리포트'와 '업계 동향'의 경계. 요약할 때와 기존 기사를 다시 판정할 때 같은 기준을 쓴다.
+ * 연구는 "새로운 구체적 발견"만. 일반 해설·트렌드·사용법·규제 해설·자사 제품 소개는 업계 동향(저장 안 함).
+ */
+export const NATURE_RULES = `  - 연구·리포트: 새로운 구체적 발견이 있는 글만. 새 공격 캠페인이나 위협 그룹 활동의 분석, 악성코드 분석, 실제 침해 사고의 분석, 새 취약점 연구, 자체 데이터·관측에 근거한 위협 통계 보고서.
+  - 업계 동향: 행사·컨퍼런스·세미나 개최나 발표 정리, 제품·서비스 출시와 홍보, 기업 간 협약·수상, 대표·임원 인터뷰, 주가·투자·실적·인사 소식,
+    그리고 새 발견이 없는 일반 해설 글: "~란 무엇인가", "~하는 방법", "~ 대비 체크리스트", "올해의 트렌드 N가지", 규제·인증 요건 해설(CMMC, 법안 설명 등),
+    자사 제품·서비스가 위협을 어떻게 막는지 소개하는 글, 일반인 대상 생활 보안 팁.
+  - 보안 업체 행사에서 위협 통계를 인용했더라도 기사의 중심이 행사나 제품이면 업계 동향입니다.
+  - 벤더 블로그 글은 특히 주의합니다. 구체적인 공격·악성코드·사고 분석이 없으면 업계 동향입니다.`;
+
+/** 이 성격으로 분류된 기사는 저장하지 않는다 (행사, 제품 홍보, 인터뷰, 주가·인사, 일반 해설 등). */
 export const EXCLUDED_NATURE: Nature = "업계 동향";
 
 const ResultSchema = z.object({
@@ -149,9 +160,7 @@ const SYSTEM_PROMPT = `당신은 보안 뉴스를 한국어와 일본어로 정�
   - 취약점 공지: 패치, 보안 권고, 취약점 공개
   - 정책·법규: 법·제도·규제·국정감사·처분 통계·정부 정책
   - 체포·수사: 수사, 기소, 체포, 제재, 인프라 압수·차단
-  - 연구·리포트: 보안 업체·연구자의 구체적인 위협 분석, 실험, 통계 보고서, 전문가 칼럼
-  - 업계 동향: 행사·컨퍼런스·세미나 개최나 발표 정리, 제품·서비스 출시와 홍보, 기업 간 협약·수상, 대표·임원 인터뷰, 주가·투자·실적·인사 소식
-  - 보안 업체 행사에서 위협 통계를 인용했더라도 기사의 중심이 행사나 제품이면 업계 동향입니다.
+${NATURE_RULES}
 
 - attackTypes: 기사가 실제 사건·취약점·위협 분석을 다룰 때, 그 중심이 되는 공격 유형만 0~3개 고릅니다. 일반론에서 위협이 예시로 언급만 된 경우에는 넣지 않습니다. 확신이 없으면 빈 배열이 낫습니다.
   - 랜섬웨어: 데이터를 암호화하거나 탈취해 금전을 요구하는 공격
@@ -203,12 +212,14 @@ export function cleanTechniques(xs: { id: string; name: string }[]): { id: strin
   return out.slice(0, 8);
 }
 
-const uniq = <T,>(xs: T[]) => [...new Set(xs)];
-const lines = (xs: string[]) => xs.map((s) => s.trim()).filter(Boolean).slice(0, 3);
+const uniq = <T>(xs: T[]) => [...new Set(xs)];
+const lines = (xs: string[]) =>
+  xs
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .slice(0, 3);
 
-export type SummaryResult =
-  | { kind: "item"; item: NewsItem }
-  | { kind: "excluded"; reason: "보안 무관" | "업계 동향" };
+export type SummaryResult = { kind: "item"; item: NewsItem } | { kind: "excluded"; reason: "보안 무관" | "업계 동향" };
 
 export async function summarize(raw: RawItem, body: string | null): Promise<SummaryResult> {
   const basis: Basis = body ? "본문" : raw.snippet ? "요지" : "제목";
@@ -303,7 +314,8 @@ export async function translateToJa(
   if (response.stop_reason === "refusal") throw new SummaryRefused(response.stop_details?.category ?? "refusal");
   const out = new Map<string, { titleJa: string; summaryJa: string[] }>();
   for (const t of response.parsed_output?.items ?? []) {
-    if (t.titleJa.trim() && t.summaryJa.length) out.set(t.id, { titleJa: t.titleJa.trim(), summaryJa: lines(t.summaryJa) });
+    if (t.titleJa.trim() && t.summaryJa.length)
+      out.set(t.id, { titleJa: t.titleJa.trim(), summaryJa: lines(t.summaryJa) });
   }
   return out;
 }

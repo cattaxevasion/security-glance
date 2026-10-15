@@ -12,10 +12,9 @@ import {
   SparkleFilled,
 } from "@fluentui/react-icons";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { Nature } from "../../shared/taxonomy";
 import type { Briefing, Topic } from "../../shared/types";
 import { REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
-import { NATURE_ICON } from "./marks";
+import { NATURE_ICON, natureGradient } from "./marks";
 
 const COVER_MS = 5000;
 const ITEM_MS = 9000;
@@ -23,14 +22,6 @@ const ITEM_MS = 9000;
 // 카드 배경: 흰 글자가 충분히 읽히는 짙은 그라디언트. 성격마다 색 계열을 바꿔 넘길 때 리듬이 생긴다.
 const COVER_BG =
   "radial-gradient(500px 260px at 100% 0%, rgba(160,110,240,.6), transparent 60%), radial-gradient(420px 260px at 0% 100%, rgba(40,140,240,.55), transparent 60%), linear-gradient(150deg, #0c3b5e 0%, #0f548c 45%, #4a3a9c 100%)";
-const NATURE_BG: Record<Nature, string> = {
-  사건: "linear-gradient(155deg, #6e0811 0%, #a4262c 55%, #6b1f6f 100%)",
-  "취약점 공지": "linear-gradient(155deg, #7a2d00 0%, #b4400b 55%, #8a1f2a 100%)",
-  "체포·수사": "linear-gradient(155deg, #4b1048 0%, #8b2a85 55%, #3d2a8a 100%)",
-  "정책·법규": "linear-gradient(155deg, #0c2f5e 0%, #1b5aa6 55%, #2f3e8f 100%)",
-  "연구·리포트": "linear-gradient(155deg, #00413f 0%, #0b6a66 55%, #0f4c7a 100%)",
-  "업계 동향": "linear-gradient(155deg, #303030 0%, #4a4a4a 100%)",
-};
 
 const useStyles = makeStyles({
   frame: {
@@ -253,7 +244,7 @@ export function BriefingStories({ lang, briefing, topics, dateLabel, onOpen }: P
 
   const slide = slides[idx];
   const duration = slide.kind === "cover" ? COVER_MS : ITEM_MS;
-  const bg = slide.kind === "cover" ? COVER_BG : NATURE_BG[slide.topic?.nature ?? "사건"];
+  const bg = slide.kind === "cover" ? COVER_BG : natureGradient(slide.topic?.nature ?? "사건");
   const Deco = slide.kind === "item" && slide.topic ? NATURE_ICON[slide.topic.nature] : SparkleFilled;
 
   return (

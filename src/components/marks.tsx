@@ -68,6 +68,22 @@ const useStyles = makeStyles({
   bar: { width: "6px", height: "10px", borderRadius: "1px", backgroundColor: tokens.colorNeutralStroke2 },
 });
 
+// 성격별 그라데이션: 모바일 스토리 카드와 데스크톱 브리핑 머리띠가 같은 색을 쓴다.
+// 흰 글자가 충분히 읽히는 짙은 색 세 단계 (시작 · 중간 · 끝)
+const NATURE_STOPS: Record<Nature, [string, string, string]> = {
+  사건: ["#6e0811", "#a4262c", "#6b1f6f"],
+  "취약점 공지": ["#7a2d00", "#b4400b", "#8a1f2a"],
+  "체포·수사": ["#4b1048", "#8b2a85", "#3d2a8a"],
+  "정책·법규": ["#0c2f5e", "#1b5aa6", "#2f3e8f"],
+  "연구·리포트": ["#00413f", "#0b6a66", "#0f4c7a"],
+  "업계 동향": ["#303030", "#424242", "#4a4a4a"],
+};
+
+export function natureGradient(nature: Nature, deg = 155): string {
+  const [a, b, c] = NATURE_STOPS[nature];
+  return `linear-gradient(${deg}deg, ${a} 0%, ${b} 55%, ${c} 100%)`;
+}
+
 // 성격별 아이콘 타일 색 (옅은 배경 + 진한 아이콘, 다크 모드에서는 토큰이 알아서 바뀐다)
 const NATURE_TINT: Record<Nature, { bg: string; fg: string }> = {
   사건: { bg: tokens.colorPaletteRedBackground1, fg: tokens.colorPaletteRedForeground1 },
