@@ -2,7 +2,7 @@
 // (일본어 화면에 한글, 한국어 화면에 번역 안 된 일본어)
 //
 //   npm run check:i18n            화면 코드·번역표 검사 (실패하면 종료 코드 1)
-//   npm run check:i18n -- --data  데이터 파일의 일본어·한국어 필드도 점검해서 알려준다 (경고만)
+//   npm run check:i18n -- --data  화면이 받는 데이터 파일도 검사 (섞임이 하나라도 있으면 실패 → 배포 중단)
 //
 // 1) 화면 코드(src/)에서 i18n.ts 밖에 하드코딩된 한글·일본어 문구 → 실패
 //    (주석, 태그 값처럼 데이터 키로 쓰는 문자열은 허용. .astro의 메타 설명은 두 언어 병기라 일본어 검사에서 뺀다)
@@ -11,8 +11,8 @@ import { readdir, readFile } from "node:fs/promises";
 import { extname, join, relative } from "node:path";
 import { hasHangul, hasRawJapanese, JAPANESE } from "../shared/lang";
 import { ATTACK_TYPES, IOC_TYPES, NATURES, REGIONS, SECTORS } from "../shared/taxonomy";
-import type { Briefing, NewsItem, Topic } from "../shared/types";
-import { REGION_LABELS, STRINGS, tagLabel } from "../src/i18n";
+import type { ArticleRef, Briefing, Topic } from "../shared/types";
+import { REGION_LABELS, SOURCE_LABELS, STRINGS, tagLabel } from "../src/i18n";
 
 const TAXONOMY = new Set<string>([...ATTACK_TYPES, ...SECTORS, ...NATURES, ...IOC_TYPES]);
 /** 데이터 키가 아닌데도 허용하는 한글 문자열 (지금은 없음. 언어 이름도 i18n.ts의 LANG_NAMES에 둔다) */
@@ -90,8 +90,10 @@ function scanCode(src: string): Hit[] {
   return hits;
 }
 
-// 일본어가 없을 때 한국어로 대신 보여주는 코드 패턴. src/components/text.ts의 도우미(titleOf, summaryOf, namesOf)를 써야 한다.
-const FALLBACK_TO_KO = /\.titleJa\s*\|\|[^\n]*titleKo|summaryJa\.length\s*\?[^\n]*summaryKo/;
+// 언어별 필드를 화면 코드에서 직접 고르는 패턴. src/components/text.ts의 도우미(titleOf, summaryOf, textOf, namesOf)를 써야
+// 마지막 안전장치(섞인 글자 정리)를 거친다.
+const FALLBACK_TO_KO =
+  /\.titleJa\s*\|\|[^\n]*titleKo|summaryJa\.length\s*\?[^\n]*summaryKo|\b(lang|L)\s*===\s*"(ja|ko)"\s*\?[^\n:]*(Ja|Ko)\s*:/;
 
 async function checkSources() {
   const files = (await walk("src")).filter((f) => !f.replace(/\\/g, "/").endsWith("src/i18n.ts"));
@@ -101,7 +103,7 @@ async function checkSources() {
       src.split("\n").forEach((l, i) => {
         if (FALLBACK_TO_KO.test(l))
           problems.push(
-            `${relative(".", f)}:${i + 1}  일본어가 없을 때 한국어로 대신 보여주는 코드 → text.ts의 titleOf/summaryOf를 쓰세요`,
+            `${relative(".", f)}:${i + 1}  언어별 필드를 직접 고르는 코드 → text.ts의 titleOf/summaryOf/textOf를 쓰세요`,
           );
       });
     }
@@ -147,6 +149,10 @@ function checkTranslations() {
   for (const [k, v] of Object.entries(STRINGS.ko)) visitKo(k, v);
 }
 
+/**
+ * 화면이 실제로 받는 데이터 파일 검사. 수집기의 언어 점검과 마지막 확인을 거쳤으므로 0이어야 한다.
+ * 하나라도 걸리면 그 장치가 고장 난 것이라 배포를 멈춘다 (섞인 화면을 내보내는 대신).
+ */
 async function checkData() {
   const read = async <T>(p: string, d: T) => {
     try {
@@ -155,31 +161,65 @@ async function checkData() {
       return d;
     }
   };
-  const news = await read<NewsItem[]>("public/data/news.json", []);
-  const topics = await read<Topic[]>("public/data/topics.json", []);
+  // 화면용으로 나눈 토픽 파일이 있으면 그것을, 없으면(오래된 로컬 데이터) 전체본을 본다
+  const recent = await read<Topic[] | null>("public/data/topics-recent.json", null);
+  const topics = recent
+    ? [...recent, ...(await read<Topic[]>("public/data/topics-archive.json", []))]
+    : await read<Topic[]>("public/data/topics.json", []);
+  const articles = await read<ArticleRef[]>("public/data/articles.json", []);
   const briefings = await read<Briefing[]>("public/data/briefings.json", []);
-  const badJa = (t: string, s: string[]) => !t || hasHangul(t) || !s.length || s.some(hasHangul);
-  const badKo = (t: string, s: string[]) => hasRawJapanese(t) || s.some(hasRawJapanese);
-  const report = {
-    "기사 일본어": news.filter((n) => badJa(n.titleJa, n.summaryJa)).length,
-    "기사 이름(조직·그룹)": news.filter((n) => [...n.entities.orgs, ...n.entities.actors].some(hasHangul)).length,
-    "토픽 일본어": topics.filter((t) => badJa(t.titleJa, t.summaryJa)).length,
-    "토픽 이름(조직·그룹)": topics.filter((t) => [...t.entities.orgs, ...t.entities.actors].some(hasHangul)).length,
-    "브리핑 일본어": briefings
-      .flatMap((b) => [b.headlineJa, ...b.items.flatMap((i) => [i.titleJa, i.bodyJa, i.whyJa])])
-      .filter((x) => !x || hasHangul(x)).length,
-    "기사 한국어": news.filter((n) => badKo(n.titleKo, n.summaryKo)).length,
-    "토픽 한국어": topics.filter((t) => badKo(t.titleKo, t.summaryKo)).length,
-    "브리핑 한국어": briefings
-      .flatMap((b) => [b.headlineKo, ...b.items.flatMap((i) => [i.titleKo, i.bodyKo, i.whyKo])])
-      .filter(hasRawJapanese).length,
-  };
-  console.log("데이터 점검 (경고, 다음 수집의 언어 점검 단계가 고친다):");
-  for (const [k, v] of Object.entries(report)) console.log(`  ${v ? "!" : "✓"} ${k}: ${v}`);
+  const readings = await read<Record<string, string>>("public/data/names-ko.json", {});
+
+  const leaks: [string, string][] = [];
+  const ja = (where: string, x: string) => hasHangul(x) && leaks.push([`${where} 일본어에 한글`, x]);
+  const ko = (where: string, x: string) => hasRawJapanese(x) && leaks.push([`${where} 한국어에 일본어`, x]);
+  for (const a of articles) {
+    ja("기사 제목", a.titleJa);
+    ko("기사 제목", a.titleKo);
+  }
+  for (const t of topics) {
+    ja("토픽 제목", t.titleJa);
+    ko("토픽 제목", t.titleKo);
+    t.summaryJa.forEach((x) => ja("토픽 요약", x));
+    t.summaryKo.forEach((x) => ko("토픽 요약", x));
+  }
+  for (const b of briefings) {
+    [b.headlineJa, ...b.items.flatMap((i) => [i.titleJa, i.bodyJa, i.whyJa])].forEach((x) => ja("브리핑", x));
+    [b.headlineKo, ...b.items.flatMap((i) => [i.titleKo, i.bodyKo, i.whyKo])].forEach((x) => ko("브리핑", x));
+  }
+  for (const [name, r] of Object.entries(readings))
+    if (!hasHangul(r) || JAPANESE.test(r)) leaks.push(["이름 한국어 읽기가 한글이 아님", `${name} → ${r}`]);
+
+  // 화면이 숨기는 것(경고만): 한글로 적힌 이름은 일본어 화면에서, 읽기가 없는 일본어 이름은 한국어 화면에서 빠진다
+  const names = [...new Set(topics.flatMap((t) => [...t.entities.orgs, ...t.entities.actors]))];
+  const hiddenJa = names.filter(hasHangul).length;
+  const hiddenKo = names.filter((n) => hasRawJapanese(n) && !readings[n]).length;
+
+  console.log(
+    `데이터 점검: 기사 ${articles.length} · 토픽 ${topics.length} · 브리핑 ${briefings.length} · 이름 읽기 ${Object.keys(readings).length}`,
+  );
+  if (hiddenJa || hiddenKo)
+    console.log(`  (경고) 화면에서 숨기는 이름: 일본어 화면 ${hiddenJa}개 · 한국어 화면 ${hiddenKo}개`);
+  for (const [k, x] of leaks.slice(0, 30)) problems.push(`[데이터] ${k}: "${x.slice(0, 50)}"`);
+  if (leaks.length > 30) problems.push(`[데이터] … 외 ${leaks.length - 30}건`);
+}
+
+/** 매체 이름이 화면 언어와 다른 글자를 쓰면 src/i18n.ts의 SOURCE_LABELS에 표기가 있어야 한다 */
+async function checkSourceLabels() {
+  const { sources } = JSON.parse(await readFile("sources.json", "utf8")) as { sources: { name: string }[] };
+  for (const { name } of sources) {
+    const ko = SOURCE_LABELS.ko[name];
+    const ja = SOURCE_LABELS.ja[name];
+    if (hasRawJapanese(name) && (!ko || hasRawJapanese(ko)))
+      problems.push(`매체 "${name}"의 한국어 표기가 없음 (src/i18n.ts의 SOURCE_LABELS.ko에 추가)`);
+    if (hasHangul(name) && (!ja || hasHangul(ja)))
+      problems.push(`매체 "${name}"의 일본어 표기가 없음 (src/i18n.ts의 SOURCE_LABELS.ja에 추가)`);
+  }
 }
 
 await checkSources();
 checkTranslations();
+await checkSourceLabels();
 if (process.argv.includes("--data")) await checkData();
 
 if (problems.length) {

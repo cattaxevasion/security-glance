@@ -50,6 +50,9 @@ jobs:
       - name: Typecheck
         run: npx astro sync && npx tsc --noEmit -p .
 
+      - name: Test
+        run: npm test
+
       - name: Collect news and vulnerabilities
         run: npm run collect -- ${{ inputs.briefing && '--briefing' || '' }}
         env:
@@ -74,7 +77,8 @@ jobs:
             commit -q -m "data: $(date -u +%Y-%m-%dT%H:%MZ)"
           git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" data
 
-      - name: Check Japanese UI has no Korean leaks
+      # 화면이 받는 파일에 언어 섞임이 하나라도 있으면 배포를 멈춘다 (수집기가 고치고 확인했으므로 늘 0이어야 함)
+      - name: Check no language mixing in UI and data
         run: npm run check:i18n -- --data
 
       # news.json(요약 전문)과 topics.json(토픽 전체)은 수집기 내부용.

@@ -29,6 +29,7 @@ import {
 import type { Meta } from "../../shared/types";
 import { LANG_NAMES, REGION_LABELS, STRINGS, type Lang } from "../i18n";
 import { fullDateTime, relativeTime } from "./format";
+import { sourceLabel } from "./text";
 
 const useStyles = makeStyles({
   bar: {
@@ -185,7 +186,7 @@ export function AppHeader({
                   <div key={src.id} className={s.statusRow}>
                     {src.ok ? <CheckmarkCircleFilled className={s.ok} /> : <ErrorCircleFilled className={s.bad} />}
                     <Caption1>
-                      <span className={s.muted}>{REGION_LABELS[lang][src.region]}</span> {src.name}
+                      <span className={s.muted}>{REGION_LABELS[lang][src.region]}</span> {sourceLabel(lang, src.name)}
                       {!src.ok && <span className={s.muted}> · {t.sourceFailed}</span>}
                     </Caption1>
                   </div>

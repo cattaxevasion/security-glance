@@ -37,7 +37,7 @@ import { timeOfDay } from "./format";
 import { SourceAvatars } from "./marks";
 import { stagger, useCountUp, useMotion } from "./motion";
 import { PageTitle, usePageStyles } from "./page";
-import { namesOf, summaryOf, titleOf } from "./text";
+import { namesOf, sourceLabel, summaryOf, titleOf } from "./text";
 import { PRIORITY_THRESHOLD, matchesQuery } from "./TopicsPage";
 
 const PERIODS = [7, 30, 90];
@@ -511,11 +511,11 @@ export function IncidentsPage(p: Props) {
                     {x.attackTypes.length > 0 && <span>{x.attackTypes.map((v) => tagLabel(lang, v)).join(", ")}</span>}
                     {x.sources.length > 1 ? (
                       <span className={s.metaIcon}>
-                        <SourceAvatars sources={x.sources} />
+                        <SourceAvatars sources={x.sources.map((n) => sourceLabel(lang, n))} />
                         {t.sourcesCount(x.sources.length)}
                       </span>
                     ) : (
-                      <span>{x.sources[0]}</span>
+                      <span>{sourceLabel(lang, x.sources[0])}</span>
                     )}
                   </div>
                 </div>

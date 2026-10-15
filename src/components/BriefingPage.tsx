@@ -36,7 +36,7 @@ import { BriefingStories } from "./BriefingStories";
 import { NATURE_ICON, natureGradient } from "./marks";
 import { stagger, useMotion } from "./motion";
 import { usePageStyles } from "./page";
-import { namesOf, titleOf } from "./text";
+import { namesOf, textOf, titleOf } from "./text";
 import { rankScore } from "./TopicsPage";
 
 const useStyles = makeStyles({
@@ -405,7 +405,7 @@ export function BriefingPage(p: Props) {
               )}
             </div>
             <h1 className={s.heroTitle}>{t.briefingTitle}</h1>
-            <p className={s.heroText}>{b ? (lang === "ja" ? b.headlineJa : b.headlineKo) : t.briefingEmpty}</p>
+            <p className={s.heroText}>{b ? textOf(lang, b.headlineKo, b.headlineJa) : t.briefingEmpty}</p>
           </header>
         </>
       )}
@@ -436,13 +436,13 @@ export function BriefingPage(p: Props) {
                     )}
                   </div>
                   <div className={s.cardBody}>
-                    <h2 className={s.title}>{lang === "ja" ? it.titleJa : it.titleKo}</h2>
-                    <p className={s.body}>{lang === "ja" ? it.bodyJa : it.bodyKo}</p>
+                    <h2 className={s.title}>{textOf(lang, it.titleKo, it.titleJa)}</h2>
+                    <p className={s.body}>{textOf(lang, it.bodyKo, it.bodyJa)}</p>
                     <div className={s.why}>
                       <LightbulbRegular className={s.whyIcon} aria-hidden />
                       <span>
                         <span className={s.whyLabel}>{t.briefingWhy}</span>
-                        {lang === "ja" ? it.whyJa : it.whyKo}
+                        {textOf(lang, it.whyKo, it.whyJa)}
                       </span>
                     </div>
                     {topic && (

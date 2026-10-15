@@ -32,6 +32,7 @@ import { useMediaQuery, useNarrow, usePrefersDark } from "./hooks";
 import { BriefingPage } from "./BriefingPage";
 import { IncidentsPage } from "./IncidentsPage";
 import { relativeTime } from "./format";
+import { setNameReadings } from "./text";
 import { useMotion } from "./motion";
 import { DEFAULT_FILTERS, TopicsPage, type NewsFilters, type SortMode } from "./TopicsPage";
 import { VulnPage } from "./VulnPage";
@@ -192,10 +193,14 @@ export default function App() {
   const reload = useCallback(() => {
     setLoadError(false);
     archiveRequested.current = false;
-    load<Topic[]>("topics-recent.json").then((d) => {
-      if (d === null) setLoadError(true);
-      setTopics(d ?? []);
-    });
+    // 이름 읽기 사전을 먼저 넣어 두고 토픽을 그린다 (한국어 화면에서 일본어 이름을 읽기로 보여주려고)
+    Promise.all([load<Topic[]>("topics-recent.json"), load<Record<string, string>>("names-ko.json")]).then(
+      ([d, names]) => {
+        setNameReadings(names);
+        if (d === null) setLoadError(true);
+        setTopics(d ?? []);
+      },
+    );
     load<Briefing[]>("briefings.json").then((d) => setBriefings(d ?? []));
     load<VulnData>("vulns.json").then(setVulns);
     load<Meta>("meta.json").then(setMeta);

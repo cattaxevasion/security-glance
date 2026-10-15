@@ -8,6 +8,7 @@
     "preview": "astro preview",
     "collect": "tsx scripts/collect/index.ts",
     "check": "tsc --noEmit",
+    "test": "tsx --test scripts/test/*.test.ts",
     "check:i18n": "tsx scripts/check-i18n.ts",
     "data:pull": "git fetch -q origin data && git archive FETCH_HEAD public/data data | tar -x"
   },

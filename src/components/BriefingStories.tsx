@@ -15,6 +15,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Briefing, Topic } from "../../shared/types";
 import { REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import { NATURE_ICON, natureGradient } from "./marks";
+import { textOf } from "./text";
 
 const COVER_MS = 5000;
 const ITEM_MS = 9000;
@@ -315,7 +316,7 @@ export function BriefingStories({ lang, briefing, topics, dateLabel, onOpen }: P
             <>
               <span className={s.coverDate}>{dateLabel}</span>
               <h2 className={s.coverTitle}>{t.briefingTitle}</h2>
-              <p className={s.coverText}>{lang === "ja" ? briefing.headlineJa : briefing.headlineKo}</p>
+              <p className={s.coverText}>{textOf(lang, briefing.headlineKo, briefing.headlineJa)}</p>
             </>
           ) : (
             <>
@@ -329,13 +330,13 @@ export function BriefingStories({ lang, briefing, topics, dateLabel, onOpen }: P
                   {t.sourcesCount(slide.topic.sources.length)}
                 </span>
               )}
-              <h2 className={s.title}>{lang === "ja" ? slide.item.titleJa : slide.item.titleKo}</h2>
-              <p className={s.body}>{lang === "ja" ? slide.item.bodyJa : slide.item.bodyKo}</p>
+              <h2 className={s.title}>{textOf(lang, slide.item.titleKo, slide.item.titleJa)}</h2>
+              <p className={s.body}>{textOf(lang, slide.item.bodyKo, slide.item.bodyJa)}</p>
               <div className={s.why}>
                 <LightbulbRegular style={{ fontSize: 18, flexShrink: 0, marginTop: 2 }} aria-hidden />
                 <span>
                   <span className={s.whyLabel}>{t.briefingWhy}</span>
-                  {lang === "ja" ? slide.item.whyJa : slide.item.whyKo}
+                  {textOf(lang, slide.item.whyKo, slide.item.whyJa)}
                 </span>
               </div>
             </>

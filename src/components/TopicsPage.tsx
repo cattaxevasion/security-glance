@@ -36,7 +36,7 @@ import { useStoredFlag } from "./hooks";
 import { NatureMark, NatureTile, SourceAvatars } from "./marks";
 import { stagger, useCountUp, useMotion } from "./motion";
 import { PageTitle, usePageStyles } from "./page";
-import { summaryOf, titleOf } from "./text";
+import { namesOf, sourceLabel, summaryOf, titleOf } from "./text";
 
 export interface NewsFilters {
   attack: string[];
@@ -273,6 +273,8 @@ export function matchesQuery(n: Topic, q: string): boolean {
     ...n.entities.cves,
     ...n.entities.actors,
     ...n.entities.orgs,
+    // 한국어 읽기로도 찾을 수 있게 (예: 다이이치 → 第一生命保険)
+    ...namesOf("ko", [...n.entities.orgs, ...n.entities.actors]),
     ...n.techniques.map((x) => x.id),
   ]
     .join(" ")
@@ -354,8 +356,10 @@ export function TopicsPage(p: Props) {
   const anyFilter = filters.attack.length + filters.sector.length + filters.nature.length > 0;
   const title = (n: Topic) => titleOf(lang, n);
   const summary = (n: Topic) => summaryOf(lang, n)[0] ?? "";
-  const sourcesText = (n: Topic) =>
-    n.sources.length <= 2 ? n.sources.join(", ") : `${n.sources.slice(0, 2).join(", ")} +${n.sources.length - 2}`;
+  const sourcesText = (n: Topic) => {
+    const xs = n.sources.map((x) => sourceLabel(lang, x));
+    return xs.length <= 2 ? xs.join(", ") : `${xs.slice(0, 2).join(", ")} +${xs.length - 2}`;
+  };
 
   const copyLink = async () => {
     try {
@@ -560,11 +564,11 @@ export function TopicsPage(p: Props) {
                         {p.showRegion && <span>{n.regions.map((r) => REGION_LABELS[lang][r]).join(" · ")}</span>}
                         {n.sources.length > 1 ? (
                           <span className={s.metaIcon}>
-                            <SourceAvatars sources={n.sources} />
+                            <SourceAvatars sources={n.sources.map((x) => sourceLabel(lang, x))} />
                             {t.sourcesCount(n.sources.length)} · {sourcesText(n)}
                           </span>
                         ) : (
-                          <span>{n.sources[0]}</span>
+                          <span>{sourceLabel(lang, n.sources[0])}</span>
                         )}
                         {n.hasVendor && (
                           <span className={s.metaIcon}>

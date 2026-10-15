@@ -37,7 +37,7 @@ import { REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import { fullDateTime, pct, relativeTime, shortDate } from "./format";
 import { EpssMark, NATURE_COLOR, NATURE_ICON, NatureMark } from "./marks";
 import { useMotion } from "./motion";
-import { namesOf, summaryOf, titleOf } from "./text";
+import { namesOf, sourceLabel, summaryOf, titleOf } from "./text";
 import { PRIORITY_THRESHOLD } from "./TopicsPage";
 
 export type Selection = { kind: "topic"; id: string } | { kind: "kev" | "cve"; id: string };
@@ -315,8 +315,8 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
   const main = representative(articles);
   const title = titleOf(L, topic);
   const summary = summaryOf(L, topic);
-  const actors = namesOf(L, topic.entities.actors);
-  const orgs = namesOf(L, topic.entities.orgs);
+  const actors = namesOf(L, topic.entities.actors, true);
+  const orgs = namesOf(L, topic.entities.orgs, true);
   const epss = p.vulns?.mentioned ?? {};
   const articleTitle = (n: ArticleRef) => titleOf(L, n, n.title);
 
@@ -417,7 +417,7 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
               />
               <div className={s.tlMeta}>
                 <span>{shortDate(L, n.publishedAt)}</span>
-                <span className={s.tlKind}>{n.sourceName}</span>
+                <span className={s.tlKind}>{sourceLabel(L, n.sourceName)}</span>
                 <span>{t.kind[n.sourceKind]}</span>
               </div>
               <Link className={s.tlTitle} href={n.url} target="_blank" rel="noopener noreferrer">

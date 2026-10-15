@@ -31,18 +31,24 @@ npm run collect -- --briefing              # 오늘의 브리핑을 시각과 �
 | `SUMMARY_MODEL` | 선택 | 기본 `claude-haiku-5-5` |
 | `MAX_NEW_PER_RUN` | 선택 | 한 번에 요약할 새 기사 수, 기본 80 |
 | `BRIEFING_MODEL` | 선택 | 브리핑에 쓸 모델, 기본은 `SUMMARY_MODEL`과 같음 |
+| `FIX_MODEL` | 선택 | 언어 섞임이 기본 모델로 두 번 고쳐도 남을 때 쓰는 모델, 기본 `claude-sonnet-5-5` |
 
 ### 언어 섞임 검사
 
 ```bash
 npm run check:i18n              # 화면 코드·번역표 검사 (배포 전에 Actions에서도 실행, 실패하면 빌드 중단)
-npm run check:i18n -- --data    # 데이터 파일의 일본어·한국어 필드도 점검 (경고만)
+npm run check:i18n -- --data    # 화면이 받는 데이터 파일도 검사 (하나라도 섞이면 실패)
 ```
 
 - 화면 문구는 반드시 `src/i18n.ts`에 둔다. 컴포넌트에 한글·일본어를 직접 쓰면 검사가 실패한다 (주석·태그 값은 예외).
 - 일본어 화면용 글은 `src/components/text.ts`의 `titleOf` / `summaryOf` / `namesOf`로 고른다.
-- 데이터 쪽은 수집기의 언어 점검(`scripts/collect/lang-audit.ts`)이 매번 고친다.
+- 데이터 쪽은 수집기의 언어 점검(`scripts/collect/lang-audit.ts`)이 같은 실행 안에서 고치고 확인한 뒤 반영한다.
   일본어 칸의 한글은 다시 번역하고, 한국어 칸에 남은 일본어는 「다이이치생명(第一生命保険)」처럼 한글 읽기 + 괄호 원문으로 고쳐 쓴다.
+  고치는 순서: 기본 모델 → 남은 부분을 짚어 주고 다시 → 더 강한 모델(`FIX_MODEL`, 기본 claude-sonnet-5-5) → 그래도 남으면 기계 변환(가나 → 한글 소리).
+  화면용 파일을 쓰기 직전에 한 번 더 확인하고, 배포 전 `check:i18n -- --data`가 하나라도 찾으면 배포를 멈춘다.
+- 일본어로 적힌 조직·위협 그룹 이름은 `names-ko.json`(한국어 읽기 사전)으로 한국어 화면에 「다이이치생명보험」처럼 보인다.
+  매체 이름의 화면 표기는 `src/i18n.ts`의 `SOURCE_LABELS` (새 매체를 넣을 때 빠지면 검사가 실패한다).
+- 판별식·기계 변환 테스트: `npm test`
 
 ### 개발용 도구 (`scripts/dev/`)
 

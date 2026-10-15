@@ -331,6 +331,18 @@ const ja: Strings = {
 
 export const STRINGS: Record<Lang, Strings> = { ko, ja };
 
+/**
+ * 출처(매체) 이름의 화면 표기. sources.json의 이름이 그 화면 언어와 다른 글자를 쓰면 여기에 표기를 둔다.
+ * (일본어 매체 이름의 가나 → 한국어 화면, 한글 이름 → 일본어 화면). check:i18n이 빠진 것을 잡는다.
+ */
+export const SOURCE_LABELS: Record<Lang, Record<string, string>> = {
+  ko: {
+    "ITmedia セキュリティ": "ITmedia 보안",
+    "JPCERT/CC ブログ": "JPCERT/CC 블로그",
+  },
+  ja: {},
+};
+
 export const REGION_LABELS: Record<Lang, Record<Region, string>> = {
   ko: { INTL: "국제", JP: "일본" },
   ja: { INTL: "国際", JP: "日本" },

@@ -10,7 +10,16 @@ import { readFile } from "node:fs/promises";
 import type { ArticleRef, Briefing, Meta, NewsItem, RunStats, Topic, VulnData } from "../../shared/types";
 import { BODY_CHARS, extractArticle } from "./article";
 import { maybeBriefing } from "./briefing";
-import { auditArticles, auditBriefings, auditTopics } from "./lang-audit";
+import {
+  auditArticles,
+  auditBriefings,
+  auditTopics,
+  enforceBriefings,
+  enforceLanguage,
+  sumCount,
+  updateNameReadings,
+  type FixCount,
+} from "./lang-audit";
 import { RULES_VERSION, rejudgeResearch, retryWeakBodies } from "./quality";
 import { keywordExclusion } from "./filter";
 import { fetchFeeds, type RawItem, type Source } from "./rss";
@@ -26,6 +35,8 @@ const META_PATH = "public/data/meta.json";
 const ARTICLES_PATH = "public/data/articles.json";
 /** 토픽 전체 (수집기 내부용). 화면은 아래 두 파일로 나눠 받는다. */
 const TOPICS_PATH = "public/data/topics.json";
+/** 일본어로 적힌 조직·위협 그룹 이름의 한국어 화면용 읽기 */
+const NAMES_KO_PATH = "public/data/names-ko.json";
 /** 첫 화면에 필요한 최근 토픽 (인시던트 기본 기간 30일 + 여유 하루) */
 const TOPICS_RECENT_PATH = "public/data/topics-recent.json";
 /** 그보다 오래된 토픽. 화면이 뜬 뒤에 불러온다. */
@@ -291,13 +302,17 @@ async function main() {
   let news = migrate(await readJson<LegacyNewsItem[]>(NEWS_PATH, []), await loadSources());
   if (mode !== "vulns") news = await runNews(meta);
 
-  // 언어 점검 1: 기사의 일본어 필드·엔티티 이름 (토픽 엔티티는 기사에서 다시 계산된다)
+  // 언어 점검 1: 기사의 일본어·한국어 필드·엔티티 이름 (토픽 엔티티는 기사에서 다시 계산된다)
   if (hasKey()) {
     const a = await auditArticles(news);
-    console.log(
-      `언어 점검(기사): 일본어 다시 번역 ${a.ja} · 한국어 고쳐 쓰기 ${a.ko} · 이름 바로잡기 ${a.names} · 남은 문제 ${a.remaining}`,
+    console.log(`언어 점검(기사): 일본어 ${fmt(a.ja)} · 한국어 ${fmt(a.ko)} · 이름 원래 표기 ${a.names}`);
+    if (!dry && (a.ja.fixed || a.ja.forced || a.ko.fixed || a.ko.forced || a.names)) await writeJson(NEWS_PATH, news);
+    const { readings, count } = await updateNameReadings(
+      news.flatMap((n) => [...n.entities.orgs, ...n.entities.actors]),
+      await readJson<Record<string, string>>(NAMES_KO_PATH, {}),
     );
-    if (!dry && (a.ja || a.ko || a.names)) await writeJson(NEWS_PATH, news);
+    console.log(`언어 점검(이름 한국어 읽기): ${Object.keys(readings).length}개 · 새로 ${fmt(count)}`);
+    if (!dry) await writeJson(NAMES_KO_PATH, readings);
   }
 
   let vulns = await readJson<VulnData | null>(VULNS_PATH, null);
@@ -330,8 +345,11 @@ async function main() {
   // 언어 점검 2: 토픽 통합 요약의 일본어·한국어 필드
   if (hasKey()) {
     const f = await auditTopics(topics);
-    if (f.ja || f.ko) console.log(`언어 점검(토픽): 일본어 다시 번역 ${f.ja} · 한국어 고쳐 쓰기 ${f.ko}`);
+    console.log(`언어 점검(토픽): 일본어 ${fmt(f.ja)} · 한국어 ${fmt(f.ko)}`);
   }
+  // 배포 전 마지막 확인: 위 단계가 다 고쳤다면 0
+  const gateTopics = enforceLanguage(topics);
+  if (gateTopics) console.warn(`  !  마지막 확인(토픽)에서 기계 변환 ${gateTopics}건`);
   meta.topicCount = topics.length;
   if (!dry) {
     await writeJson(TOPICS_PATH, topics);
@@ -349,13 +367,21 @@ async function main() {
       if (made) console.log(`브리핑 생성: ${briefings[0].date} · ${briefings[0].items.length}건`);
       // 언어 점검 3: 브리핑의 일본어·한국어 문장
       const f = await auditBriefings(briefings);
-      if (f.ja || f.ko) console.log(`언어 점검(브리핑): 일본어 다시 번역 ${f.ja} · 한국어 고쳐 쓰기 ${f.ko}`);
-      if (!dry && (made || f.ja || f.ko)) await writeJson(BRIEFINGS_PATH, briefings);
+      const total = sumCount(f.ja, f.ko);
+      console.log(`언어 점검(브리핑): 일본어 ${fmt(f.ja)} · 한국어 ${fmt(f.ko)}`);
+      const gate = enforceBriefings(briefings);
+      if (gate) console.warn(`  !  마지막 확인(브리핑)에서 기계 변환 ${gate}건`);
+      if (!dry && (made || total.fixed || total.forced || gate)) await writeJson(BRIEFINGS_PATH, briefings);
     } catch (e) {
       console.warn(`  !  브리핑 실패: ${(e as Error).message.slice(0, 160)}`);
     }
   }
 
+  const gateNews = enforceLanguage(news);
+  if (gateNews) {
+    console.warn(`  !  마지막 확인(기사)에서 기계 변환 ${gateNews}건`);
+    if (!dry) await writeJson(NEWS_PATH, news);
+  }
   const refs: ArticleRef[] = news.map((n) => ({
     id: n.id,
     url: n.url,
@@ -372,6 +398,11 @@ async function main() {
   meta.newsCount = news.length;
   meta.updatedAt = new Date().toISOString();
   if (!dry) await writeJson(META_PATH, meta);
+}
+
+/** 고친 수 표시: "고침 3" 또는 "고침 3 · 기계 변환 1" */
+function fmt(c: FixCount): string {
+  return c.forced ? `고침 ${c.fixed} · 기계 변환 ${c.forced}` : `고침 ${c.fixed}`;
 }
 
 main().catch((e) => {
