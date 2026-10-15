@@ -28,7 +28,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { ATTACK_TYPES, NATURES, SECTORS } from "../../shared/taxonomy";
 import type { Topic, VulnData } from "../../shared/types";
-import { REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
+import { LOCALE, REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import type { View } from "./AppNav";
 import { FilterPill } from "./FilterPill";
 import { dayKey, dayLabel, shortDate, timeOfDay } from "./format";
@@ -79,13 +79,14 @@ const useStyles = makeStyles({
     fontWeight: tokens.fontWeightSemibold,
     textAlign: "left",
   },
+  // 수치 (인시던트 화면과 같은 D안): 첫 칸은 두 배 폭 + 배너 그라데이션 + 막대, 나머지는 색 숫자
   kpis: {
     display: "grid",
-    // 읽기 창이 열려 본문이 좁아져도 찌그러지지 않게, 남은 폭에 맞춰 열 수를 정한다
-    gridTemplateColumns: "repeat(auto-fit, minmax(156px, 1fr))",
-    gap: "8px",
+    gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
+    gap: "12px",
     paddingBottom: "8px",
-    "@media (min-width: 641px)": { gap: "12px" },
+    "@media (max-width: 900px)": { gridTemplateColumns: "repeat(3, minmax(0, 1fr))" },
+    "@media (max-width: 640px)": { gap: "8px" },
   },
   kpi: {
     display: "flex",
@@ -120,6 +121,7 @@ const useStyles = makeStyles({
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
+    "@media (max-width: 640px)": { whiteSpace: "normal", alignItems: "flex-start" },
   },
   kpiChevron: { marginLeft: "auto", color: tokens.colorNeutralForeground3 },
   kpiNumber: {
@@ -127,6 +129,46 @@ const useStyles = makeStyles({
     lineHeight: tokens.lineHeightHero700,
     fontWeight: tokens.fontWeightSemibold,
     fontVariantNumeric: "tabular-nums",
+    "@media (max-width: 640px)": { fontSize: tokens.fontSizeHero700 },
+  },
+  kpiHero: {
+    gridColumn: "span 2",
+    display: "grid",
+    gridTemplateColumns: "auto minmax(0, 1fr)",
+    alignItems: "end",
+    gap: "16px",
+    padding: "14px 18px",
+    border: "none",
+    borderRadius: tokens.borderRadiusXLarge,
+    color: "#fff",
+    backgroundImage: "linear-gradient(120deg, #0c3b5e 0%, #0f548c 40%, #4a3a9c 100%)",
+    boxShadow: tokens.shadow8,
+    font: "inherit",
+    textAlign: "left",
+    cursor: "pointer",
+    ":hover": { filter: "brightness(1.06)" },
+    ":focus-visible": { outline: "2px solid #fff", outlineOffset: "-4px" },
+    "@media (max-width: 900px)": { gridColumn: "1 / -1" },
+  },
+  kpiHeroText: { display: "flex", flexDirection: "column", gap: "2px", minWidth: 0 },
+  kpiHeroLabel: { color: "rgba(255,255,255,0.88)", fontWeight: tokens.fontWeightSemibold },
+  kpiHeroSub: { color: "rgba(255,255,255,0.75)" },
+  kpiHeroNum: { fontSize: "40px", lineHeight: "46px", fontWeight: tokens.fontWeightBold, fontVariantNumeric: "tabular-nums" },
+  kpiBars: {
+    display: "flex",
+    alignItems: "flex-end",
+    gap: "3px",
+    height: "52px",
+    justifySelf: "end",
+    width: "100%",
+    maxWidth: "200px",
+  },
+  kpiBar: {
+    flex: 1,
+    minHeight: "3px",
+    borderRadius: "2px 2px 0 0",
+    backgroundColor: "rgba(255,255,255,0.35)",
+    ":last-child": { backgroundColor: "#fff" },
   },
 
   // ── 기사 목록 (읽기용) ──
@@ -260,9 +302,13 @@ interface Props {
   onGo: (view: View) => void;
 }
 
-function KpiNumber({ value, className }: { value: number; className: string }) {
+function KpiNumber({ value, className, color }: { value: number; className: string; color?: string }) {
   const n = useCountUp(value);
-  return <span className={className}>{n.toLocaleString()}</span>;
+  return (
+    <span className={className} style={color ? { color } : undefined}>
+      {n.toLocaleString()}
+    </span>
+  );
 }
 
 export function matchesQuery(n: Topic, q: string): boolean {
@@ -338,6 +384,17 @@ export function TopicsPage(p: Props) {
     const day = (d: number) => Date.now() - d * 86400_000;
     return {
       today: items.filter((n) => Date.parse(n.lastUpdated) >= day(1)).length,
+      hourly: Array.from({ length: 12 }, (_, i) => {
+        const end = Date.now() - (11 - i) * 2 * 3600_000;
+        const start = end - 2 * 3600_000;
+        return {
+          start,
+          n: items.filter((n) => {
+            const at = Date.parse(n.lastUpdated);
+            return at >= start && at < end;
+          }).length,
+        };
+      }),
       ransom: items.filter((n) => Date.parse(n.lastUpdated) >= day(7) && n.attackTypes.includes("랜섬웨어")).length,
       kev: (p.vulns?.kev ?? []).filter((k) => Date.parse(k.dateAdded) >= day(7)).length,
       // CVE 목록을 아직 안 받았으면 첫 화면용 데이터의 개수를 쓴다
@@ -390,11 +447,28 @@ export function TopicsPage(p: Props) {
       label: t.kpiRansom,
       sub: t.kpiRansomSub,
       value: kpi.ransom,
+      color: tokens.colorPaletteBerryForeground1,
       go: () => set({ days: 7, attack: ["랜섬웨어"], sector: [], nature: [] }),
     },
-    { label: t.kpiKev, sub: t.kpiKevSub, value: kpi.kev, go: () => p.onGo("kev") },
-    { label: t.kpiCritical, sub: t.kpiCriticalSub, value: kpi.critical, go: () => p.onGo("cve") },
+    {
+      label: t.kpiKev,
+      sub: t.kpiKevSub,
+      value: kpi.kev,
+      color: tokens.colorPaletteDarkOrangeForeground1,
+      go: () => p.onGo("kev"),
+    },
+    {
+      label: t.kpiCritical,
+      sub: t.kpiCriticalSub,
+      value: kpi.critical,
+      color: tokens.colorPaletteRedForeground1,
+      go: () => p.onGo("cve"),
+    },
   ];
+  // 대표 칸 막대: 2시간 단위 (예: 14시~16시)
+  const hourMax = Math.max(1, ...kpi.hourly.map((h) => h.n));
+  const hourFmt = new Intl.DateTimeFormat(LOCALE[lang], { hour: "numeric" });
+  const hourLabel = (start: number) => `${hourFmt.format(start)}–${hourFmt.format(start + 2 * 3600_000)}`;
 
   return (
     <div className={mergeClasses(ps.page, ps.reading)}>
@@ -406,16 +480,40 @@ export function TopicsPage(p: Props) {
       </button>
       {overviewOpen && (
         <div className={s.kpis}>
-          {kpis.map((k, i) => (
-            <button key={k.label} className={mergeClasses(s.kpi, m.enter)} style={stagger(i, 50)} onClick={k.go}>
-              <Caption1 className={s.kpiLabel}>
-                {k.label}
-                <ChevronRightRegular className={s.kpiChevron} aria-hidden />
-              </Caption1>
-              <KpiNumber value={k.value} className={s.kpiNumber} />
-              <Caption1 className={ps.muted}>{k.sub}</Caption1>
-            </button>
-          ))}
+          {kpis.map((k, i) =>
+            i === 0 ? (
+              <button key={k.label} className={mergeClasses(s.kpiHero, m.enter)} style={stagger(i, 50)} onClick={k.go}>
+                <span className={s.kpiHeroText}>
+                  <Caption1 className={s.kpiHeroLabel}>{k.label}</Caption1>
+                  <KpiNumber value={k.value} className={s.kpiHeroNum} />
+                  <Caption1 className={s.kpiHeroSub}>{k.sub}</Caption1>
+                </span>
+                <span
+                  className={s.kpiBars}
+                  role="img"
+                  aria-label={kpi.hourly.map((h) => `${hourLabel(h.start)} ${t.count(h.n)}`).join(", ")}
+                >
+                  {kpi.hourly.map((h) => (
+                    <span
+                      key={h.start}
+                      className={s.kpiBar}
+                      style={{ height: `${Math.max(6, (h.n / hourMax) * 100)}%` }}
+                      title={`${hourLabel(h.start)} · ${t.count(h.n)}`}
+                    />
+                  ))}
+                </span>
+              </button>
+            ) : (
+              <button key={k.label} className={mergeClasses(s.kpi, m.enter)} style={stagger(i, 50)} onClick={k.go}>
+                <Caption1 className={s.kpiLabel}>
+                  {k.label}
+                  <ChevronRightRegular className={s.kpiChevron} aria-hidden />
+                </Caption1>
+                <KpiNumber value={k.value} className={s.kpiNumber} color={k.color} />
+                <Caption1 className={ps.muted}>{k.sub}</Caption1>
+              </button>
+            ),
+          )}
         </div>
       )}
 
