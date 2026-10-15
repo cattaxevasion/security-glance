@@ -7,7 +7,6 @@ import {
   DrawerBody,
   DrawerFooter,
   DrawerHeader,
-  InlineDrawer,
   Link,
   OverlayDrawer,
   Spinner,
@@ -45,11 +44,6 @@ export type Selection = { kind: "topic"; id: string } | { kind: "kev" | "cve"; i
 
 const useStyles = makeStyles({
   surface: { boxShadow: tokens.shadow64 },
-  inline: {
-    width: "min(540px, 42vw)",
-    height: "100%",
-    backgroundColor: tokens.colorNeutralBackground1,
-  },
   topBar: { display: "flex", justifyContent: "flex-end", gap: "2px", marginRight: "-8px", marginTop: "-8px" },
   heading: { display: "flex", gap: "16px", alignItems: "flex-start", marginTop: "4px" },
   iconCircle: {
@@ -205,8 +199,6 @@ function Section({ s, title, children }: { s: Styles; title: string; children: R
 interface Props {
   lang: Lang;
   narrow: boolean;
-  /** 넓은 화면에서는 목록 옆에 붙는 읽기 창(InlineDrawer)으로 연다 */
-  inline: boolean;
   selection: Selection | null;
   topics: Topic[];
   /** 상세 패널의 흐름에 쓰는 기사 목록. 아직 불러오는 중이면 null */
@@ -282,13 +274,8 @@ export function DetailPanel(p: Props) {
     </>
   );
 
-  if (p.inline) {
-    return (
-      <InlineDrawer className={s.inline} open={!!content} position="end" separator>
-        {inner}
-      </InlineDrawer>
-    );
-  }
+  // 본문 옆에 끼워 넣으면 본문 폭이 줄어 카드·목록이 찌부러진다. 폭과 상관없이 본문 위에 띄우고,
+  // 넓은 화면에서는 뒤의 목록을 계속 누를 수 있게 둔다(non-modal).
   return (
     <OverlayDrawer
       className={s.surface}

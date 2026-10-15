@@ -28,7 +28,7 @@ import { FONT_STACK, REGION_LABELS, STRINGS, detectLang, saveLang, type Lang } f
 import { AppHeader } from "./AppHeader";
 import { AppNav, VIEWS, type View } from "./AppNav";
 import { DetailPanel, type Selection } from "./DetailPanel";
-import { useMediaQuery, useNarrow, usePrefersDark } from "./hooks";
+import { useNarrow, usePrefersDark } from "./hooks";
 import { BriefingPage } from "./BriefingPage";
 import { relativeTime } from "./format";
 import { setNameReadings, sourceLabel } from "./text";
@@ -165,8 +165,6 @@ export default function App() {
   const { dispatchToast } = useToastController(toasterId);
   const dark = usePrefersDark();
   const narrow = useNarrow();
-  // 탐색(260) + 목록(최소 500) + 읽기 창(520)이 나란히 들어가는 폭부터 읽기 창을 옆에 붙인다
-  const wide = useMediaQuery("(min-width: 1320px)");
   const initial = useMemo(readUrl, []);
 
   const [lang, setLangState] = useState<Lang>(() => initial.lang ?? detectLang());
@@ -272,11 +270,8 @@ export default function App() {
   useEffect(() => setNavOpen(!narrow), [narrow]);
 
   useEffect(() => {
+    // 줄바꿈 규칙은 <html lang>을 보고 index.astro의 전역 CSS가 정한다 (포털로 그리는 패널·메뉴도 상속)
     document.documentElement.lang = lang;
-    // 한국어는 어절 단위로 줄바꿈해야 읽기 쉽다. 일본어는 띄어쓰기가 없어 기본 규칙(+금칙 처리)을 쓴다.
-    // 상세 패널·메뉴는 포털로 앱 밖에 그려지므로 <html>에 걸어 상속시킨다.
-    document.documentElement.style.wordBreak = lang === "ko" ? "keep-all" : "normal";
-    document.documentElement.style.setProperty("line-break", lang === "ja" ? "strict" : "auto");
     document.title = STRINGS[lang].docTitle;
   }, [lang]);
 
@@ -564,7 +559,6 @@ export default function App() {
           <DetailPanel
             lang={lang}
             narrow={narrow}
-            inline={wide}
             selection={selection}
             topics={topics ?? []}
             news={articles}
