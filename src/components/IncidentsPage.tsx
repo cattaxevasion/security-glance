@@ -191,7 +191,7 @@ const useStyles = makeStyles({
     cursor: "pointer",
     transitionProperty: "background-color",
     transitionDuration: tokens.durationFaster,
-    "@media (min-width: 641px)": { gridTemplateColumns: "64px 1fr 20px" },
+    "@media (min-width: 641px)": { gridTemplateColumns: "88px 1fr 20px" },
     ":hover": { backgroundColor: tokens.colorSubtleBackgroundHover },
     ":focus-visible": { outline: `2px solid ${tokens.colorStrokeFocus2}`, outlineOffset: "-2px" },
   },
@@ -220,7 +220,7 @@ const useStyles = makeStyles({
     fontVariantNumeric: "tabular-nums",
     "@media (min-width: 641px)": { display: "flex" },
   },
-  whenDate: { color: tokens.colorNeutralForeground2, fontWeight: tokens.fontWeightSemibold },
+  whenDate: { color: tokens.colorNeutralForeground2, fontWeight: tokens.fontWeightSemibold, whiteSpace: "nowrap" },
   live: {
     display: "inline-block",
     width: "8px",
@@ -472,7 +472,7 @@ export function IncidentsPage(p: Props) {
                 );
               })}
               {hover !== null && (
-                <div className={s.tooltip} style={{ left: `${((hover + 0.5) / DAYS) * 100}%` }} role="status">
+                <div className={s.tooltip} style={{ left: `clamp(70px, ${((hover + 0.5) / DAYS) * 100}%, calc(100% - 70px))` }} role="status">
                   <div style={{ fontWeight: 600 }}>{fmtDayLong(series[hover].date)}</div>
                   {(["JP", "INTL"] as Region[]).map((r) => (
                     <div key={r}>
