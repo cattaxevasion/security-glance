@@ -56,7 +56,8 @@ scripts/collect/        수집기: rss → article(본문) → summarize(Claude)
                         → topics(묶기·통합 요약·중요도) → briefing(오늘의 브리핑)
 public/data/            화면이 읽는 JSON (Actions가 갱신해서 커밋)
 data/state.json         내부 상태 (보안 무관 판정, 실패 횟수)
-src/components/         Fluent 2 화면 (React): AppHeader, AppNav, BriefingPage, TopicsPage, VulnPage, DetailPanel
+src/components/         Fluent 2 화면 (React): AppHeader, AppNav, BriefingPage, IncidentsPage, TopicsPage, VulnPage, DetailPanel
+                        motion.ts(Fluent 모션 토큰 기반 애니메이션)
 src/i18n.ts             한/日 화면 글자와 태그 라벨
 ```
 
