@@ -65,7 +65,7 @@ const useStyles = makeStyles({
     display: "flex",
     flexWrap: "wrap",
     alignItems: "center",
-    gap: "4px 14px",
+    gap: "4px 12px",
     marginTop: "2px",
     "& .sg-due": { flexDirection: "row", gap: "6px" },
   },
@@ -463,7 +463,7 @@ export function VulnPage(p: Props) {
                       </span>
                       {mentions.get(k.cveID) ? (
                         <span className={s.mNews}>
-                          <Caption1 className={s.mKey}>{t.colNews}</Caption1>
+                          <Caption1 className={s.mKey}>{t.newsShort}</Caption1>
                           {newsCell(k.cveID)}
                         </span>
                       ) : null}
@@ -511,7 +511,7 @@ export function VulnPage(p: Props) {
                       </Caption1>
                       {mentions.get(c.id) ? (
                         <span className={s.mNews}>
-                          <Caption1 className={s.mKey}>{t.colNews}</Caption1>
+                          <Caption1 className={s.mKey}>{t.newsShort}</Caption1>
                           {newsCell(c.id)}
                         </span>
                       ) : null}
