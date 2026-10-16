@@ -1,5 +1,5 @@
 {
-  "$comment": "RSS 소스 목록. region은 출처 지역(사건 지역은 LLM이 판단). kind: news(매체) / vendor(보안 벤더 리서치) / cert(CERT·공공기관). keywordFilter=true면 보안 키워드가 있을 때만 수집.",
+  "$comment": "RSS 소스 목록. region은 출처 지역(사건 지역은 LLM이 판단). kind: news(매체) / vendor(보안 벤더 리서치) / cert(CERT·공공기관). keywordFilter=true면 보안 키워드가 있을 때만 수집. watchEveryMin: 속보 감시(worker/)가 이 피드를 몇 분마다 볼지 (기본 1분, 본문 전체를 싣는 큰 블로그 피드는 10분).",
   "sources": [
     {
       "id": "bleepingcomputer",
@@ -39,6 +39,7 @@
       "region": "INTL",
       "lang": "en",
       "kind": "news",
+      "watchEveryMin": 10,
       "url": "https://krebsonsecurity.com/feed/"
     },
     {
@@ -151,6 +152,7 @@
       "region": "INTL",
       "lang": "en",
       "kind": "cert",
+      "watchEveryMin": 10,
       "url": "https://isc.sans.edu/rssfeed_full.xml"
     },
     {
@@ -167,6 +169,7 @@
       "region": "JP",
       "lang": "ja",
       "kind": "cert",
+      "watchEveryMin": 10,
       "url": "https://blogs.jpcert.or.jp/ja/atom.xml"
     },
     {
@@ -234,6 +237,7 @@
       "region": "JP",
       "lang": "ja",
       "kind": "news",
+      "watchEveryMin": 10,
       "url": "https://piyolog.hatenadiary.jp/rss"
     },
     {

@@ -19,10 +19,13 @@ interface Source {
   kind: string;
   url: string;
   keywordFilter?: boolean;
+  /** 몇 분마다 볼지 (기본 1분). 본문 전체를 싣는 큰 블로그 피드는 10분: CPU 시간 대부분이 이런 피드 파싱이다 */
+  watchEveryMin?: number;
 }
 
 // 벤더 리서치는 급하지 않고 피드가 커서(수백 건) 빼고, 매체·CERT만 본다
 const WATCHED = (sourcesFile.sources as Source[]).filter((s) => s.kind !== "vendor");
+const SLOW = WATCHED.filter((s) => (s.watchEveryMin ?? 1) > 1);
 /** 기억할 기사 수. 감시하는 피드 전체 항목 수보다 넉넉히 커야 같은 기사로 다시 실행하지 않는다 */
 const KEEP = 5000;
 /** 이보다 오래된 기사는 무시 (피드가 옛 글을 다시 올려도 실행하지 않게). 수집기의 보관 기간보다 짧다 */
@@ -36,21 +39,25 @@ interface Item {
 }
 
 export default {
-  async scheduled(_event: ScheduledController, env: Env): Promise<void> {
+  async scheduled(event: ScheduledController, env: Env): Promise<void> {
     const raw = await env.SEEN.get("seen");
     const seen: string[] = raw ? JSON.parse(raw) : [];
     const known = new Set(seen);
 
-    const feeds = await Promise.allSettled(WATCHED.map((s) => readFeed(s)));
+    const minute = Math.floor(event.scheduledTime / 60_000);
+    // 큰 피드끼리 같은 분에 몰리지 않게 2분씩 어긋나게 본다
+    const due = WATCHED.filter((s) => (minute + SLOW.indexOf(s) * 2) % (s.watchEveryMin ?? 1) === 0);
+    const feeds = await Promise.allSettled(due.map((s) => readFeed(s, known)));
     const fresh = new Map<string, Item>();
-    let failed = 0;
-    for (const r of feeds) {
+    const failed: string[] = [];
+    for (const [i, r] of feeds.entries()) {
       if (r.status === "rejected") {
-        failed++;
+        failed.push(due[i].id);
         continue;
       }
-      for (const it of r.value) if (!known.has(it.key) && !fresh.has(it.key)) fresh.set(it.key, it);
+      for (const it of r.value) if (!fresh.has(it.key)) fresh.set(it.key, it);
     }
+    if (failed.length) console.warn(`피드 실패: ${failed.join(", ")}`);
     if (!fresh.size) return;
 
     // 처음 켤 때는 지금 피드에 있는 기사를 기억만 한다 (전부 새 기사로 보고 실행하지 않게)
@@ -62,7 +69,7 @@ export default {
         return;
       }
       for (const it of fresh.values()) console.log(`새 기사 [${it.source}] ${it.title}`);
-      console.log(`새 기사 ${fresh.size}건 → 수집기 실행 요청 (피드 실패 ${failed})`);
+      console.log(`새 기사 ${fresh.size}건 → 수집기 실행 요청`);
     } else {
       console.log(`처음 실행: 기사 ${fresh.size}건을 기억만 함`);
     }
@@ -84,7 +91,7 @@ function dispatch(env: Env): Promise<Response> {
 }
 
 /** RSS·RDF·Atom 공통으로 항목만 정규식으로 뽑는다 (무료 플랜 CPU 10ms 안에 들도록 XML 파서를 쓰지 않음) */
-async function readFeed(source: Source): Promise<Item[]> {
+async function readFeed(source: Source, known: Set<string>): Promise<Item[]> {
   const res = await fetch(source.url, {
     headers: { "User-Agent": USER_AGENT, Accept: "*/*" },
     signal: AbortSignal.timeout(10_000),
@@ -96,19 +103,27 @@ async function readFeed(source: Source): Promise<Item[]> {
   for (const m of xml.matchAll(/<(item|entry)[\s>][\s\S]*?<\/\1>/g)) {
     const block = m[0];
     const link = tag(block, "link") || block.match(/<link[^>]*href="([^"]+)"/)?.[1] || "";
+    if (!link.startsWith("http")) continue;
+    const key = hash(link.trim());
+    // 이미 아는 기사는 제목·날짜·키워드를 볼 필요가 없다 (대부분이 여기서 끝난다)
+    if (known.has(key)) continue;
     const title = tag(block, "title");
-    if (!link.startsWith("http") || !title) continue;
+    if (!title) continue;
     const date = Date.parse(tag(block, "pubDate") || tag(block, "dc:date") || tag(block, "published") || tag(block, "updated"));
     if (date && now - date > MAX_AGE_MS) continue;
     if (source.keywordFilter && !SECURITY_KEYWORDS.test(`${title} ${tag(block, "description")}`)) continue;
     if (keywordExclusion(title)) continue;
-    items.push({ key: hash(link.trim()), title: title.slice(0, 80), source: source.id });
+    items.push({ key, title: title.slice(0, 80), source: source.id });
   }
   return items;
 }
 
+// 태그별 정규식은 한 번만 만든다 (항목마다 새로 만들면 CPU 시간이 크게 는다)
+const TAGS = new Map<string, RegExp>();
 function tag(block: string, name: string): string {
-  const m = block.match(new RegExp(`<${name}(?:\\s[^>]*)?>([\\s\\S]*?)</${name}>`));
+  let re = TAGS.get(name);
+  if (!re) TAGS.set(name, (re = new RegExp(`<${name}(?:\\s[^>]*)?>([\\s\\S]*?)</${name}>`)));
+  const m = block.match(re);
   if (!m) return "";
   return m[1]
     .replace(/^\s*<!\[CDATA\[|\]\]>\s*$/g, "")
