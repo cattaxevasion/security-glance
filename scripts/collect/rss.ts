@@ -1,4 +1,5 @@
 import Parser from "rss-parser";
+import { SECURITY_KEYWORDS } from "../../shared/keywords";
 import type { Region, SourceKind } from "../../shared/taxonomy";
 import type { SourceStatus } from "../../shared/types";
 import { cleanText, fetchText, MAX_FEED_BYTES, normalizeUrl } from "./util";
@@ -21,19 +22,6 @@ export interface RawItem {
   source: Source;
 }
 
-// 일반 매체(keywordFilter)에서 보안 기사만 남기는 키워드. 넓게 거르고, 보안 기사인지는 LLM이 다시 판단한다
-const SECURITY_KEYWORDS = new RegExp(
-  [
-    // 한국어
-    "보안|해킹|해커|랜섬|취약점|유출|개인정보|사이버|악성|피싱|침해|디도스|제로데이|스미싱|탈취|위협|공격",
-    // 일본어
-    "漏えい|漏洩|流出|不正アクセス|不正ログイン|不正利用|サイバー|ランサム|脆弱性|マルウェア|ウイルス|フィッシング",
-    "個人情報|ハッキング|ハッカー|なりすまし|改ざん|乗っ取|ゼロデイ|サポート詐欺|情報窃取|セキュリティ|攻撃",
-    // 공통
-    "DDoS|CVE-|ransomware|malware|phishing",
-  ].join("|"),
-  "i",
-);
 
 const parser = new Parser();
 

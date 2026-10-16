@@ -10,3 +10,6 @@ public/data/news.dev.json
 # 수집 데이터는 data 브랜치에 있다 (받기: npm run data:pull)
 public/data/*.json
 data/
+
+# Cloudflare Worker 로컬 상태
+.wrangler/

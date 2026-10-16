@@ -1,0 +1,16 @@
+// 속보 감시 Worker 설정. 배포: worker 폴더에서 npx wrangler deploy
+{
+  "name": "security-glance-watch",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  // 바깥에 주소를 열지 않는다 (예약 실행만)
+  "workers_dev": false,
+  "preview_urls": false,
+  "triggers": { "crons": ["* * * * *"] },
+  "kv_namespaces": [{ "binding": "SEEN", "id": "KV_ID" }],
+  "vars": {
+    "GITHUB_REPO": "cattaxevasion/security-glance",
+    "WORKFLOW": "update.yml"
+  },
+  "observability": { "enabled": true }
+}

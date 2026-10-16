@@ -66,9 +66,11 @@ function makeTheme(dark: boolean, lang: Lang): Theme {
   return { ...(dark ? webDarkTheme : webLightTheme), fontFamilyBase: FONT_STACK[lang] };
 }
 
-async function load<T>(name: string): Promise<T | null> {
+/** v: 주소 끝에 붙여 CDN 캐시(최대 10분)를 건너뛴다. 열어 둔 화면이 새 데이터를 받을 때 쓴다 */
+async function load<T>(name: string, v?: string): Promise<T | null> {
   try {
-    const res = await fetch(`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}data/${name}`, { cache: "no-cache" });
+    const q = v ? `?v=${encodeURIComponent(v)}` : "";
+    const res = await fetch(`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}data/${name}${q}`, { cache: "no-cache" });
     return res.ok ? ((await res.json()) as T) : null;
   } catch {
     return null;
@@ -129,7 +131,7 @@ function writeUrl(
   else history.replaceState(null, "", url);
 }
 
-/** 새 기사가 없어도 전체 실행은 6시간마다 한다. 두 번 연속 빠지면(+GitHub 예약 실행 지연 여유) 데이터가 멈췄다고 알린다. */
+/** 새 기사가 있으면 몇 분 안에 갱신되고, 없어도 전체 실행은 6시간마다 한다. 두 번 연속 빠지면(+GitHub 예약 실행 지연 여유) 데이터가 멈췄다고 알린다. */
 const STALE_MS = 13 * 3600_000;
 
 const isVulnView = (v: View): v is "kev" | "cve" => v === "kev" || v === "cve";
@@ -352,6 +354,66 @@ export default function App() {
     if (view === "briefing") setViewState("all");
     setNewsQuery(q);
   };
+
+  // ── 열어 둔 화면도 새 소식을 받는다 ──
+  // 1분마다(화면이 보일 때만) 갱신 시각을 보고, 바뀌었으면 화면을 비우지 않고 데이터만 바꿔 끼운다.
+  // 이미 받아 둔 지난 토픽·기사·CVE 목록은 그대로 두고, 바뀐 것만 다시 받는다.
+  const live = useRef({ updatedAt: "", topics: null as Topic[] | null, lang });
+  live.current.topics = topics;
+  live.current.lang = lang;
+  useEffect(() => {
+    if (meta && !live.current.updatedAt) live.current.updatedAt = meta.updatedAt;
+  }, [meta]);
+  const refresh = useCallback(async () => {
+    const m = await load<Meta>("meta.json", String(Date.now()));
+    if (!m || !live.current.updatedAt || m.updatedAt === live.current.updatedAt) return;
+    live.current.updatedAt = m.updatedAt;
+    const v = m.updatedAt;
+    const [recent, names, b, core, lk] = await Promise.all([
+      load<Topic[]>("topics-recent.json", v),
+      load<Record<string, string>>("names-ko.json", v),
+      load<Briefing[]>("briefings.json", v),
+      load<VulnData>("vulns-core.json", v),
+      load<LeakPost[]>("leaks.json", v),
+    ]);
+    if (!recent) return;
+    const [arts, cves] = await Promise.all([
+      articlesRequested.current ? load<ArticleRef[]>("articles.json", v) : null,
+      cvesRequested.current ? load<CveEntry[]>("cves.json", v) : null,
+    ]);
+    const prev = live.current.topics ?? [];
+    const before = new Set(prev.map((x) => x.id));
+    const added = recent.filter((x) => !before.has(x.id)).length;
+    // 최근 목록에 없는 지난 토픽(보관분)은 남긴다. 최근 범위 안인데 빠진 것은 합쳐지거나 정리된 것이라 뺀다
+    const recentIds = new Set(recent.map((x) => x.id));
+    const cut = Date.now() - 31 * 86400_000;
+    const kept = prev.filter((x) => !recentIds.has(x.id) && Date.parse(x.lastUpdated) < cut);
+    setNameReadings(names);
+    setTopics([...recent, ...kept]);
+    if (b) setBriefings(b);
+    if (core) setVulns((old) => ({ ...core, cves: cves ?? old?.cves ?? core.cves }));
+    if (lk) setLeaks(lk);
+    if (arts) setArticles(arts);
+    setMeta(m);
+    if (added > 0)
+      dispatchToast(
+        <Toast>
+          <ToastTitle>{STRINGS[live.current.lang].liveNew(added)}</ToastTitle>
+        </Toast>,
+        { intent: "info", timeout: 6000, position: "bottom" },
+      );
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const tick = () => {
+      if (document.visibilityState === "visible") void refresh();
+    };
+    const timer = window.setInterval(tick, 60_000);
+    document.addEventListener("visibilitychange", tick);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", tick);
+    };
+  }, [refresh]);
 
   const notifyCopied = () =>
     dispatchToast(
