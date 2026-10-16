@@ -7,7 +7,7 @@
   "workers_dev": false,
   "preview_urls": false,
   "triggers": { "crons": ["* * * * *"] },
-  "kv_namespaces": [{ "binding": "SEEN", "id": "KV_ID" }],
+  "kv_namespaces": [{ "binding": "SEEN", "id": "1e67b2c98ea44d9d95289fb93f27fc1f" }],
   "vars": {
     "GITHUB_REPO": "cattaxevasion/security-glance",
     "WORKFLOW": "update.yml"
