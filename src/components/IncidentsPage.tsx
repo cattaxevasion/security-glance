@@ -408,7 +408,7 @@ export function IncidentsPage(p: Props) {
                 <div className={s.body}>
                   {namesOf(lang, x.entities.orgs).length > 0 && (
                     <div className={s.orgs}>
-                      {t.orgsLabel} · {namesOf(lang, x.entities.orgs).slice(0, 3).join(", ")}
+                      {namesOf(lang, x.entities.orgs).slice(0, 3).join(", ")}
                     </div>
                   )}
                   <div className={s.title}>{nb(title(x))}</div>

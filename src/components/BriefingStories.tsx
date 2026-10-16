@@ -34,6 +34,8 @@ const useStyles = makeStyles({
     overflow: "hidden",
     color: "#fff",
     boxShadow: tokens.shadow16,
+    // 휴대폰: 모서리·그림자 없이 화면 폭 전체 (속보 띠와 한 덩어리)
+    "@media (max-width: 640px)": { margin: "0 -16px", borderRadius: 0, boxShadow: "none" },
     userSelect: "none",
     WebkitUserSelect: "none",
     touchAction: "pan-y",

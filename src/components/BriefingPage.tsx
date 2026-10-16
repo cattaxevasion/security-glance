@@ -37,10 +37,13 @@ import { PRIORITY_THRESHOLD, rankScore } from "./TopicsPage";
 import { nb } from "./NoBreak";
 
 // 휴대폰에서만 쓰는 스토리 카드는 그때 받는다
+import { BreakingBar } from "./Breaking";
 const BriefingStories = lazy(() => import("./BriefingStories").then((m) => ({ default: m.BriefingStories })));
 
 const useStyles = makeStyles({
   page: { maxWidth: "1320px" },
+  // 휴대폰: 속보 띠·스토리가 헤더 바로 아래부터 화면 폭 전체로
+  pageFlush: { paddingTop: 0 },
   // ── 배너 ──
   hero: {
     position: "relative",
@@ -189,6 +192,7 @@ const useStyles = makeStyles({
     position: "relative",
     overflow: "hidden",
     "::before": { content: '""', position: "absolute", left: 0, right: 0, top: 0, height: "3px" },
+    "@media (max-width: 640px)": { padding: "16px 16px 12px" },
   },
   widgetAccent: { "::before": { backgroundImage: "var(--widget-accent)" } },
   widgetHead: { display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" },
@@ -402,15 +406,17 @@ export function BriefingPage(p: Props) {
   const topicTitle = (x: Topic) => titleOf(lang, x);
 
   return (
-    <div className={mergeClasses(ps.page, s.page)}>
+    <div className={mergeClasses(ps.page, s.page, p.narrow && b && s.pageFlush)}>
       {p.narrow && b ? (
         <Suspense fallback={null}>
+          <BreakingBar lang={lang} topics={topics} onOpen={p.onOpen} variant="strip" />
           <BriefingStories lang={lang} briefing={b} topics={byId} dateLabel={fmtDate(b.date)} onOpen={p.onOpen} />
         </Suspense>
       ) : (
         <>
           {/* 배너 */}
           <header className={mergeClasses(s.hero, m.enter)} key={b?.date ?? "none"}>
+            <BreakingBar lang={lang} topics={topics} onOpen={p.onOpen} variant="banner" />
             <SparkleFilled className={s.heroDeco} aria-hidden />
             <div className={s.heroTop}>
               <span>

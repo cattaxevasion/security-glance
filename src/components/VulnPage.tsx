@@ -15,6 +15,7 @@ import {
   mergeClasses,
   tokens,
 } from "@fluentui/react-components";
+import { ArrowDownRegular, ArrowUpRegular } from "@fluentui/react-icons";
 import { useEffect, useMemo, useState } from "react";
 import type { CveEntry, KevEntry, Topic, VulnData } from "../../shared/types";
 import { STRINGS, type Lang } from "../i18n";
@@ -37,6 +38,39 @@ const useStyles = makeStyles({
   cell: { paddingTop: "10px", paddingBottom: "10px" },
   ransom: { marginLeft: "8px" },
   nameCell: { display: "flex", alignItems: "center", gap: "8px", minWidth: 0 },
+  // ── 휴대폰: 표 대신 목록 (가로로 밀지 않아도 한 항목이 다 보이게) ──
+  sortBar: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "4px", margin: "4px 0 8px" },
+  sortLabel: { color: tokens.colorNeutralForeground3, marginRight: "4px" },
+  mList: { listStyle: "none", margin: 0, padding: 0 },
+  mItem: {
+    display: "grid",
+    gridTemplateColumns: "minmax(0, 1fr) auto",
+    alignItems: "baseline",
+    gap: "3px 12px",
+    margin: "0 -16px",
+    padding: "12px 16px",
+    borderBottom: `1px solid ${tokens.colorNeutralStroke2}`,
+    cursor: "pointer",
+    ":last-child": { borderBottomWidth: 0 },
+    ":active": { backgroundColor: tokens.colorNeutralBackground1Pressed },
+    ":focus-visible": { outline: `2px solid ${tokens.colorStrokeFocus2}`, outlineOffset: "-2px" },
+  },
+  mSelected: { backgroundColor: tokens.colorBrandBackground2 },
+  mId: { display: "flex", alignItems: "center", gap: "6px", minWidth: 0, fontWeight: tokens.fontWeightSemibold },
+  mDate: { color: tokens.colorNeutralForeground3, whiteSpace: "nowrap" },
+  mWide: { gridColumn: "1 / -1", minWidth: 0 },
+  mVendor: { gridColumn: "1 / -1", color: tokens.colorNeutralForeground2 },
+  mMeta: {
+    gridColumn: "1 / -1",
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: "4px 14px",
+    marginTop: "2px",
+    "& .sg-due": { flexDirection: "row", gap: "6px" },
+  },
+  mKey: { color: tokens.colorNeutralForeground3, marginRight: "4px" },
+  mNews: { marginLeft: "auto", display: "inline-flex", alignItems: "center" },
   // 취약점 종류(화면 언어) + 원래 영문 이름
   nameStack: { display: "flex", flexDirection: "column", gap: "2px", minWidth: 0 },
   vulnType: { fontWeight: tokens.fontWeightSemibold },
@@ -121,7 +155,7 @@ function DueCell({ lang, date }: { lang: Lang; date: string }) {
   const t = STRINGS[lang];
   const d = daysLeft(date);
   return (
-    <span className={s.due}>
+    <span className={mergeClasses(s.due, "sg-due")}>
       <Caption1>{date}</Caption1>
       {d < 0 ? (
         <Caption1 className={s.dueOver}>{t.dueOverdue}</Caption1>
@@ -209,6 +243,21 @@ export function VulnPage(p: Props) {
     className: ps.row,
     appearance: (id === p.selectedId ? "brand" : "none") as "brand" | "none",
     "aria-selected": id === p.selectedId,
+    tabIndex: 0,
+    onClick: () => p.onSelect(id),
+    onKeyDown: (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        p.onSelect(id);
+      }
+    },
+  });
+
+  // 휴대폰 목록 항목 (표 행과 같은 동작)
+  const itemProps = (id: string) => ({
+    className: mergeClasses(s.mItem, id === p.selectedId && s.mSelected),
+    "aria-selected": id === p.selectedId,
+    role: "button",
     tabIndex: 0,
     onClick: () => p.onSelect(id),
     onKeyDown: (e: React.KeyboardEvent) => {
@@ -342,11 +391,134 @@ export function VulnPage(p: Props) {
         )}
       </div>
 
-      <div className={ps.tableWrap}>
+      {narrow && count > 0 && (
+        <div className={s.sortBar} role="group" aria-label={t.sortBy}>
+          <Caption1 className={s.sortLabel}>{t.sortBy}</Caption1>
+          {(kind === "kev"
+            ? [
+                ["dateAdded", t.colAdded],
+                ["epss", t.colEpss],
+                ["dueDate", t.colDue],
+                ["news", t.colNews],
+              ]
+            : [
+                ["published", t.colPublished],
+                ["cvss", t.colCvss],
+                ["epss", t.colEpss],
+                ["news", t.colNews],
+              ]
+          ).map(([key, label]) => {
+            const on = sort.key === key;
+            return (
+              <Button
+                key={key}
+                size="small"
+                shape="circular"
+                appearance={on ? "primary" : "subtle"}
+                aria-pressed={on}
+                icon={on ? sort.dir === "descending" ? <ArrowDownRegular /> : <ArrowUpRegular /> : undefined}
+                iconPosition="after"
+                onClick={sortable(key).onClick}
+              >
+                {label}
+              </Button>
+            );
+          })}
+        </div>
+      )}
+
+      <div className={narrow ? ps.listSurface : ps.tableWrap}>
         {count === 0 ? (
           <div className={ps.empty}>
             <Subtitle1>{t.empty}</Subtitle1>
           </div>
+        ) : narrow ? (
+          <ul className={s.mList} aria-label={kind === "kev" ? t.kevTitle : t.cveTitle}>
+            {kind === "kev"
+              ? kevVisible.map((k) => (
+                  <li key={k.cveID} {...itemProps(k.cveID)}>
+                    <span className={s.mId}>
+                      <Caption1 className={ps.mono}>{k.cveID}</Caption1>
+                      {k.ransomware && (
+                        <Badge size="small" appearance="tint" color="danger">
+                          {t.ransomware}
+                        </Badge>
+                      )}
+                    </span>
+                    <Caption1 className={s.mDate}>{k.dateAdded}</Caption1>
+                    <Caption1 className={s.mVendor}>
+                      {k.vendorProject} · {k.product}
+                    </Caption1>
+                    <span className={s.mWide}>
+                      <VulnName lang={lang} english={k.vulnerabilityName} />
+                    </span>
+                    <span className={s.mMeta}>
+                      <Caption1>
+                        <span className={s.mKey}>{t.colEpss}</span>
+                        <EpssMark epss={k.epss} percentile={k.epssPercentile} tip={t.epssTip} />
+                      </Caption1>
+                      <span style={{ display: "inline-flex", alignItems: "baseline" }}>
+                        <Caption1 className={s.mKey}>{t.colDue}</Caption1>
+                        <DueCell lang={lang} date={k.dueDate} />
+                      </span>
+                      {mentions.get(k.cveID) ? (
+                        <span className={s.mNews}>
+                          <Caption1 className={s.mKey}>{t.colNews}</Caption1>
+                          {newsCell(k.cveID)}
+                        </span>
+                      ) : null}
+                    </span>
+                  </li>
+                ))
+              : cveVisible.map((c) => (
+                  <li key={c.id} {...itemProps(c.id)}>
+                    <span className={s.mId}>
+                      <Caption1 className={ps.mono}>{c.id}</Caption1>
+                      {c.inKev && (
+                        <Badge size="small" appearance="filled" color="danger">
+                          KEV
+                        </Badge>
+                      )}
+                    </span>
+                    <Caption1 className={s.mDate}>{c.published.slice(0, 10)}</Caption1>
+                    <span className={s.mWide}>
+                      <span className={s.nameStack}>
+                        {vulnTypeOf(lang, c.description) && (
+                          <span className={s.vulnType}>{vulnTypeOf(lang, c.description)}</span>
+                        )}
+                        <span className={mergeClasses(s.clamp2, vulnTypeOf(lang, c.description) ? s.vulnEn : undefined)}>
+                          {c.description}
+                        </span>
+                      </span>
+                    </span>
+                    <span className={s.mMeta}>
+                      {c.cvss != null && (
+                        <span style={{ display: "inline-flex", alignItems: "center" }}>
+                          <Caption1 className={s.mKey}>{t.colCvss}</Caption1>
+                          <Badge
+                            appearance={c.cvss >= 9 ? "filled" : "tint"}
+                            color={c.cvss >= 9 ? "danger" : "warning"}
+                            size="small"
+                            className={c.cvss >= 9 ? s.cvssCritical : undefined}
+                          >
+                            {c.cvss.toFixed(1)}
+                          </Badge>
+                        </span>
+                      )}
+                      <Caption1>
+                        <span className={s.mKey}>{t.colEpss}</span>
+                        <EpssMark epss={c.epss} percentile={c.epssPercentile} tip={t.epssTip} />
+                      </Caption1>
+                      {mentions.get(c.id) ? (
+                        <span className={s.mNews}>
+                          <Caption1 className={s.mKey}>{t.colNews}</Caption1>
+                          {newsCell(c.id)}
+                        </span>
+                      ) : null}
+                    </span>
+                  </li>
+                ))}
+          </ul>
         ) : kind === "kev" ? (
           <Table
             size="small"

@@ -113,14 +113,21 @@ const NATURE_TINT: Record<Nature, { bg: string; fg: string }> = {
 };
 
 /** 목록 앞의 40px 아이콘 타일: 성격을 색과 모양으로 한눈에 */
-export function NatureTile({ nature, size = 40 }: { nature: Nature; size?: number }) {
+/** bare: 배경 상자 없이 아이콘만 (휴대폰 목록에서 폭을 아끼려고) */
+export function NatureTile({ nature, size = 40, bare }: { nature: Nature; size?: number; bare?: boolean }) {
   const s = useStyles();
   const Icon = NATURE_ICON[nature];
   const c = NATURE_TINT[nature];
   return (
     <span
       className={s.tile}
-      style={{ width: size, height: size, backgroundColor: c.bg, color: c.fg, fontSize: Math.round(size * 0.5) }}
+      style={{
+        width: size,
+        height: size,
+        backgroundColor: bare ? undefined : c.bg,
+        color: c.fg,
+        fontSize: bare ? size : Math.round(size * 0.5),
+      }}
       aria-hidden
     >
       <Icon />

@@ -541,7 +541,7 @@ export function TopicsPage(p: Props) {
                       }
                     }}
                   >
-                    <NatureTile nature={n.nature} size={narrow ? 32 : 40} />
+                    <NatureTile nature={n.nature} size={narrow ? 22 : 40} bare={narrow} />
                     <div className={s.body}>
                       <div className={s.title}>{nb(title(n))}</div>
                       {summary(n) && <div className={s.summary}>{nb(summary(n))}</div>}

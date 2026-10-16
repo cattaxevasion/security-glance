@@ -4,7 +4,6 @@ import { ChevronRightRegular } from "@fluentui/react-icons";
 import type { CSSProperties, ReactNode } from "react";
 import { STRINGS, type Lang } from "../i18n";
 import { stagger, useCountUp, useMotion } from "./motion";
-import { usePageStyles } from "./page";
 
 const useStyles = makeStyles({
   // 열 수는 칸 수에 따라 바뀌어서 CSS 변수로 받는다 (--cols: 넓은 화면, --cols-mid: 중간, --cols-sm: 휴대폰)
@@ -14,7 +13,22 @@ const useStyles = makeStyles({
     gap: "12px",
     margin: "16px 0 8px",
     "@media (max-width: 1100px)": { gridTemplateColumns: "repeat(var(--cols-mid), minmax(0, 1fr))" },
-    "@media (max-width: 640px)": { gridTemplateColumns: "repeat(var(--cols-sm), minmax(0, 1fr))", gap: "8px" },
+    // 휴대폰: 화면 폭 흰 띠 하나에 담고 칸은 박스 대신 가는 선으로 나눈다 (줄 첫 칸은 왼쪽 선 없음, 둘째 줄은 위 선)
+    "@media (max-width: 640px)": {
+      gridTemplateColumns: "repeat(var(--cols-sm), minmax(0, 1fr))",
+      gap: "6px 0",
+      margin: "16px -16px 8px",
+      padding: "12px 16px",
+      backgroundColor: tokens.colorNeutralBackground1,
+      "& > :nth-child(2)": { borderLeftWidth: 0, paddingLeft: "2px" },
+      '&[data-sm="2"] > :nth-child(4)': { borderLeftWidth: 0, paddingLeft: "2px" },
+      '&[data-sm="2"] > :nth-child(n+4)': {
+        borderTopWidth: "1px",
+        borderTopStyle: "solid",
+        borderTopColor: tokens.colorNeutralStroke2,
+        paddingTop: "10px",
+      },
+    },
   },
   tile: {
     display: "flex",
@@ -26,12 +40,25 @@ const useStyles = makeStyles({
     font: "inherit",
     textAlign: "left",
     color: tokens.colorNeutralForeground1,
-    "@media (max-width: 640px)": { padding: "10px 12px" },
+    backgroundColor: tokens.colorNeutralBackground1,
+    borderRadius: tokens.borderRadiusXLarge,
+    boxShadow: tokens.shadow4,
+    "@media (max-width: 640px)": {
+      padding: "4px 12px",
+      backgroundColor: "transparent",
+      borderRadius: 0,
+      boxShadow: "none",
+      borderTopWidth: 0,
+      borderRightWidth: 0,
+      borderBottomWidth: 0,
+      borderLeft: `1px solid ${tokens.colorNeutralStroke2}`,
+    },
   },
   clickable: {
     cursor: "pointer",
     border: `1px solid ${tokens.colorNeutralStroke2}`,
     ":hover": { backgroundColor: tokens.colorNeutralBackground1Hover },
+    "@media (max-width: 640px)": { borderTopWidth: 0, borderRightWidth: 0, borderBottomWidth: 0 },
     ":focus-visible": { outline: `2px solid ${tokens.colorStrokeFocus2}`, outlineOffset: "1px" },
   },
   label: {
@@ -79,6 +106,7 @@ const useStyles = makeStyles({
     font: "inherit",
     textAlign: "left",
     "@media (max-width: 1100px)": { gridColumn: "1 / -1" },
+    "@media (max-width: 640px)": { marginBottom: "6px" },
   },
   heroClickable: {
     cursor: "pointer",
@@ -118,7 +146,7 @@ export function StatGrid({ tiles, children }: { tiles: number; children: ReactNo
     "--cols-sm": tiles === 4 ? 2 : tiles,
   } as CSSProperties;
   return (
-    <div className={s.grid} style={style}>
+    <div className={s.grid} style={style} data-sm={tiles === 4 ? 2 : tiles}>
       {children}
     </div>
   );
@@ -181,13 +209,12 @@ export function StatTile(p: {
   onClick?: () => void;
 }) {
   const s = useStyles();
-  const ps = usePageStyles();
   const m = useMotion();
   const n = useCountUp(p.value ?? 0);
   const Tag = p.onClick ? "button" : "div";
   return (
     <Tag
-      className={mergeClasses(ps.surface, s.tile, p.onClick && s.clickable, m.enter)}
+      className={mergeClasses(s.tile, p.onClick && s.clickable, m.enter)}
       style={stagger(p.index, 50)}
       onClick={p.onClick}
     >

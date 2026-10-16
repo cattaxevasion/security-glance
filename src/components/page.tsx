@@ -10,11 +10,12 @@ export const usePageStyles = makeStyles({
   },
   /** 기사 목록은 한 줄이 너무 길어지지 않게 폭을 제한한다 */
   reading: { maxWidth: "1040px" },
-  /** 캔버스 위에 올리는 카드 면 */
+  /** 캔버스 위에 올리는 카드 면. 휴대폰에서는 모서리·그림자 없이 화면 폭 전체를 쓰는 띠 (회색 틈으로 구분) */
   surface: {
     backgroundColor: tokens.colorNeutralBackground1,
     borderRadius: tokens.borderRadiusXLarge,
     boxShadow: tokens.shadow4,
+    "@media (max-width: 640px)": { borderRadius: 0, boxShadow: "none", marginLeft: "-16px", marginRight: "-16px" },
   },
   /** 목록을 담는 카드: 좌우 여백 안에서 행이 hover 배경을 가진다 */
   listSurface: {
@@ -22,7 +23,13 @@ export const usePageStyles = makeStyles({
     borderRadius: tokens.borderRadiusXLarge,
     boxShadow: tokens.shadow4,
     padding: "4px 20px 8px",
-    "@media (max-width: 640px)": { padding: "4px 12px 8px", borderRadius: tokens.borderRadiusLarge },
+    "@media (max-width: 640px)": {
+      padding: "4px 16px 8px",
+      borderRadius: 0,
+      boxShadow: "none",
+      marginLeft: "-16px",
+      marginRight: "-16px",
+    },
   },
   titleRow: { display: "flex", alignItems: "baseline", gap: "12px", marginBottom: "4px" },
   title: { margin: 0 },
@@ -46,6 +53,13 @@ export const usePageStyles = makeStyles({
     borderRadius: tokens.borderRadiusXLarge,
     boxShadow: tokens.shadow4,
     padding: "4px 8px",
+    "@media (max-width: 640px)": {
+      padding: "4px 16px",
+      borderRadius: 0,
+      boxShadow: "none",
+      marginLeft: "-16px",
+      marginRight: "-16px",
+    },
   },
   row: {
     cursor: "pointer",
