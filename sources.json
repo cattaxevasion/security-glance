@@ -194,6 +194,33 @@
       "url": "https://rss.itmedia.co.jp/rss/2.0/news_security.xml"
     },
     {
+      "id": "itmedia-news",
+      "name": "ITmedia NEWS",
+      "region": "JP",
+      "lang": "ja",
+      "kind": "news",
+      "keywordFilter": true,
+      "url": "https://rss.itmedia.co.jp/rss/2.0/news_bursts.xml"
+    },
+    {
+      "id": "internet-watch",
+      "name": "INTERNET Watch",
+      "region": "JP",
+      "lang": "ja",
+      "kind": "news",
+      "keywordFilter": true,
+      "url": "https://internet.watch.impress.co.jp/data/rss/1.0/iw/feed.rdf"
+    },
+    {
+      "id": "impress-watch",
+      "name": "Impress Watch",
+      "region": "JP",
+      "lang": "ja",
+      "kind": "news",
+      "keywordFilter": true,
+      "url": "https://www.watch.impress.co.jp/data/rss/1.0/ipw/feed.rdf"
+    },
+    {
       "id": "scannetsecurity",
       "name": "ScanNetSecurity",
       "region": "JP",

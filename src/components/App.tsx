@@ -129,7 +129,7 @@ function writeUrl(
   else history.replaceState(null, "", url);
 }
 
-/** 수집은 6시간마다. 두 번 연속 빠지면(+GitHub 예약 실행 지연 여유) 데이터가 멈췄다고 알린다. */
+/** 새 기사가 없어도 전체 실행은 6시간마다 한다. 두 번 연속 빠지면(+GitHub 예약 실행 지연 여유) 데이터가 멈췄다고 알린다. */
 const STALE_MS = 13 * 3600_000;
 
 const isVulnView = (v: View): v is "kev" | "cve" => v === "kev" || v === "cve";

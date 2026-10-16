@@ -5,12 +5,16 @@
 //   --limit N                    이번 실행에서 요약할 새 기사 최대 개수 (기본 80)
 //   --dry                        요약 결과를 출력만 하고 저장하지 않음
 //   --briefing                   오늘의 브리핑을 시각과 상관없이 다시 만든다
+//   --full                       전체 실행 (평소에는 지난 전체 실행에서 6시간이 지났을 때만)
+//
+// 30분마다 돈다. 평소에는 가벼운 실행: 매체 피드만 보고, 새 기사가 없으면 저장·배포 없이 바로 끝낸다.
+// 6시간마다 전체 실행: 벤더 리서치 피드, 취약점(KEV·NVD·EPSS), 랜섬웨어 유출 게시, 기사 품질 점검까지.
 import Anthropic from "@anthropic-ai/sdk";
-import { readFile } from "node:fs/promises";
+import { appendFile, readFile } from "node:fs/promises";
 import type { ArticleRef, Briefing, LeakPost, Meta, NewsItem, RunStats, Topic, VulnData } from "../../shared/types";
 import { collectLeaks, matchLeaks, pruneLeakTopics } from "./leaks";
 import { BODY_CHARS, extractArticle } from "./article";
-import { maybeBriefing } from "./briefing";
+import { briefingDue, maybeBriefing } from "./briefing";
 import {
   auditArticles,
   auditBriefings,
@@ -41,6 +45,10 @@ const CVES_PATH = "public/data/cves.json";
 /** 랜섬웨어 유출 사이트 게시 (일본) */
 const LEAKS_PATH = "public/data/leaks.json";
 const META_PATH = "public/data/meta.json";
+/** 지난 전체 실행 시각 (수집기 내부용) */
+const RUN_PATH = "data/run.json";
+/** 전체 실행 간격. 30분 주기 실행이 조금 일찍 와도 놓치지 않게 15분 여유 */
+const FULL_EVERY_MS = 6 * 3600_000 - 15 * 60_000;
 /** 화면용 가벼운 기사 목록 (news.json은 수집기 내부용) */
 const ARTICLES_PATH = "public/data/articles.json";
 /** 토픽 전체 (수집기 내부용). 화면은 아래 두 파일로 나눠 받는다. */
@@ -140,6 +148,7 @@ const args = process.argv.slice(2);
 const mode = args.find((a) => a === "news" || a === "vulns") ?? "all";
 const dry = args.includes("--dry");
 const forceBriefing = args.includes("--briefing");
+const forceFull = args.includes("--full");
 const limitArg = args.indexOf("--limit");
 const limit = limitArg >= 0 ? Number(args[limitArg + 1]) : Number(process.env.MAX_NEW_PER_RUN ?? 80);
 
@@ -151,7 +160,13 @@ async function loadSources(): Promise<Source[]> {
 
 const hasKey = () => Boolean(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
 
-async function runNews(meta: Meta): Promise<NewsItem[]> {
+/** GitHub Actions의 다음 단계에 결과를 넘긴다 (로컬 실행에서는 아무것도 안 함) */
+async function setOutput(key: string, value: string) {
+  if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `${key}=${value}\n`);
+}
+
+/** full=false(가벼운 실행)면 벤더 리서치 피드와 품질 점검을 건너뛴다. processed: 이번에 처리한 새 기사 수 */
+async function runNews(meta: Meta, full: boolean): Promise<{ news: NewsItem[]; processed: number }> {
   const sources = await loadSources();
   let existing = migrate(await readJson<LegacyNewsItem[]>(NEWS_PATH, []), sources);
   const saved = await readJson<Partial<State> & { notSecurity?: Record<string, string> }>(STATE_PATH, {});
@@ -162,8 +177,13 @@ async function runNews(meta: Meta): Promise<NewsItem[]> {
     bodyRetries: saved.bodyRetries ?? {},
   };
 
-  const { items, statuses } = await fetchFeeds(sources);
-  meta.sources = statuses;
+  // 벤더 리서치는 급하지 않고 피드가 커서(수백 건) 전체 실행 때만 읽는다
+  const { items, statuses } = await fetchFeeds(full ? sources : sources.filter((s) => s.kind !== "vendor"));
+  // 이번에 건너뛴 출처는 지난 상태를 그대로 둔다
+  meta.sources = sources.flatMap((src) => {
+    const st = statuses.find((x) => x.id === src.id) ?? meta.sources.find((x) => x.id === src.id);
+    return st ? [st] : [];
+  });
   for (const s of statuses) console.log(`${s.ok ? "OK  " : "FAIL"} ${s.name.padEnd(22)} ${s.ok ? s.items : s.error}`);
 
   const known = new Set([
@@ -277,7 +297,7 @@ async function runNews(meta: Meta): Promise<NewsItem[]> {
   }
 
   // 품질 점검: 본문 다시 읽기, 새 기준으로 '연구·리포트' 다시 판정 (일반 해설·홍보 제외)
-  if (hasKey() && !configFailed) {
+  if (full && hasKey() && !configFailed) {
     const retry = await retryWeakBodies(existing, sources, state);
     const drop = await rejudgeResearch(existing, state);
     for (const id of retry.dropped) drop.add(id);
@@ -303,7 +323,7 @@ async function runNews(meta: Meta): Promise<NewsItem[]> {
     await writeJson(NEWS_PATH, merged);
     await writeJson(STATE_PATH, state);
   }
-  return merged;
+  return { news: merged, processed: queue.length };
 }
 
 async function main() {
@@ -317,8 +337,21 @@ async function main() {
     sources: [],
   });
 
+  const run = await readJson<{ fullAt?: string }>(RUN_PATH, {});
+  const full =
+    forceFull || mode !== "all" || !run.fullAt || Date.now() - Date.parse(run.fullAt) >= FULL_EVERY_MS;
+  console.log(full ? "전체 실행" : `가벼운 실행 (지난 전체 실행 ${run.fullAt})`);
+
   let news = migrate(await readJson<LegacyNewsItem[]>(NEWS_PATH, []), await loadSources());
-  if (mode !== "vulns") news = await runNews(meta);
+  let processed = 0;
+  if (mode !== "vulns") ({ news, processed } = await runNews(meta, full));
+
+  // 새 기사도, 전체 점검도, 브리핑도 없으면 여기서 끝낸다 (AI 호출·저장·배포 없음)
+  if (!full && !processed && !forceBriefing && !briefingDue(await readJson<Briefing[]>(BRIEFINGS_PATH, []))) {
+    console.log("\n새 기사 없음: 저장·배포 없이 끝냅니다");
+    await setOutput("changed", "false");
+    return;
+  }
 
   loadForced(await readJson(LANG_FORCED_PATH, {}));
   // 언어 점검 1: 기사의 일본어·한국어 필드·엔티티 이름 (토픽 엔티티는 기사에서 다시 계산된다)
@@ -335,7 +368,7 @@ async function main() {
   }
 
   let vulns = await readJson<VulnData | null>(VULNS_PATH, null);
-  if (mode !== "news") {
+  if (mode !== "news" && full) {
     const mentionedCves = [...new Set(news.flatMap((n) => n.entities.cves))];
     vulns = await collectVulns(mentionedCves, vulns);
     console.log(
@@ -388,7 +421,8 @@ async function main() {
 
   // 랜섬웨어 유출 사이트 게시 (일본): 보도 토픽과 연결
   try {
-    const leaks = await collectLeaks(await readJson<LeakPost[]>(LEAKS_PATH, []));
+    const prevLeaks = await readJson<LeakPost[]>(LEAKS_PATH, []);
+    const leaks = full ? await collectLeaks(prevLeaks) : prevLeaks;
     pruneLeakTopics(leaks, topics);
     let matched = 0;
     if (hasKey()) {
@@ -448,7 +482,11 @@ async function main() {
 
   meta.newsCount = news.length;
   meta.updatedAt = new Date().toISOString();
-  if (!dry) await writeJson(META_PATH, meta);
+  if (!dry) {
+    await writeJson(META_PATH, meta);
+    if (full) await writeJson(RUN_PATH, { fullAt: meta.updatedAt });
+  }
+  await setOutput("changed", "true");
 }
 
 /** 고친 수 표시: "고침 3" 또는 "고침 3 · 기계 변환 1" */
