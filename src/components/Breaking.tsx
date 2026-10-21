@@ -2,12 +2,11 @@
 // 휴대폰은 헤더 바로 아래 화면 폭 검은 띠(strip), 데스크톱은 브리핑 배너 머리에 붙은 띠(banner).
 import { makeStyles, mergeClasses, tokens } from "@fluentui/react-components";
 import { useEffect, useMemo, useState } from "react";
-import { JAPANESE } from "../../shared/lang";
 import type { Topic } from "../../shared/types";
 import { STRINGS, type Lang } from "../i18n";
 import { relativeTime } from "./format";
 import { useMotion } from "./motion";
-import { titleOf } from "./text";
+import { shortHeadline, titleOf } from "./text";
 
 const HOURS = 6;
 const MAX = 3;
@@ -21,13 +20,6 @@ export function breakingTopics(topics: Topic[], now = Date.now()): Topic[] {
     .slice(0, MAX);
 }
 
-// 괄호 속 일본어 원문: 일본어 글자 범위는 shared/lang.ts의 것을 그대로 쓴다
-const ORIGINAL = new RegExp(String.raw`\s*\([^)]*[${JAPANESE.source.slice(1, -1)}][^)]*\)`, "g");
-
-/** 한국어 헤드라인에서 괄호 속 일본어 원문을 뺀다 (띠는 짧게. 카드·상세에는 그대로 남는다) */
-export function shortHeadline(lang: Lang, text: string): string {
-  return lang === "ko" ? text.replace(ORIGINAL, "") : text;
-}
 
 const useStyles = makeStyles({
   bar: {

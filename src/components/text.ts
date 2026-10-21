@@ -1,7 +1,7 @@
 // 화면 언어에 맞는 글을 고르는 도우미. 일본어 화면에는 한글을, 한국어 화면에는 번역 안 된 일본어를 내보내지 않는다.
 // (데이터 쪽은 수집기의 언어 점검이 배포 전에 고치고 확인한다. 여기는 그래도 새는 경우를 막는 마지막 안전장치)
 // 화면 코드는 언어별 필드를 직접 고르지 말고 반드시 이 도우미를 쓴다 (check:i18n이 검사한다).
-import { forceJa, forceKo, hasHangul, hasRawJapanese } from "../../shared/lang";
+import { forceJa, forceKo, hasHangul, hasRawJapanese, JAPANESE } from "../../shared/lang";
 import { SOURCE_LABELS, VULN_TYPES, type Lang } from "../i18n";
 
 interface Bilingual {
@@ -72,4 +72,12 @@ export function vulnTypeOf(lang: Lang, english: string): string | null {
 /** 화면 링크로 써도 되는 주소만 (http·https). 수집기도 거르지만 화면에서 한 번 더 */
 export function safeUrl(url: string | null | undefined): string | undefined {
   return url && /^https?:\/\//i.test(url) ? url : undefined;
+}
+
+// 괄호 속 일본어 원문: 일본어 글자 범위는 shared/lang.ts의 것을 그대로 쓴다
+const ORIGINAL = new RegExp(String.raw`\s*\([^)]*[${JAPANESE.source.slice(1, -1)}][^)]*\)`, "g");
+
+/** 한국어 헤드라인에서 괄호 속 일본어 원문을 뺀다 (속보 띠·링크 미리보기 이미지는 짧게. 카드·상세에는 그대로 남는다) */
+export function shortHeadline(lang: Lang, text: string): string {
+  return lang === "ko" ? text.replace(ORIGINAL, "") : text;
 }

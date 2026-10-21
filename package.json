@@ -11,7 +11,8 @@
     "test": "tsx --test scripts/test/*.test.ts",
     "check:i18n": "tsx scripts/check-i18n.ts",
     "data:check": "tsx scripts/dev/check-data.ts",
-    "data:pull": "git fetch -q origin data && git archive FETCH_HEAD public/data data | tar -x"
+    "data:pull": "git fetch -q origin data && git archive FETCH_HEAD public/data data | tar -x",
+    "og": "tsx scripts/og/build.tsx"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.133.0",
@@ -30,10 +31,13 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "2.6.2",
     "@types/jsdom": "^30.0.0",
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "satori": "0.35.1",
+    "sharp": "0.35.5",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   }

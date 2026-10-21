@@ -13,3 +13,7 @@ data/
 
 # Cloudflare Worker 로컬 상태
 .wrangler/
+
+# 링크 미리보기 이미지 (빌드 때 생성)
+public/og/
+.og-cache/

@@ -99,6 +99,27 @@ jobs:
         if: github.event_name == 'push' || steps.collect.outputs.changed == 'true'
         run: rm -f public/data/news.json public/data/topics.json public/data/vulns.json
 
+      # 토픽 링크 미리보기 이미지: 지난 실행에서 그린 것은 캐시에서 꺼내 쓰고 바뀐 토픽만 새로 그린다
+      - name: Restore link preview images
+        if: github.event_name == 'push' || steps.collect.outputs.changed == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: .og-cache
+          key: og-v1-${{ github.run_id }}
+          restore-keys: og-v1-
+
+      - name: Draw link preview images
+        id: og
+        if: github.event_name == 'push' || steps.collect.outputs.changed == 'true'
+        run: npm run og
+
+      - name: Save link preview images
+        if: steps.og.outputs.drawn > 0
+        uses: actions/cache/save@v4
+        with:
+          path: .og-cache
+          key: og-v1-${{ github.run_id }}
+
       - name: Build site
         if: github.event_name == 'push' || steps.collect.outputs.changed == 'true'
         run: npm run build
