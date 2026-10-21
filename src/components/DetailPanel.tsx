@@ -25,6 +25,7 @@ import {
   ArrowUpRegular,
   BugRegular,
   DismissRegular,
+  CheckmarkRegular,
   LinkRegular,
   OpenRegular,
   ShieldErrorRegular,
@@ -56,9 +57,41 @@ const useStyles = makeStyles({
     "& .fui-Button:hover:active": { color: "#fff", backgroundColor: "rgba(255,255,255,0.22)" },
     "& .fui-Button:disabled": { color: "rgba(255,255,255,0.4)", backgroundColor: "transparent" },
     "& .fui-Button .fui-Button__icon": { color: "inherit" },
+    // 휴대폰: 아이콘을 버튼 줄로 올리고 대표 출처 버튼 줄은 빼서(아래 버튼과 같음) 머리가 화면 절반을 차지하지 않게
+    "@media (max-width: 640px)": { paddingTop: "10px", paddingBottom: "14px" },
   },
-  topBar: { display: "flex", justifyContent: "flex-end", gap: "2px", marginRight: "-8px", marginTop: "-8px" },
-  heading: { display: "flex", gap: "16px", alignItems: "flex-start", marginTop: "4px" },
+  topBar: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: "2px",
+    marginRight: "-8px",
+    marginTop: "-8px",
+    "@media (max-width: 640px)": { marginTop: "-4px" },
+  },
+  // 버튼 줄의 성격 아이콘 (휴대폰에서만)
+  barIcon: {
+    display: "none",
+    "@media (max-width: 640px)": {
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "32px",
+      height: "32px",
+      marginRight: "auto",
+      borderRadius: "50%",
+      fontSize: "18px",
+      backgroundColor: "rgba(255,255,255,0.16)",
+    },
+  },
+  mobileOnly: { display: "none", "@media (max-width: 640px)": { display: "inline-flex" } },
+  heading: {
+    display: "flex",
+    gap: "16px",
+    alignItems: "flex-start",
+    marginTop: "4px",
+    "@media (max-width: 640px)": { marginTop: "6px" },
+  },
   iconCircle: {
     width: "44px",
     height: "44px",
@@ -70,9 +103,14 @@ const useStyles = makeStyles({
     fontSize: "22px",
     color: "#fff",
     backgroundColor: "rgba(255,255,255,0.16)",
+    "@media (max-width: 640px)": { display: "none" },
   },
   headText: { display: "flex", flexDirection: "column", gap: "8px", minWidth: 0 },
-  title: { overflowWrap: "anywhere", lineHeight: "28px" },
+  title: {
+    overflowWrap: "anywhere",
+    lineHeight: "28px",
+    "@media (max-width: 640px)": { fontSize: tokens.fontSizeBase500, lineHeight: "26px" },
+  },
   metaRow: {
     display: "flex",
     flexWrap: "wrap",
@@ -95,6 +133,7 @@ const useStyles = makeStyles({
     marginLeft: "-8px",
     paddingTop: "6px",
     borderTop: "1px solid rgba(255,255,255,0.2)",
+    "@media (max-width: 640px)": { display: "none" },
   },
   body: { display: "flex", flexDirection: "column", paddingBottom: "16px" },
   section: { padding: "18px 0", borderTop: `1px solid ${tokens.colorNeutralStroke2}` },
@@ -254,7 +293,16 @@ export function DetailPanel(p: Props) {
     }
   };
 
-  let content: { head: ReactNode; body: ReactNode; footer: ReactNode; band: string } | null = null;
+  let content: {
+    head: ReactNode;
+    body: ReactNode;
+    footer: ReactNode;
+    band: string;
+    /** 휴대폰 버튼 줄에 보일 성격 아이콘 */
+    icon: ReactNode;
+    /** 링크 복사 가능 (토픽만) */
+    share: boolean;
+  } | null = null;
   if (sel?.kind === "topic") {
     const topic = p.topics.find((x) => x.id === sel.id);
     if (topic) content = topicContent(topic, p, s, { copied, copy });
@@ -268,6 +316,19 @@ export function DetailPanel(p: Props) {
     <>
       <DrawerHeader className={s.band} style={{ backgroundImage: content.band }}>
         <div className={s.topBar}>
+          <span className={s.barIcon} aria-hidden>
+            {content.icon}
+          </span>
+          {content.share && (
+            <Tooltip content={copied ? t.copied : t.copyLink} relationship="label">
+              <Button
+                appearance="subtle"
+                className={s.mobileOnly}
+                icon={copied ? <CheckmarkRegular /> : <LinkRegular />}
+                onClick={copy}
+              />
+            </Tooltip>
+          )}
           <Tooltip content={t.prevItem} relationship="label">
             <Button appearance="subtle" icon={<ArrowUpRegular />} disabled={idx <= 0} onClick={() => go(-1)} />
           </Tooltip>
@@ -533,7 +594,7 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
     </Button>
   ) : null;
 
-  return { head, body, footer, band: natureGradient(topic.nature, 115) };
+  return { head, body, footer, band: natureGradient(topic.nature, 115), icon: <Icon />, share: true };
 }
 
 function vulnContent(kind: "kev" | "cve", v: KevEntry | CveEntry, p: Props, s: Styles) {
@@ -638,5 +699,12 @@ function vulnContent(kind: "kev" | "cve", v: KevEntry | CveEntry, p: Props, s: S
   );
 
   // KEV(실제 악용)는 사건 색, CVE는 취약점 공지 색
-  return { head, body, footer, band: natureGradient(kev ? "사건" : "취약점 공지", 115) };
+  return {
+    head,
+    body,
+    footer,
+    band: natureGradient(kev ? "사건" : "취약점 공지", 115),
+    icon: kev ? <ShieldErrorRegular /> : <BugRegular />,
+    share: false,
+  };
 }
