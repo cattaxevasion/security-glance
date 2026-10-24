@@ -57,6 +57,8 @@ interface RunState {
   /** 브리핑을 마지막으로 시도한 시각과 실패 이유 (성공하면 지움). GitHub 로그 없이도 data 브랜치에서 보인다 */
   briefingTriedAt?: string;
   briefingError?: string;
+  /** 마지막 브리핑을 첫 단계가 아닌 단계로 만들었을 때 그 내용 */
+  briefingNote?: string;
 }
 /** 화면용 가벼운 기사 목록 (news.json은 수집기 내부용) */
 const ARTICLES_PATH = "public/data/articles.json";
@@ -459,12 +461,14 @@ async function main() {
     try {
       const prev = prevBriefings;
       if (briefingWanted) run.briefingTriedAt = new Date().toISOString();
-      const { briefings, made } = briefingWanted
+      const { briefings, made, note } = briefingWanted
         ? await maybeBriefing(topics, prev, forceBriefing)
-        : { briefings: prev, made: false };
+        : { briefings: prev, made: false, note: undefined };
       if (made) {
         console.log(`브리핑 생성: ${briefings[0].date} · ${briefings[0].items.length}건`);
         delete run.briefingError;
+        if (note) run.briefingNote = `${new Date().toISOString()} ${note.slice(0, 600)}`;
+        else delete run.briefingNote;
       }
       // 언어 점검 3: 브리핑의 일본어·한국어 문장
       const f = await auditBriefings(briefings);

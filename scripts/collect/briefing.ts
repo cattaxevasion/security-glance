@@ -70,7 +70,7 @@ export async function maybeBriefing(
   topics: Topic[],
   prev: Briefing[],
   force: boolean,
-): Promise<{ briefings: Briefing[]; made: boolean }> {
+): Promise<{ briefings: Briefing[]; made: boolean; note?: string }> {
   const { date } = jstNow();
   if (!force && !briefingDue(prev)) return { briefings: prev, made: false };
 
@@ -117,8 +117,10 @@ export async function maybeBriefing(
         reasons.push(`${label}: no valid items`);
         continue;
       }
-      if (reasons.length) console.log(`브리핑: ${reasons.length}번 실패 뒤 ${label}로 생성 (${reasons.join(" / ")})`);
-      return { briefings: [made, ...prev.filter((b) => b.date !== date)].slice(0, KEEP), made: true };
+      // 앞 단계에서 실패했으면 어떤 단계로 만들었는지와 실패 이유를 남긴다
+      const note = reasons.length ? `${label}로 생성 (앞 단계 실패: ${reasons.join(" / ")})` : undefined;
+      if (note) console.log(`브리핑: ${note}`);
+      return { briefings: [made, ...prev.filter((b) => b.date !== date)].slice(0, KEEP), made: true, note };
     } catch (e) {
       if (e instanceof SummaryRefused) reasons.push(`${label}: refused`);
       else reasons.push(`${label}: ${(e as Error).message.slice(0, 120)}`);
