@@ -49,6 +49,15 @@ const META_PATH = "public/data/meta.json";
 const RUN_PATH = "data/run.json";
 /** 전체 실행 간격. 30분 주기 실행이 조금 일찍 와도 놓치지 않게 15분 여유 */
 const FULL_EVERY_MS = 6 * 3600_000 - 15 * 60_000;
+/** 브리핑이 실패하면 이만큼 지난 뒤에 다시 (실패할 때마다 모든 실행이 저장·배포까지 가지 않게) */
+const BRIEFING_RETRY_MS = 25 * 60_000;
+
+interface RunState {
+  fullAt?: string;
+  /** 브리핑을 마지막으로 시도한 시각과 실패 이유 (성공하면 지움). GitHub 로그 없이도 data 브랜치에서 보인다 */
+  briefingTriedAt?: string;
+  briefingError?: string;
+}
 /** 화면용 가벼운 기사 목록 (news.json은 수집기 내부용) */
 const ARTICLES_PATH = "public/data/articles.json";
 /** 토픽 전체 (수집기 내부용). 화면은 아래 두 파일로 나눠 받는다. */
@@ -337,7 +346,12 @@ async function main() {
     sources: [],
   });
 
-  const run = await readJson<{ fullAt?: string }>(RUN_PATH, {});
+  const run = await readJson<RunState>(RUN_PATH, {});
+  const prevBriefings = await readJson<Briefing[]>(BRIEFINGS_PATH, []);
+  const briefingWanted =
+    forceBriefing ||
+    (briefingDue(prevBriefings) &&
+      (!run.briefingTriedAt || Date.now() - Date.parse(run.briefingTriedAt) >= BRIEFING_RETRY_MS));
   const full =
     forceFull || mode !== "all" || !run.fullAt || Date.now() - Date.parse(run.fullAt) >= FULL_EVERY_MS;
   console.log(full ? "전체 실행" : `가벼운 실행 (지난 전체 실행 ${run.fullAt})`);
@@ -347,7 +361,7 @@ async function main() {
   if (mode !== "vulns") ({ news, processed } = await runNews(meta, full));
 
   // 새 기사도, 전체 점검도, 브리핑도 없으면 여기서 끝낸다 (AI 호출·저장·배포 없음)
-  if (!full && !processed && !forceBriefing && !briefingDue(await readJson<Briefing[]>(BRIEFINGS_PATH, []))) {
+  if (!full && !processed && !briefingWanted) {
     console.log("\n새 기사 없음: 저장·배포 없이 끝냅니다");
     await setOutput("changed", "false");
     return;
@@ -443,9 +457,15 @@ async function main() {
   // 오늘의 브리핑 (일본 시간 아침, 하루 한 번)
   if (hasKey()) {
     try {
-      const prev = await readJson<Briefing[]>(BRIEFINGS_PATH, []);
-      const { briefings, made } = await maybeBriefing(topics, prev, forceBriefing);
-      if (made) console.log(`브리핑 생성: ${briefings[0].date} · ${briefings[0].items.length}건`);
+      const prev = prevBriefings;
+      if (briefingWanted) run.briefingTriedAt = new Date().toISOString();
+      const { briefings, made } = briefingWanted
+        ? await maybeBriefing(topics, prev, forceBriefing)
+        : { briefings: prev, made: false };
+      if (made) {
+        console.log(`브리핑 생성: ${briefings[0].date} · ${briefings[0].items.length}건`);
+        delete run.briefingError;
+      }
       // 언어 점검 3: 브리핑의 일본어·한국어 문장
       const f = await auditBriefings(briefings);
       const total = sumCount(f.ja, f.ko);
@@ -454,7 +474,8 @@ async function main() {
       if (gate) console.warn(`  !  마지막 확인(브리핑)에서 기계 변환 ${gate}건`);
       if (!dry && (made || total.fixed || total.forced || gate)) await writeJson(BRIEFINGS_PATH, briefings);
     } catch (e) {
-      console.warn(`  !  브리핑 실패: ${(e as Error).message.slice(0, 160)}`);
+      run.briefingError = `${new Date().toISOString()} ${(e as Error).message.slice(0, 600)}`;
+      console.warn(`  !  브리핑 실패: ${(e as Error).message.slice(0, 600)}`);
     }
   }
 
@@ -484,7 +505,7 @@ async function main() {
   meta.updatedAt = new Date().toISOString();
   if (!dry) {
     await writeJson(META_PATH, meta);
-    if (full) await writeJson(RUN_PATH, { fullAt: meta.updatedAt });
+    await writeJson(RUN_PATH, full ? { ...run, fullAt: meta.updatedAt } : run);
   }
   await setOutput("changed", "true");
 }

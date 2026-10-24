@@ -2,12 +2,18 @@
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
 import type { Briefing, Topic } from "../../shared/types";
-import { anthropic, MODEL, SummaryRefused } from "./summarize";
+import { anthropic, MODEL, SummaryRefused, type Effort } from "./summarize";
 
 const KEEP = 30;
 /** 이 시각(일본 시간) 이후 첫 수집에서 그날 브리핑을 만든다 */
 const BRIEFING_HOUR_JST = 6;
 const CANDIDATES = 8;
+/** 실패하면 같은 실행 안에서 차례로: 생각 토큰이 모자라 잘린 경우 → 더 크게, 그래도 안 되면 더 큰 모델 */
+const LADDER: { model: string; maxTokens: number; effort: Effort }[] = [
+  { model: process.env.BRIEFING_MODEL ?? MODEL, maxTokens: 8000, effort: "medium" },
+  { model: process.env.BRIEFING_MODEL ?? MODEL, maxTokens: 16000, effort: "low" },
+  { model: process.env.FIX_MODEL ?? "claude-sonnet-5-5", maxTokens: 16000, effort: "medium" },
+];
 
 function jstNow(): { date: string; hour: number } {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -85,17 +91,43 @@ export async function maybeBriefing(
     summary: t.summaryKo,
   }));
 
-  const response = await anthropic().messages.parse({
-    model: process.env.BRIEFING_MODEL ?? MODEL,
-    max_tokens: 8000,
-    system: PROMPT,
-    output_config: { format: zodOutputFormat(BriefingSchema), effort: "medium" },
-    messages: [{ role: "user", content: JSON.stringify(payload) }],
-  });
-  if (response.stop_reason === "refusal") throw new SummaryRefused(response.stop_details?.category ?? "refusal");
-  const r = response.parsed_output;
-  if (!r) throw new Error("briefing parse failed");
+  // 단계마다 실패 이유를 모아 두고, 끝까지 안 되면 한꺼번에 알린다 (data/run.json에 남는다)
+  const reasons: string[] = [];
+  for (const step of LADDER) {
+    const label = `${step.model}/${step.maxTokens}`;
+    try {
+      const response = await anthropic().messages.parse({
+        model: step.model,
+        max_tokens: step.maxTokens,
+        system: PROMPT,
+        output_config: { format: zodOutputFormat(BriefingSchema), effort: step.effort },
+        messages: [{ role: "user", content: JSON.stringify(payload) }],
+      });
+      if (response.stop_reason === "refusal") {
+        reasons.push(`${label}: refusal(${response.stop_details?.category ?? "?"})`);
+        continue;
+      }
+      const r = response.parsed_output;
+      if (!r) {
+        reasons.push(`${label}: parse failed (stop_reason=${response.stop_reason})`);
+        continue;
+      }
+      const made = toBriefing(r, keys, date);
+      if (!made) {
+        reasons.push(`${label}: no valid items`);
+        continue;
+      }
+      if (reasons.length) console.log(`브리핑: ${reasons.length}번 실패 뒤 ${label}로 생성 (${reasons.join(" / ")})`);
+      return { briefings: [made, ...prev.filter((b) => b.date !== date)].slice(0, KEEP), made: true };
+    } catch (e) {
+      if (e instanceof SummaryRefused) reasons.push(`${label}: refused`);
+      else reasons.push(`${label}: ${(e as Error).message.slice(0, 120)}`);
+    }
+  }
+  throw new Error(reasons.join(" / "));
+}
 
+function toBriefing(r: z.infer<typeof BriefingSchema>, keys: Map<string, string>, date: string): Briefing | null {
   const items = r.items
     .filter((it) => keys.has(it.topic.trim()))
     .slice(0, 5)
@@ -108,14 +140,12 @@ export async function maybeBriefing(
       whyKo: it.whyKo.trim(),
       whyJa: it.whyJa.trim(),
     }));
-  if (items.length === 0) throw new Error("briefing has no valid items");
-
-  const briefing: Briefing = {
+  if (items.length === 0) return null;
+  return {
     date,
     generatedAt: new Date().toISOString(),
     headlineKo: r.headlineKo.trim(),
     headlineJa: r.headlineJa.trim(),
     items,
   };
-  return { briefings: [briefing, ...prev.filter((b) => b.date !== date)].slice(0, KEEP), made: true };
 }

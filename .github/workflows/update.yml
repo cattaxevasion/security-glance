@@ -86,7 +86,12 @@ jobs:
           git add -A
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
             commit -q -m "data: $(date -u +%Y-%m-%dT%H:%MZ)"
-          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" data
+          # GitHub 쪽 일시 오류(종료 코드 128 등)면 잠시 뒤 다시 (세 번까지)
+          for i in 1 2 3; do
+            git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" data && break
+            [ "$i" = 3 ] && exit 1
+            echo "push 실패, $((i * 10))초 뒤 다시"; sleep $((i * 10))
+          done
 
       # 화면이 받는 파일에 언어 섞임이 하나라도 있으면 배포를 멈춘다 (수집기가 고치고 확인했으므로 늘 0이어야 함)
       - name: Check no language mixing in UI and data
