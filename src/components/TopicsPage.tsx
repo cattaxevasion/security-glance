@@ -25,7 +25,7 @@ import {
   DocumentSearchRegular,
   LinkRegular,
 } from "@fluentui/react-icons";
-import { useEffect, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { ATTACK_TYPES, NATURES, SECTORS } from "../../shared/taxonomy";
 import type { Topic, VulnData } from "../../shared/types";
 import { LOCALE, REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
@@ -215,7 +215,9 @@ interface Props {
 export function matchesQuery(n: Topic, q: string): boolean {
   if (!q) return true;
   const needle = q.trim().toLowerCase();
-  return [
+  // 띄어쓰기는 무시하고도 찾는다 ("Shiny Hunters" ↔ "ShinyHunters")
+  const squashed = needle.replace(/\s+/g, "");
+  const hay = [
     // 받아 둔 언어의 글만 들어 있다 (토픽 글은 화면 언어 것만 받는다)
     n.titleKo,
     n.titleJa,
@@ -234,8 +236,8 @@ export function matchesQuery(n: Topic, q: string): boolean {
     ...n.techniques.map((x) => x.id),
   ]
     .join(" ")
-    .toLowerCase()
-    .includes(needle);
+    .toLowerCase();
+  return hay.includes(needle) || hay.replace(/\s+/g, "").includes(squashed);
 }
 
 export function TopicsPage(p: Props) {
@@ -245,7 +247,8 @@ export function TopicsPage(p: Props) {
   const m = useMotion();
   const t = STRINGS[lang];
   const [hoverRow, setHoverRow] = useState<string | null>(null);
-  const [overviewOpen, setOverviewOpen] = useStoredFlag("sg-overview", true);
+  // 휴대폰은 처음에 접어 둔다 (펼쳐 두면 첫 토픽이 화면 아래로 밀려 하나도 안 보였다). 사용자가 바꾸면 그대로 기억
+  const [overviewOpen, setOverviewOpen] = useStoredFlag("sg-overview", !narrow);
   const [shown, setShown] = useState(PAGE);
   const [copied, setCopied] = useState(false);
 
@@ -255,10 +258,14 @@ export function TopicsPage(p: Props) {
   };
 
   // 검색어와 기간까지 적용한 집합. 필터 메뉴의 개수는 여기서 센다.
+  // 검색할 때는 기간과 상관없이 전체에서 찾는다 (기본 1주에서만 찾아 지난 토픽이 안 나왔다).
+  // 글자를 칠 때마다 목록 전체를 다시 거르면 느린 휴대폰에서 입력이 밀려서, 거르기는 한 박자 늦게 한다
+  const deferredQuery = useDeferredValue(query);
+  const days = deferredQuery ? 0 : filters.days;
   const base = useMemo(() => {
-    const since = filters.days ? Date.now() - filters.days * 86400_000 : 0;
-    return items.filter((n) => Date.parse(n.lastUpdated) >= since && matchesQuery(n, query));
-  }, [items, filters.days, query]);
+    const since = days ? Date.now() - days * 86400_000 : 0;
+    return items.filter((n) => Date.parse(n.lastUpdated) >= since && matchesQuery(n, deferredQuery));
+  }, [items, days, deferredQuery]);
 
   const filtered = useMemo(() => {
     const out = base.filter(
@@ -410,12 +417,12 @@ export function TopicsPage(p: Props) {
       <div className={ps.command}>
         <div className={ps.commandGroup}>
           <Menu
-            checkedValues={{ days: [String(filters.days)] }}
+            checkedValues={{ days: [String(days)] }}
             onCheckedValueChange={(_, d) => set({ days: Number(d.checkedItems[0]) })}
           >
             <MenuTrigger disableButtonEnhancement>
               <Button appearance="subtle" icon={<CalendarLtrRegular />}>
-                {t.periods[filters.days]}
+                {t.periods[days]}
                 <ChevronDownRegular style={{ marginLeft: 4 }} />
               </Button>
             </MenuTrigger>

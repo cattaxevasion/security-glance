@@ -430,7 +430,7 @@ export function VulnPage(p: Props) {
       <div className={narrow ? ps.listSurface : ps.tableWrap}>
         {count === 0 ? (
           <div className={ps.empty}>
-            <Subtitle1>{t.empty}</Subtitle1>
+            <Subtitle1>{t.vulnEmpty}</Subtitle1>
           </div>
         ) : narrow ? (
           <ul className={s.mList} aria-label={kind === "kev" ? t.kevTitle : t.cveTitle}>

@@ -67,8 +67,27 @@ function makeTheme(dark: boolean, lang: Lang): Theme {
   return { ...(dark ? webDarkTheme : webLightTheme), fontFamilyBase: FONT_STACK[lang] };
 }
 
+declare global {
+  interface Window {
+    /** index.astro가 앱 코드보다 먼저 시작해 둔 첫 화면 데이터 요청 (파일 이름 → 결과, 실패하면 null) */
+    __sgPrefetch?: Record<string, Promise<unknown>>;
+  }
+}
+
+/** 느린 회선·데이터 절약 모드인가 (그러면 당장 안 쓰는 큰 파일을 미리 받지 않는다) */
+function slowNetwork(): boolean {
+  const c = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+  return !!c && (!!c.saveData || /(^|-)(2g|3g)$/.test(c.effectiveType ?? ""));
+}
+
 /** v: 주소 끝에 붙여 CDN 캐시(최대 10분)를 건너뛴다. 열어 둔 화면이 새 데이터를 받을 때 쓴다 */
 async function load<T>(name: string, v?: string): Promise<T | null> {
+  // 첫 화면 데이터는 index.astro가 이미 받기 시작했으면 그것을 쓴다 (한 번만. 다시 시도할 때는 새로 받는다)
+  const early = v ? undefined : window.__sgPrefetch?.[name];
+  if (early) {
+    delete window.__sgPrefetch![name];
+    return (await early) as T | null;
+  }
   try {
     const q = v ? `?v=${encodeURIComponent(v)}` : "";
     const res = await fetch(`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}data/${name}${q}`, { cache: "no-cache" });
@@ -156,10 +175,10 @@ const isVulnView = (v: View): v is "kev" | "cve" => v === "kev" || v === "cve";
 const isTopicView = (v: View) => v === "all" || v === "INTL" || v === "JP";
 
 /** 데이터를 불러오는 동안 보여줄 뼈대 (스피너 대신 실제 화면 모양으로) */
-function LoadingSkeleton() {
+function LoadingSkeleton({ label }: { label: string }) {
   const s = useStyles();
   return (
-    <Skeleton className={s.skeleton} aria-label="loading">
+    <Skeleton className={s.skeleton} aria-label={label}>
       <SkeletonItem className={s.skTitle} />
       {Array.from({ length: 6 }, (_, i) => (
         <div key={i} className={s.skRow}>
@@ -205,7 +224,8 @@ export default function App() {
   const [core, setCore] = useState<TopicCore[] | null>(null);
   const [texts, setTexts] = useState<Partial<Record<Lang, TopicTexts>>>({});
   const [loadError, setLoadError] = useState(false);
-  const [briefings, setBriefings] = useState<Briefing[]>([]);
+  // null: 아직 받는 중 (빈 목록과 구분해야 '아직 브리핑이 없어요'가 잠깐 떴다가 바뀌지 않는다)
+  const [briefings, setBriefings] = useState<Briefing[] | null>(null);
   const [vulns, setVulns] = useState<VulnData | null>(null);
   const [meta, setMeta] = useState<Meta | null>(null);
   const [leaks, setLeaks] = useState<LeakPost[]>([]);
@@ -253,6 +273,7 @@ export default function App() {
       loadCves();
       return;
     }
+    if (slowNetwork()) return; // 느린 회선에서는 CVE 화면을 열 때 받는다
     const timer = window.setTimeout(loadCves, 3000);
     return () => window.clearTimeout(timer);
   }, [vulns, view, selection, loadCves]);
@@ -324,12 +345,40 @@ export default function App() {
     if (selection?.kind === "topic") loadArticles();
   }, [selection, loadArticles]);
   useEffect(() => {
-    if (!topics) return;
+    // 느린 회선에서는 미리 받지 않고 상세 패널을 열 때 받는다 (기사 목록은 첫 화면 데이터만큼 크다)
+    if (!topics || slowNetwork()) return;
     const timer = window.setTimeout(loadArticles, 1500);
     return () => window.clearTimeout(timer);
   }, [topics, loadArticles]);
 
   useEffect(() => setNavOpen(!narrow), [narrow]);
+
+  // 상세 패널을 닫으면 연 곳(목록 항목 등)으로 포커스를 돌려준다 (키보드·화면 낭독기 사용자가 목록에서 위치를 잃지 않게).
+  // 패널은 열리자마자 포커스를 가져가므로, 패널 밖에서 마지막으로 포커스를 받은 요소를 계속 기억해 둔다
+  const lastOutside = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    const onFocus = (e: FocusEvent) => {
+      const el = e.target as HTMLElement | null;
+      if (el && el !== document.body && !el.closest?.('[role="dialog"]')) lastOutside.current = el;
+    };
+    document.addEventListener("focusin", onFocus);
+    return () => document.removeEventListener("focusin", onFocus);
+  }, []);
+  const wasOpen = useRef(false);
+  useEffect(() => {
+    if (!selection && wasOpen.current) {
+      // 패널이 닫히는 처리가 끝난 뒤에 (그 사이 포커스가 body로 가 있으면)
+      const timer = window.setTimeout(() => {
+        const el = lastOutside.current;
+        const active = document.activeElement;
+        const lost = !active || active === document.body || !!active.closest?.('[role="dialog"]');
+        if (el && lost && document.contains(el)) el.focus({ preventScroll: true });
+      }, 50);
+      wasOpen.current = false;
+      return () => window.clearTimeout(timer);
+    }
+    wasOpen.current = !!selection;
+  }, [selection]);
 
   useEffect(() => {
     // 줄바꿈 규칙은 <html lang>을 보고 index.astro의 전역 CSS가 정한다 (포털로 그리는 패널·메뉴도 상속)
@@ -616,16 +665,16 @@ export default function App() {
                 <MessageBarBody>{t.staleData(relativeTime(lang, meta.updatedAt))}</MessageBarBody>
               </MessageBar>
             )}
-            {topics === null ? (
-              <LoadingSkeleton />
+            {topics === null || (view === "briefing" && briefings === null) ? (
+              <LoadingSkeleton label={t.loading} />
             ) : (
               <div key={view} className={m.fade}>
-                <Suspense fallback={<LoadingSkeleton />}>
+                <Suspense fallback={<LoadingSkeleton label={t.loading} />}>
                 {view === "briefing" ? (
                   <BriefingPage
                     lang={lang}
                     narrow={narrow}
-                    briefings={briefings}
+                    briefings={briefings ?? []}
                     topics={topics}
                     vulns={vulns}
                     leaks={leaks}

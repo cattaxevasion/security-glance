@@ -203,6 +203,8 @@ const ko = {
   viewAll: "모두 보기",
   noneYet: "아직 없어요",
   enPending: "영어 요약 준비 중",
+  vulnEmpty: "조건에 맞는 취약점이 없어요.",
+  lastAdded: (ago: string) => `마지막 추가 ${ago}`,
 };
 
 export type Strings = typeof ko;
@@ -398,6 +400,8 @@ const ja: Strings = {
   viewAll: "すべて表示",
   noneYet: "まだありません",
   enPending: "英語の要約を準備中",
+  vulnEmpty: "条件に合う脆弱性はありません。",
+  lastAdded: (ago: string) => `最終追加 ${ago}`,
 };
 
 const en: Strings = {
@@ -591,6 +595,8 @@ const en: Strings = {
   viewAll: "View all",
   noneYet: "None yet",
   enPending: "English summary in preparation",
+  vulnEmpty: "No vulnerabilities match.",
+  lastAdded: (ago: string) => `last added ${ago}`,
 };
 
 export const STRINGS: Record<Lang, Strings> = { ko, ja, en };
