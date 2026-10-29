@@ -1,6 +1,7 @@
 // 언어 점검에 쓰는 공용 판별식과 마지막 수단(기계 변환). 수집기·검사 스크립트·화면이 같이 쓴다.
 // - 일본어 화면에 한글이 새어 나가지 않게
 // - 한국어 화면에 번역되지 않은 일본어가 남지 않게
+// - 영어 화면에 한글·가나·한자가 한 글자도 섞이지 않게 (괄호 속 원문도 허용하지 않는다)
 
 /** 한글 음절·자모 */
 export const HANGUL = /[가-힣ᄀ-ᇿ㄰-㆏]/;
@@ -131,4 +132,112 @@ export function forceJa(s: string): string {
     .replace(/[가-힣ᄀ-ᇿ㄰-㆏]+/g, "")
     .replace(/\s{2,}/g, " ")
     .trim();
+}
+
+// ── 영어 ──────────────────────────────────────────────────────────────
+
+/**
+ * 영어 화면에 나오면 안 되는 글자: 한글, 가나·한자, CJK 기호·구두점(「」、。・ 등), 전각·반각 문자(（）！Ａ ｱ 등).
+ * 한국어와 달리 괄호 속 원문 병기도 허용하지 않는다.
+ */
+const NON_ENGLISH_CHARS = "\u1100-\u11ff\u3130-\u318f\uac00-\ud7a3\u3000-\u303f\u3040-\u30ff\u31f0-\u31ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff00-\uffef";
+export const NON_ENGLISH = new RegExp(`[${NON_ENGLISH_CHARS}]`);
+const NON_ENGLISH_RUN = new RegExp(`[${NON_ENGLISH_CHARS}]+`, "g");
+
+export const hasNonEnglish = (s: string | null | undefined): boolean => !!s && NON_ENGLISH.test(s);
+
+/** 다시 고쳐 달라고 할 때 짚어 줄 부분: 영어 문장에 남은 한글·일본어 덩어리 */
+export function nonEnglishSegments(s: string): string[] {
+  return [...new Set(s.match(NON_ENGLISH_RUN) ?? [])];
+}
+
+// ── 가나 → 로마자 (기계 변환, 헵번식을 단순화) ──────────────────────────
+// 모델이 여러 번 고쳐도 영어 문장에 가나가 남을 때만 쓰는 마지막 수단. 장음(ー)은 표기하지 않는다.
+
+const ROMAJI: Record<string, string> = {
+  ア: "a", イ: "i", ウ: "u", エ: "e", オ: "o",
+  カ: "ka", キ: "ki", ク: "ku", ケ: "ke", コ: "ko",
+  ガ: "ga", ギ: "gi", グ: "gu", ゲ: "ge", ゴ: "go",
+  サ: "sa", シ: "shi", ス: "su", セ: "se", ソ: "so",
+  ザ: "za", ジ: "ji", ズ: "zu", ゼ: "ze", ゾ: "zo",
+  タ: "ta", チ: "chi", ツ: "tsu", テ: "te", ト: "to",
+  ダ: "da", ヂ: "ji", ヅ: "zu", デ: "de", ド: "do",
+  ナ: "na", ニ: "ni", ヌ: "nu", ネ: "ne", ノ: "no",
+  ハ: "ha", ヒ: "hi", フ: "fu", ヘ: "he", ホ: "ho",
+  バ: "ba", ビ: "bi", ブ: "bu", ベ: "be", ボ: "bo",
+  パ: "pa", ピ: "pi", プ: "pu", ペ: "pe", ポ: "po",
+  マ: "ma", ミ: "mi", ム: "mu", メ: "me", モ: "mo",
+  ヤ: "ya", ユ: "yu", ヨ: "yo",
+  ラ: "ra", リ: "ri", ル: "ru", レ: "re", ロ: "ro",
+  ワ: "wa", ヰ: "i", ヱ: "e", ヲ: "o", ヴ: "vu",
+  ァ: "a", ィ: "i", ゥ: "u", ェ: "e", ォ: "o", ャ: "ya", ュ: "yu", ョ: "yo", ヮ: "wa",
+};
+
+const ROMAJI2: Record<string, string> = {
+  キャ: "kya", キュ: "kyu", キョ: "kyo", ギャ: "gya", ギュ: "gyu", ギョ: "gyo",
+  シャ: "sha", シュ: "shu", ショ: "sho", ジャ: "ja", ジュ: "ju", ジョ: "jo",
+  チャ: "cha", チュ: "chu", チョ: "cho", ニャ: "nya", ニュ: "nyu", ニョ: "nyo",
+  ヒャ: "hya", ヒュ: "hyu", ヒョ: "hyo", ビャ: "bya", ビュ: "byu", ビョ: "byo",
+  ピャ: "pya", ピュ: "pyu", ピョ: "pyo", ミャ: "mya", ミュ: "myu", ミョ: "myo",
+  リャ: "rya", リュ: "ryu", リョ: "ryo",
+  ファ: "fa", フィ: "fi", フェ: "fe", フォ: "fo", ティ: "ti", ディ: "di", デュ: "dyu",
+  トゥ: "tu", ドゥ: "du", ウィ: "wi", ウェ: "we", ウォ: "wo",
+  シェ: "she", ジェ: "je", チェ: "che", ヴァ: "va", ヴィ: "vi", ヴェ: "ve", ヴォ: "vo",
+};
+
+/** 가나를 로마자로 옮긴다. 한자 등 가나가 아닌 글자는 그대로 둔다. */
+export function kanaToRomaji(s: string): string {
+  const k = s.replace(/[ぁ-ゖ]/g, (c) => String.fromCharCode(c.charCodeAt(0) + 0x60));
+  let out = "";
+  let geminate = false; // 촉음(ッ): 다음 자음을 겹친다
+  for (let i = 0; i < k.length; i++) {
+    const two = k.slice(i, i + 2);
+    let r: string | undefined;
+    if (ROMAJI2[two]) {
+      r = ROMAJI2[two];
+      i++;
+    } else if (k[i] === "ッ") {
+      geminate = true;
+      continue;
+    } else if (k[i] === "ン") r = "n";
+    else if (k[i] === "ー") continue;
+    else if (k[i] === "・") r = " ";
+    else r = ROMAJI[k[i]];
+    if (r === undefined) {
+      out += k[i];
+      geminate = false;
+      continue;
+    }
+    if (geminate && /^[a-z]/.test(r)) out += r.startsWith("ch") ? "t" : r[0];
+    geminate = false;
+    out += r;
+  }
+  return out;
+}
+
+const EN_PUNCT: Record<string, string> = {
+  "「": "\"", "」": "\"", "『": "\"", "』": "\"", "【": "[", "】": "]", "〈": "<", "〉": ">", "《": "\"", "》": "\"",
+  "、": ", ", "。": ". ", "・": " ", "〜": "~", "～": "~", "〇": "0",
+};
+
+/**
+ * 마지막 수단: 영어 문장에 남은 한글·일본어를 없앤다. 전각 문자는 반각으로, 일본식 괄호·구두점은 영어 기호로,
+ * 가나는 로마자로(단어 첫 글자는 대문자), 소리를 알 수 없는 한자와 한글은 지운다. 결과는 언제나 hasNonEnglish = false.
+ */
+export function forceEn(s: string): string {
+  const out = s
+    .normalize("NFKC") // 전각 영숫자·괄호·반각 가나 → 보통 글자
+    .replace(/[「」『』【】〈〉《》、。・〜～〇]/g, (c) => EN_PUNCT[c])
+    .replace(NON_ENGLISH_RUN, (run) => {
+      const r = kanaToRomaji(run).replace(NON_ENGLISH_RUN, " ").replace(/\s+/g, " ").trim();
+      return r ? ` ${r.replace(/(^|\s)([a-z])/g, (_, a: string, b: string) => a + b.toUpperCase())} ` : " ";
+    })
+    .replace(NON_ENGLISH_RUN, " ")
+    .replace(/"\s*([^"]*?)\s*"/g, '"$1"')
+    .replace(/\(\s*\)|\[\s*\]|""/g, "") // 지우고 비어 버린 괄호·따옴표
+    .replace(/\s+([,.!?:;)\]])/g, "$1")
+    .replace(/([(\[])\s+/g, "$1")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+  return out;
 }

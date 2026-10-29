@@ -3,12 +3,16 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
+  forceEn,
   forceJa,
   forceKo,
   hangulSegments,
   hasHangul,
+  hasNonEnglish,
   hasRawJapanese,
   kanaToHangul,
+  kanaToRomaji,
+  nonEnglishSegments,
   rawJapaneseSegments,
 } from "../../shared/lang";
 
@@ -76,4 +80,57 @@ test("이미 깨끗한 문장은 마지막 수단이 바꾸지 않는다", () =>
   assert.equal(forceKo(ko), ko);
   const ja = "第一生命保険の人事システムに不正アクセス";
   assert.equal(forceJa(ja), ja);
+});
+
+test("영어 문장 속 한글·일본어·전각 기호를 잡는다 (괄호 속 원문도)", () => {
+  for (const s of [
+    "Data breach at Dai-ichi Life (第一生命保険)", // 영어는 괄호 원문도 허용하지 않는다
+    "KB국민은행 hit by DDoS",
+    "Ransomware attack on バイトル operator",
+    "Unauthorized access at 「Yakiniku King」",
+    "Patch released、update now",
+    "Ivanti ＣＶＥ flaw", // 전각 영문
+    "ｱｸｾｽ", // 반각 가나
+  ])
+    assert.equal(hasNonEnglish(s), true, s);
+});
+
+test("보통 영어 문장과 기호는 통과한다", () => {
+  for (const s of [
+    "Microsoft fixes 172 flaws in October Patch Tuesday",
+    "Dai-ichi Life Insurance reports unauthorized access to HR system",
+    "U.S. · Japan joint operation — 3 arrested (CVE-2026-1234)",
+    "Café “Smart” devices’ firmware: 10% affected, €2M fine",
+    "",
+  ])
+    assert.equal(hasNonEnglish(s), false, s);
+  assert.deepEqual(nonEnglishSegments("Hit at 第一生命 and 국민은행"), ["第一生命", "국민은행"]);
+});
+
+test("가나 → 로마자", () => {
+  assert.equal(kanaToRomaji("バイトル"), "baitoru");
+  assert.equal(kanaToRomaji("ちばぎん"), "chibagin");
+  assert.equal(kanaToRomaji("ショップ"), "shoppu");
+  assert.equal(kanaToRomaji("マッチ"), "matchi");
+  assert.equal(kanaToRomaji("ファンケル"), "fankeru");
+});
+
+test("영어 마지막 수단을 거친 문장은 언제나 검사를 통과한다", () => {
+  for (const s of [
+    "Data breach at 第一生命保険 (第一生命保険)",
+    "「焼肉きんぐ」 leaks 1,079万 records",
+    "KB국민은행 hit by DDoS、patched。",
+    "Ivanti ＣＶＥ－２０２６－１２３４ flaw",
+    "損保ジャパン、大和証券・シチズンと同じ委託先への不正アクセスで約6万件漏えいか",
+  ]) {
+    const out = forceEn(s);
+    assert.equal(hasNonEnglish(out), false, `${s} → ${out}`);
+  }
+  assert.equal(forceEn("Ivanti ＣＶＥ－２０２６－１２３４ flaw、patched。"), "Ivanti CVE-2026-1234 flaw, patched.");
+  assert.equal(forceEn("Breach at バイトル site"), "Breach at Baitoru site");
+});
+
+test("이미 깨끗한 영어 문장은 마지막 수단이 바꾸지 않는다", () => {
+  const en = "Dai-ichi Life Insurance reports unauthorized access to HR system (about 120,000 records)";
+  assert.equal(forceEn(en), en);
 });

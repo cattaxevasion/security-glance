@@ -21,9 +21,11 @@ import {
   auditTopics,
   enforceBriefings,
   enforceLanguage,
+  fillEnglish,
   forcedStore,
   loadForced,
   sumCount,
+  updateNameEnglish,
   updateNameReadings,
   type FixCount,
 } from "./lang-audit";
@@ -66,6 +68,8 @@ const ARTICLES_PATH = "public/data/articles.json";
 const TOPICS_PATH = "public/data/topics.json";
 /** 일본어로 적힌 조직·위협 그룹 이름의 한국어 화면용 읽기 */
 const NAMES_KO_PATH = "public/data/names-ko.json";
+/** 같은 이름의 영어 화면용 표기 */
+const NAMES_EN_PATH = "public/data/names-en.json";
 /** 기계 변환한 필드의 원래 글 (다음 실행에서 모델로 다시 고친다) */
 const LANG_FORCED_PATH = "data/lang-forced.json";
 /** 첫 화면에 필요한 최근 토픽 (인시던트 기본 기간 30일 + 여유 하루) */
@@ -84,6 +88,12 @@ const MAX_FAILURES = 3;
 const CONCURRENCY = 4;
 /** 일본어가 비어 있는 기존 기사를 한 번에 몇 건씩 번역할지 */
 const TRANSLATE_BATCH = 10;
+/**
+ * 영어가 비어 있는 이전 기사·토픽을 한 실행에 몇 건까지 채울지 (최신 먼저). 저장·배포까지 가는 실행에서만 돈다.
+ * 기사 약 1,300건 · 토픽 약 160개(기사 2건 이상)가 8~10번 실행에 나눠 채워진다
+ */
+const EN_FILL_ARTICLES = 150;
+const EN_FILL_TOPICS = 100;
 
 interface State {
   /** 제외된 기사 id → 판정 시각 (키워드, 보안 무관, 업계 동향). 다시 요약하지 않는다. */
@@ -379,14 +389,26 @@ async function main() {
   // 언어 점검 1: 기사의 일본어·한국어 필드·엔티티 이름 (토픽 엔티티는 기사에서 다시 계산된다)
   if (hasKey()) {
     const a = await auditArticles(news);
-    console.log(`언어 점검(기사): 일본어 ${fmt(a.ja)} · 한국어 ${fmt(a.ko)} · 이름 원래 표기 ${a.names}`);
-    if (!dry && (a.ja.fixed || a.ja.forced || a.ko.fixed || a.ko.forced || a.names)) await writeJson(NEWS_PATH, news);
+    console.log(
+      `언어 점검(기사): 일본어 ${fmt(a.ja)} · 한국어 ${fmt(a.ko)} · 영어 ${fmt(a.en)} · 이름 원래 표기 ${a.names}`,
+    );
+    // 영어가 비어 있는 이전 기사 채우기 (토픽을 만들기 전에: 기사 1건짜리 토픽은 기사의 영어를 그대로 쓴다)
+    const fill = await fillEnglish(news, (n) => n.title, EN_FILL_ARTICLES);
+    if (fill.missing) console.log(`영어 채우기(기사): ${fill.filled}/${fill.missing}`);
+    const changed = sumCount(a.ja, a.ko, a.en);
+    if (!dry && (changed.fixed || changed.forced || a.names || fill.filled)) await writeJson(NEWS_PATH, news);
     const { readings, count } = await updateNameReadings(
       news.flatMap((n) => [...n.entities.orgs, ...n.entities.actors]),
       await readJson<Record<string, string>>(NAMES_KO_PATH, {}),
     );
     console.log(`언어 점검(이름 한국어 읽기): ${Object.keys(readings).length}개 · 새로 ${fmt(count)}`);
     if (!dry) await writeJson(NAMES_KO_PATH, readings);
+    const en = await updateNameEnglish(
+      news.flatMap((n) => [...n.entities.orgs, ...n.entities.actors]),
+      await readJson<Record<string, string>>(NAMES_EN_PATH, {}),
+    );
+    console.log(`언어 점검(이름 영어 표기): ${Object.keys(en.english).length}개 · 새로 ${fmt(en.count)}`);
+    if (!dry) await writeJson(NAMES_EN_PATH, en.english);
   }
 
   let vulns = await readJson<VulnData | null>(VULNS_PATH, null);
@@ -424,10 +446,16 @@ async function main() {
   const liveTopics = new Set(topics.map((t) => t.id));
   const keepPairs = [...checkedPairs].filter((k) => k.split("|").every((id) => liveTopics.has(id)));
   if (!dry) await writeJson(MERGE_CHECKED_PATH, keepPairs);
-  // 언어 점검 2: 토픽 통합 요약의 일본어·한국어 필드
+  // 언어 점검 2: 토픽 통합 요약의 일본어·한국어·영어 필드 (영어가 비어 있는 이전 토픽은 먼저 채운다)
   if (hasKey()) {
+    // 기사 1건짜리 토픽은 기사의 영어를 그대로 쓰므로 (기사를 채우면 같이 채워진다) 2건 이상인 토픽만
+    const order = topics
+      .filter((t) => t.articleIds.length > 1)
+      .sort((a, b) => b.lastUpdated.localeCompare(a.lastUpdated));
+    const fill = await fillEnglish(order, () => "", EN_FILL_TOPICS);
+    if (fill.missing) console.log(`영어 채우기(토픽): ${fill.filled}/${fill.missing}`);
     const f = await auditTopics(topics);
-    console.log(`언어 점검(토픽): 일본어 ${fmt(f.ja)} · 한국어 ${fmt(f.ko)}`);
+    console.log(`언어 점검(토픽): 일본어 ${fmt(f.ja)} · 한국어 ${fmt(f.ko)} · 영어 ${fmt(f.en)}`);
   }
   // 배포 전 마지막 확인: 위 단계가 다 고쳤다면 0
   const gateTopics = enforceLanguage("topic", topics);
@@ -478,8 +506,8 @@ async function main() {
       }
       // 언어 점검 3: 브리핑의 일본어·한국어 문장
       const f = await auditBriefings(briefings);
-      const total = sumCount(f.ja, f.ko);
-      console.log(`언어 점검(브리핑): 일본어 ${fmt(f.ja)} · 한국어 ${fmt(f.ko)}`);
+      const total = sumCount(f.ja, f.ko, f.en);
+      console.log(`언어 점검(브리핑): 일본어 ${fmt(f.ja)} · 한국어 ${fmt(f.ko)} · 영어 ${fmt(f.en)}`);
       const gate = enforceBriefings(briefings);
       if (gate) console.warn(`  !  마지막 확인(브리핑)에서 기계 변환 ${gate}건`);
       if (!dry && (made || total.fixed || total.forced || gate)) await writeJson(BRIEFINGS_PATH, briefings);

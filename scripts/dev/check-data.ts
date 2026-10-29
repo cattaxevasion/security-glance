@@ -15,6 +15,7 @@ const vulns = read<VulnData | null>("public/data/vulns.json", null);
 const articles = read<{ id: string }[]>("public/data/articles.json", []);
 const merge = read<string[]>("data/merge-checked.json", []);
 const names = read<Record<string, string>>("public/data/names-ko.json", {});
+const namesEn = read<Record<string, string>>("public/data/names-en.json", {});
 const forced = read<Record<string, unknown>>("data/lang-forced.json", {});
 
 const issues: string[] = [];
@@ -88,6 +89,10 @@ const nameSet = new Set(news.flatMap((n) => [...n.entities.orgs, ...n.entities.a
 bad(
   Object.keys(names).some((k) => !nameSet.has(k)),
   `이름 읽기 사전에 지금 없는 이름 ${Object.keys(names).filter((k) => !nameSet.has(k)).length}개`,
+);
+bad(
+  Object.keys(namesEn).some((k) => !nameSet.has(k)),
+  `이름 영어 사전에 지금 없는 이름 ${Object.keys(namesEn).filter((k) => !nameSet.has(k)).length}개`,
 );
 
 // 취약점

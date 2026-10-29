@@ -1,5 +1,5 @@
 // 화면 언어가 섞이지 않게 막는 검사. 배포 전에 GitHub Actions에서 돌고, 실패하면 빌드를 멈춘다.
-// (일본어 화면에 한글, 한국어 화면에 번역 안 된 일본어)
+// (일본어 화면에 한글, 한국어 화면에 번역 안 된 일본어, 영어 화면에 한글·가나·한자)
 //
 //   npm run check:i18n            화면 코드·번역표 검사 (실패하면 종료 코드 1)
 //   npm run check:i18n -- --data  화면이 받는 데이터 파일도 검사 (섞임이 하나라도 있으면 실패 → 배포 중단)
@@ -9,7 +9,7 @@
 // 2) 태그 라벨·지역 라벨·화면 문구의 일본어 번역에 한글이 있거나 빠짐, 한국어 문구에 일본어 → 실패
 import { readdir, readFile } from "node:fs/promises";
 import { extname, join, relative } from "node:path";
-import { hasHangul, hasRawJapanese, JAPANESE } from "../shared/lang";
+import { hasHangul, hasNonEnglish, hasRawJapanese, JAPANESE } from "../shared/lang";
 import { ATTACK_TYPES, IOC_TYPES, NATURES, REGIONS, SECTORS } from "../shared/taxonomy";
 import type { ArticleRef, Briefing, Topic } from "../shared/types";
 import { REGION_LABELS, SOURCE_LABELS, STRINGS, tagLabel } from "../src/i18n";
@@ -93,7 +93,7 @@ function scanCode(src: string): Hit[] {
 // 언어별 필드를 화면 코드에서 직접 고르는 패턴. src/components/text.ts의 도우미(titleOf, summaryOf, textOf, namesOf)를 써야
 // 마지막 안전장치(섞인 글자 정리)를 거친다.
 const FALLBACK_TO_KO =
-  /\.titleJa\s*\|\|[^\n]*titleKo|summaryJa\.length\s*\?[^\n]*summaryKo|\b(lang|L)\s*===\s*"(ja|ko)"\s*\?[^\n:]*(Ja|Ko)\s*:/;
+  /\.title(Ja|En)\s*\|\|[^\n]*title(Ko|Ja)|summary(Ja|En)\.length\s*\?[^\n]*summary(Ko|Ja)|\b(lang|L)\s*===\s*"(ja|ko|en)"\s*\?[^\n:]*(Ja|Ko|En)\s*:/;
 
 async function checkSources() {
   const files = (await walk("src")).filter((f) => !f.replace(/\\/g, "/").endsWith("src/i18n.ts"));
@@ -169,23 +169,34 @@ async function checkData() {
   const articles = await read<ArticleRef[]>("public/data/articles.json", []);
   const briefings = await read<Briefing[]>("public/data/briefings.json", []);
   const readings = await read<Record<string, string>>("public/data/names-ko.json", {});
+  const english = await read<Record<string, string>>("public/data/names-en.json", {});
 
   const leaks: [string, string][] = [];
   const ja = (where: string, x: string) => hasHangul(x) && leaks.push([`${where} 일본어에 한글`, x]);
   const ko = (where: string, x: string) => hasRawJapanese(x) && leaks.push([`${where} 한국어에 일본어`, x]);
+  // 영어: 비어 있는 것은 섞임이 아니다 (채우는 중, 화면은 안내 문구). 아래에서 수만 알린다
+  let emptyEn = 0;
+  const en = (where: string, x: string | undefined) => {
+    if (!x) emptyEn++;
+    else if (hasNonEnglish(x)) leaks.push([`${where} 영어에 한글·일본어`, x]);
+  };
   for (const a of articles) {
     ja("기사 제목", a.titleJa);
     ko("기사 제목", a.titleKo);
+    en("기사 제목", a.titleEn);
   }
   for (const t of topics) {
     ja("토픽 제목", t.titleJa);
     ko("토픽 제목", t.titleKo);
+    en("토픽 제목", t.titleEn);
     t.summaryJa.forEach((x) => ja("토픽 요약", x));
     t.summaryKo.forEach((x) => ko("토픽 요약", x));
+    (t.summaryEn ?? []).forEach((x) => en("토픽 요약", x));
   }
   for (const b of briefings) {
     [b.headlineJa, ...b.items.flatMap((i) => [i.titleJa, i.bodyJa, i.whyJa])].forEach((x) => ja("브리핑", x));
     [b.headlineKo, ...b.items.flatMap((i) => [i.titleKo, i.bodyKo, i.whyKo])].forEach((x) => ko("브리핑", x));
+    [b.headlineEn, ...b.items.flatMap((i) => [i.titleEn, i.bodyEn, i.whyEn])].forEach((x) => en("브리핑", x));
   }
   // 데이터 무결성: 토픽 id가 겹치면 하나를 누를 때 여러 개가 선택되고 엉뚱한 토픽이 열린다
   const idCount = new Map<string, number>();
@@ -194,17 +205,23 @@ async function checkData() {
 
   for (const [name, r] of Object.entries(readings))
     if (!hasHangul(r) || JAPANESE.test(r)) leaks.push(["이름 한국어 읽기가 한글이 아님", `${name} → ${r}`]);
+  for (const [name, r] of Object.entries(english))
+    if (!r || hasNonEnglish(r)) leaks.push(["이름 영어 표기에 영어가 아닌 글자", `${name} → ${r}`]);
 
   // 화면이 숨기는 것(경고만): 한글로 적힌 이름은 일본어 화면에서, 읽기가 없는 일본어 이름은 한국어 화면에서 빠진다
   const names = [...new Set(topics.flatMap((t) => [...t.entities.orgs, ...t.entities.actors]))];
   const hiddenJa = names.filter(hasHangul).length;
   const hiddenKo = names.filter((n) => hasRawJapanese(n) && !readings[n]).length;
+  const hiddenEn = names.filter((n) => hasNonEnglish(n) && !english[n]).length;
 
   console.log(
     `데이터 점검: 기사 ${articles.length} · 토픽 ${topics.length} · 브리핑 ${briefings.length} · 이름 읽기 ${Object.keys(readings).length}`,
   );
-  if (hiddenJa || hiddenKo)
-    console.log(`  (경고) 화면에서 숨기는 이름: 일본어 화면 ${hiddenJa}개 · 한국어 화면 ${hiddenKo}개`);
+  if (hiddenJa || hiddenKo || hiddenEn)
+    console.log(
+      `  (경고) 화면에서 숨기는 이름: 일본어 화면 ${hiddenJa}개 · 한국어 화면 ${hiddenKo}개 · 영어 화면 ${hiddenEn}개`,
+    );
+  if (emptyEn) console.log(`  (알림) 아직 비어 있는 영어 ${emptyEn}칸 (채우는 중, 화면은 안내 문구)`);
   for (const [k, x] of leaks.slice(0, 30)) problems.push(`[데이터] ${k}: "${x.slice(0, 50)}"`);
   if (leaks.length > 30) problems.push(`[데이터] … 외 ${leaks.length - 30}건`);
 }
