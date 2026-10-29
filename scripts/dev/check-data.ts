@@ -96,6 +96,12 @@ if (vulns) {
   bad(vulns.cves.length === 0, "고위험 CVE 0건");
 }
 
+// 영어 채우기 진행 (채우는 동안은 비어 있어도 문제로 세지 않는다. 화면은 안내 문구로 대신 보여준다)
+const filled = <T>(xs: T[], ok: (x: T) => boolean) => `${xs.filter(ok).length}/${xs.length}`;
+console.log(
+  `영어 채움: 기사 제목 ${filled(news, (n) => !!n.titleEn)} · 기사 요약 ${filled(news, (n) => !!n.summaryEn?.length)} · 토픽 ${filled(topics, (t) => !!t.titleEn && !!t.summaryEn?.length)} · 브리핑 ${filled(briefings, (b) => !!b.headlineEn && b.items.every((i) => i.titleEn && i.bodyEn && i.whyEn))}`,
+);
+
 // 크기
 const size = (p: string) => (existsSync(p) ? Math.round(statSync(p).size / 1024) : 0);
 console.log(
