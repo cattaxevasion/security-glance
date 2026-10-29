@@ -60,11 +60,15 @@ interface NvdResponse {
   }[];
 }
 
-function pickCvss(metrics: Record<string, NvdCvssMetric[] | undefined> | undefined) {
+const severityOf = (m: NvdCvssMetric) => m.cvssData.baseSeverity ?? m.baseSeverity ?? null;
+
+/** want: NVD에 물어본 등급. 한 CVE에 NVD·제보 기관 점수가 함께 있으면 그 등급으로 걸린 점수를 고른다 */
+export function pickCvss(metrics: Record<string, NvdCvssMetric[] | undefined> | undefined, want?: string) {
   // v3.1을 먼저: NVD에서 v3 기준 HIGH·CRITICAL로 고른 목록이라 v4 점수를 보여주면 MEDIUM·LOW가 섞여 보인다
   for (const key of ["cvssMetricV31", "cvssMetricV30", "cvssMetricV40"]) {
-    const m = metrics?.[key]?.[0];
-    if (m) return { score: m.cvssData.baseScore, severity: m.cvssData.baseSeverity ?? m.baseSeverity ?? null };
+    const list = metrics?.[key] ?? [];
+    const m = list.find((x) => severityOf(x) === want) ?? list[0];
+    if (m) return { score: m.cvssData.baseScore, severity: severityOf(m) };
   }
   return { score: null, severity: null };
 }
@@ -85,7 +89,7 @@ async function fetchNvd(): Promise<CveEntry[]> {
     });
     const data = await fetchJson<NvdResponse>(`${NVD_URL}?${params}`, { headers }, 90000);
     for (const { cve } of data.vulnerabilities) {
-      const { score, severity: sev } = pickCvss(cve.metrics);
+      const { score, severity: sev } = pickCvss(cve.metrics, severity);
       out.push({
         id: cve.id,
         published: cve.published,
