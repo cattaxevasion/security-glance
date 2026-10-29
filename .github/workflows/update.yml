@@ -18,6 +18,9 @@ on:
         description: "전체 실행 (취약점·유출 게시·벤더 리서치까지)"
         type: boolean
         default: false
+      en_fill:
+        description: "영어가 빈 이전 기사·토픽을 이번 실행에서 몇 건까지 채울지 (비우면 기사 150 · 토픽 100)"
+        default: ""
   push:
     branches: [main]
 
@@ -70,6 +73,8 @@ jobs:
           ANTHROPIC_WORKSPACE_ID: ${{ secrets.ANTHROPIC_WORKSPACE_ID }}
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
           MAX_NEW_PER_RUN: ${{ inputs.limit || '80' }}
+          EN_FILL_ARTICLES: ${{ inputs.en_fill }}
+          EN_FILL_TOPICS: ${{ inputs.en_fill }}
 
       - name: Save data to data branch (single commit, force push)
         if: steps.collect.outputs.changed == 'true'
