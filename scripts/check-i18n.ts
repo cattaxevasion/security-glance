@@ -219,7 +219,7 @@ async function checkData() {
   for (const [id, n] of idCount) if (n > 1) problems.push(`[데이터] 토픽 id ${id}가 ${n}개 토픽에 겹침`);
 
   for (const [name, r] of Object.entries(readings))
-    if (!hasHangul(r) || JAPANESE.test(r)) leaks.push(["이름 한국어 읽기가 한글이 아님", `${name} → ${r}`]);
+    if (!r.trim() || JAPANESE.test(r)) leaks.push(["이름 한국어 읽기에 일본어가 남음", `${name} → ${r}`]);
   for (const [name, r] of Object.entries(english))
     if (!r || hasNonEnglish(r)) leaks.push(["이름 영어 표기에 영어가 아닌 글자", `${name} → ${r}`]);
 

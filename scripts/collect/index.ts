@@ -16,7 +16,7 @@ import { splitTopics, TEXT_LANGS, topicFile } from "../../shared/topic-files";
 import type { ArticleRef, Briefing, LeakPost, Meta, NewsItem, RunStats, Topic, VulnData } from "../../shared/types";
 import { collectLeaks, matchLeaks, pruneLeakTopics } from "./leaks";
 import { BODY_CHARS, extractArticle } from "./article";
-import { briefingDue, maybeBriefing, migrateBriefings } from "./briefing";
+import { briefingDue, jstDate, maybeBriefing, migrateBriefings } from "./briefing";
 import {
   auditArticles,
   auditBriefings,
@@ -35,7 +35,7 @@ import { RULES_VERSION, rejudgeResearch, retryWeakBodies } from "./quality";
 import { keywordExclusion } from "./filter";
 import { fetchFeeds, type RawItem, type Source } from "./rss";
 import { EXCLUDED_NATURE, SummaryRefused, summarize, translateToJa } from "./summarize";
-import { idFor, mapLimit, readJson, writeJson } from "./util";
+import { describeError, idFor, isTransientApiError, mapLimit, readJson, writeJson } from "./util";
 import { updateTopics } from "./topics";
 import { collectVulns } from "./vulns";
 
@@ -53,8 +53,16 @@ const META_PATH = "public/data/meta.json";
 const RUN_PATH = "data/run.json";
 /** 전체 실행 간격. 30분 주기 실행이 조금 일찍 와도 놓치지 않게 15분 여유 */
 const FULL_EVERY_MS = 6 * 3600_000 - 15 * 60_000;
-/** 브리핑이 실패하면 이만큼 지난 뒤에 다시 (실패할 때마다 모든 실행이 저장·배포까지 가지 않게) */
+/**
+ * 브리핑이 실패하면(또는 고를 토픽이 없으면) 다시 시도하기까지 기다리는 시간. 실패할 때마다 두 배로 (25분 → 50분 → 100분 …),
+ * 하루(일본 시간)에 최대 MAX_BRIEFING_ATTEMPTS번. 시도마다 Sonnet까지 가는 사다리를 거치고 저장·배포까지 가므로 매 실행 다시 하지 않게
+ */
 const BRIEFING_RETRY_MS = 25 * 60_000;
+const MAX_BRIEFING_ATTEMPTS = 6;
+/** 하루(일본 시간)에 새로 요약할 기사 수 상한 (평소 하루 100~200건). 피드 이상 등으로 비용이 튀지 않게 */
+const DAILY_MAX_SUMMARIES = 600;
+/** 기사 수가 이 비율 아래로 줄면 저장하지 않고 멈춘다 (데이터를 못 받아 빈 상태로 시작한 경우 등). 의도한 것이면 ALLOW_SHRINK=1 */
+const SHRINK_GUARD = 0.7;
 
 interface RunState {
   fullAt?: string;
@@ -63,6 +71,10 @@ interface RunState {
   briefingError?: string;
   /** 마지막 브리핑을 첫 단계가 아닌 단계로 만들었을 때 그 내용 */
   briefingNote?: string;
+  /** 그날(일본 시간) 브리핑을 시도한 횟수 (다시 시도 간격을 늘리는 데 쓴다) */
+  briefingAttempts?: { date: string; n: number };
+  /** 마지막으로 저장·배포까지 간 실행의 코드 커밋. 새 코드로 처음 도는 실행은 새 기사가 없어도 저장·배포한다 */
+  codeSha?: string;
 }
 /** 화면용 가벼운 기사 목록 (news.json은 수집기 내부용) */
 const ARTICLES_PATH = "public/data/articles.json";
@@ -96,8 +108,8 @@ const TRANSLATE_BATCH = 10;
  * 영어가 비어 있는 이전 기사·토픽을 한 실행에 몇 건까지 채울지 (최신 먼저). 저장·배포까지 가는 실행에서만 돈다.
  * 평소에는 30분 주기 실행이 길어지지 않게 작게, 한꺼번에 채우고 싶으면 수동 실행의 en_fill 입력으로 늘린다
  */
-const EN_FILL_ARTICLES = Number(process.env.EN_FILL_ARTICLES || 150);
-const EN_FILL_TOPICS = Number(process.env.EN_FILL_TOPICS || 100);
+const EN_FILL_ARTICLES = clamp(Number(process.env.EN_FILL_ARTICLES || 150), 0, 3000, 150);
+const EN_FILL_TOPICS = clamp(Number(process.env.EN_FILL_TOPICS || 100), 0, 3000, 100);
 
 interface State {
   /** 제외된 기사 id → 판정 시각 (키워드, 보안 무관, 업계 동향). 다시 요약하지 않는다. */
@@ -108,6 +120,8 @@ interface State {
   rejudged: Record<string, number>;
   /** 기사 id → 본문 다시 읽기 시도 횟수 (quality.ts) */
   bodyRetries: Record<string, number>;
+  /** 그날(일본 시간) 새로 요약한 기사 수 (DAILY_MAX_SUMMARIES) */
+  daily: { date: string; summarized: number };
 }
 
 type LegacyNewsItem = Omit<NewsItem, "sourceRegion" | "regions" | "titleEn" | "summaryEn"> & {
@@ -173,6 +187,11 @@ function migrate(items: LegacyNewsItem[], sources: Source[]): NewsItem[] {
   return out;
 }
 
+/** 숫자 입력을 범위 안으로 (수동 실행 입력이 비용을 키우지 않게). 숫자가 아니면 기본값 */
+function clamp(x: number, min: number, max: number, fallback: number): number {
+  return Number.isFinite(x) ? Math.min(max, Math.max(min, Math.round(x))) : fallback;
+}
+
 /** 키·권한·요청 형식 문제는 기사 탓이 아니므로 실패로 세지 않고 이번 실행의 요약을 멈춘다. */
 function isConfigError(e: unknown): e is Error {
   return (
@@ -188,7 +207,7 @@ const dry = args.includes("--dry");
 const forceBriefing = args.includes("--briefing");
 const forceFull = args.includes("--full");
 const limitArg = args.indexOf("--limit");
-const limit = limitArg >= 0 ? Number(args[limitArg + 1]) : Number(process.env.MAX_NEW_PER_RUN ?? 80);
+const limit = clamp(limitArg >= 0 ? Number(args[limitArg + 1]) : Number(process.env.MAX_NEW_PER_RUN || 80), 0, 200, 80);
 
 const cutoff = Date.now() - RETENTION_DAYS * 86400_000;
 
@@ -207,12 +226,15 @@ async function setOutput(key: string, value: string) {
 async function runNews(meta: Meta, full: boolean): Promise<{ news: NewsItem[]; processed: number }> {
   const sources = await loadSources();
   let existing = migrate(await readJson<LegacyNewsItem[]>(NEWS_PATH, []), sources);
+  const prevCount = existing.length;
   const saved = await readJson<Partial<State> & { notSecurity?: Record<string, string> }>(STATE_PATH, {});
+  const today = jstDate();
   const state: State = {
     excluded: { ...saved.notSecurity, ...saved.excluded },
     failures: saved.failures ?? {},
     rejudged: saved.rejudged ?? {},
     bodyRetries: saved.bodyRetries ?? {},
+    daily: saved.daily?.date === today ? saved.daily : { date: today, summarized: 0 },
   };
 
   // 벤더 리서치는 급하지 않고 피드가 커서(수백 건) 전체 실행 때만 읽는다
@@ -254,7 +276,10 @@ async function runNews(meta: Meta, full: boolean): Promise<{ news: NewsItem[]; p
   const queue = [...candidates.entries()].sort((a, b) => b[1].publishedAt.localeCompare(a[1].publishedAt));
   // 키가 없으면 요약을 건너뛰고 다음 실행으로 미룬다 (취약점 수집은 계속)
   if (!hasKey()) console.warn("\nANTHROPIC_API_KEY가 없어 기사 요약을 건너뜁니다.");
-  const batch = hasKey() ? queue.slice(0, limit) : [];
+  const room = Math.max(0, DAILY_MAX_SUMMARIES - state.daily.summarized);
+  if (hasKey() && room < Math.min(limit, queue.length))
+    console.warn(`  !  오늘 요약 상한(${DAILY_MAX_SUMMARIES}건)에 가까워 ${room}건만 요약합니다 (나머지는 다음 날)`);
+  const batch = hasKey() ? queue.slice(0, Math.min(limit, room)) : [];
   console.log(
     `\n새 기사 ${queue.length}건 중 ${batch.length}건 요약 시작 (모델 ${process.env.SUMMARY_MODEL ?? "claude-haiku-5-5"})`,
   );
@@ -269,12 +294,15 @@ async function runNews(meta: Meta, full: boolean): Promise<{ news: NewsItem[]; p
   };
   const added: NewsItem[] = [];
   let configFailed = false;
+  /** 과부하·한도 초과·연결 오류: 실패로 세지 않고 이번 실행의 AI 호출을 멈춘다 (다음 실행에서 그대로 다시) */
+  let apiDown = false;
 
   await mapLimit(batch, CONCURRENCY, async ([id, raw]) => {
-    if (configFailed) return;
+    if (configFailed || apiDown) return;
     try {
       // 벤더 분석 글은 기법·IoC가 뒤쪽에 있어 본문을 더 길게 읽는다
       const body = await extractArticle(raw.url, raw.source.kind === "vendor" ? BODY_CHARS.long : BODY_CHARS.news);
+      state.daily.summarized++;
       const result = await summarize(raw, body);
       if (result.kind === "excluded") {
         state.excluded[id] = new Date().toISOString();
@@ -292,13 +320,19 @@ async function runNews(meta: Meta, full: boolean): Promise<{ news: NewsItem[]; p
       if (dry) console.log(JSON.stringify(item, null, 2));
     } catch (e) {
       if (isConfigError(e)) {
-        if (!configFailed) console.error(`Anthropic 설정 오류로 요약을 중단합니다: ${e.message}`);
+        if (!configFailed) console.error(`Anthropic 설정 오류로 요약을 중단합니다: ${describeError(e)}`);
         configFailed = true;
+        return;
+      }
+      if (isTransientApiError(e)) {
+        if (!apiDown) console.warn(`  !  API 일시 오류로 이번 실행의 요약을 멈춥니다 (실패로 세지 않음): ${describeError(e)}`);
+        apiDown = true;
+        stats.deferred++;
         return;
       }
       state.failures[id] = (state.failures[id] ?? 0) + 1;
       stats.failed++;
-      const why = e instanceof SummaryRefused ? `거절(${e.message})` : (e as Error).message;
+      const why = e instanceof SummaryRefused ? `거절(${e.message})` : describeError(e);
       console.warn(`  !  ${raw.title.slice(0, 60)} → ${why}`);
     }
   });
@@ -310,7 +344,7 @@ async function runNews(meta: Meta, full: boolean): Promise<{ news: NewsItem[]; p
 
   // 일본어가 비어 있는 기존 기사 채우기 (이전 형식에서 넘어온 기사)
   const missingJa = existing.filter((n) => n.summaryJa.length === 0);
-  if (missingJa.length && hasKey() && !configFailed) {
+  if (missingJa.length && hasKey() && !configFailed && !apiDown) {
     const chunks: NewsItem[][] = [];
     for (let i = 0; i < missingJa.length; i += TRANSLATE_BATCH) chunks.push(missingJa.slice(i, i + TRANSLATE_BATCH));
     let filled = 0;
@@ -328,14 +362,14 @@ async function runNews(meta: Meta, full: boolean): Promise<{ news: NewsItem[]; p
         }
       } catch (e) {
         if (isConfigError(e)) configFailed = true;
-        console.warn(`  !  일본어 채우기 실패 (${chunk.length}건): ${(e as Error).message.slice(0, 120)}`);
+        console.warn(`  !  일본어 채우기 실패 (${chunk.length}건): ${describeError(e)}`);
       }
     });
     console.log(`기존 기사 일본어 채움 ${filled}/${missingJa.length}`);
   }
 
   // 품질 점검: 본문 다시 읽기, 새 기준으로 '연구·리포트' 다시 판정 (일반 해설·홍보 제외)
-  if (full && hasKey() && !configFailed) {
+  if (full && hasKey() && !configFailed && !apiDown) {
     const retry = await retryWeakBodies(existing, sources, state);
     const drop = await rejudgeResearch(existing, state);
     for (const id of retry.dropped) drop.add(id);
@@ -357,6 +391,12 @@ async function runNews(meta: Meta, full: boolean): Promise<{ news: NewsItem[]; p
   // 오래된 내부 상태 정리 (피드에서 이미 사라졌을 기사)
   for (const [id, at] of Object.entries(state.excluded)) if (Date.parse(at) < cutoff) delete state.excluded[id];
 
+  // 기사 수가 크게 줄었으면 저장하지 않고 멈춘다: 그대로 저장하면 data 브랜치를 덮어써 되돌릴 수 없다
+  if (!dry && prevCount >= 200 && merged.length < prevCount * SHRINK_GUARD && !process.env.ALLOW_SHRINK)
+    throw new Error(
+      `기사 수가 ${prevCount} → ${merged.length}건으로 크게 줄어 저장을 멈춥니다 (의도한 것이면 ALLOW_SHRINK=1로 다시 실행)`,
+    );
+
   if (!dry) {
     await writeJson(NEWS_PATH, merged);
     await writeJson(STATE_PATH, state);
@@ -377,10 +417,14 @@ async function main() {
 
   const run = await readJson<RunState>(RUN_PATH, {});
   const prevBriefings = migrateBriefings(await readJson<Briefing[]>(BRIEFINGS_PATH, []));
+  // 실패할 때마다 간격을 두 배로, 하루 최대 MAX_BRIEFING_ATTEMPTS번
+  const attempts = run.briefingAttempts?.date === jstDate() ? run.briefingAttempts.n : 0;
+  const retryWait = BRIEFING_RETRY_MS * 2 ** Math.max(0, attempts - 1);
   const briefingWanted =
     forceBriefing ||
     (briefingDue(prevBriefings) &&
-      (!run.briefingTriedAt || Date.now() - Date.parse(run.briefingTriedAt) >= BRIEFING_RETRY_MS));
+      attempts < MAX_BRIEFING_ATTEMPTS &&
+      (!run.briefingTriedAt || Date.now() - Date.parse(run.briefingTriedAt) >= retryWait));
   const full =
     forceFull || mode !== "all" || !run.fullAt || Date.now() - Date.parse(run.fullAt) >= FULL_EVERY_MS;
   console.log(full ? "전체 실행" : `가벼운 실행 (지난 전체 실행 ${run.fullAt})`);
@@ -389,8 +433,12 @@ async function main() {
   let processed = 0;
   if (mode !== "vulns") ({ news, processed } = await runNews(meta, full));
 
-  // 새 기사도, 전체 점검도, 브리핑도 없으면 여기서 끝낸다 (AI 호출·저장·배포 없음)
-  if (!full && !processed && !briefingWanted) {
+  // 새 코드로 처음 도는 실행 (push 실행이 다른 실행에 밀려 취소돼도 새 코드가 배포되게)
+  const newCode = !!process.env.GITHUB_SHA && run.codeSha !== process.env.GITHUB_SHA;
+  if (newCode) console.log(`새 코드(${process.env.GITHUB_SHA?.slice(0, 7)})로 처음 도는 실행: 저장·배포까지 갑니다`);
+
+  // 새 기사도, 전체 점검도, 브리핑도, 새 코드도 없으면 여기서 끝낸다 (AI 호출·저장·배포 없음)
+  if (!full && !processed && !briefingWanted && !newCode) {
     // 코드를 push한 실행은 이렇게 끝나도 배포한다: 화면용 토픽 파일이 예전 형식뿐이면 지금 형식으로 나눠 둔다 (AI 호출 없음)
     if (!dry) await writeTopicFiles(await readJson<Topic[]>(TOPICS_PATH, []), true);
     console.log("\n새 기사 없음: 저장·배포 없이 끝냅니다");
@@ -489,7 +537,7 @@ async function main() {
       try {
         matched = await matchLeaks(leaks, topics);
       } catch (e) {
-        console.warn(`  !  유출 게시와 보도 연결 실패: ${(e as Error).message.slice(0, 120)}`);
+        console.warn(`  !  유출 게시와 보도 연결 실패: ${describeError(e)}`);
       }
     }
     console.log(
@@ -504,7 +552,10 @@ async function main() {
   if (hasKey()) {
     try {
       const prev = prevBriefings;
-      if (briefingWanted) run.briefingTriedAt = new Date().toISOString();
+      if (briefingWanted) {
+        run.briefingTriedAt = new Date().toISOString();
+        run.briefingAttempts = { date: jstDate(), n: attempts + 1 };
+      }
       const { briefings, made, note } = briefingWanted
         ? await maybeBriefing(topics, prev, forceBriefing)
         : { briefings: prev, made: false, note: undefined };
@@ -522,8 +573,8 @@ async function main() {
       if (gate) console.warn(`  !  마지막 확인(브리핑)에서 기계 변환 ${gate}건`);
       if (!dry && (made || total.fixed || total.forced || gate)) await writeJson(BRIEFINGS_PATH, briefings);
     } catch (e) {
-      run.briefingError = `${new Date().toISOString()} ${(e as Error).message.slice(0, 600)}`;
-      console.warn(`  !  브리핑 실패: ${(e as Error).message.slice(0, 600)}`);
+      run.briefingError = `${new Date().toISOString()} ${describeError(e).slice(0, 600)}`;
+      console.warn(`  !  브리핑 실패: ${describeError(e).slice(0, 600)}`);
     }
   }
 
@@ -554,6 +605,7 @@ async function main() {
   meta.updatedAt = new Date().toISOString();
   if (!dry) {
     await writeJson(META_PATH, meta);
+    if (process.env.GITHUB_SHA) run.codeSha = process.env.GITHUB_SHA;
     await writeJson(RUN_PATH, full ? { ...run, fullAt: meta.updatedAt } : run);
   }
   await setOutput("changed", "true");

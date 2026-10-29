@@ -8,7 +8,7 @@ import type { NewsItem } from "../../shared/types";
 import { BODY_CHARS, extractArticle } from "./article";
 import type { RawItem, Source } from "./rss";
 import { anthropic, MODEL, NATURE_RULES, SummaryRefused, summarize } from "./summarize";
-import { mapLimit } from "./util";
+import { describeError, isTransientApiError, mapLimit } from "./util";
 
 /** 다시 판정 기준의 판. 기준을 바꾸면 올려서 다시 판정하게 한다. */
 export const RULES_VERSION = 3;
@@ -77,7 +77,7 @@ export async function rejudgeResearch(news: NewsItem[], st: QualityState): Promi
         }
       }
     } catch (e) {
-      console.warn(`  !  다시 판정 실패 (${batch.length}건): ${(e as Error).message.slice(0, 120)}`);
+      console.warn(`  !  다시 판정 실패 (${batch.length}건): ${describeError(e)}`);
     }
   });
   return drop;
@@ -114,7 +114,9 @@ export async function retryWeakBodies(news: NewsItem[], sources: Source[], st: Q
       result.improved++;
       console.log(`  +  [본문 다시 읽기 성공] ${n.sourceName} · ${n.title.slice(0, 60)}`);
     } catch (e) {
-      console.warn(`  !  다시 요약 실패: ${n.title.slice(0, 50)} → ${(e as Error).message.slice(0, 100)}`);
+      // API 일시 오류는 기사 탓이 아니므로 본문 다시 읽기 기회를 쓰지 않은 것으로 되돌린다
+      if (isTransientApiError(e)) st.bodyRetries[n.id]--;
+      console.warn(`  !  다시 요약 실패: ${n.title.slice(0, 50)} → ${describeError(e)}`);
     }
   });
   return result;

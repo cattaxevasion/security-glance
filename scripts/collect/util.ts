@@ -1,3 +1,4 @@
+import Anthropic from "@anthropic-ai/sdk";
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
@@ -80,12 +81,37 @@ export function cleanText(s: string | undefined | null): string {
   return (s ?? "").replace(/\s+/g, " ").trim();
 }
 
+/**
+ * JSON 파일 읽기. 파일이 없을 때만 fallback을 돌려준다.
+ * 깨진 파일은 오류로 멈춘다: 빈 값으로 이어 가면 그 결과가 data 브랜치를 덮어써 그동안의 데이터가 사라진다.
+ */
 export async function readJson<T>(path: string, fallback: T): Promise<T> {
+  let text: string;
   try {
-    return JSON.parse(await readFile(path, "utf8")) as T;
-  } catch {
-    return fallback;
+    text = await readFile(path, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return fallback;
+    throw e;
   }
+  return JSON.parse(text) as T;
+}
+
+/**
+ * 잠깐 기다리면 풀리는 API 오류인가 (과부하·한도 초과·서버 오류·연결 끊김).
+ * 기사 탓이 아니므로 실패로 세지 않고 이번 실행의 요약을 멈춘다 (세면 장애 한 시간에 그사이 기사를 영구히 놓친다).
+ */
+export function isTransientApiError(e: unknown): boolean {
+  if (e instanceof Anthropic.APIConnectionError) return true;
+  if (e instanceof Anthropic.APIError) return e.status === 429 || (e.status ?? 0) >= 500;
+  return false;
+}
+
+/**
+ * 로그·data/run.json에 남길 오류 설명. API 오류는 종류와 상태 코드만 (공개 저장소라 원문에 섞일 수 있는 한도·잔액 안내를 남기지 않는다)
+ */
+export function describeError(e: unknown): string {
+  if (e instanceof Anthropic.APIError) return `${e.constructor.name}${e.status ? ` ${e.status}` : ""}`;
+  return String((e as Error)?.message ?? e).slice(0, 160);
 }
 
 export async function writeJson(path: string, data: unknown): Promise<void> {

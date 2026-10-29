@@ -207,7 +207,12 @@ let client: Anthropic | null = null;
 export function anthropic(): Anthropic {
   // 워크스페이스에 묶이지 않은 키는 요청마다 워크스페이스 ID 헤더가 필요하다
   const workspace = process.env.ANTHROPIC_WORKSPACE_ID;
-  client ??= new Anthropic(workspace ? { defaultHeaders: { "anthropic-workspace-id": workspace } } : {});
+  // 요청 하나가 멈춰 실행 전체를 붙잡지 않게 (SDK 기본은 10분 × 재시도). 가장 긴 호출(FIX_MODEL·출력 16000)도 3분 안에 끝난다
+  client ??= new Anthropic({
+    timeout: 180_000,
+    maxRetries: 2,
+    ...(workspace ? { defaultHeaders: { "anthropic-workspace-id": workspace } } : {}),
+  });
   return client;
 }
 

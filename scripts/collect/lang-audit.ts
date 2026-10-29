@@ -33,7 +33,7 @@ import {
 } from "../../shared/lang";
 import type { Briefing, NewsItem, Topic } from "../../shared/types";
 import { anthropic, EN_RULES, MODEL, SummaryRefused, translateToEn, translateToJa, type Effort } from "./summarize";
-import { mapLimit } from "./util";
+import { describeError, mapLimit } from "./util";
 
 /** 기본 모델로 두 번 고쳐도 남을 때 맡기는 더 강한 모델 */
 export const FIX_MODEL = process.env.FIX_MODEL ?? "claude-sonnet-5-5";
@@ -83,7 +83,7 @@ async function untilClean<T>(
         await attempt(chunk, step);
       } catch (e) {
         console.warn(
-          `  !  ${label} 실패 (${step.model}/${step.effort}, ${chunk.length}건): ${(e as Error).message.slice(0, 120)}`,
+          `  !  ${label} 실패 (${step.model}/${step.effort}, ${chunk.length}건): ${describeError(e)}`,
         );
       }
     });
@@ -102,9 +102,16 @@ function refusal(response: { stop_reason: string | null; stop_details?: { catego
 
 // ── 기계 변환 기록 ────────────────────────────────────────────────────
 
-/** 기계 변환한 필드: 키(범위:id:필드) → 원래 값과 변환한 값 */
-export type ForcedStore = Record<string, { orig: unknown; forced: unknown }>;
+/** 기계 변환한 필드: 키(범위:id:필드) → 원래 값과 변환한 값, 기계 변환까지 간 횟수 */
+export type ForcedStore = Record<string, { orig: unknown; forced: unknown; tries?: number }>;
 let store: ForcedStore = {};
+/**
+ * 같은 필드를 이만큼 기계 변환으로 마무리했으면 더 되돌려 고치지 않고 기계 변환한 값을 그대로 둔다.
+ * (되돌릴 때마다 기본 모델 두 번 + FIX_MODEL까지 다시 가므로, 모델이 끝내 못 고치는 글이면 비용만 계속 든다)
+ */
+const MAX_FORCED_TRIES = 3;
+/** 이번 실행에서 되돌리려고 기록을 지운 필드의 지난 횟수 (다시 기계 변환하면 이어서 센다) */
+const carried: Record<string, number> = {};
 
 export function loadForced(s: ForcedStore | null) {
   store = s ?? {};
@@ -115,7 +122,15 @@ export function forcedStore(): ForcedStore {
 
 function remember(key: string, orig: unknown, forced: unknown) {
   if (JSON.stringify(orig) === JSON.stringify(forced)) return;
-  store[key] = { orig: store[key]?.orig ?? orig, forced };
+  store[key] = { orig: store[key]?.orig ?? orig, forced, tries: (store[key]?.tries ?? carried[key] ?? 0) + 1 };
+}
+
+/** 되돌려 다시 고칠 기록인가 (아직 횟수가 남았나). 되돌리기 전에 지난 횟수를 넘겨 둔다 */
+function retryable(key: string): boolean {
+  const e = store[key];
+  if (!e) return false;
+  carried[key] = e.tries ?? 1;
+  return carried[key] < MAX_FORCED_TRIES;
 }
 
 /**
@@ -125,8 +140,9 @@ function remember(key: string, orig: unknown, forced: unknown) {
 function restore<T extends object>(scope: string, entries: [string, T, (keyof T)[]][]) {
   for (const [id, obj, fields] of entries)
     for (const f of fields) {
-      const e = store[`${scope}:${id}:${String(f)}`];
-      if (e && JSON.stringify(obj[f]) === JSON.stringify(e.forced)) obj[f] = e.orig as T[keyof T];
+      const key = `${scope}:${id}:${String(f)}`;
+      const e = store[key];
+      if (e && JSON.stringify(obj[f]) === JSON.stringify(e.forced) && retryable(key)) obj[f] = e.orig as T[keyof T];
     }
   for (const k of Object.keys(store)) if (k.startsWith(`${scope}:`)) delete store[k];
 }
@@ -479,7 +495,7 @@ export async function fillEnglish<T extends Bilingual>(
         filled++;
       }
     } catch (e) {
-      console.warn(`  !  영어 채우기 실패 (${chunk.length}건): ${(e as Error).message.slice(0, 120)}`);
+      console.warn(`  !  영어 채우기 실패 (${chunk.length}건): ${describeError(e)}`);
     }
   });
   return { filled, missing: missing.length };
@@ -517,7 +533,27 @@ async function fixHangulNames(news: NewsItem[]): Promise<number> {
   return changed;
 }
 
-const validReading = (ko: string) => hasHangul(ko) && !JAPANESE.test(ko) && !/[()（）「」『』【】]/.test(ko);
+/** 한국어 화면용 읽기: 한글이 있거나, 영문·숫자만인 이름(KDDI株式会社 → KDDI)도 그대로 쓸 수 있다 */
+const validReading = (ko: string) =>
+  (hasHangul(ko) || /^[\x20-\x7e]*[A-Za-z0-9][\x20-\x7e]*$/.test(ko)) && !JAPANESE.test(ko) && !/[()（）「」『』【】]/.test(ko);
+
+/**
+ * 지난 실행에서 기계 변환으로 마무리한 이름들. retry: 모델에게 다시 물을 이름, givenUp: MAX_FORCED_TRIES번 기계 변환해서
+ * 더 묻지 않는 이름 (기록은 남겨 둔다). 다시 물을 이름의 기록은 지운다 (이번에 또 기계 변환하면 횟수를 이어서 다시 남긴다)
+ */
+function forcedNames(prefix: string): { retry: Set<string>; givenUp: Set<string> } {
+  const retry = new Set<string>();
+  const givenUp = new Set<string>();
+  for (const k of Object.keys(store)) {
+    if (!k.startsWith(prefix)) continue;
+    const name = k.slice(prefix.length);
+    if (retryable(k)) {
+      retry.add(name);
+      delete store[k];
+    } else givenUp.add(name);
+  }
+  return { retry, givenUp };
+}
 const JP_RUN = /[぀-ヿㇰ-ㇿ㐀-䶿一-鿿ｦ-ﾟ]+/g;
 
 /**
@@ -530,13 +566,12 @@ export async function updateNameReadings(
 ): Promise<{ readings: Record<string, string>; count: FixCount }> {
   const targets = [...new Set(names.filter((n) => JAPANESE.test(n)))];
   const readings: Record<string, string> = {};
-  const retry = new Set(Object.keys(store).filter((k) => k.startsWith("name:")).map((k) => k.slice(5)));
-  for (const k of Object.keys(store)) if (k.startsWith("name:")) delete store[k];
+  const { retry, givenUp } = forcedNames("name:");
   for (const n of targets) if (prev[n] && validReading(prev[n]) && !retry.has(n)) readings[n] = prev[n];
   for (const n of targets) if (KNOWN_NAMES[n]) readings[n] = KNOWN_NAMES[n].ko;
   const count = await untilClean(
     "이름 한국어 읽기",
-    targets.filter((n) => !readings[n]),
+    targets.filter((n) => !readings[n] && !givenUp.has(n)),
     (n) => !readings[n],
     async (chunk, step) => {
       for (const [k, v] of await readNames(chunk, step)) if (chunk.includes(k) && validReading(v)) readings[k] = v;
@@ -544,7 +579,7 @@ export async function updateNameReadings(
     (n) => {
       const ko = kanaToHangul(n).replace(JP_RUN, " ").replace(/\s+/g, " ").trim();
       if (validReading(ko)) readings[n] = ko;
-      store[`name:${n}`] = { orig: null, forced: ko };
+      store[`name:${n}`] = { orig: null, forced: ko, tries: (carried[`name:${n}`] ?? 0) + 1 };
     },
     (n) => n,
     4,
@@ -565,13 +600,12 @@ export async function updateNameEnglish(
 ): Promise<{ english: Record<string, string>; count: FixCount }> {
   const targets = [...new Set(names.filter((n) => JAPANESE.test(n)))];
   const english: Record<string, string> = {};
-  const retry = new Set(Object.keys(store).filter((k) => k.startsWith("name-en:")).map((k) => k.slice(8)));
-  for (const k of Object.keys(store)) if (k.startsWith("name-en:")) delete store[k];
+  const { retry, givenUp } = forcedNames("name-en:");
   for (const n of targets) if (prev[n] && validEnglishName(prev[n]) && !retry.has(n)) english[n] = prev[n];
   for (const n of targets) if (KNOWN_NAMES[n]) english[n] = KNOWN_NAMES[n].en;
   const count = await untilClean(
     "이름 영어 표기",
-    targets.filter((n) => !english[n]),
+    targets.filter((n) => !english[n] && !givenUp.has(n)),
     (n) => !english[n],
     async (chunk, step) => {
       for (const [k, v] of await englishNames(chunk, step))
@@ -586,7 +620,7 @@ export async function updateNameEnglish(
           .trim(),
       );
       if (validEnglishName(en)) english[n] = en;
-      store[`name-en:${n}`] = { orig: null, forced: en };
+      store[`name-en:${n}`] = { orig: null, forced: en, tries: (carried[`name-en:${n}`] ?? 0) + 1 };
     },
     (n) => n,
     4,
@@ -665,7 +699,7 @@ function briefingSlots(briefings: Briefing[]) {
 function restoreSlots(slots: Slot[], prefix: string) {
   for (const x of slots) {
     const e = store[x.key];
-    if (e && x.get() === e.forced) x.set(e.orig as string);
+    if (e && x.get() === e.forced && retryable(x.key)) x.set(e.orig as string);
   }
   for (const k of Object.keys(store)) if (k.startsWith(prefix)) delete store[k];
 }
