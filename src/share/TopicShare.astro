@@ -1,13 +1,14 @@
 ---
 // 토픽 공유 페이지: 링크 미리보기용 메타(제목·요약)만 담고, 열면 사이트의 그 토픽으로 보낸다.
 import type { Topic } from "../../shared/types";
+import type { Lang } from "../i18n";
 import { existsSync } from "node:fs";
 import { summaryOf, titleOf } from "../components/text";
 import { ogFile } from "./og";
 
 interface Props {
   topic: Topic;
-  lang: "ko" | "ja";
+  lang: Lang;
 }
 const { topic, lang } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");

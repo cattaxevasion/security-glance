@@ -11,8 +11,8 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
     <meta name="robots" content="noindex" />
     <title>Security Glance</title>
     <script is:inline define:vars={{ base }}>
-      const m = location.pathname.match(/\/(ja\/)?t\/([0-9a-f]{8,32})\/?$/);
-      location.replace(m ? `${base}?sel=${m[2]}&lang=${m[1] ? "ja" : "ko"}` : base);
+      const m = location.pathname.match(/\/(?:(ja|en)\/)?t\/([0-9a-f]{8,32})\/?$/);
+      location.replace(m ? `${base}?sel=${m[2]}&lang=${m[1] || "ko"}` : base);
     </script>
   </head>
   <body>

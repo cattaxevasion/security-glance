@@ -266,6 +266,8 @@ export async function summarize(raw: RawItem, body: string | null): Promise<Summ
   if (!r) throw new Error(`parse failed (stop_reason=${response.stop_reason})`);
   if (!r.isSecurity) return { kind: "excluded", reason: "보안 무관" };
   if (r.nature === EXCLUDED_NATURE) return { kind: "excluded", reason: "업계 동향" };
+  // 요약이 비어 오면 저장하지 않고 실패로 센다 (다음 실행에서 다시. 저장하면 다시 요약할 기회가 없다)
+  if (!lines(r.summaryKo).length) throw new Error("empty summary");
 
   const regions = uniq(r.regions);
   return {

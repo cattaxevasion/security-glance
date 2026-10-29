@@ -15,7 +15,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Briefing, Topic } from "../../shared/types";
 import { REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import { NATURE_ICON, natureGradient } from "./marks";
-import { textOf } from "./text";
+import { pendingEn, textOf } from "./text";
 import { nb } from "./NoBreak";
 
 const COVER_MS = 5000;
@@ -88,7 +88,8 @@ const useStyles = makeStyles({
     minHeight: 0,
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
+    // safe center: 글이 카드보다 길면 위에서부터 (그냥 center는 위쪽이 잘려 스크롤로도 볼 수 없다). 모르는 브라우저는 center
+    justifyContent: ["center", "safe center"],
     gap: "12px",
     overflowY: "auto",
     animationName: { from: { opacity: 0, transform: "translateX(16px)" }, to: { opacity: 1, transform: "none" } },
@@ -119,6 +120,10 @@ const useStyles = makeStyles({
   coverText: { margin: 0, fontSize: "18px", lineHeight: "30px", fontWeight: tokens.fontWeightSemibold },
   title: { margin: 0, fontSize: "22px", lineHeight: "31px", fontWeight: tokens.fontWeightBold },
   body: { margin: 0, fontSize: "15px", lineHeight: "25px", color: "rgba(255,255,255,0.95)" },
+  // 영어는 같은 내용이 한국어·일본어보다 길어서 카드에 들어가게 한 단계 작게
+  titleEn: { fontSize: "20px", lineHeight: "27px" },
+  bodyEn: { fontSize: "14px", lineHeight: "22px" },
+  whyEn: { fontSize: tokens.fontSizeBase200, lineHeight: "19px" },
   why: {
     display: "flex",
     gap: "8px",
@@ -319,7 +324,7 @@ export function BriefingStories({ lang, briefing, topics, dateLabel, onOpen }: P
             <>
               <span className={s.coverDate}>{dateLabel}</span>
               <h2 className={s.coverTitle}>{t.briefingTitle}</h2>
-              <p className={s.coverText}>{nb(textOf(lang, briefing.headlineKo, briefing.headlineJa))}</p>
+              <p className={s.coverText}>{nb(pendingEn(lang, textOf(lang, briefing.headlineKo, briefing.headlineJa, briefing.headlineEn)))}</p>
             </>
           ) : (
             <>
@@ -333,13 +338,13 @@ export function BriefingStories({ lang, briefing, topics, dateLabel, onOpen }: P
                   {t.sourcesCount(slide.topic.sources.length)}
                 </span>
               )}
-              <h2 className={s.title}>{nb(textOf(lang, slide.item.titleKo, slide.item.titleJa))}</h2>
-              <p className={s.body}>{nb(textOf(lang, slide.item.bodyKo, slide.item.bodyJa))}</p>
-              <div className={s.why}>
+              <h2 className={mergeClasses(s.title, lang === "en" && s.titleEn)}>{nb(pendingEn(lang, textOf(lang, slide.item.titleKo, slide.item.titleJa, slide.item.titleEn)))}</h2>
+              <p className={mergeClasses(s.body, lang === "en" && s.bodyEn)}>{nb(pendingEn(lang, textOf(lang, slide.item.bodyKo, slide.item.bodyJa, slide.item.bodyEn)))}</p>
+              <div className={mergeClasses(s.why, lang === "en" && s.whyEn)}>
                 <LightbulbRegular style={{ fontSize: 18, flexShrink: 0, marginTop: 2 }} aria-hidden />
                 <span>
                   <span className={s.whyLabel}>{t.briefingWhy}</span>
-                  {nb(textOf(lang, slide.item.whyKo, slide.item.whyJa))}
+                  {nb(pendingEn(lang, textOf(lang, slide.item.whyKo, slide.item.whyJa, slide.item.whyEn)))}
                 </span>
               </div>
             </>

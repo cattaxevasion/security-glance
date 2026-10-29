@@ -1,6 +1,6 @@
 # Security Glance
 
-일본 · 국제 보안 이슈를 뉴스와 보안 벤더 리서치에서 모아, 같은 사건끼리 묶어 정리(まとめ)하고 매일 아침 브리핑을 만드는 개인 대시보드. 요약은 한국어·일본어. 기획은 [PLAN.md](PLAN.md)에 있다.
+일본 · 국제 보안 이슈를 뉴스와 보안 벤더 리서치에서 모아, 같은 사건끼리 묶어 정리(まとめ)하고 매일 아침 브리핑을 만드는 개인 대시보드. 요약은 한국어·일본어·영어. 기획은 [PLAN.md](PLAN.md)에 있다.
 
 사이트: https://cattaxevasion.github.io/security-glance/
 
@@ -41,7 +41,7 @@ npm run check:i18n -- --data    # 화면이 받는 데이터 파일도 검사 (�
 ```
 
 - 화면 문구는 반드시 `src/i18n.ts`에 둔다. 컴포넌트에 한글·일본어를 직접 쓰면 검사가 실패한다 (주석·태그 값은 예외).
-- 일본어 화면용 글은 `src/components/text.ts`의 `titleOf` / `summaryOf` / `namesOf`로 고른다.
+- 화면 언어별 글은 `src/components/text.ts`의 `titleOf` / `summaryOf` / `textOf` / `namesOf`로 고른다 (영어가 아직 비어 있으면 안내 문구).
 - 데이터 쪽은 수집기의 언어 점검(`scripts/collect/lang-audit.ts`)이 같은 실행 안에서 고치고 확인한 뒤 반영한다.
   일본어 칸의 한글은 다시 번역하고, 한국어 칸에 남은 일본어는 「다이이치생명(第一生命保険)」처럼 한글 읽기 + 괄호 원문으로 고쳐 쓴다.
   고치는 순서: 기본 모델 → 남은 부분을 짚어 주고 다시 → 더 강한 모델(`FIX_MODEL`, 기본 claude-sonnet-5-5) → 그래도 남으면 기계 변환(가나 → 한글 소리).
@@ -80,19 +80,21 @@ shared/                 태그 체계, 데이터 타입 (수집기와 화면이 
 scripts/collect/        수집기: rss → article(본문) → summarize(Claude) / vulns(KEV·NVD·EPSS)
                         → topics(묶기·통합 요약·중요도) → briefing(오늘의 브리핑)
 public/data/            화면이 읽는 JSON (data 브랜치에서 받음, git 추적 안 함)
-                        articles.json(화면용 가벼운 기사 목록), topics-recent.json(최근 31일 토픽, 첫 화면)
-                        topics-archive.json(그 이전 토픽, 화면이 뜬 뒤에 받음)
+                        articles.json(화면용 가벼운 기사 목록)
+                        topics-recent-core.json + topics-recent-{ko,ja,en}.json(최근 31일 토픽, 첫 화면. 언어와 무관한 부분 + 화면 언어의 제목·요약만 받는다)
+                        topics-archive-core.json + topics-archive-{ko,ja,en}.json(그 이전 토픽, 화면이 뜬 뒤에 받음)
                         vulns-core.json(KEV·EPSS, 첫 화면) · cves.json(고위험 CVE, 나중에 받음)
                         leaks.json(랜섬웨어 유출 사이트 게시·일본, ransomware.live 집계 — 공격 조직의 주장)
                         names-ko.json(일본어 이름의 한국어 읽기) · names-en.json(일본어 이름의 영어 표기)
                         news.json·topics.json·vulns.json(수집기 내부용 전체본, 사이트엔 안 올림)
-src/pages/t/[id].astro  토픽 공유 페이지 (링크 미리보기에 토픽 제목·요약, 열면 사이트의 그 토픽으로). 일본어는 /ja/t/[id]/
+src/pages/t/[id].astro  토픽 공유 페이지 (링크 미리보기에 토픽 제목·요약, 열면 사이트의 그 토픽으로). 일본어는 /ja/t/[id]/, 영어는 /en/t/[id]/
+shared/topic-files.ts   화면용 토픽 파일을 언어별로 나누고 합치기 (수집기·화면·빌드·검사가 같이 씀)
 data/                   내부 상태: state.json(제외·실패·다시 판정 기록), merge-checked.json(토픽 합치기 기록),
                         lang-forced.json(기계 변환한 필드의 원래 글 — 다음 실행에서 모델로 다시 고침)
 scripts/collect/quality.ts  품질 점검: 일반 해설·홍보 글 다시 판정, 본문 다시 읽기
 src/components/         Fluent 2 화면 (React): AppHeader, AppNav, BriefingPage, IncidentsPage, TopicsPage, VulnPage, DetailPanel
                         motion.ts(Fluent 모션 토큰 기반 애니메이션)
-src/i18n.ts             한/日 화면 글자와 태그 라벨
+src/i18n.ts             한/日/英 화면 글자와 태그 라벨
 ```
 
 기사 저작권은 각 언론사와 기관에 있다. 이 사이트는 제목, 링크, AI 요약만 보여준다.

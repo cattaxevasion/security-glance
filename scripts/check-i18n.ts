@@ -11,8 +11,9 @@ import { readdir, readFile } from "node:fs/promises";
 import { extname, join, relative } from "node:path";
 import { hasHangul, hasNonEnglish, hasRawJapanese, JAPANESE } from "../shared/lang";
 import { ATTACK_TYPES, IOC_TYPES, NATURES, REGIONS, SECTORS } from "../shared/taxonomy";
-import type { ArticleRef, Briefing, Topic } from "../shared/types";
-import { REGION_LABELS, SOURCE_LABELS, STRINGS, tagLabel } from "../src/i18n";
+import { readSiteTopics } from "../shared/topic-files-node";
+import type { ArticleRef, Briefing } from "../shared/types";
+import { REGION_LABELS, SOURCE_LABELS, STRINGS, tagLabel, VULN_TYPES } from "../src/i18n";
 
 const TAXONOMY = new Set<string>([...ATTACK_TYPES, ...SECTORS, ...NATURES, ...IOC_TYPES]);
 /** 데이터 키가 아닌데도 허용하는 한글 문자열 (지금은 없음. 언어 이름도 i18n.ts의 LANG_NAMES에 둔다) */
@@ -147,6 +148,23 @@ function checkTranslations() {
     }
   };
   for (const [k, v] of Object.entries(STRINGS.ko)) visitKo(k, v);
+
+  // 영어: 화면 문구·태그·지역·취약점 종류에 한글·가나·한자가 한 글자도 없어야 하고, 태그는 번역이 빠지면 안 된다
+  const visitEn = (path: string, v: unknown) => {
+    if (typeof v === "string") {
+      if (hasNonEnglish(v)) problems.push(`STRINGS.en.${path}에 영어가 아닌 글자: "${v.slice(0, 40)}"`);
+    } else if (typeof v === "function") {
+      visitEn(`${path}()`, (v as (...a: unknown[]) => unknown)("X", "Y"));
+      visitEn(`${path}(1)`, (v as (...a: unknown[]) => unknown)(1, 2));
+    } else if (v && typeof v === "object") {
+      for (const [k, x] of Object.entries(v)) visitEn(`${path}.${k}`, x);
+    }
+  };
+  for (const [k, v] of Object.entries(STRINGS.en)) visitEn(k, v);
+  for (const v of TAXONOMY)
+    if (hasNonEnglish(tagLabel("en", v))) problems.push(`태그 "${v}"의 영어 라벨이 없음 (src/i18n.ts의 *_EN 표에 추가)`);
+  for (const r of REGIONS) if (hasNonEnglish(REGION_LABELS.en[r])) problems.push(`지역 "${r}"의 영어 라벨에 영어가 아닌 글자`);
+  for (const v of VULN_TYPES) if (hasNonEnglish(v.en)) problems.push(`취약점 종류 "${v.ko}"의 영어 표기에 영어가 아닌 글자`);
 }
 
 /**
@@ -161,11 +179,8 @@ async function checkData() {
       return d;
     }
   };
-  // 화면용으로 나눈 토픽 파일이 있으면 그것을, 없으면(오래된 로컬 데이터) 전체본을 본다
-  const recent = await read<Topic[] | null>("public/data/topics-recent.json", null);
-  const topics = recent
-    ? [...recent, ...(await read<Topic[]>("public/data/topics-archive.json", []))]
-    : await read<Topic[]>("public/data/topics.json", []);
+  // 화면용으로 나눈 토픽 파일(세 언어)을 합쳐서 본다. 없으면(오래된 로컬 데이터) 전체본
+  const topics = readSiteTopics();
   const articles = await read<ArticleRef[]>("public/data/articles.json", []);
   const briefings = await read<Briefing[]>("public/data/briefings.json", []);
   const readings = await read<Record<string, string>>("public/data/names-ko.json", {});
@@ -232,10 +247,13 @@ async function checkSourceLabels() {
   for (const { name } of sources) {
     const ko = SOURCE_LABELS.ko[name];
     const ja = SOURCE_LABELS.ja[name];
+    const en = SOURCE_LABELS.en[name];
     if (hasRawJapanese(name) && (!ko || hasRawJapanese(ko)))
       problems.push(`매체 "${name}"의 한국어 표기가 없음 (src/i18n.ts의 SOURCE_LABELS.ko에 추가)`);
     if (hasHangul(name) && (!ja || hasHangul(ja)))
       problems.push(`매체 "${name}"의 일본어 표기가 없음 (src/i18n.ts의 SOURCE_LABELS.ja에 추가)`);
+    if (hasNonEnglish(name) && (!en || hasNonEnglish(en)))
+      problems.push(`매체 "${name}"의 영어 표기가 없음 (src/i18n.ts의 SOURCE_LABELS.en에 추가)`);
   }
 }
 

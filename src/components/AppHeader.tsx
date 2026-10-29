@@ -189,6 +189,9 @@ export function AppHeader({
               <MenuItemRadio name="lang" value="ja">
                 {LANG_NAMES.ja}
               </MenuItemRadio>
+              <MenuItemRadio name="lang" value="en">
+                {LANG_NAMES.en}
+              </MenuItemRadio>
             </MenuList>
           </MenuPopover>
         </Menu>

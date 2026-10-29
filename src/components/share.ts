@@ -4,5 +4,5 @@ import type { Lang } from "../i18n";
 
 export function shareUrl(lang: Lang, id: string): string {
   const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
-  return new URL(`${base}${lang === "ja" ? "ja/" : ""}t/${id}/`, location.origin).href;
+  return new URL(`${base}${lang === "ko" ? "" : `${lang}/`}t/${id}/`, location.origin).href;
 }

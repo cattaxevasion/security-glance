@@ -10,7 +10,9 @@
 // 30분마다 돈다. 평소에는 가벼운 실행: 매체 피드만 보고, 새 기사가 없으면 저장·배포 없이 바로 끝낸다.
 // 6시간마다 전체 실행: 벤더 리서치 피드, 취약점(KEV·NVD·EPSS), 랜섬웨어 유출 게시, 기사 품질 점검까지.
 import Anthropic from "@anthropic-ai/sdk";
-import { appendFile, readFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
+import { appendFile, readFile, rm } from "node:fs/promises";
+import { splitTopics, TEXT_LANGS, topicFile } from "../../shared/topic-files";
 import type { ArticleRef, Briefing, LeakPost, Meta, NewsItem, RunStats, Topic, VulnData } from "../../shared/types";
 import { collectLeaks, matchLeaks, pruneLeakTopics } from "./leaks";
 import { BODY_CHARS, extractArticle } from "./article";
@@ -72,10 +74,12 @@ const NAMES_KO_PATH = "public/data/names-ko.json";
 const NAMES_EN_PATH = "public/data/names-en.json";
 /** 기계 변환한 필드의 원래 글 (다음 실행에서 모델로 다시 고친다) */
 const LANG_FORCED_PATH = "data/lang-forced.json";
-/** 첫 화면에 필요한 최근 토픽 (인시던트 기본 기간 30일 + 여유 하루) */
-const TOPICS_RECENT_PATH = "public/data/topics-recent.json";
-/** 그보다 오래된 토픽. 화면이 뜬 뒤에 불러온다. */
-const TOPICS_ARCHIVE_PATH = "public/data/topics-archive.json";
+/**
+ * 화면용 토픽은 최근(첫 화면, 인시던트 기본 기간 30일 + 여유 하루)과 그 이전(화면이 뜬 뒤에 불러옴)으로 나누고,
+ * 각각 언어와 무관한 부분과 언어별 제목·요약으로 다시 나눈다 (shared/topic-files.ts: topics-recent-core.json + topics-recent-{ko,ja,en}.json).
+ * 나누기 전의 파일이 남아 있으면 지운다 (data 브랜치에서 실행마다 되살아나지 않게)
+ */
+const LEGACY_TOPIC_PATHS = ["public/data/topics-recent.json", "public/data/topics-archive.json"];
 const RECENT_DAYS = 31;
 const BRIEFINGS_PATH = "public/data/briefings.json";
 /** 토픽 다시 합치기에서 이미 물어본 토픽 쌍 (다시 묻지 않는다) */
@@ -122,9 +126,10 @@ type LegacyNewsItem = Omit<NewsItem, "sourceRegion" | "regions" | "titleEn" | "s
  * - 한국 범위 제외(2026-10-15): 한국 매체 기사 삭제, 지역에서 KR 제거
  * - sourceKind, techniques, iocTypes 기본값
  * - 영어 필드(2026-10): 영어 매체 기사는 원제목이 곧 영어 제목, 나머지는 빈 값 (채우기 단계가 채운다)
+ * - 한국어 요약이 빈 기사 삭제 (모델이 빈 요약을 돌려준 것. 피드에 아직 있으면 새 기사로 다시 요약된다)
  */
 function migrate(items: LegacyNewsItem[], sources: Source[]): NewsItem[] {
-  const dropped = { nature: 0, korea: 0, url: 0 };
+  const dropped = { nature: 0, korea: 0, url: 0, empty: 0 };
   const out: NewsItem[] = [];
   for (const { summary, socPoint: _socPoint, ...n } of items) {
     if (n.nature === EXCLUDED_NATURE) {
@@ -140,6 +145,11 @@ function migrate(items: LegacyNewsItem[], sources: Source[]): NewsItem[] {
       dropped.url++;
       continue;
     }
+    const summaryKo = n.summaryKo ?? summary ?? [];
+    if (!summaryKo.length) {
+      dropped.empty++;
+      continue;
+    }
     const regions = n.regions.filter((r): r is NewsItem["regions"][number] => r === "INTL" || r === "JP");
     const src = sources.find((s) => s.id === n.sourceId);
     out.push({
@@ -147,7 +157,7 @@ function migrate(items: LegacyNewsItem[], sources: Source[]): NewsItem[] {
       sourceRegion: n.sourceRegion as NewsItem["sourceRegion"],
       sourceKind: n.sourceKind ?? src?.kind ?? "news",
       regions: regions.length ? regions : ["INTL"],
-      summaryKo: n.summaryKo ?? summary ?? [],
+      summaryKo,
       summaryJa: n.summaryJa ?? [],
       titleJa: n.titleJa ?? "",
       titleEn: n.titleEn || (src?.lang === "en" ? n.title : ""),
@@ -159,6 +169,7 @@ function migrate(items: LegacyNewsItem[], sources: Source[]): NewsItem[] {
   if (dropped.nature) console.log(`기존 업계 동향 기사 ${dropped.nature}건 삭제`);
   if (dropped.korea) console.log(`한국 매체 기사 ${dropped.korea}건 삭제`);
   if (dropped.url) console.log(`http·https가 아닌 주소의 기사 ${dropped.url}건 삭제`);
+  if (dropped.empty) console.log(`한국어 요약이 빈 기사 ${dropped.empty}건 삭제 (피드에 있으면 다시 요약)`);
   return out;
 }
 
@@ -380,6 +391,8 @@ async function main() {
 
   // 새 기사도, 전체 점검도, 브리핑도 없으면 여기서 끝낸다 (AI 호출·저장·배포 없음)
   if (!full && !processed && !briefingWanted) {
+    // 코드를 push한 실행은 이렇게 끝나도 배포한다: 화면용 토픽 파일이 예전 형식뿐이면 지금 형식으로 나눠 둔다 (AI 호출 없음)
+    if (!dry) await writeTopicFiles(await readJson<Topic[]>(TOPICS_PATH, []), true);
     console.log("\n새 기사 없음: 저장·배포 없이 끝냅니다");
     await setOutput("changed", "false");
     return;
@@ -463,10 +476,7 @@ async function main() {
   meta.topicCount = topics.length;
   if (!dry) {
     await writeJson(TOPICS_PATH, topics);
-    const recentCut = Date.now() - RECENT_DAYS * 86400_000;
-    const isRecent = (t: Topic) => Date.parse(t.lastUpdated) >= recentCut;
-    await writeJson(TOPICS_RECENT_PATH, topics.filter(isRecent));
-    await writeJson(TOPICS_ARCHIVE_PATH, topics.filter((t) => !isRecent(t)));
+    await writeTopicFiles(topics);
   }
 
   // 랜섬웨어 유출 사이트 게시 (일본): 보도 토픽과 연결
@@ -547,6 +557,22 @@ async function main() {
     await writeJson(RUN_PATH, full ? { ...run, fullAt: meta.updatedAt } : run);
   }
   await setOutput("changed", "true");
+}
+
+/** 화면용 토픽 파일 쓰기 (최근·지난 × 언어와 무관한 부분·언어별 글). onlyIfMissing이면 이미 지금 형식일 때 아무것도 안 함 */
+async function writeTopicFiles(topics: Topic[], onlyIfMissing = false) {
+  if (onlyIfMissing && (existsSync(`public/data/${topicFile("recent", "core")}`) || !topics.length)) return;
+  const recentCut = Date.now() - RECENT_DAYS * 86400_000;
+  const isRecent = (t: Topic) => Date.parse(t.lastUpdated) >= recentCut;
+  for (const [part, list] of [
+    ["recent", topics.filter(isRecent)],
+    ["archive", topics.filter((t) => !isRecent(t))],
+  ] as const) {
+    const { core, texts } = splitTopics(list);
+    await writeJson(`public/data/${topicFile(part, "core")}`, core);
+    for (const l of TEXT_LANGS) await writeJson(`public/data/${topicFile(part, l)}`, texts[l]);
+  }
+  for (const p of LEGACY_TOPIC_PATHS) await rm(p, { force: true });
 }
 
 /** 고친 수 표시: "고침 3" 또는 "고침 3 · 기계 변환 1" */
