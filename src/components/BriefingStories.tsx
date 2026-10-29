@@ -146,7 +146,7 @@ const useStyles = makeStyles({
     ":hover": { backgroundColor: "#f0f0f0", color: "#242424" },
     ":hover:active": { backgroundColor: "#e0e0e0", color: "#242424" },
   },
-  hint: { fontSize: tokens.fontSizeBase200, color: "rgba(255,255,255,0.75)" },
+  hint: { fontSize: tokens.fontSizeBase200, color: "rgba(255,255,255,0.85)" },
   replay: {
     position: "absolute",
     inset: 0,

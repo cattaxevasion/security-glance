@@ -28,6 +28,29 @@ const description =
     <meta name="theme-color" content="#292929" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
     <title>Security Glance</title>
+    <!--
+      첫 화면 데이터를 앱 코드(JS·CSS)를 다 받기 전에 미리 받기 시작한다. 앱이 같은 파일을 부르면 이 요청을 그대로 쓴다 (App.tsx load).
+      언어는 App과 같은 순서로 정한다: 주소의 lang → 저장한 언어(sg-lang) → 브라우저 언어(일본어·한국어, 그 밖은 영어)
+    -->
+    <script is:inline define:vars={{ base }}>
+      try {
+        var pick = function (x) { return x === "ko" || x === "ja" || x === "en" ? x : null; };
+        var saved = null;
+        try { saved = localStorage.getItem("sg-lang"); } catch (e) {}
+        var nav = (navigator.language || "").toLowerCase();
+        var lang = pick(new URLSearchParams(location.search).get("lang")) || pick(saved) ||
+          (nav.indexOf("ja") === 0 ? "ja" : nav.indexOf("ko") === 0 ? "ko" : "en");
+        var files = ["topics-recent-core.json", "topics-recent-" + lang + ".json", "briefings.json", "vulns-core.json", "meta.json", "leaks.json"];
+        if (lang !== "ja") files.push("names-" + lang + ".json");
+        var pre = {};
+        files.forEach(function (f) {
+          pre[f] = fetch(base + "data/" + f, { cache: "no-cache" })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .catch(function () { return null; });
+        });
+        window.__sgPrefetch = pre;
+      } catch (e) {}
+    </script>
     <style is:global>
       :root {
         --page-bg: #fafafa;

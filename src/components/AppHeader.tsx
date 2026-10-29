@@ -31,6 +31,9 @@ import { LANG_NAMES, REGION_LABELS, STRINGS, type Lang } from "../i18n";
 import { fullDateTime, relativeTime } from "./format";
 import { sourceLabel } from "./text";
 
+/** 이만큼 새 기사가 없으면 수집 상태에서 출처를 경고 색으로 */
+const STALE_SOURCE_MS = 14 * 86400_000;
+
 const useStyles = makeStyles({
   bar: {
     height: "48px",
@@ -93,6 +96,7 @@ const useStyles = makeStyles({
   ok: { color: tokens.colorPaletteGreenForeground1, flexShrink: 0 },
   bad: { color: tokens.colorPaletteRedForeground1, flexShrink: 0 },
   muted: { color: tokens.colorNeutralForeground3 },
+  stale: { color: tokens.colorStatusWarningForeground1 },
   dot: {
     width: "8px",
     height: "8px",
@@ -165,6 +169,7 @@ export function AppHeader({
               size="medium"
               appearance="filled-darker"
               placeholder={`${searchPlaceholder}  ( / )`}
+              aria-label={searchPlaceholder}
               value={query}
               onChange={(_, d) => setQuery(d.value)}
             />
@@ -221,6 +226,13 @@ export function AppHeader({
                     <Caption1>
                       <span className={s.muted}>{REGION_LABELS[lang][src.region]}</span> {sourceLabel(lang, src.name)}
                       {!src.ok && <span className={s.muted}> · {t.sourceFailed}</span>}
+                      {src.ok && src.lastAddedAt && (
+                        // 피드는 읽히는데 오래 새 기사가 없는 출처는 눈에 띄게 (2주 넘게)
+                        <span className={Date.now() - Date.parse(src.lastAddedAt) > STALE_SOURCE_MS ? s.stale : s.muted}>
+                          {" "}
+                          · {t.lastAdded(relativeTime(lang, src.lastAddedAt))}
+                        </span>
+                      )}
                     </Caption1>
                   </div>
                 ))}
