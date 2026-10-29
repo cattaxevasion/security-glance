@@ -157,6 +157,7 @@ const SYSTEM_PROMPT = `당신은 보안 뉴스를 한국어·일본어·영어�
 - titleJa: 원제목을 자연스러운 일본어로 옮긴 것. 일본어 기사면 원제목을 그대로 씁니다.
 - summaryKo: 한국어 3문장, 각 문장은 100자 이내. (1) 무슨 일이 일어났나 (2) 원인이나 공격 수법 (3) 피해 규모, 현재 상황, 대응. 입력에 없는 사실은 지어내지 말고, 정보가 부족하면 확인된 범위까지만 씁니다. 원문을 문장 단위로 번역해 옮기지 말고 새 문장으로 요약합니다.
 - titleKo와 summaryKo에서 일본어·한자 고유명사(회사, 기관, 학교 이름)는 한국어로 읽을 수 있게 음역하거나 번역하고, 처음 한 번만 괄호로 원문을 붙입니다. 예: "다이이치생명(第一生命保険)". 한국어 문장 안에 가나·한자를 그대로 두지 않습니다. (entities의 orgs는 원문 표기 그대로 둡니다.)
+- 날짜와 연도: 입력의 "게시일"은 기사가 나온 날(일본 시간)입니다. 본문에 연도 없이 월·일만 있으면 게시일을 기준으로 연도를 정합니다 (보통 게시일과 같은 해, 그 날짜가 게시일보다 뒤면 그 전해). 확실하지 않으면 연도를 쓰지 않습니다. 입력에 없는 연도를 지어내지 않고, 세 언어의 연도·날짜·숫자는 서로 같게 씁니다.
 - summaryJa: summaryKo와 같은 내용을 일본어 3문장으로. 일본 보안 뉴스에서 쓰는 자연스러운 용어(例: 脆弱性, 不正アクセス, 情報漏えい, ランサムウェア)와 である調를 씁니다. 한국어를 직역하지 말고 일본어 기사처럼 씁니다.
 - titleEn: 원제목을 자연스러운 영어로 옮긴 것. 영어 기사면 원제목을 그대로 씁니다.
 - summaryEn: summaryKo와 같은 내용을 영어 3문장으로. 영어권 보안 뉴스의 간결한 기사체와 용어(ransomware, unauthorized access, data breach)를 씁니다. 영어 기사면 원문 문장을 옮겨 쓰지 말고 새 문장으로 요약합니다.
@@ -166,6 +167,7 @@ ${EN_RULES}
   - JP: 일본 조직, 일본 정부, 일본인이 직접 관련될 때 (일본 기업의 해외 법인 포함)
   - INTL: 그 밖의 모든 나라, 여러 나라에 걸친 이슈, 특정 나라와 무관한 제품 취약점이나 위협 연구
   - 예: 폴란드 정부 스파이웨어 사건 → INTL. 일본 기업의 랜섬웨어 피해 → JP. 지멘스 제품 취약점 → INTL. 일본과 미국 기관을 함께 노린 캠페인 → JP, INTL.
+  - 일본 매체가 해외 제품(Microsoft, Cisco, Fortinet, VMware 등)의 취약점·패치를 소개한 공지는, 일본 조직의 피해나 일본 제품이 나오지 않으면 INTL입니다.
   - 판단할 근거가 전혀 없을 때만 입력의 "출처 지역"을 씁니다.
 
 - nature: 기사 성격 하나.
@@ -218,6 +220,11 @@ export function anthropic(): Anthropic {
 
 export class SummaryRefused extends Error {}
 
+/** 일본 시간 날짜 (YYYY-MM-DD) */
+export function jstDay(iso: string): string {
+  return new Date(Date.parse(iso) + 9 * 3600_000).toISOString().slice(0, 10);
+}
+
 /** ATT&CK ID 형식만 남기고 중복을 없앤다 */
 export function cleanTechniques(xs: { id: string; name: string }[]): { id: string; name: string }[] {
   const seen = new Set<string>();
@@ -254,6 +261,7 @@ export async function summarize(raw: RawItem, body: string | null): Promise<Summ
     `출처 지역: ${raw.source.region}`,
     `원문 언어: ${raw.source.lang}`,
     `근거: ${basis}`,
+    `게시일: ${jstDay(raw.publishedAt)}`,
     `제목: ${raw.title}`,
     content ? `\n${basis}:\n${content}` : "",
   ].join("\n");
@@ -299,7 +307,12 @@ export async function summarize(raw: RawItem, body: string | null): Promise<Summ
       sectors: uniq(r.sectors).slice(0, 2),
       nature: r.nature,
       entities: {
-        cves: uniq(r.entities.cves.map((c) => c.trim().toUpperCase()).filter((c) => /^CVE-\d{4}-\d{4,}$/.test(c))),
+        // 입력 글에 실제로 나온 CVE만 (모델이 지어낸 번호가 KEV 가산점·토픽 합치기 키가 되지 않게)
+        cves: uniq(
+          r.entities.cves
+            .map((c) => c.trim().toUpperCase())
+            .filter((c) => /^CVE-\d{4}-\d{4,}$/.test(c) && userText.toUpperCase().includes(c)),
+        ),
         actors: uniq(r.entities.actors.map((s) => s.trim()).filter(Boolean)).slice(0, 5),
         orgs: uniq(r.entities.orgs.map((s) => s.trim()).filter(Boolean)).slice(0, 5),
       },

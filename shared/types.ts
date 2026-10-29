@@ -71,6 +71,8 @@ export interface Topic {
   hasVendor: boolean;
   /** 모든 기사가 본문을 못 읽고 제목·요지로만 요약됐으면 true (중요도를 낮춘다) */
   weak?: boolean;
+  /** 여러 사건을 모은 주간·정기 정리 글이면 true (사건처럼 점수를 주지 않고, 다른 토픽과 합치지 않는다) */
+  digest?: boolean;
   firstSeen: string;
   lastUpdated: string;
   /** 이 토픽의 기사가 마지막으로 수집된 시각 (지난 방문 이후 새 소식 판단용) */
@@ -148,6 +150,10 @@ export interface SourceStatus {
   ok: boolean;
   items: number;
   error?: string;
+  /** 이 출처의 기사가 마지막으로 추가된 시각 (피드는 읽히는데 새 글이 안 들어오는 출처를 알아보려고) */
+  lastAddedAt?: string;
+  /** 최근 7일 동안 추가된 기사 수 */
+  added7d?: number;
 }
 
 export interface RunStats {

@@ -84,7 +84,7 @@ for (const b of briefings) {
 bad(briefings.length > 30, `브리핑 ${briefings.length}개 (30개 유지 규칙)`);
 for (const l of leaks) for (const id of l.topicIds) bad(!alive.has(id), `유출 게시 ${l.victim}: 없는 토픽 ${id}`);
 bad(
-  merge.some((k) => k.split("|").some((id) => !alive.has(id))),
+  merge.some((k) => k.split("|").some((x) => !alive.has(x.split(":")[0]))),
   "토픽 합치기 기록에 없는 토픽",
 );
 const nameSet = new Set(news.flatMap((n) => [...n.entities.orgs, ...n.entities.actors]));
