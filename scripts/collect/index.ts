@@ -94,10 +94,10 @@ const CONCURRENCY = 4;
 const TRANSLATE_BATCH = 10;
 /**
  * 영어가 비어 있는 이전 기사·토픽을 한 실행에 몇 건까지 채울지 (최신 먼저). 저장·배포까지 가는 실행에서만 돈다.
- * 기사 약 1,300건 · 토픽 약 160개(기사 2건 이상)가 8~10번 실행에 나눠 채워진다
+ * 평소에는 30분 주기 실행이 길어지지 않게 작게, 한꺼번에 채우고 싶으면 수동 실행의 en_fill 입력으로 늘린다
  */
-const EN_FILL_ARTICLES = 150;
-const EN_FILL_TOPICS = 100;
+const EN_FILL_ARTICLES = Number(process.env.EN_FILL_ARTICLES || 150);
+const EN_FILL_TOPICS = Number(process.env.EN_FILL_TOPICS || 100);
 
 interface State {
   /** 제외된 기사 id → 판정 시각 (키워드, 보안 무관, 업계 동향). 다시 요약하지 않는다. */
