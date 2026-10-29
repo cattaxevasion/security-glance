@@ -3,12 +3,14 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
 import type { Briefing, LeakPost, NewsItem, Topic, VulnData } from "../../shared/types";
 import { ATTACK_TYPES, NATURES, REGIONS, SECTORS } from "../../shared/taxonomy";
+import { TEXT_LANGS, topicFile } from "../../shared/topic-files";
+import { readSiteTopics } from "../../shared/topic-files-node";
 
 const read = <T>(p: string, d: T): T => (existsSync(p) ? (JSON.parse(readFileSync(p, "utf8")) as T) : d);
 const news = read<NewsItem[]>("public/data/news.json", []);
 const topics = read<Topic[]>("public/data/topics.json", []);
-const recent = read<Topic[]>("public/data/topics-recent.json", []);
-const archive = read<Topic[]>("public/data/topics-archive.json", []);
+const recent = readSiteTopics("public/data", ["recent"]);
+const archive = readSiteTopics("public/data", ["archive"]);
 const briefings = read<Briefing[]>("public/data/briefings.json", []);
 const leaks = read<LeakPost[]>("public/data/leaks.json", []);
 const vulns = read<VulnData | null>("public/data/vulns.json", null);
@@ -117,8 +119,9 @@ console.log(
   [
     "public/data/news.json",
     "public/data/topics.json",
-    "public/data/topics-recent.json",
-    "public/data/topics-archive.json",
+    ...(["recent", "archive"] as const).flatMap((part) =>
+      (["core", ...TEXT_LANGS] as const).map((k) => `public/data/${topicFile(part, k)}`),
+    ),
     "public/data/articles.json",
     "public/data/vulns.json",
     "data/state.json",

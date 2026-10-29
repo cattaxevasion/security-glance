@@ -1,10 +1,10 @@
 // 화면 글자와 태그 라벨 번역표. 데이터의 태그 값은 한국어로 고정이고, 표시할 때만 바꾼다.
 import type { AttackType, Nature, Region, Sector } from "../shared/taxonomy";
 
-export type Lang = "ko" | "ja";
+export type Lang = "ko" | "ja" | "en";
 
 /** 언어 선택 메뉴: 각 언어를 그 언어로 쓴다 */
-export const LANG_NAMES: Record<Lang, string> = { ko: "한국어", ja: "日本語" };
+export const LANG_NAMES: Record<Lang, string> = { ko: "한국어", ja: "日本語", en: "English" };
 
 const ko = {
   appName: "Security Glance",
@@ -202,6 +202,7 @@ const ko = {
   railWindow: "최근 7일",
   viewAll: "모두 보기",
   noneYet: "아직 없어요",
+  enPending: "영어 요약 준비 중",
 };
 
 export type Strings = typeof ko;
@@ -396,9 +397,203 @@ const ja: Strings = {
   railWindow: "直近7日",
   viewAll: "すべて表示",
   noneYet: "まだありません",
+  enPending: "英語の要約を準備中",
 };
 
-export const STRINGS: Record<Lang, Strings> = { ko, ja };
+const en: Strings = {
+  appName: "Security Glance",
+  docTitle: "Security Glance – Security news at a glance",
+  justNow: "just now",
+  storyLabel: "Today's briefing cards",
+  storyPrev: "Previous card",
+  storyNext: "Next card",
+  storyPause: "Pause auto-advance",
+  storyPlay: "Resume auto-advance",
+  storyReplay: "Start over",
+  storyPos: (i: number, n: number) => `${i} of ${n}`,
+  storyHint: "Tap to advance · press and hold to pause",
+  search: "Search topics, summaries, CVEs, groups",
+  navBriefing: "Today's briefing",
+  navArticles: "Topics",
+  navAll: "All",
+  navVulns: "Vulnerabilities",
+  navKev: "Exploited (KEV)",
+  navCve: "High-risk CVEs",
+  navStatus: "Collection status",
+  expandNav: "Expand navigation",
+  collapseNav: "Collapse navigation",
+  language: "Language",
+  updated: (t: string) => `Updated ${t}`,
+  lastCollected: "Last collected",
+  sourceFailed: "Failed",
+  overview: "Recent activity",
+  kpiToday: "Topics in last 24h",
+  kpiTodaySub: "All regions",
+  kpiRansom: "Ransomware topics",
+  kpiRansomSub: "Last 7 days",
+  kpiKev: "New KEV entries",
+  kpiKevSub: "Last 7 days",
+  kpiCritical: "New CVSS 9.0+",
+  kpiCriticalSub: "Last 14 days",
+  period: "Period",
+  periods: { 1: "24 hours", 3: "3 days", 7: "1 week", 30: "30 days", 90: "90 days", 0: "All" },
+  count: (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "item" : "items"}`,
+  filterAttack: "Attack type",
+  filterSector: "Sector",
+  filterNature: "Type",
+  any: "All",
+  resetAll: "Reset all",
+  colTime: "Time",
+  colRegion: "Region",
+  colTitle: "Title",
+  colNature: "Type",
+  colSource: "Source",
+  today: "Today",
+  yesterday: "Yesterday",
+  empty: "No topics match these filters.",
+  emptyHint: "Try fewer filters or a longer period.",
+  noData: "No topics yet.",
+  more: (n: number) => `Show more (${n.toLocaleString("en-US")} left)`,
+  loading: "Loading",
+  prevItem: "Previous item",
+  nextItem: "Next item",
+  close: "Close",
+  openArticle: "Open original article",
+  copyLink: "Copy link",
+  refresh: "Refresh",
+  copied: "Copied",
+  summary: "Summary",
+  classification: "Classification",
+  entities: "Related",
+  details: "Details",
+  attackTypes: "Attack types",
+  sectors: "Target sectors",
+  cves: "CVE",
+  actors: "Threat groups",
+  orgs: "Organizations · products",
+  none: "None",
+  source: "Source",
+  published: "Published",
+  basis: "Summary based on",
+  basisLabel: { 본문: "Full article", 요지: "RSS excerpt (check the article)", 제목: "Title only (check the article)" },
+  originalTitle: "Original title",
+  regions: "Region",
+  aiNotice: "Summaries and tags are AI-generated. Check the original article for anything important.",
+  epssTip: (p: string, top: string) => `${p} chance of exploitation in 30 days · top ${top}`,
+  kevTitle: "Known exploited vulnerabilities",
+  kevDesc: "Vulnerabilities CISA has confirmed as exploited in real attacks. Look here first when prioritizing patches. Last 90 days.",
+  cveTitle: "New high-risk CVEs",
+  cveDesc: "CVSS 7.0+ vulnerabilities published in the last 14 days. CVSS is severity; EPSS is the likelihood of real-world exploitation.",
+  vulnSearch: "Search CVE, vendor, product",
+  colAdded: "Added",
+  colCve: "CVE",
+  colVendor: "Vendor · product",
+  colVuln: "Vulnerability",
+  colEpss: "EPSS",
+  colDue: "Due",
+  colPublished: "Published",
+  colCvss: "CVSS",
+  colDesc: "Description",
+  colNews: "Related topics",
+  sortBy: "Sort",
+  newsShort: "Topics",
+  ransomware: "Used by ransomware",
+  inKev: "In KEV",
+  relatedNews: "Related articles",
+  noRelated: "No articles cover this CVE yet.",
+  description: "Description",
+  requiredAction: "Required action",
+  openNvd: "View on NVD",
+  footer: "Article copyrights belong to their publishers and agencies. This site shows only titles, links and AI summaries. Vulnerability data: CISA KEV, NVD, FIRST EPSS.",
+  sourcesFailed: (names: string) => `Couldn't read these sources in the last collection: ${names}.`,
+  loadFailed: "Couldn't load data. Check your connection and try again.",
+  retry: "Try again",
+  staleData: (ago: string) =>
+    `Last updated ${ago}. Automatic collection may have stopped, so recent news may be missing.`,
+  sortLatest: "Latest",
+  sortImportant: "Most important",
+  priority: "Notable",
+  sourcesCount: (n: number) => `${n} ${n === 1 ? "source" : "sources"}`,
+  analysis: "Vendor analysis",
+  hasAnalysis: "Analysis",
+  timeline: "Timeline",
+  techniques: "ATT&CK techniques",
+  iocTypes: "Published IoCs",
+  noIoc: "No published IoCs",
+  kind: { news: "News", vendor: "Vendor research", cert: "CERT · agency" },
+  openSource: "Open main source",
+  articles: (n: number) => `${n} ${n === 1 ? "article" : "articles"}`,
+  firstSeen: "First reported",
+  lastUpdated: "Last updated",
+  briefingTitle: "Today's briefing",
+  briefingSub: "Around 7 a.m. Japan time every morning, a roundup of the past day's key topics.",
+  briefingWhy: "Why it matters",
+  briefingMore: "Details",
+  briefingEmpty: "No briefing yet. It will be ready after the next morning collection.",
+  briefingArchive: "Past briefings",
+  relatedTopics: "Related topics",
+  noRelatedTopics: "No topics cover this CVE yet.",
+  navIncidents: "Incidents",
+  incidentsTitle: "Incidents",
+  incidentsDesc: "Only real security incidents. See affected organizations, sectors and attack types at a glance.",
+  chartTitle: "Incidents per day (last 30 days)",
+  chartHint: "Tap a bar to see only that day's incidents.",
+  incidents7d: "Incidents, last 7 days",
+  jpShare: "Japan-related",
+  ransomShare: "Ransomware",
+  leakShare: "Data breach",
+  topSector: "Top sector",
+  ofTotal: (n: number) => `of ${n}`,
+  dayFilter: (d: string) => `Showing ${d} only`,
+  clearDay: "Clear date",
+  regionAll: "All",
+  noSector: "–",
+  shortcuts: "Shortcuts: / search · j·k previous·next · Esc close",
+  linkCopied: "Link copied",
+  kevStatNew: "New in last 7 days",
+  kevStatRansom: "Used by ransomware",
+  kevStatDue: "Due within 7 days",
+  kevStatDueSub: (overdue: number) => (overdue ? `plus ${overdue} overdue` : "as of today"),
+  statEpssTop: "EPSS top 10%",
+  statEpssTopSub: "Likely to be exploited",
+  statNews: "In the news",
+  statNewsSub: "Has related topics",
+  cveStatNew: "High-risk CVEs, last 14 days",
+  cveStatNewSub: "CVSS 7.0+ · NVD",
+  cveStatCritical: "CVSS 9.0+",
+  cveStatCriticalSub: "Critical",
+  cveStatKev: "Also in KEV",
+  cveStatKevSub: "Exploitation confirmed",
+  windowDays: (n: number) => `Last ${n} days`,
+  dueOverdue: "Overdue",
+  dueSoon: (d: number) => (d === 0 ? "Due today" : `${d} ${d === 1 ? "day" : "days"} left`),
+  breaking: "Breaking",
+  topicGone: "This topic can't be found. It may have passed the 90-day retention period or been merged.",
+  liveNew: (n: number) => `${n} new ${n === 1 ? "update" : "updates"}`,
+  railSinceBriefing: "Notable topics since the briefing",
+  railSinceBriefingSub: (time: string) => `Since ${time}`,
+  railLeaks: "Ransomware leak site posts",
+  railLeaksSub: "Japan · last 30 days · attackers' claims",
+  leaksTitle: "Ransomware leak site posts (Japan)",
+  leaksNote:
+    "Claims posted by ransomware groups on their own leak sites that they attacked an organization. These are unverified and may differ from actual damage. They often appear before news reports, so treat them only as a signal. (Source: ransomware.live)",
+  leaksReported: "Reported",
+  leaksUnreported: "Not reported",
+  showMore: (n: number) => `Show ${n} more`,
+  showLess: "Show less",
+  newBadge: "New",
+  newSince: (n: number) => `${n} new since your last visit`,
+  aiGenerated: "AI summary",
+  railIncidents: "Notable incidents",
+  railKev: "Newly exploited vulnerabilities",
+  railActors: "Most mentioned threat groups",
+  railWindow: "Last 7 days",
+  viewAll: "View all",
+  noneYet: "None yet",
+  enPending: "English summary in preparation",
+};
+
+export const STRINGS: Record<Lang, Strings> = { ko, ja, en };
 
 /**
  * 출처(매체) 이름의 화면 표기. sources.json의 이름이 그 화면 언어와 다른 글자를 쓰면 여기에 표기를 둔다.
@@ -411,70 +606,79 @@ export const SOURCE_LABELS: Record<Lang, Record<string, string>> = {
     "トレンドマイクロ セキュリティブログ": "트렌드마이크로 보안 블로그",
   },
   ja: {},
+  en: {
+    "ITmedia セキュリティ": "ITmedia Security",
+    "JPCERT/CC ブログ": "JPCERT/CC Blog",
+    "トレンドマイクロ セキュリティブログ": "Trend Micro Security Blog (Japan)",
+  },
 };
 
 /**
  * KEV·CVE의 영문 취약점 이름에서 취약점 종류를 찾아 화면 언어로 보여주는 사전. 위에서부터 먼저 맞는 것을 쓴다
  * (구체적인 것을 위에). match는 소문자 영문 구절.
  */
-export const VULN_TYPES: { match: string[]; ko: string; ja: string }[] = [
-  { match: ["os command injection", "command injection"], ko: "명령어 인젝션", ja: "コマンドインジェクション" },
-  { match: ["argument delimiters", "argument injection"], ko: "인자 인젝션", ja: "引数インジェクション" },
-  { match: ["sql injection"], ko: "SQL 인젝션", ja: "SQLインジェクション" },
-  { match: ["code injection"], ko: "코드 인젝션", ja: "コードインジェクション" },
-  { match: ["remote file inclusion"], ko: "원격 파일 포함", ja: "リモートファイルインクルージョン" },
-  { match: ["path traversal", "pathname to a restricted directory"], ko: "경로 조작", ja: "パストラバーサル" },
-  { match: ["authentication bypass"], ko: "인증 우회", ja: "認証回避" },
-  { match: ["missing authentication"], ko: "인증 누락", ja: "認証の欠如" },
-  { match: ["improper authentication", "weak authentication"], ko: "부적절한 인증", ja: "不適切な認証" },
+export const VULN_TYPES: { match: string[]; ko: string; ja: string; en: string }[] = [
+  { match: ["os command injection", "command injection"], ko: "명령어 인젝션", ja: "コマンドインジェクション", en: "Command injection" },
+  { match: ["argument delimiters", "argument injection"], ko: "인자 인젝션", ja: "引数インジェクション", en: "Argument injection" },
+  { match: ["sql injection"], ko: "SQL 인젝션", ja: "SQLインジェクション", en: "SQL injection" },
+  { match: ["code injection"], ko: "코드 인젝션", ja: "コードインジェクション", en: "Code injection" },
+  { match: ["remote file inclusion"], ko: "원격 파일 포함", ja: "リモートファイルインクルージョン", en: "Remote file inclusion" },
+  { match: ["path traversal", "pathname to a restricted directory"], ko: "경로 조작", ja: "パストラバーサル", en: "Path traversal" },
+  { match: ["authentication bypass"], ko: "인증 우회", ja: "認証回避", en: "Authentication bypass" },
+  { match: ["missing authentication"], ko: "인증 누락", ja: "認証の欠如", en: "Missing authentication" },
+  { match: ["improper authentication", "weak authentication"], ko: "부적절한 인증", ja: "不適切な認証", en: "Improper authentication" },
   {
     match: ["missing authorization", "incorrect authorization", "improper authorization"],
     ko: "권한 확인 결함",
     ja: "認可の不備",
+    en: "Authorization flaw",
   },
-  { match: ["improper access control"], ko: "접근 제어 결함", ja: "不適切なアクセス制御" },
-  { match: ["privilege escalation", "improper privilege management"], ko: "권한 상승", ja: "権限昇格" },
-  { match: ["security feature bypass"], ko: "보안 기능 우회", ja: "セキュリティ機能のバイパス" },
-  { match: ["session fixation"], ko: "세션 고정", ja: "セッション固定" },
-  { match: ["hard-coded", "hardcoded"], ko: "하드코딩된 자격 증명", ja: "ハードコードされた認証情報" },
-  { match: ["improper certificate validation"], ko: "인증서 검증 결함", ja: "証明書検証の不備" },
-  { match: ["server-side request forgery"], ko: "서버 측 요청 위조(SSRF)", ja: "SSRF" },
-  { match: ["cross-site request forgery"], ko: "CSRF", ja: "CSRF" },
-  { match: ["cross-site scripting"], ko: "크로스 사이트 스크립팅(XSS)", ja: "クロスサイトスクリプティング" },
-  { match: ["request smuggling"], ko: "요청 스머글링", ja: "リクエストスマグリング" },
-  { match: ["deserialization"], ko: "안전하지 않은 역직렬화", ja: "安全でないデシリアライゼーション" },
-  { match: ["unsafe reflection"], ko: "안전하지 않은 리플렉션", ja: "安全でないリフレクション" },
-  { match: ["unrestricted upload"], ko: "위험한 파일 업로드", ja: "危険なファイルアップロード" },
-  { match: ["use-after-free", "use after free"], ko: "해제 후 사용(UAF)", ja: "解放済みメモリの使用" },
-  { match: ["double free"], ko: "이중 해제", ja: "二重解放" },
-  { match: ["type confusion"], ko: "타입 혼동", ja: "型の取り違え" },
-  { match: ["out-of-bounds write", "out of bounds write"], ko: "범위 밖 쓰기", ja: "境界外書き込み" },
-  { match: ["out-of-bounds read", "out of bounds read"], ko: "범위 밖 읽기", ja: "境界外読み取り" },
+  { match: ["improper access control"], ko: "접근 제어 결함", ja: "不適切なアクセス制御", en: "Access control flaw" },
+  { match: ["privilege escalation", "improper privilege management"], ko: "권한 상승", ja: "権限昇格", en: "Privilege escalation" },
+  { match: ["security feature bypass"], ko: "보안 기능 우회", ja: "セキュリティ機能のバイパス", en: "Security feature bypass" },
+  { match: ["session fixation"], ko: "세션 고정", ja: "セッション固定", en: "Session fixation" },
+  { match: ["hard-coded", "hardcoded"], ko: "하드코딩된 자격 증명", ja: "ハードコードされた認証情報", en: "Hard-coded credentials" },
+  { match: ["improper certificate validation"], ko: "인증서 검증 결함", ja: "証明書検証の不備", en: "Certificate validation flaw" },
+  { match: ["server-side request forgery"], ko: "서버 측 요청 위조(SSRF)", ja: "SSRF", en: "Server-side request forgery (SSRF)" },
+  { match: ["cross-site request forgery"], ko: "CSRF", ja: "CSRF", en: "Cross-site request forgery (CSRF)" },
+  { match: ["cross-site scripting"], ko: "크로스 사이트 스크립팅(XSS)", ja: "クロスサイトスクリプティング", en: "Cross-site scripting (XSS)" },
+  { match: ["request smuggling"], ko: "요청 스머글링", ja: "リクエストスマグリング", en: "Request smuggling" },
+  { match: ["deserialization"], ko: "안전하지 않은 역직렬화", ja: "安全でないデシリアライゼーション", en: "Insecure deserialization" },
+  { match: ["unsafe reflection"], ko: "안전하지 않은 리플렉션", ja: "安全でないリフレクション", en: "Unsafe reflection" },
+  { match: ["unrestricted upload"], ko: "위험한 파일 업로드", ja: "危険なファイルアップロード", en: "Unrestricted file upload" },
+  { match: ["use-after-free", "use after free"], ko: "해제 후 사용(UAF)", ja: "解放済みメモリの使用", en: "Use-after-free" },
+  { match: ["double free"], ko: "이중 해제", ja: "二重解放", en: "Double free" },
+  { match: ["type confusion"], ko: "타입 혼동", ja: "型の取り違え", en: "Type confusion" },
+  { match: ["out-of-bounds write", "out of bounds write"], ko: "범위 밖 쓰기", ja: "境界外書き込み", en: "Out-of-bounds write" },
+  { match: ["out-of-bounds read", "out of bounds read"], ko: "범위 밖 읽기", ja: "境界外読み取り", en: "Out-of-bounds read" },
   {
     match: ["buffer overflow", "bounds of a memory buffer"],
     ko: "버퍼 오버플로",
     ja: "バッファオーバーフロー",
+    en: "Buffer overflow",
   },
-  { match: ["integer overflow"], ko: "정수 오버플로", ja: "整数オーバーフロー" },
-  { match: ["memory corruption"], ko: "메모리 손상", ja: "メモリ破損" },
-  { match: ["race condition"], ko: "경쟁 조건", ja: "競合状態" },
-  { match: ["link following"], ko: "링크 추적", ja: "リンク追従" },
-  { match: ["untrusted control sphere"], ko: "신뢰할 수 없는 기능 포함", ja: "信頼できない機能の取り込み" },
-  { match: ["cleartext storage", "cleartext transmission"], ko: "민감정보 평문 처리", ja: "機密情報の平文処理" },
+  { match: ["integer overflow"], ko: "정수 오버플로", ja: "整数オーバーフロー", en: "Integer overflow" },
+  { match: ["memory corruption"], ko: "메모리 손상", ja: "メモリ破損", en: "Memory corruption" },
+  { match: ["race condition"], ko: "경쟁 조건", ja: "競合状態", en: "Race condition" },
+  { match: ["link following"], ko: "링크 추적", ja: "リンク追従", en: "Link following" },
+  { match: ["untrusted control sphere"], ko: "신뢰할 수 없는 기능 포함", ja: "信頼できない機能の取り込み", en: "Untrusted functionality inclusion" },
+  { match: ["cleartext storage", "cleartext transmission"], ko: "민감정보 평문 처리", ja: "機密情報の平文処理", en: "Cleartext sensitive data" },
   {
     match: ["information disclosure", "exposure of sensitive information"],
     ko: "정보 노출",
     ja: "情報漏えい",
+    en: "Information disclosure",
   },
-  { match: ["open redirect"], ko: "오픈 리다이렉트", ja: "オープンリダイレクト" },
-  { match: ["denial of service"], ko: "서비스 거부", ja: "サービス拒否" },
-  { match: ["improper input validation"], ko: "입력값 검증 결함", ja: "不適切な入力検証" },
-  { match: ["remote code execution"], ko: "원격 코드 실행", ja: "リモートコード実行" },
+  { match: ["open redirect"], ko: "오픈 리다이렉트", ja: "オープンリダイレクト", en: "Open redirect" },
+  { match: ["denial of service"], ko: "서비스 거부", ja: "サービス拒否", en: "Denial of service" },
+  { match: ["improper input validation"], ko: "입력값 검증 결함", ja: "不適切な入力検証", en: "Improper input validation" },
+  { match: ["remote code execution"], ko: "원격 코드 실행", ja: "リモートコード実行", en: "Remote code execution" },
 ];
 
 export const REGION_LABELS: Record<Lang, Record<Region, string>> = {
   ko: { INTL: "국제", JP: "일본" },
   ja: { INTL: "国際", JP: "日本" },
+  en: { INTL: "International", JP: "Japan" },
 };
 
 const ATTACK_JA: Record<AttackType, string> = {
@@ -514,9 +718,54 @@ const NATURE_JA: Record<Nature, string> = {
 
 const IOC_JA: Record<string, string> = { 도메인: "ドメイン", "파일 해시": "ファイルハッシュ", 파일명: "ファイル名", 레지스트리: "レジストリ", 이메일: "メール", 인증서: "証明書" };
 
+const ATTACK_EN: Record<AttackType, string> = {
+  랜섬웨어: "Ransomware",
+  피싱: "Phishing",
+  정보유출: "Data breach",
+  "취약점 악용": "Vulnerability exploitation",
+  제로데이: "Zero-day",
+  공급망: "Supply chain",
+  DDoS: "DDoS",
+  "계정 탈취": "Account takeover",
+  내부자: "Insider",
+  악성코드: "Malware",
+};
+
+const SECTOR_EN: Record<Sector, string> = {
+  "정부·공공": "Government",
+  금융: "Finance",
+  의료: "Healthcare",
+  제조: "Manufacturing",
+  통신: "Telecom",
+  교육: "Education",
+  "IT·클라우드": "IT · Cloud",
+  "유통·서비스": "Retail",
+  "에너지·기반시설": "Infrastructure",
+  개인: "Individuals",
+};
+
+const NATURE_EN: Record<Nature, string> = {
+  사건: "Incident",
+  "취약점 공지": "Vulnerability",
+  "정책·법규": "Policy · Regulation",
+  "체포·수사": "Arrest · Investigation",
+  "연구·리포트": "Research · Report",
+  "업계 동향": "Industry",
+};
+
+const IOC_EN: Record<string, string> = { 도메인: "Domain", "파일 해시": "File hash", 파일명: "File name", 레지스트리: "Registry", 이메일: "Email", 인증서: "Certificate" };
+
 /** 태그 값(한국어)을 화면 언어로 */
 export function tagLabel(lang: Lang, value: string): string {
   if (lang === "ko") return value;
+  if (lang === "en")
+    return (
+      (ATTACK_EN as Record<string, string>)[value] ??
+      (SECTOR_EN as Record<string, string>)[value] ??
+      (NATURE_EN as Record<string, string>)[value] ??
+      IOC_EN[value] ??
+      value
+    );
   return (
     (ATTACK_JA as Record<string, string>)[value] ??
     (SECTOR_JA as Record<string, string>)[value] ??
@@ -526,10 +775,12 @@ export function tagLabel(lang: Lang, value: string): string {
   );
 }
 
-export const LOCALE: Record<Lang, string> = { ko: "ko-KR", ja: "ja-JP" };
+export const LOCALE: Record<Lang, string> = { ko: "ko-KR", ja: "ja-JP", en: "en-US" };
 
 // 한글·일본어는 Pretendard(가변 글꼴, 필요한 글자만 내려받는 분할 버전)로 읽기 좋게 맞춘다.
+// 영어도 Pretendard: 한국어·일본어 화면의 영문, 링크 미리보기 이미지와 같은 글꼴로 보이게
 export const FONT_STACK: Record<Lang, string> = {
+  en: `"Pretendard Variable", "Segoe UI Variable Text", "Segoe UI", -apple-system, system-ui, sans-serif`,
   ko: `"Pretendard Variable", "Pretendard JP Variable", "Segoe UI Variable Text", "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif`,
   ja: `"Pretendard JP Variable", "Pretendard Variable", "Segoe UI Variable Text", "Segoe UI", "Yu Gothic UI", "Hiragino Sans", system-ui, sans-serif`,
 };
@@ -537,11 +788,13 @@ export const FONT_STACK: Record<Lang, string> = {
 export function detectLang(): Lang {
   try {
     const saved = localStorage.getItem("sg-lang");
-    if (saved === "ko" || saved === "ja") return saved;
+    if (saved === "ko" || saved === "ja" || saved === "en") return saved;
   } catch {
     // 저장소를 못 쓰는 환경이면 브라우저 언어로
   }
-  return navigator.language.toLowerCase().startsWith("ja") ? "ja" : "ko";
+  // 한국어·일본어 브라우저는 그 언어로, 그 밖의 언어는 영어로
+  const nav = navigator.language.toLowerCase();
+  return nav.startsWith("ja") ? "ja" : nav.startsWith("ko") ? "ko" : "en";
 }
 
 export function saveLang(lang: Lang) {

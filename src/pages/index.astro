@@ -47,6 +47,7 @@ const description =
       /* 줄바꿈. 상세 패널·메뉴는 포털로 앱 밖에 그려지므로 <html>에 걸어 상속시킨다.
          - 한국어: 어절(띄어쓰기) 단위로만
          - 일본어: 띄어쓰기가 없어 문절(구) 단위로 (word-break: auto-phrase). 모르는 브라우저는 앞의 normal + 금칙 처리
+         - 영어: 낱말 단위로 (기본값. 하이픈 자동 삽입은 하지 않는다)
          - 공통: 끝줄에 한두 글자만 남지 않게(pretty), 제목은 줄 길이를 고르게(balance),
            한 단어가 칸보다 길 때만 단어 안에서 끊는다(break-word) */
       html {
@@ -55,6 +56,9 @@ const description =
       }
       html:lang(ko) {
         word-break: keep-all;
+      }
+      html:lang(en) {
+        word-break: normal;
       }
       html:lang(ja) {
         word-break: normal;

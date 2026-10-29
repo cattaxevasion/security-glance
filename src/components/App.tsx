@@ -23,7 +23,8 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } fro
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "pretendard-jp/dist/web/variable/pretendardvariable-jp-dynamic-subset.css";
 import type { Region } from "../../shared/taxonomy";
-import type { ArticleRef, Briefing, CveEntry, LeakPost, Meta, Topic, VulnData } from "../../shared/types";
+import { joinTopics, topicFile, type TopicCore, type TopicPart, type TopicTexts } from "../../shared/topic-files";
+import type { ArticleRef, Briefing, CveEntry, LeakPost, Meta, VulnData } from "../../shared/types";
 import { FONT_STACK, REGION_LABELS, STRINGS, detectLang, saveLang, type Lang } from "../i18n";
 import { AppHeader } from "./AppHeader";
 import { AppNav, VIEWS, type View } from "./AppNav";
@@ -31,7 +32,7 @@ import { DetailPanel, type Selection } from "./DetailPanel";
 import { useNarrow, usePrefersDark } from "./hooks";
 import { BriefingPage } from "./BriefingPage";
 import { dayStart, relativeTime } from "./format";
-import { setNameReadings, sourceLabel } from "./text";
+import { setNameEnglish, setNameReadings, sourceLabel } from "./text";
 import { useMotion } from "./motion";
 import { DEFAULT_FILTERS, TopicsPage, type NewsFilters, type SortMode } from "./TopicsPage";
 import { isFresh, useLastVisit } from "./visit";
@@ -77,6 +78,23 @@ async function load<T>(name: string, v?: string): Promise<T | null> {
   }
 }
 
+/** 일본어로 적힌 조직·위협 그룹 이름의 화면용 표기 사전 (한국어 읽기·영어 표기). 일본어 화면은 필요 없다 */
+const NAME_FILES: Partial<Record<Lang, string>> = { ko: "names-ko.json", en: "names-en.json" };
+
+async function loadNames(lang: Lang, v?: string): Promise<void> {
+  const file = NAME_FILES[lang];
+  if (!file) return;
+  const m = await load<Record<string, string>>(file, v);
+  if (lang === "ko") setNameReadings(m);
+  else setNameEnglish(m);
+}
+
+/** 한 언어의 토픽 제목·요약 (여러 부분을 합쳐서). 하나라도 못 받으면 null */
+async function loadTexts(lang: Lang, parts: TopicPart[], v?: string): Promise<TopicTexts | null> {
+  const maps = await Promise.all(parts.map((part) => load<TopicTexts>(topicFile(part, lang), v)));
+  return maps.some((m) => m === null) ? null : Object.assign({}, ...maps);
+}
+
 // ── 주소창 상태: 보기·검색·필터·선택 항목을 URL에 남겨 북마크·공유할 수 있게 한다 (Defender처럼) ──
 interface UrlState {
   view: View;
@@ -105,7 +123,7 @@ function readUrl(): UrlState {
       days: days != null && !isNaN(Number(days)) ? Number(days) : DEFAULT_FILTERS.days,
     },
     sel: p.get("sel"),
-    lang: lang === "ko" || lang === "ja" ? lang : null,
+    lang: lang === "ko" || lang === "ja" || lang === "en" ? lang : null,
   };
 }
 
@@ -183,7 +201,9 @@ export default function App() {
 
   // 기사 목록은 상세 패널의 '흐름'에만 필요해서 첫 화면이 뜬 뒤에 불러온다
   const [articles, setArticles] = useState<ArticleRef[] | null>(null);
-  const [topics, setTopics] = useState<Topic[] | null>(null);
+  // 토픽은 언어와 무관한 부분(core)과 언어별 제목·요약(texts)을 따로 받아 합친다. 지금 언어의 글이 오기 전에는 null
+  const [core, setCore] = useState<TopicCore[] | null>(null);
+  const [texts, setTexts] = useState<Partial<Record<Lang, TopicTexts>>>({});
   const [loadError, setLoadError] = useState(false);
   const [briefings, setBriefings] = useState<Briefing[]>([]);
   const [vulns, setVulns] = useState<VulnData | null>(null);
@@ -192,18 +212,24 @@ export default function App() {
   const lastVisit = useLastVisit();
 
   const t = STRINGS[lang];
+  const topics = useMemo(() => (core && texts[lang] ? joinTopics(core, texts) : null), [core, texts, lang]);
+  const langRef = useRef(lang);
+  langRef.current = lang;
 
   // 토픽은 최근 31일치만 먼저 받고, 오래된 것은 첫 화면이 뜬 뒤에 붙인다 (기사를 90일 보관해서 전체는 무겁다)
   const archiveRequested = useRef(false);
+  const archiveLoadedRef = useRef(false);
   const reload = useCallback(() => {
     setLoadError(false);
     archiveRequested.current = false;
-    // 이름 읽기 사전을 먼저 넣어 두고 토픽을 그린다 (한국어 화면에서 일본어 이름을 읽기로 보여주려고)
-    Promise.all([load<Topic[]>("topics-recent.json"), load<Record<string, string>>("names-ko.json")]).then(
-      ([d, names]) => {
-        setNameReadings(names);
-        if (d === null) setLoadError(true);
-        setTopics(d ?? []);
+    archiveLoadedRef.current = false;
+    const l = langRef.current;
+    // 이름 사전을 먼저 넣어 두고 토픽을 그린다 (한국어·영어 화면에서 일본어 이름을 읽기·영어 표기로 보여주려고)
+    Promise.all([load<TopicCore[]>(topicFile("recent", "core")), loadTexts(l, ["recent"]), loadNames(l)]).then(
+      ([c, tx]) => {
+        if (c === null || tx === null) setLoadError(true);
+        setTexts({ [l]: tx ?? {} });
+        setCore(c ?? []);
       },
     );
     load<Briefing[]>("briefings.json").then((d) => setBriefings(d ?? []));
@@ -235,15 +261,29 @@ export default function App() {
   const loadArchive = useCallback(() => {
     if (archiveRequested.current) return;
     archiveRequested.current = true;
-    load<Topic[]>("topics-archive.json").then((d) => {
+    const l = langRef.current;
+    Promise.all([load<TopicCore[]>(topicFile("archive", "core")), loadTexts(l, ["archive"])]).then(([d, tx]) => {
+      archiveLoadedRef.current = true;
       setArchiveLoaded(true);
       if (!d?.length) return;
-      setTopics((prev) => {
+      // 다른 언어로 받아 둔 글에는 지난 토픽이 없으므로 버린다 (그 언어로 바꾸면 최근·지난 것을 같이 다시 받는다)
+      setTexts((prev) => ({ [l]: { ...prev[l], ...tx } }));
+      setCore((prev) => {
         const have = new Set((prev ?? []).map((x) => x.id));
         return [...(prev ?? []), ...d.filter((x) => !have.has(x.id))];
       });
     });
   }, []);
+
+  // 언어를 바꾸면 그 언어의 글(이미 받은 부분 모두)과 이름 사전을 받는다. 받는 동안은 잠깐 불러오는 중 화면
+  useEffect(() => {
+    if (!core || texts[lang]) return;
+    const parts: TopicPart[] = archiveLoadedRef.current ? ["recent", "archive"] : ["recent"];
+    Promise.all([loadTexts(lang, parts), loadNames(lang)]).then(([tx]) => {
+      if (tx === null) setLoadError(true);
+      setTexts((prev) => ({ ...prev, [lang]: tx ?? {} }));
+    });
+  }, [lang, core, texts]);
   useEffect(() => {
     if (!topics) return;
     // 링크로 연 토픽이 최근 목록에 없으면 바로, 아니면 잠시 뒤에
@@ -358,8 +398,8 @@ export default function App() {
   // ── 열어 둔 화면도 새 소식을 받는다 ──
   // 1분마다(화면이 보일 때만) 갱신 시각을 보고, 바뀌었으면 화면을 비우지 않고 데이터만 바꿔 끼운다.
   // 이미 받아 둔 지난 토픽·기사·CVE 목록은 그대로 두고, 바뀐 것만 다시 받는다.
-  const live = useRef({ updatedAt: "", topics: null as Topic[] | null, lang });
-  live.current.topics = topics;
+  const live = useRef({ updatedAt: "", core: null as TopicCore[] | null, lang });
+  live.current.core = core;
   live.current.lang = lang;
   useEffect(() => {
     if (meta && !live.current.updatedAt) live.current.updatedAt = meta.updatedAt;
@@ -369,29 +409,32 @@ export default function App() {
     if (!m || !live.current.updatedAt || m.updatedAt === live.current.updatedAt) return;
     live.current.updatedAt = m.updatedAt;
     const v = m.updatedAt;
-    const [recent, names, b, core, lk] = await Promise.all([
-      load<Topic[]>("topics-recent.json", v),
-      load<Record<string, string>>("names-ko.json", v),
+    const l = live.current.lang;
+    const [recent, tx, , b, vcore, lk] = await Promise.all([
+      load<TopicCore[]>(topicFile("recent", "core"), v),
+      loadTexts(l, ["recent"], v),
+      loadNames(l, v),
       load<Briefing[]>("briefings.json", v),
       load<VulnData>("vulns-core.json", v),
       load<LeakPost[]>("leaks.json", v),
     ]);
-    if (!recent) return;
+    if (!recent || !tx) return;
     const [arts, cves] = await Promise.all([
       articlesRequested.current ? load<ArticleRef[]>("articles.json", v) : null,
       cvesRequested.current ? load<CveEntry[]>("cves.json", v) : null,
     ]);
-    const prev = live.current.topics ?? [];
+    const prev = live.current.core ?? [];
     const before = new Set(prev.map((x) => x.id));
     const added = recent.filter((x) => !before.has(x.id)).length;
     // 최근 목록에 없는 지난 토픽(보관분)은 남긴다. 최근 범위 안인데 빠진 것은 합쳐지거나 정리된 것이라 뺀다
     const recentIds = new Set(recent.map((x) => x.id));
     const cut = Date.now() - 31 * 86400_000;
     const kept = prev.filter((x) => !recentIds.has(x.id) && Date.parse(x.lastUpdated) < cut);
-    setNameReadings(names);
-    setTopics([...recent, ...kept]);
+    // 다른 언어로 받아 둔 글은 낡았으므로 버린다 (그 언어로 바꾸면 다시 받는다)
+    setTexts((old) => ({ [l]: { ...old[l], ...tx } }));
+    setCore([...recent, ...kept]);
     if (b) setBriefings(b);
-    if (core) setVulns((old) => ({ ...core, cves: cves ?? old?.cves ?? core.cves }));
+    if (vcore) setVulns((old) => ({ ...vcore, cves: cves ?? old?.cves ?? vcore.cves }));
     if (lk) setLeaks(lk);
     if (arts) setArticles(arts);
     setMeta(m);

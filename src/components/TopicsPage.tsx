@@ -216,16 +216,21 @@ export function matchesQuery(n: Topic, q: string): boolean {
   if (!q) return true;
   const needle = q.trim().toLowerCase();
   return [
+    // 받아 둔 언어의 글만 들어 있다 (토픽 글은 화면 언어 것만 받는다)
     n.titleKo,
     n.titleJa,
+    n.titleEn,
     ...n.sources,
     ...n.summaryKo,
     ...n.summaryJa,
+    ...n.summaryEn,
     ...n.entities.cves,
     ...n.entities.actors,
     ...n.entities.orgs,
     // 한국어 읽기로도 찾을 수 있게 (예: 다이이치 → 第一生命保険)
     ...namesOf("ko", [...n.entities.orgs, ...n.entities.actors]),
+    // 영어 표기로도 (예: Dai-ichi → 第一生命保険)
+    ...namesOf("en", [...n.entities.orgs, ...n.entities.actors]),
     ...n.techniques.map((x) => x.id),
   ]
     .join(" ")

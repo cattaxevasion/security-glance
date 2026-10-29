@@ -2,7 +2,7 @@
 import { Caption1, makeStyles, mergeClasses, tokens } from "@fluentui/react-components";
 import { ChevronRightRegular } from "@fluentui/react-icons";
 import type { CSSProperties, ReactNode } from "react";
-import { STRINGS, type Lang } from "../i18n";
+import { LOCALE, STRINGS, type Lang } from "../i18n";
 import { stagger, useCountUp, useMotion } from "./motion";
 
 const useStyles = makeStyles({
@@ -238,7 +238,7 @@ export function StatTile(p: {
 
 /** 오늘을 포함한 달력 n일의 일별 막대 (dateOf: 항목의 날짜) */
 export function dailyBars<T>(lang: Lang, items: T[], dateOf: (x: T) => number, days: number): Bar[] {
-  const fmt = new Intl.DateTimeFormat(lang === "ja" ? "ja-JP" : "ko-KR", { month: "short", day: "numeric" });
+  const fmt = new Intl.DateTimeFormat(LOCALE[lang], { month: "short", day: "numeric" });
   return Array.from({ length: days }, (_, i) => {
     const start = new Date();
     start.setHours(0, 0, 0, 0);

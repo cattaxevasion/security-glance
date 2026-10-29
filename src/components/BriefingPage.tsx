@@ -32,7 +32,7 @@ import { LeakList } from "./Leaks";
 import { NATURE_ICON, natureGradient } from "./marks";
 import { stagger, useMotion } from "./motion";
 import { usePageStyles } from "./page";
-import { namesOf, textOf, titleOf } from "./text";
+import { namesOf, pendingEn, textOf, titleOf } from "./text";
 import { PRIORITY_THRESHOLD, rankScore } from "./TopicsPage";
 import { nb } from "./NoBreak";
 
@@ -450,7 +450,7 @@ export function BriefingPage(p: Props) {
               )}
             </div>
             <h1 className={s.heroTitle}>{t.briefingTitle}</h1>
-            <p className={s.heroText}>{b ? nb(textOf(lang, b.headlineKo, b.headlineJa)) : t.briefingEmpty}</p>
+            <p className={s.heroText}>{b ? nb(pendingEn(lang, textOf(lang, b.headlineKo, b.headlineJa, b.headlineEn))) : t.briefingEmpty}</p>
           </header>
         </>
       )}
@@ -481,13 +481,13 @@ export function BriefingPage(p: Props) {
                     )}
                   </div>
                   <div className={s.cardBody}>
-                    <h2 className={s.title}>{nb(textOf(lang, it.titleKo, it.titleJa))}</h2>
-                    <p className={s.body}>{nb(textOf(lang, it.bodyKo, it.bodyJa))}</p>
+                    <h2 className={s.title}>{nb(pendingEn(lang, textOf(lang, it.titleKo, it.titleJa, it.titleEn)))}</h2>
+                    <p className={s.body}>{nb(pendingEn(lang, textOf(lang, it.bodyKo, it.bodyJa, it.bodyEn)))}</p>
                     <div className={s.why}>
                       <LightbulbRegular className={s.whyIcon} aria-hidden />
                       <span>
                         <span className={s.whyLabel}>{t.briefingWhy}</span>
-                        {nb(textOf(lang, it.whyKo, it.whyJa))}
+                        {nb(pendingEn(lang, textOf(lang, it.whyKo, it.whyJa, it.whyEn)))}
                       </span>
                     </div>
                     {topic && (

@@ -99,7 +99,7 @@ jobs:
         run: npm run check:i18n -- --data
 
       # news.json(요약 전문)·topics.json(토픽 전체)·vulns.json(취약점 전체)은 수집기 내부용.
-      # 화면은 가벼운 articles.json과 나눠 둔 topics-recent/archive.json, vulns-core.json·cves.json만 쓴다.
+      # 화면은 가벼운 articles.json과 나눠 둔 topics-{recent,archive}-{core,ko,ja,en}.json, vulns-core.json·cves.json만 쓴다.
       - name: Keep only what the site needs
         if: github.event_name == 'push' || steps.collect.outputs.changed == 'true'
         run: rm -f public/data/news.json public/data/topics.json public/data/vulns.json
