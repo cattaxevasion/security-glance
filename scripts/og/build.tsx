@@ -117,9 +117,9 @@ function charWidth(ch: string): number {
 }
 const widthOf = (s: string) => [...s].reduce((a, ch) => a + charWidth(ch), 0);
 
-/** 끊을 수 있는 덩어리: 한국어는 띄어쓰기 단위, 일본어는 단어(조사·문장부호·한 글자 한자는 앞에 붙임) */
+/** 끊을 수 있는 덩어리: 한국어·영어는 띄어쓰기 단위, 일본어는 단어(조사·문장부호·한 글자 한자는 앞에 붙임) */
 function tokens(lang: Lang, title: string): string[] {
-  if (lang === "ko") return title.split(/(?<= )/);
+  if (lang === "ko" || lang === "en") return title.split(/(?<= )/);
   const out: string[] = [];
   for (const { segment } of jaWords.segment(title)) {
     const prev = out[out.length - 1];
@@ -151,7 +151,8 @@ function wrap(parts: string[], size: number): string[] {
 
 /** 글자 크기와 줄들: 세 줄 안에 드는 가장 큰 크기, 그래도 넘치면 가장 작은 크기로 세 줄 + 말줄임 */
 export function layoutTitle(lang: Lang, title: string): { size: number; lines: string[] } {
-  const sizes = lang === "ko" ? [76, 68, 62, 56] : [72, 64, 58, 52];
+  // 영어 제목은 같은 내용이라도 글자 수가 많아 한 단계 더 작은 크기까지
+  const sizes = lang === "ko" ? [76, 68, 62, 56] : lang === "en" ? [72, 64, 58, 52, 48] : [72, 64, 58, 52];
   const parts = tokens(lang, title);
   for (const size of sizes) {
     const lines = wrap(parts, size);
@@ -260,6 +261,7 @@ async function main() {
   await rm(OUT, { recursive: true, force: true });
   await mkdir(join(OUT, "ko"), { recursive: true });
   await mkdir(join(OUT, "ja"), { recursive: true });
+  await mkdir(join(OUT, "en"), { recursive: true });
   await mkdir(CACHE, { recursive: true });
 
   const used = new Set<string>();
@@ -274,7 +276,9 @@ async function main() {
     .filter((x) => !only || only.includes(x.id))
     .sort((a, b) => b.lastUpdated.localeCompare(a.lastUpdated));
   for (const topic of topics) {
-    for (const lang of ["ko", "ja"] as Lang[]) {
+    for (const lang of ["ko", "ja", "en"] as Lang[]) {
+      // 영어 제목이 아직 없는 토픽은 그리지 않는다 (공유 페이지는 기본 이미지. 채워지면 내용 해시가 바뀌어 새로 그린다)
+      if (lang === "en" && !topic.titleEn) continue;
       const x = ogText(lang, topic);
       const hash = ogHash(x);
       const key = `${lang}-${hash}.jpg`;

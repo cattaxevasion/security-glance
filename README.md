@@ -87,7 +87,7 @@ public/data/            화면이 읽는 JSON (data 브랜치에서 받음, git 
                         leaks.json(랜섬웨어 유출 사이트 게시·일본, ransomware.live 집계 — 공격 조직의 주장)
                         names-ko.json(일본어 이름의 한국어 읽기) · names-en.json(일본어 이름의 영어 표기)
                         news.json·topics.json·vulns.json(수집기 내부용 전체본, 사이트엔 안 올림)
-src/pages/t/[id].astro  토픽 공유 페이지 (링크 미리보기에 토픽 제목·요약, 열면 사이트의 그 토픽으로). 일본어는 /ja/t/[id]/
+src/pages/t/[id].astro  토픽 공유 페이지 (링크 미리보기에 토픽 제목·요약, 열면 사이트의 그 토픽으로). 일본어는 /ja/t/[id]/, 영어는 /en/t/[id]/
 shared/topic-files.ts   화면용 토픽 파일을 언어별로 나누고 합치기 (수집기·화면·빌드·검사가 같이 씀)
 data/                   내부 상태: state.json(제외·실패·다시 판정 기록), merge-checked.json(토픽 합치기 기록),
                         lang-forced.json(기계 변환한 필드의 원래 글 — 다음 실행에서 모델로 다시 고침)
