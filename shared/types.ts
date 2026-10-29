@@ -11,6 +11,8 @@ export interface NewsItem {
   titleKo: string;
   /** 원문이 일본어면 원제목, 아니면 번역한 제목. 이전 데이터는 채워지기 전까지 비어 있을 수 있다. */
   titleJa: string;
+  /** 원문이 영어면 원제목, 아니면 번역한 제목. 영어를 넣기 전의 데이터는 채워지기 전까지 비어 있을 수 있다. */
+  titleEn: string;
   sourceId: string;
   sourceName: string;
   sourceRegion: Region;
@@ -22,6 +24,8 @@ export interface NewsItem {
   regions: Region[];
   summaryKo: string[];
   summaryJa: string[];
+  /** 영어를 넣기 전의 데이터는 채워지기 전까지 빈 배열일 수 있다. */
+  summaryEn: string[];
   attackTypes: AttackType[];
   sectors: Sector[];
   nature: Nature;
@@ -35,7 +39,7 @@ export interface NewsItem {
 /** 화면(상세 패널의 '흐름')에 필요한 기사 정보만. articles.json으로 따로 내보내 첫 로딩을 가볍게 한다. */
 export type ArticleRef = Pick<
   NewsItem,
-  "id" | "url" | "title" | "titleKo" | "titleJa" | "sourceName" | "sourceKind" | "publishedAt" | "basis"
+  "id" | "url" | "title" | "titleKo" | "titleJa" | "titleEn" | "sourceName" | "sourceKind" | "publishedAt" | "basis"
 >;
 
 export interface Technique {
@@ -49,8 +53,11 @@ export interface Topic {
   id: string;
   titleKo: string;
   titleJa: string;
+  /** 채워지기 전까지 비어 있을 수 있다 (기사와 같음) */
+  titleEn: string;
   summaryKo: string[];
   summaryJa: string[];
+  summaryEn: string[];
   regions: Region[];
   nature: Nature;
   attackTypes: AttackType[];
@@ -80,10 +87,14 @@ export interface BriefingItem {
   topicId: string;
   titleKo: string;
   titleJa: string;
+  /** 영어 필드는 영어를 넣기 전에 만든 브리핑이면 채워지기 전까지 비어 있을 수 있다 */
+  titleEn: string;
   bodyKo: string;
   bodyJa: string;
+  bodyEn: string;
   whyKo: string;
   whyJa: string;
+  whyEn: string;
 }
 
 /** 오늘의 브리핑 (일본 시간 기준 하루 한 번) */
@@ -92,6 +103,7 @@ export interface Briefing {
   generatedAt: string;
   headlineKo: string;
   headlineJa: string;
+  headlineEn: string;
   items: BriefingItem[];
 }
 

@@ -14,7 +14,7 @@ import { appendFile, readFile } from "node:fs/promises";
 import type { ArticleRef, Briefing, LeakPost, Meta, NewsItem, RunStats, Topic, VulnData } from "../../shared/types";
 import { collectLeaks, matchLeaks, pruneLeakTopics } from "./leaks";
 import { BODY_CHARS, extractArticle } from "./article";
-import { briefingDue, maybeBriefing } from "./briefing";
+import { briefingDue, maybeBriefing, migrateBriefings } from "./briefing";
 import {
   auditArticles,
   auditBriefings,
@@ -96,7 +96,9 @@ interface State {
   bodyRetries: Record<string, number>;
 }
 
-type LegacyNewsItem = Omit<NewsItem, "sourceRegion" | "regions"> & {
+type LegacyNewsItem = Omit<NewsItem, "sourceRegion" | "regions" | "titleEn" | "summaryEn"> & {
+  titleEn?: string;
+  summaryEn?: string[];
   sourceRegion: string;
   regions: string[];
   summary?: string[];
@@ -109,6 +111,7 @@ type LegacyNewsItem = Omit<NewsItem, "sourceRegion" | "regions"> & {
  * - 업계 동향 기사 삭제
  * - 한국 범위 제외(2026-10-15): 한국 매체 기사 삭제, 지역에서 KR 제거
  * - sourceKind, techniques, iocTypes 기본값
+ * - 영어 필드(2026-10): 영어 매체 기사는 원제목이 곧 영어 제목, 나머지는 빈 값 (채우기 단계가 채운다)
  */
 function migrate(items: LegacyNewsItem[], sources: Source[]): NewsItem[] {
   const dropped = { nature: 0, korea: 0, url: 0 };
@@ -128,14 +131,17 @@ function migrate(items: LegacyNewsItem[], sources: Source[]): NewsItem[] {
       continue;
     }
     const regions = n.regions.filter((r): r is NewsItem["regions"][number] => r === "INTL" || r === "JP");
+    const src = sources.find((s) => s.id === n.sourceId);
     out.push({
       ...n,
       sourceRegion: n.sourceRegion as NewsItem["sourceRegion"],
-      sourceKind: n.sourceKind ?? sources.find((s) => s.id === n.sourceId)?.kind ?? "news",
+      sourceKind: n.sourceKind ?? src?.kind ?? "news",
       regions: regions.length ? regions : ["INTL"],
       summaryKo: n.summaryKo ?? summary ?? [],
       summaryJa: n.summaryJa ?? [],
       titleJa: n.titleJa ?? "",
+      titleEn: n.titleEn || (src?.lang === "en" ? n.title : ""),
+      summaryEn: n.summaryEn ?? [],
       techniques: n.techniques ?? [],
       iocTypes: n.iocTypes ?? [],
     });
@@ -349,7 +355,7 @@ async function main() {
   });
 
   const run = await readJson<RunState>(RUN_PATH, {});
-  const prevBriefings = await readJson<Briefing[]>(BRIEFINGS_PATH, []);
+  const prevBriefings = migrateBriefings(await readJson<Briefing[]>(BRIEFINGS_PATH, []));
   const briefingWanted =
     forceBriefing ||
     (briefingDue(prevBriefings) &&
@@ -494,6 +500,7 @@ async function main() {
     title: n.title,
     titleKo: n.titleKo,
     titleJa: n.titleJa,
+    titleEn: n.titleEn,
     sourceName: n.sourceName,
     sourceKind: n.sourceKind,
     publishedAt: n.publishedAt,

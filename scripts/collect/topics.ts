@@ -49,8 +49,10 @@ function refreshDerived(t: Topic, members: NewsItem[]) {
     Object.assign(t, {
       titleKo: n.titleKo,
       titleJa: n.titleJa || n.titleKo,
+      titleEn: n.titleEn,
       summaryKo: n.summaryKo,
       summaryJa: n.summaryJa,
+      summaryEn: n.summaryEn,
       regions: n.regions,
       nature: n.nature,
       attackTypes: n.attackTypes,
@@ -98,8 +100,10 @@ function newTopic(n: NewsItem): Topic {
     id: topicIdFor(n.id),
     titleKo: n.titleKo,
     titleJa: n.titleJa || n.titleKo,
+    titleEn: n.titleEn,
     summaryKo: n.summaryKo,
     summaryJa: n.summaryJa,
+    summaryEn: n.summaryEn,
     regions: n.regions,
     nature: n.nature,
     attackTypes: n.attackTypes,
@@ -245,6 +249,9 @@ async function synthesize(t: Topic, members: NewsItem[]) {
   t.titleJa = r.titleJa.trim() || t.titleJa;
   t.summaryKo = lines(r.summaryKo).slice(0, 5);
   t.summaryJa = lines(r.summaryJa).slice(0, 5);
+  // 영어는 아직 통합 요약에서 만들지 않는다: 예전 영어가 새 요약과 어긋나지 않게 비워 두고 채우기 단계에 맡긴다
+  t.titleEn = "";
+  t.summaryEn = [];
   if (r.regions.length) t.regions = uniq(r.regions);
   t.nature = r.nature;
   t.attackTypes = uniq(r.attackTypes).slice(0, 3);
@@ -427,7 +434,13 @@ export async function updateTopics(
 
   // 사라진 기사(보관 기간 초과, 삭제된 지역)를 토픽에서 빼고, 빈 토픽은 버린다
   const topics = prev
-    .map((t) => ({ ...t, articleIds: t.articleIds.filter((id) => byId.has(id)) }))
+    .map((t) => ({
+      ...t,
+      // 영어를 넣기 전의 토픽
+      titleEn: t.titleEn ?? "",
+      summaryEn: t.summaryEn ?? [],
+      articleIds: t.articleIds.filter((id) => byId.has(id)),
+    }))
     .filter((t) => t.articleIds.length > 0);
   const repaired = repairIds(topics, byId);
   if (repaired) console.log(`토픽 id 바로잡기 ${repaired}개 (겹치거나 깨진 id)`);
