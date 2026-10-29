@@ -27,16 +27,17 @@ import {
   forcedStore,
   loadForced,
   sumCount,
+  NAMES_VERSION,
   updateNameEnglish,
   updateNameReadings,
   type FixCount,
 } from "./lang-audit";
-import { RULES_VERSION, rejudgeResearch, retryWeakBodies } from "./quality";
+import { RULES_VERSION, rejudgeRegions, rejudgeResearch, resummarizeYears, retryWeakBodies } from "./quality";
 import { keywordExclusion } from "./filter";
 import { fetchFeeds, type RawItem, type Source } from "./rss";
 import { EXCLUDED_NATURE, SummaryRefused, summarize, translateToJa } from "./summarize";
-import { describeError, idFor, isTransientApiError, mapLimit, readJson, writeJson } from "./util";
-import { updateTopics } from "./topics";
+import { decodeEntities, describeError, idFor, isTransientApiError, mapLimit, readJson, writeJson } from "./util";
+import { checkedTopicIds, updateTopics } from "./topics";
 import { collectVulns } from "./vulns";
 
 const NEWS_PATH = "public/data/news.json";
@@ -75,6 +76,8 @@ interface RunState {
   briefingAttempts?: { date: string; n: number };
   /** 마지막으로 저장·배포까지 간 실행의 코드 커밋. 새 코드로 처음 도는 실행은 새 기사가 없어도 저장·배포한다 */
   codeSha?: string;
+  /** 이름 사전(names-ko·names-en)을 만든 판 (lang-audit.ts의 NAMES_VERSION과 다르면 처음부터 다시 만든다) */
+  namesVersion?: number;
 }
 /** 화면용 가벼운 기사 목록 (news.json은 수집기 내부용) */
 const ARTICLES_PATH = "public/data/articles.json";
@@ -122,6 +125,10 @@ interface State {
   bodyRetries: Record<string, number>;
   /** 그날(일본 시간) 새로 요약한 기사 수 (DAILY_MAX_SUMMARIES) */
   daily: { date: string; summarized: number };
+  /** 기사 id → 일본 관련 여부를 다시 물어봄 (quality.ts) */
+  regionChecked: Record<string, 1>;
+  /** 기사 id → 요약 속 연도를 확인함 (quality.ts) */
+  yearChecked: Record<string, 1>;
 }
 
 type LegacyNewsItem = Omit<NewsItem, "sourceRegion" | "regions" | "titleEn" | "summaryEn"> & {
@@ -141,6 +148,7 @@ type LegacyNewsItem = Omit<NewsItem, "sourceRegion" | "regions" | "titleEn" | "s
  * - sourceKind, techniques, iocTypes 기본값
  * - 영어 필드(2026-10): 영어 매체 기사는 원제목이 곧 영어 제목, 나머지는 빈 값 (채우기 단계가 채운다)
  * - 한국어 요약이 빈 기사 삭제 (모델이 빈 요약을 돌려준 것. 피드에 아직 있으면 새 기사로 다시 요약된다)
+ * - 제목에 남은 HTML 문자 참조(&#x5b; 등)를 글자로
  */
 function migrate(items: LegacyNewsItem[], sources: Source[]): NewsItem[] {
   const dropped = { nature: 0, korea: 0, url: 0, empty: 0 };
@@ -168,13 +176,15 @@ function migrate(items: LegacyNewsItem[], sources: Source[]): NewsItem[] {
     const src = sources.find((s) => s.id === n.sourceId);
     out.push({
       ...n,
+      title: decodeEntities(n.title),
+      titleKo: decodeEntities(n.titleKo),
+      titleJa: decodeEntities(n.titleJa ?? ""),
       sourceRegion: n.sourceRegion as NewsItem["sourceRegion"],
       sourceKind: n.sourceKind ?? src?.kind ?? "news",
       regions: regions.length ? regions : ["INTL"],
       summaryKo,
       summaryJa: n.summaryJa ?? [],
-      titleJa: n.titleJa ?? "",
-      titleEn: n.titleEn || (src?.lang === "en" ? n.title : ""),
+      titleEn: decodeEntities(n.titleEn || (src?.lang === "en" ? n.title : "")),
       summaryEn: n.summaryEn ?? [],
       techniques: n.techniques ?? [],
       iocTypes: n.iocTypes ?? [],
@@ -223,7 +233,10 @@ async function setOutput(key: string, value: string) {
 }
 
 /** full=false(가벼운 실행)면 벤더 리서치 피드와 품질 점검을 건너뛴다. processed: 이번에 처리한 새 기사 수 */
-async function runNews(meta: Meta, full: boolean): Promise<{ news: NewsItem[]; processed: number }> {
+async function runNews(
+  meta: Meta,
+  full: boolean,
+): Promise<{ news: NewsItem[]; processed: number; resummarized: Set<string> }> {
   const sources = await loadSources();
   let existing = migrate(await readJson<LegacyNewsItem[]>(NEWS_PATH, []), sources);
   const prevCount = existing.length;
@@ -235,7 +248,11 @@ async function runNews(meta: Meta, full: boolean): Promise<{ news: NewsItem[]; p
     rejudged: saved.rejudged ?? {},
     bodyRetries: saved.bodyRetries ?? {},
     daily: saved.daily?.date === today ? saved.daily : { date: today, summarized: 0 },
+    regionChecked: saved.regionChecked ?? {},
+    yearChecked: saved.yearChecked ?? {},
   };
+  /** 이번 실행에서 다시 요약한 기존 기사 (그 기사가 든 토픽의 통합 요약도 다시 만든다) */
+  const resummarized = new Set<string>();
 
   // 벤더 리서치는 급하지 않고 피드가 커서(수백 건) 전체 실행 때만 읽는다
   const { items, statuses } = await fetchFeeds(full ? sources : sources.filter((s) => s.kind !== "vendor"));
@@ -313,6 +330,7 @@ async function runNews(meta: Meta, full: boolean): Promise<{ news: NewsItem[]; p
       const item = result.item;
       item.id = id;
       state.rejudged[id] = RULES_VERSION; // 새 기준으로 요약했으니 다시 판정할 필요 없음
+      state.yearChecked[id] = 1; // 게시일을 주고 요약했으니 연도도 다시 볼 필요 없음
       added.push(item);
       delete state.failures[id];
       stats.added++;
@@ -368,7 +386,7 @@ async function runNews(meta: Meta, full: boolean): Promise<{ news: NewsItem[]; p
     console.log(`기존 기사 일본어 채움 ${filled}/${missingJa.length}`);
   }
 
-  // 품질 점검: 본문 다시 읽기, 새 기준으로 '연구·리포트' 다시 판정 (일반 해설·홍보 제외)
+  // 품질 점검: 본문 다시 읽기, 기준으로 다시 판정(일반 해설·홍보·생활 팁 제외), 일본 관련 여부, 요약 속 연도
   if (full && hasKey() && !configFailed && !apiDown) {
     const retry = await retryWeakBodies(existing, sources, state);
     const drop = await rejudgeResearch(existing, state);
@@ -376,17 +394,32 @@ async function runNews(meta: Meta, full: boolean): Promise<{ news: NewsItem[]; p
     const now = new Date().toISOString();
     for (const id of drop) state.excluded[id] = now;
     existing = existing.filter((n) => !drop.has(n.id));
-    console.log(`품질 점검: 본문 다시 읽기 성공 ${retry.improved} · 제외 ${drop.size}`);
+    const regions = await rejudgeRegions(existing, state);
+    const years = await resummarizeYears(existing, sources, state);
+    for (const id of [...retry.changed, ...years]) resummarized.add(id);
+    console.log(
+      `품질 점검: 본문 다시 읽기 성공 ${retry.improved} · 제외 ${drop.size} · 지역에서 일본 뺌 ${regions.size} · 연도 확인해 다시 요약 ${years.size}`,
+    );
   }
 
   const merged = [...added, ...existing]
     .filter((n) => Date.parse(n.publishedAt) >= cutoff)
     .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 
+  // 출처마다 마지막으로 기사가 추가된 시각과 최근 7일 추가 수 (피드는 읽히는데 조용한 출처를 화면에서 알아보게)
+  const weekAgo = new Date(Date.now() - 7 * 86400_000).toISOString();
+  for (const st of meta.sources) {
+    const mine = merged.filter((n) => n.sourceId === st.id);
+    st.lastAddedAt = mine.map((n) => n.collectedAt).sort().at(-1);
+    st.added7d = mine.filter((n) => n.collectedAt >= weekAgo).length;
+  }
+
   // 더 이상 없는 기사의 품질 점검 기록은 지운다
   const alive = new Set(merged.map((n) => n.id));
   for (const id of Object.keys(state.rejudged)) if (!alive.has(id)) delete state.rejudged[id];
   for (const id of Object.keys(state.bodyRetries)) if (!alive.has(id)) delete state.bodyRetries[id];
+  for (const id of Object.keys(state.regionChecked)) if (!alive.has(id)) delete state.regionChecked[id];
+  for (const id of Object.keys(state.yearChecked)) if (!alive.has(id)) delete state.yearChecked[id];
 
   // 오래된 내부 상태 정리 (피드에서 이미 사라졌을 기사)
   for (const [id, at] of Object.entries(state.excluded)) if (Date.parse(at) < cutoff) delete state.excluded[id];
@@ -401,7 +434,7 @@ async function runNews(meta: Meta, full: boolean): Promise<{ news: NewsItem[]; p
     await writeJson(NEWS_PATH, merged);
     await writeJson(STATE_PATH, state);
   }
-  return { news: merged, processed: queue.length };
+  return { news: merged, processed: queue.length, resummarized };
 }
 
 async function main() {
@@ -431,7 +464,8 @@ async function main() {
 
   let news = migrate(await readJson<LegacyNewsItem[]>(NEWS_PATH, []), await loadSources());
   let processed = 0;
-  if (mode !== "vulns") ({ news, processed } = await runNews(meta, full));
+  let resummarized = new Set<string>();
+  if (mode !== "vulns") ({ news, processed, resummarized } = await runNews(meta, full));
 
   // 새 코드로 처음 도는 실행 (push 실행이 다른 실행에 밀려 취소돼도 새 코드가 배포되게)
   const newCode = !!process.env.GITHUB_SHA && run.codeSha !== process.env.GITHUB_SHA;
@@ -458,16 +492,21 @@ async function main() {
     if (fill.missing) console.log(`영어 채우기(기사): ${fill.filled}/${fill.missing}`);
     const changed = sumCount(a.ja, a.ko, a.en);
     if (!dry && (changed.fixed || changed.forced || a.names || fill.filled)) await writeJson(NEWS_PATH, news);
+    const freshNames = run.namesVersion !== NAMES_VERSION;
+    if (freshNames) console.log(`이름 사전을 처음부터 다시 만듭니다 (판 ${run.namesVersion ?? 1} → ${NAMES_VERSION})`);
     const { readings, count } = await updateNameReadings(
       news.flatMap((n) => [...n.entities.orgs, ...n.entities.actors]),
       await readJson<Record<string, string>>(NAMES_KO_PATH, {}),
+      freshNames,
     );
     console.log(`언어 점검(이름 한국어 읽기): ${Object.keys(readings).length}개 · 새로 ${fmt(count)}`);
     if (!dry) await writeJson(NAMES_KO_PATH, readings);
     const en = await updateNameEnglish(
       news.flatMap((n) => [...n.entities.orgs, ...n.entities.actors]),
       await readJson<Record<string, string>>(NAMES_EN_PATH, {}),
+      freshNames,
     );
+    run.namesVersion = NAMES_VERSION;
     console.log(`언어 점검(이름 영어 표기): ${Object.keys(en.english).length}개 · 새로 ${fmt(en.count)}`);
     if (!dry) await writeJson(NAMES_EN_PATH, en.english);
   }
@@ -494,6 +533,8 @@ async function main() {
 
   // 토픽(まとめ): 기사 묶기, 통합 요약, 중요도
   const prevTopics = await readJson<Topic[]>(TOPICS_PATH, []);
+  // 다시 요약한 기사가 든 토픽은 통합 요약도 다시 만든다 (예전 요약의 틀린 연도 등이 남지 않게)
+  for (const t of prevTopics) if (t.articleIds.length > 1 && t.articleIds.some((id) => resummarized.has(id))) t.summarizedCount = 0;
   const checkedPairs = new Set(await readJson<string[]>(MERGE_CHECKED_PATH, []));
   const { topics, stats } = await updateTopics(news, prevTopics, vulns, {
     useLlm: hasKey(),
@@ -505,7 +546,7 @@ async function main() {
   );
   // 지금 있는 토픽의 쌍만 기억한다 (파일이 끝없이 커지지 않게)
   const liveTopics = new Set(topics.map((t) => t.id));
-  const keepPairs = [...checkedPairs].filter((k) => k.split("|").every((id) => liveTopics.has(id)));
+  const keepPairs = [...checkedPairs].filter((k) => checkedTopicIds(k).every((id) => liveTopics.has(id)));
   if (!dry) await writeJson(MERGE_CHECKED_PATH, keepPairs);
   // 언어 점검 2: 토픽 통합 요약의 일본어·한국어·영어 필드 (영어가 비어 있는 이전 토픽은 먼저 채운다)
   if (hasKey()) {
@@ -557,7 +598,7 @@ async function main() {
         run.briefingAttempts = { date: jstDate(), n: attempts + 1 };
       }
       const { briefings, made, note } = briefingWanted
-        ? await maybeBriefing(topics, prev, forceBriefing)
+        ? await maybeBriefing(topics, prev, forceBriefing, news)
         : { briefings: prev, made: false, note: undefined };
       if (made) {
         console.log(`브리핑 생성: ${briefings[0].date} · ${briefings[0].items.length}건`);

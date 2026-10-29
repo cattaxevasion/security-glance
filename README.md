@@ -66,6 +66,13 @@ npm run check:i18n -- --data    # 화면이 받는 데이터 파일도 검사 (�
 - `probe-feeds.ts <url...>`: RSS 주소가 파싱되는지 확인
 - `probe-extract.ts`: 소스마다 본문 추출이 되는지 확인
 
+## 토픽 분류와 중요도
+
+- 토픽의 성격·공격 유형·산업·지역은 소속 기사에서 정한다 (성격은 가장 많은 기사의 것, 태그는 기사의 3분의 1 이상이 가진 것).
+  통합 요약 모델은 제목·요약만 쓴다.
+- 여러 사건을 모은 주간 정리 글(Weekly Recap, Threat Intelligence Report, ThreatsDay, In Other News 등)은 따로 토픽으로 두고 중요도를 낮게 고정한다.
+- 오늘의 브리핑은 최근 브리핑 2개에 나온 토픽을, 그 뒤 새 기사가 2건 이상 들어왔을 때만 다시 고른다.
+
 ## 소스 추가
 
 `sources.json`에 한 줄 추가한다. `region`은 출처 지역(INTL/JP), `kind`는 news(매체) / vendor(벤더 리서치, 본문을 길게 읽고 ATT&CK·IoC를 뽑음) / cert(CERT·기관), 일반 IT 매체면 `"keywordFilter": true`로 보안 기사만 거른다.
@@ -98,7 +105,8 @@ src/pages/t/[id].astro  토픽 공유 페이지 (링크 미리보기에 토픽 �
 shared/topic-files.ts   화면용 토픽 파일을 언어별로 나누고 합치기 (수집기·화면·빌드·검사가 같이 씀)
 data/                   내부 상태: state.json(제외·실패·다시 판정 기록), merge-checked.json(토픽 합치기 기록),
                         lang-forced.json(기계 변환한 필드의 원래 글 — 다음 실행에서 모델로 다시 고침)
-scripts/collect/quality.ts  품질 점검: 일반 해설·홍보 글 다시 판정, 본문 다시 읽기
+scripts/collect/quality.ts  품질 점검(전체 실행): 일반 해설·홍보·생활 팁 글 다시 판정, 본문 다시 읽기, 일본 관련 여부 다시 묻기,
+                        요약 속 연도가 의심스러운 기사 다시 요약
 src/components/         Fluent 2 화면 (React): AppHeader, AppNav, BriefingPage, IncidentsPage, TopicsPage, VulnPage, DetailPanel
                         motion.ts(Fluent 모션 토큰 기반 애니메이션)
 src/i18n.ts             한/日/英 화면 글자와 태그 라벨

@@ -61,7 +61,8 @@ interface NvdResponse {
 }
 
 function pickCvss(metrics: Record<string, NvdCvssMetric[] | undefined> | undefined) {
-  for (const key of ["cvssMetricV40", "cvssMetricV31", "cvssMetricV30"]) {
+  // v3.1을 먼저: NVD에서 v3 기준 HIGH·CRITICAL로 고른 목록이라 v4 점수를 보여주면 MEDIUM·LOW가 섞여 보인다
+  for (const key of ["cvssMetricV31", "cvssMetricV30", "cvssMetricV40"]) {
     const m = metrics?.[key]?.[0];
     if (m) return { score: m.cvssData.baseScore, severity: m.cvssData.baseSeverity ?? m.baseSeverity ?? null };
   }

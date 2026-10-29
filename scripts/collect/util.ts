@@ -77,8 +77,21 @@ export function sha1(s: string): string {
   return createHash("sha1").update(s).digest("hex").slice(0, 16);
 }
 
+const ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " " };
+
+/** 피드 제목 등에 남은 HTML 문자 참조(&amp;, &#x5b; …)를 글자로 */
+export function decodeEntities(s: string): string {
+  return s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, code: string) => {
+    if (code[0] === "#") {
+      const n = code[1].toLowerCase() === "x" ? parseInt(code.slice(2), 16) : parseInt(code.slice(1), 10);
+      return Number.isFinite(n) && n > 0 && n < 0x110000 ? String.fromCodePoint(n) : m;
+    }
+    return ENTITIES[code.toLowerCase()] ?? m;
+  });
+}
+
 export function cleanText(s: string | undefined | null): string {
-  return (s ?? "").replace(/\s+/g, " ").trim();
+  return decodeEntities(s ?? "").replace(/\s+/g, " ").trim();
 }
 
 /**

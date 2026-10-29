@@ -1,7 +1,7 @@
 // 오늘의 브리핑: 일본 시간 아침마다 최근 중요 토픽 3~5개를 짧게 정리한다.
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
-import type { Briefing, Topic } from "../../shared/types";
+import type { Briefing, NewsItem, Topic } from "../../shared/types";
 import { anthropic, EN_RULES, MODEL, SummaryRefused, type Effort } from "./summarize";
 import { describeError } from "./util";
 
@@ -90,10 +90,35 @@ export function briefingDue(prev: Briefing[]): boolean {
   return hour >= BRIEFING_HOUR_JST && !prev.some((b) => b.date === date);
 }
 
+/** 최근 이만큼의 브리핑에 나온 토픽은, 그 뒤에 새 기사가 NEW_ARTICLES_TO_REPEAT건 이상 들어왔을 때만 다시 고른다 */
+const REPEAT_LOOKBACK = 2;
+const NEW_ARTICLES_TO_REPEAT = 2;
+
+/**
+ * 브리핑 후보에서 최근 브리핑에 이미 나온 토픽을 뺀다 (큰 사건이 며칠씩 중요도 1위라 같은 토픽이 8일 연속 나왔다).
+ * 그 뒤로 새 기사가 충분히 들어온 토픽만 다시 후보로. 후보가 3개보다 적어지면 빼지 않는다.
+ */
+export function freshCandidates(pool: Topic[], prev: Briefing[], today: string, collectedAt: (id: string) => string): Topic[] {
+  const briefedAt = new Map<string, string>();
+  for (const b of prev.filter((x) => x.date !== today).slice(0, REPEAT_LOOKBACK))
+    for (const it of b.items) if (!briefedAt.has(it.topicId)) briefedAt.set(it.topicId, b.generatedAt);
+  const fresh = pool.filter((t) => {
+    const at = [t.id, ...(t.aliases ?? [])]
+      .map((id) => briefedAt.get(id))
+      .filter((x): x is string => !!x)
+      .sort()
+      .at(-1);
+    if (!at) return true;
+    return t.articleIds.filter((id) => collectedAt(id) > at).length >= NEW_ARTICLES_TO_REPEAT;
+  });
+  return fresh.length >= 3 ? fresh : pool;
+}
+
 export async function maybeBriefing(
   topics: Topic[],
   prev: Briefing[],
   force: boolean,
+  news: NewsItem[] = [],
 ): Promise<{ briefings: Briefing[]; made: boolean; note?: string }> {
   const { date } = jstNow();
   if (!force && !briefingDue(prev)) return { briefings: prev, made: false };
@@ -101,6 +126,8 @@ export async function maybeBriefing(
   const recent = (hours: number) => topics.filter((t) => Date.parse(t.lastUpdated) >= Date.now() - hours * 3600_000);
   let pool = recent(36);
   if (pool.length < 3) pool = recent(72);
+  const collected = new Map(news.map((n) => [n.id, n.collectedAt]));
+  pool = freshCandidates(pool, prev, date, (id) => collected.get(id) ?? "");
   const candidates = [...pool].sort((a, b) => b.importance - a.importance).slice(0, CANDIDATES);
   if (candidates.length === 0) return { briefings: prev, made: false };
 
