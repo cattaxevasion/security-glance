@@ -46,7 +46,11 @@ npm run check:i18n -- --data    # 화면이 받는 데이터 파일도 검사 (�
   일본어 칸의 한글은 다시 번역하고, 한국어 칸에 남은 일본어는 「다이이치생명(第一生命保険)」처럼 한글 읽기 + 괄호 원문으로 고쳐 쓴다.
   고치는 순서: 기본 모델 → 남은 부분을 짚어 주고 다시 → 더 강한 모델(`FIX_MODEL`, 기본 claude-sonnet-5-5) → 그래도 남으면 기계 변환(가나 → 한글 소리).
   화면용 파일을 쓰기 직전에 한 번 더 확인하고, 배포 전 `check:i18n -- --data`가 하나라도 찾으면 배포를 멈춘다.
-- 일본어로 적힌 조직·위협 그룹 이름은 `names-ko.json`(한국어 읽기 사전)으로 한국어 화면에 「다이이치생명보험」처럼 보인다.
+- 영어 칸(titleEn·summaryEn, 브리핑 *En)에는 한글·가나·한자·전각 기호를 한 글자도 두지 않는다 (괄호 속 원문도 쓰지 않음).
+  일본 고유명사는 공식 영문 표기, 없으면 헵번식 로마자 (예: 第一生命保険 → Dai-ichi Life Insurance). 고치는 순서는 위와 같고, 마지막 수단은 가나 → 로마자.
+  영어를 넣기 전의 기사·토픽은 저장·배포까지 가는 실행마다 최신 순으로 한도만큼(기사 150 · 토픽 100) 채운다. 비어 있는 동안 영어 화면은 안내 문구를 보여준다.
+- 일본어로 적힌 조직·위협 그룹 이름은 `names-ko.json`(한국어 읽기 사전)으로 한국어 화면에 「다이이치생명보험」처럼, `names-en.json`(영어 표기 사전)으로 영어 화면에 「Dai-ichi Life Insurance」처럼 보인다.
+  모델이 계속 틀리는 이름은 `scripts/collect/lang-audit.ts`의 `KNOWN_NAMES`에 고정 표기를 둔다.
   매체 이름의 화면 표기는 `src/i18n.ts`의 `SOURCE_LABELS` (새 매체를 넣을 때 빠지면 검사가 실패한다).
 - 판별식·기계 변환 테스트: `npm test`
 
@@ -80,7 +84,7 @@ public/data/            화면이 읽는 JSON (data 브랜치에서 받음, git 
                         topics-archive.json(그 이전 토픽, 화면이 뜬 뒤에 받음)
                         vulns-core.json(KEV·EPSS, 첫 화면) · cves.json(고위험 CVE, 나중에 받음)
                         leaks.json(랜섬웨어 유출 사이트 게시·일본, ransomware.live 집계 — 공격 조직의 주장)
-                        names-ko.json(일본어 이름의 한국어 읽기)
+                        names-ko.json(일본어 이름의 한국어 읽기) · names-en.json(일본어 이름의 영어 표기)
                         news.json·topics.json·vulns.json(수집기 내부용 전체본, 사이트엔 안 올림)
 src/pages/t/[id].astro  토픽 공유 페이지 (링크 미리보기에 토픽 제목·요약, 열면 사이트의 그 토픽으로). 일본어는 /ja/t/[id]/
 data/                   내부 상태: state.json(제외·실패·다시 판정 기록), merge-checked.json(토픽 합치기 기록),
