@@ -10,6 +10,7 @@
 // 30분마다 돈다. 평소에는 가벼운 실행: 매체 피드만 보고, 새 기사가 없으면 저장·배포 없이 바로 끝낸다.
 // 6시간마다 전체 실행: 벤더 리서치 피드, 취약점(KEV·NVD·EPSS), 랜섬웨어 유출 게시, 기사 품질 점검까지.
 import Anthropic from "@anthropic-ai/sdk";
+import { existsSync } from "node:fs";
 import { appendFile, readFile, rm } from "node:fs/promises";
 import { splitTopics, TEXT_LANGS, topicFile } from "../../shared/topic-files";
 import type { ArticleRef, Briefing, LeakPost, Meta, NewsItem, RunStats, Topic, VulnData } from "../../shared/types";
@@ -390,6 +391,8 @@ async function main() {
 
   // 새 기사도, 전체 점검도, 브리핑도 없으면 여기서 끝낸다 (AI 호출·저장·배포 없음)
   if (!full && !processed && !briefingWanted) {
+    // 코드를 push한 실행은 이렇게 끝나도 배포한다: 화면용 토픽 파일이 예전 형식뿐이면 지금 형식으로 나눠 둔다 (AI 호출 없음)
+    if (!dry) await writeTopicFiles(await readJson<Topic[]>(TOPICS_PATH, []), true);
     console.log("\n새 기사 없음: 저장·배포 없이 끝냅니다");
     await setOutput("changed", "false");
     return;
@@ -473,17 +476,7 @@ async function main() {
   meta.topicCount = topics.length;
   if (!dry) {
     await writeJson(TOPICS_PATH, topics);
-    const recentCut = Date.now() - RECENT_DAYS * 86400_000;
-    const isRecent = (t: Topic) => Date.parse(t.lastUpdated) >= recentCut;
-    for (const [part, list] of [
-      ["recent", topics.filter(isRecent)],
-      ["archive", topics.filter((t) => !isRecent(t))],
-    ] as const) {
-      const { core, texts } = splitTopics(list);
-      await writeJson(`public/data/${topicFile(part, "core")}`, core);
-      for (const l of TEXT_LANGS) await writeJson(`public/data/${topicFile(part, l)}`, texts[l]);
-    }
-    for (const p of LEGACY_TOPIC_PATHS) await rm(p, { force: true });
+    await writeTopicFiles(topics);
   }
 
   // 랜섬웨어 유출 사이트 게시 (일본): 보도 토픽과 연결
@@ -564,6 +557,22 @@ async function main() {
     await writeJson(RUN_PATH, full ? { ...run, fullAt: meta.updatedAt } : run);
   }
   await setOutput("changed", "true");
+}
+
+/** 화면용 토픽 파일 쓰기 (최근·지난 × 언어와 무관한 부분·언어별 글). onlyIfMissing이면 이미 지금 형식일 때 아무것도 안 함 */
+async function writeTopicFiles(topics: Topic[], onlyIfMissing = false) {
+  if (onlyIfMissing && (existsSync(`public/data/${topicFile("recent", "core")}`) || !topics.length)) return;
+  const recentCut = Date.now() - RECENT_DAYS * 86400_000;
+  const isRecent = (t: Topic) => Date.parse(t.lastUpdated) >= recentCut;
+  for (const [part, list] of [
+    ["recent", topics.filter(isRecent)],
+    ["archive", topics.filter((t) => !isRecent(t))],
+  ] as const) {
+    const { core, texts } = splitTopics(list);
+    await writeJson(`public/data/${topicFile(part, "core")}`, core);
+    for (const l of TEXT_LANGS) await writeJson(`public/data/${topicFile(part, l)}`, texts[l]);
+  }
+  for (const p of LEGACY_TOPIC_PATHS) await rm(p, { force: true });
 }
 
 /** 고친 수 표시: "고침 3" 또는 "고침 3 · 기계 변환 1" */
