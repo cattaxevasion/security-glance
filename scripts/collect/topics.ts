@@ -8,7 +8,7 @@ import { z } from "zod";
 import { ATTACK_TYPES, NATURES, REGIONS, SECTORS, type Nature } from "../../shared/taxonomy";
 import type { NewsItem, Technique, Topic, VulnData } from "../../shared/types";
 import { anthropic, EN_RULES, MODEL, pickTags, SummaryRefused } from "./summarize";
-import { mapLimit, sha1 } from "./util";
+import { describeError, isTransientApiError, mapLimit, sha1 } from "./util";
 
 /** 배정 후보로 보여줄 최근 토픽 범위 */
 const CANDIDATE_DAYS = 10;
@@ -467,8 +467,11 @@ export async function updateTopics(
   };
 
   let llmOk = opts.useLlm;
+  /** API 일시 오류: 남은 기사는 토픽에 넣지 않고 다음 실행에서 다시 배정한다 (기사마다 따로 토픽이 생겨 굳지 않게) */
+  let deferred = false;
   for (let i = 0; i < unassigned.length; i += ASSIGN_BATCH) {
     const batch = unassigned.slice(i, i + ASSIGN_BATCH);
+    if (deferred) continue;
     if (!llmOk) {
       batch.forEach((n) => place(n, null));
       continue;
@@ -484,8 +487,13 @@ export async function updateTopics(
       // 후보 토픽이 없어도 같은 배치 안의 기사끼리 묶일 수 있으므로 2건 이상이면 묻는다
       result = candidates.length || batch.length > 1 ? await assignBatch(batch, candidates) : new Map();
     } catch (e) {
+      if (isTransientApiError(e)) {
+        deferred = true;
+        console.warn(`  !  토픽 배정을 다음 실행으로 미룸 (API 일시 오류: ${describeError(e)}, ${unassigned.length - i}건)`);
+        continue;
+      }
       if (opts.isConfigError(e)) llmOk = false;
-      console.warn(`  !  토픽 배정 실패 (${batch.length}건): ${(e as Error).message.slice(0, 120)}`);
+      console.warn(`  !  토픽 배정 실패 (${batch.length}건): ${describeError(e)}`);
       stats.failed += batch.length;
       result = new Map();
     }
@@ -508,7 +516,7 @@ export async function updateTopics(
       stats.merged = await mergePass(topics, opts.checkedPairs);
     } catch (e) {
       if (opts.isConfigError(e)) llmOk = false;
-      console.warn(`  !  토픽 다시 합치기 실패: ${(e as Error).message.slice(0, 120)}`);
+      console.warn(`  !  토픽 다시 합치기 실패: ${describeError(e)}`);
     }
   }
 
@@ -531,7 +539,7 @@ export async function updateTopics(
       } catch (e) {
         if (opts.isConfigError(e)) llmOk = false;
         stats.failed++;
-        console.warn(`  !  통합 요약 실패: ${t.titleKo.slice(0, 40)} → ${(e as Error).message.slice(0, 100)}`);
+        console.warn(`  !  통합 요약 실패: ${t.titleKo.slice(0, 40)} → ${describeError(e)}`);
       }
     });
   }

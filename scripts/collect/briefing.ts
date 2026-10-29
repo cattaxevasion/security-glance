@@ -3,6 +3,7 @@ import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
 import type { Briefing, Topic } from "../../shared/types";
 import { anthropic, EN_RULES, MODEL, SummaryRefused, type Effort } from "./summarize";
+import { describeError } from "./util";
 
 const KEEP = 30;
 /** 이 시각(일본 시간) 이후 첫 수집에서 그날 브리핑을 만든다 */
@@ -17,6 +18,11 @@ const LADDER: { model: string; maxTokens: number; effort: Effort }[] = [
   { model: process.env.BRIEFING_MODEL ?? MODEL, maxTokens: 16000, effort: "low" },
   { model: process.env.FIX_MODEL ?? "claude-sonnet-5-5", maxTokens: 16000, effort: "medium" },
 ];
+
+/** 오늘 날짜 (일본 시간, YYYY-MM-DD) */
+export function jstDate(): string {
+  return jstNow().date;
+}
 
 function jstNow(): { date: string; hour: number } {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -141,7 +147,7 @@ export async function maybeBriefing(
       return { briefings: [made, ...prev.filter((b) => b.date !== date)].slice(0, KEEP), made: true, note };
     } catch (e) {
       if (e instanceof SummaryRefused) reasons.push(`${label}: refused`);
-      else reasons.push(`${label}: ${(e as Error).message.slice(0, 120)}`);
+      else reasons.push(`${label}: ${describeError(e).slice(0, 120)}`);
     }
   }
   throw new Error(reasons.join(" / "));
