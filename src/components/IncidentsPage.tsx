@@ -24,14 +24,13 @@ import {
 } from "@fluentui/react-icons";
 import { useEffect, useMemo, useState } from "react";
 import { ATTACK_TYPES, SECTORS, type Region } from "../../shared/taxonomy";
-import type { LeakPost, Topic } from "../../shared/types";
+import type { Topic } from "../../shared/types";
 import { LOCALE, REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import { FilterPill } from "./FilterPill";
 import { dayStart, timeOfDay } from "./format";
 import { FreshMark, SourceAvatars } from "./marks";
 import { stagger, useMotion } from "./motion";
 import { PageTitle, usePageStyles } from "./page";
-import { LeaksSection } from "./Leaks";
 import { namesOf, sourceLabel, summaryOf, titleOf } from "./text";
 import { isFresh } from "./visit";
 import { PRIORITY_THRESHOLD, matchesQuery } from "./TopicsPage";
@@ -186,8 +185,6 @@ const useStyles = makeStyles({
 interface Props {
   lang: Lang;
   topics: Topic[];
-  /** 랜섬웨어 유출 사이트 게시 (일본) */
-  leaks: LeakPost[];
   /** 지난 방문 시각 (새 소식 표시) */
   lastVisit: number | null;
   query: string;
@@ -338,8 +335,6 @@ export function IncidentsPage(p: Props) {
           />
         )}
       </div>
-
-      {region !== "INTL" && <LeaksSection lang={lang} leaks={p.leaks} limit={5} onOpen={p.onSelect} />}
 
       <div className={ps.filters}>
         <FilterPill

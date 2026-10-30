@@ -40,7 +40,7 @@ const description =
         var nav = (navigator.language || "").toLowerCase();
         var lang = pick(new URLSearchParams(location.search).get("lang")) || pick(saved) ||
           (nav.indexOf("ja") === 0 ? "ja" : nav.indexOf("ko") === 0 ? "ko" : "en");
-        var files = ["topics-recent-core.json", "topics-recent-" + lang + ".json", "briefings.json", "vulns-core.json", "meta.json", "leaks.json"];
+        var files = ["topics-recent-core.json", "topics-recent-" + lang + ".json", "briefings.json", "vulns-core.json", "meta.json"];
         if (lang !== "ja") files.push("names-" + lang + ".json");
         var pre = {};
         files.forEach(function (f) {

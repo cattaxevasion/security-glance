@@ -1,0 +1,16 @@
+// 방문자 수 Worker 설정. 배포: visits 폴더에서 npx wrangler deploy
+{
+  "name": "security-glance-visits",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  // 사이트가 부르는 주소 (https://security-glance-visits.<계정>.workers.dev)
+  "workers_dev": true,
+  "preview_urls": false,
+  // 숫자는 Durable Object 하나(SQLite)에 둔다. 따로 만들 저장소가 없어 deploy 한 번이면 된다
+  "durable_objects": { "bindings": [{ "name": "COUNTER", "class_name": "Counter" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Counter"] }],
+  "vars": {
+    "ALLOWED_ORIGINS": "https://cattaxevasion.github.io,http://localhost:4321"
+  },
+  "observability": { "enabled": true }
+}

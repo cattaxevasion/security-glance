@@ -24,7 +24,7 @@ import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "pretendard-jp/dist/web/variable/pretendardvariable-jp-dynamic-subset.css";
 import type { Region } from "../../shared/taxonomy";
 import { joinTopics, topicFile, type TopicCore, type TopicPart, type TopicTexts } from "../../shared/topic-files";
-import type { ArticleRef, Briefing, CveEntry, LeakPost, Meta, VulnData } from "../../shared/types";
+import type { ArticleRef, Briefing, CveEntry, Meta, VulnData } from "../../shared/types";
 import { FONT_STACK, REGION_LABELS, STRINGS, detectLang, saveLang, type Lang } from "../i18n";
 import { AppHeader } from "./AppHeader";
 import { AppNav, VIEWS, type View } from "./AppNav";
@@ -228,7 +228,6 @@ export default function App() {
   const [briefings, setBriefings] = useState<Briefing[] | null>(null);
   const [vulns, setVulns] = useState<VulnData | null>(null);
   const [meta, setMeta] = useState<Meta | null>(null);
-  const [leaks, setLeaks] = useState<LeakPost[]>([]);
   const lastVisit = useLastVisit();
 
   const t = STRINGS[lang];
@@ -256,7 +255,6 @@ export default function App() {
     cvesRequested.current = false;
     load<VulnData>("vulns-core.json").then(setVulns);
     load<Meta>("meta.json").then(setMeta);
-    load<LeakPost[]>("leaks.json").then((d) => setLeaks(d ?? []));
   }, []);
   useEffect(reload, [reload]);
 
@@ -459,13 +457,12 @@ export default function App() {
     live.current.updatedAt = m.updatedAt;
     const v = m.updatedAt;
     const l = live.current.lang;
-    const [recent, tx, , b, vcore, lk] = await Promise.all([
+    const [recent, tx, , b, vcore] = await Promise.all([
       load<TopicCore[]>(topicFile("recent", "core"), v),
       loadTexts(l, ["recent"], v),
       loadNames(l, v),
       load<Briefing[]>("briefings.json", v),
       load<VulnData>("vulns-core.json", v),
-      load<LeakPost[]>("leaks.json", v),
     ]);
     if (!recent || !tx) return;
     const [arts, cves] = await Promise.all([
@@ -484,7 +481,6 @@ export default function App() {
     setCore([...recent, ...kept]);
     if (b) setBriefings(b);
     if (vcore) setVulns((old) => ({ ...vcore, cves: cves ?? old?.cves ?? vcore.cves }));
-    if (lk) setLeaks(lk);
     if (arts) setArticles(arts);
     setMeta(m);
     if (added > 0)
@@ -677,7 +673,6 @@ export default function App() {
                     briefings={briefings ?? []}
                     topics={topics}
                     vulns={vulns}
-                    leaks={leaks}
                     onOpen={(id) => setSelection({ kind: "topic", id })}
                     onVuln={(id) => setSelection({ kind: "kev", id })}
                     onSearch={searchAll}
@@ -688,7 +683,6 @@ export default function App() {
                   <IncidentsPage
                     lang={lang}
                     topics={topics}
-                    leaks={leaks}
                     lastVisit={lastVisit}
                     query={newsQuery}
                     setQuery={setNewsQuery}

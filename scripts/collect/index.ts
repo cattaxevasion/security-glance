@@ -8,13 +8,12 @@
 //   --full                       전체 실행 (평소에는 지난 전체 실행에서 6시간이 지났을 때만)
 //
 // 30분마다 돈다. 평소에는 가벼운 실행: 매체 피드만 보고, 새 기사가 없으면 저장·배포 없이 바로 끝낸다.
-// 6시간마다 전체 실행: 벤더 리서치 피드, 취약점(KEV·NVD·EPSS), 랜섬웨어 유출 게시, 기사 품질 점검까지.
+// 6시간마다 전체 실행: 벤더 리서치 피드, 취약점(KEV·NVD·EPSS), 기사 품질 점검까지.
 import Anthropic from "@anthropic-ai/sdk";
 import { existsSync } from "node:fs";
 import { appendFile, readFile, rm } from "node:fs/promises";
 import { splitTopics, TEXT_LANGS, topicFile } from "../../shared/topic-files";
-import type { ArticleRef, Briefing, LeakPost, Meta, NewsItem, RunStats, Topic, VulnData } from "../../shared/types";
-import { collectLeaks, matchLeaks, pruneLeakTopics } from "./leaks";
+import type { ArticleRef, Briefing, Meta, NewsItem, RunStats, Topic, VulnData } from "../../shared/types";
 import { BODY_CHARS, extractArticle } from "./article";
 import { briefingDue, jstDate, maybeBriefing, migrateBriefings } from "./briefing";
 import {
@@ -47,8 +46,6 @@ const VULNS_PATH = "public/data/vulns.json";
 const VULNS_CORE_PATH = "public/data/vulns-core.json";
 /** 고위험 CVE 목록. CVE 화면을 열 때(또는 첫 화면이 뜬 뒤) 받는다. */
 const CVES_PATH = "public/data/cves.json";
-/** 랜섬웨어 유출 사이트 게시 (일본) */
-const LEAKS_PATH = "public/data/leaks.json";
 const META_PATH = "public/data/meta.json";
 /** 지난 전체 실행 시각 (수집기 내부용) */
 const RUN_PATH = "data/run.json";
@@ -96,6 +93,8 @@ const LANG_FORCED_PATH = "data/lang-forced.json";
  */
 const LEGACY_TOPIC_PATHS = ["public/data/topics-recent.json", "public/data/topics-archive.json"];
 const RECENT_DAYS = 31;
+/** 없앤 기능의 파일 (랜섬웨어 유출 사이트 게시). data 브랜치에서 실행마다 되살아나지 않게 지운다 */
+const RETIRED_PATHS = ["public/data/leaks.json"];
 const BRIEFINGS_PATH = "public/data/briefings.json";
 /** 토픽 다시 합치기에서 이미 물어본 토픽 쌍 (다시 묻지 않는다) */
 const MERGE_CHECKED_PATH = "data/merge-checked.json";
@@ -566,27 +565,7 @@ async function main() {
   if (!dry) {
     await writeJson(TOPICS_PATH, topics);
     await writeTopicFiles(topics);
-  }
-
-  // 랜섬웨어 유출 사이트 게시 (일본): 보도 토픽과 연결
-  try {
-    const prevLeaks = await readJson<LeakPost[]>(LEAKS_PATH, []);
-    const leaks = full ? await collectLeaks(prevLeaks) : prevLeaks;
-    pruneLeakTopics(leaks, topics);
-    let matched = 0;
-    if (hasKey()) {
-      try {
-        matched = await matchLeaks(leaks, topics);
-      } catch (e) {
-        console.warn(`  !  유출 게시와 보도 연결 실패: ${describeError(e)}`);
-      }
-    }
-    console.log(
-      `랜섬웨어 유출 게시(일본, 30일) ${leaks.length}건 · 보도와 연결 ${leaks.filter((x) => x.topicIds.length).length}건 (이번에 ${matched})`,
-    );
-    if (!dry) await writeJson(LEAKS_PATH, leaks);
-  } catch (e) {
-    console.warn(`  !  랜섬웨어 유출 게시 수집 실패 (이전 데이터 유지): ${(e as Error).message.slice(0, 120)}`);
+    for (const p of RETIRED_PATHS) await rm(p, { force: true });
   }
 
   // 오늘의 브리핑 (일본 시간 아침, 하루 한 번)
