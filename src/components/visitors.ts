@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 /** visits Worker 주소. 비어 있으면 세지도 보여주지도 않는다 */
-export const VISITS_URL = "";
+export const VISITS_URL = "https://security-glance-visits.581520-h.workers.dev";
 const SITE_ORIGIN = "https://cattaxevasion.github.io";
 
 export interface Visits {
