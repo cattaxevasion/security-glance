@@ -5,6 +5,7 @@ import {
   NavDivider,
   NavDrawer,
   NavDrawerBody,
+  NavDrawerFooter,
   NavItem,
   NavSectionHeader,
   makeStyles,
@@ -21,6 +22,7 @@ import {
   GlobeRegular,
   LayerFilled,
   LayerRegular,
+  PeopleRegular,
   ShieldErrorFilled,
   ShieldErrorRegular,
   WeatherSunnyFilled,
@@ -28,6 +30,7 @@ import {
 } from "@fluentui/react-icons";
 import { REGION_LABELS, STRINGS, type Lang } from "../i18n";
 import { RegionMonogram } from "./marks";
+import { useVisitors } from "./visitors";
 
 export type View = "briefing" | "incidents" | "all" | "INTL" | "JP" | "kev" | "cve";
 export const VIEWS: View[] = ["briefing", "incidents", "all", "INTL", "JP", "kev", "cve"];
@@ -98,6 +101,23 @@ const useStyles = makeStyles({
     fontSize: tokens.fontSizeBase200,
     fontVariantNumeric: "tabular-nums",
   },
+  // 방문자 수 (데스크톱만): 메뉴 맨 아래 한 줄
+  visitors: {
+    display: "flex",
+    // Fluent 기본은 세로 쌓기라 한 줄로 되돌린다
+    flexDirection: "row",
+    alignItems: "center",
+    columnGap: "8px",
+    padding: "14px 18px 16px",
+    borderTop: `1px solid ${tokens.colorNeutralStroke2}`,
+    color: tokens.colorNeutralForeground3,
+    fontSize: tokens.fontSizeBase200,
+    fontVariantNumeric: "tabular-nums",
+  },
+  visitorsIcon: { fontSize: "16px", flexShrink: 0 },
+  visitorsToday: { marginLeft: "auto" },
+  visitorsDot: { color: tokens.colorNeutralForeground4 },
+  visitorsNum: { color: tokens.colorNeutralForeground1, fontWeight: tokens.fontWeightSemibold },
 });
 
 interface Props {
@@ -118,6 +138,7 @@ export function AppNav({ lang, view, setView, open, overlay, onClose, counts, fr
   const item = mergeClasses(s.navItem, dark && s.navItemDark);
   const t = STRINGS[lang];
   const regions = REGION_LABELS[lang];
+  const visits = useVisitors();
 
   const label = (text: string, v: View) => (
     <span className={s.item}>
@@ -176,6 +197,21 @@ export function AppNav({ lang, view, setView, open, overlay, onClose, counts, fr
           {label(t.navCve, "cve")}
         </NavItem>
       </NavDrawerBody>
+      {!overlay && visits && (
+        <NavDrawerFooter className={s.visitors}>
+          <PeopleRegular className={s.visitorsIcon} aria-hidden />
+          <span>{t.visitors}</span>
+          <span className={s.visitorsToday}>
+            {t.visitorsToday} <span className={s.visitorsNum}>{visits.today.toLocaleString()}</span>
+          </span>
+          <span className={s.visitorsDot} aria-hidden>
+            ·
+          </span>
+          <span>
+            {t.visitorsTotal} <span className={s.visitorsNum}>{visits.total.toLocaleString()}</span>
+          </span>
+        </NavDrawerFooter>
+      )}
     </NavDrawer>
   );
 }

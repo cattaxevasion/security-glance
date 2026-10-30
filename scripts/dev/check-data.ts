@@ -1,7 +1,7 @@
 // 데이터 무결성 점검 (개발용). 수집 데이터 안의 연결이 서로 맞는지 본다.
 //   npm run data:pull && npx tsx scripts/dev/check-data.ts
 import { existsSync, readFileSync, statSync } from "node:fs";
-import type { Briefing, LeakPost, NewsItem, Topic, VulnData } from "../../shared/types";
+import type { Briefing, NewsItem, Topic, VulnData } from "../../shared/types";
 import { ATTACK_TYPES, NATURES, REGIONS, SECTORS } from "../../shared/taxonomy";
 import { TEXT_LANGS, topicFile } from "../../shared/topic-files";
 import { readSiteTopics } from "../../shared/topic-files-node";
@@ -12,7 +12,6 @@ const topics = read<Topic[]>("public/data/topics.json", []);
 const recent = readSiteTopics("public/data", ["recent"]);
 const archive = readSiteTopics("public/data", ["archive"]);
 const briefings = read<Briefing[]>("public/data/briefings.json", []);
-const leaks = read<LeakPost[]>("public/data/leaks.json", []);
 const vulns = read<VulnData | null>("public/data/vulns.json", null);
 const articles = read<{ id: string }[]>("public/data/articles.json", []);
 const merge = read<string[]>("data/merge-checked.json", []);
@@ -74,7 +73,7 @@ if (recent.length || archive.length) {
 }
 bad(articles.length !== news.length, `articles.json(${articles.length})과 news.json(${news.length}) 수가 다름`);
 
-// 브리핑·유출 게시·토픽 합치기 기록
+// 브리핑·토픽 합치기 기록
 const alive = new Set(topics.map((t) => t.id));
 for (const b of briefings) {
   const missing = b.items.filter((i) => !alive.has(i.topicId)).length;
@@ -82,7 +81,6 @@ for (const b of briefings) {
   if (b === briefings[0]) bad(missing > 0, `최신 브리핑(${b.date})의 항목 ${missing}개가 없는 토픽을 가리킴`);
 }
 bad(briefings.length > 30, `브리핑 ${briefings.length}개 (30개 유지 규칙)`);
-for (const l of leaks) for (const id of l.topicIds) bad(!alive.has(id), `유출 게시 ${l.victim}: 없는 토픽 ${id}`);
 bad(
   merge.some((k) => k.split("|").some((x) => !alive.has(x.split(":")[0]))),
   "토픽 합치기 기록에 없는 토픽",
@@ -112,7 +110,7 @@ console.log(
 // 크기
 const size = (p: string) => (existsSync(p) ? Math.round(statSync(p).size / 1024) : 0);
 console.log(
-  `기사 ${news.length} · 토픽 ${topics.length} (최근 ${recent.length} / 지난 ${archive.length}) · 브리핑 ${briefings.length} · 유출 게시 ${leaks.length} · 기계 변환 기록 ${Object.keys(forced).length}`,
+  `기사 ${news.length} · 토픽 ${topics.length} (최근 ${recent.length} / 지난 ${archive.length}) · 브리핑 ${briefings.length} · 기계 변환 기록 ${Object.keys(forced).length}`,
 );
 console.log(
   "파일 크기(KB):",

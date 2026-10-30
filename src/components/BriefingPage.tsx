@@ -24,11 +24,10 @@ import {
 } from "@fluentui/react-icons";
 import { lazy, Suspense, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Nature } from "../../shared/taxonomy";
-import type { Briefing, LeakPost, Topic, VulnData } from "../../shared/types";
+import type { Briefing, Topic, VulnData } from "../../shared/types";
 import { LOCALE, REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import type { View } from "./AppNav";
 import { relativeTime, timeOfDay } from "./format";
-import { LeakList } from "./Leaks";
 import { NATURE_ICON, natureGradient } from "./marks";
 import { stagger, useMotion } from "./motion";
 import { usePageStyles } from "./page";
@@ -290,8 +289,6 @@ interface Props {
   briefings: Briefing[];
   topics: Topic[];
   vulns: VulnData | null;
-  /** 랜섬웨어 유출 사이트 게시 (일본) */
-  leaks: LeakPost[];
   onOpen: (topicId: string) => void;
   onVuln: (cve: string) => void;
   onSearch: (q: string) => void;
@@ -303,7 +300,6 @@ interface Props {
 const ACCENT = {
   brand: "linear-gradient(90deg, #0c3b5e, #0f548c 45%, #4a3a9c)",
   incident: "linear-gradient(90deg, #8e1b22, #b4232a 45%, #7a1f5c)",
-  leak: "linear-gradient(90deg, #7a4a00, #b86b00 50%, #9a3d12)",
   kev: "linear-gradient(90deg, #8e2a1b, #c4511b 50%, #a3302a)",
   actor: "linear-gradient(90deg, #5c1a52, #8a1f6d 50%, #4a3a9c)",
 };
@@ -564,18 +560,6 @@ export function BriefingPage(p: Props) {
               </ul>
             )}
           </Widget>
-
-          {p.leaks.length > 0 && (
-            <Widget
-              index={1}
-              accent="leak"
-              title={t.railLeaks}
-              sub={t.railLeaksSub}
-              action={{ label: t.viewAll, onClick: () => p.onGo("incidents") }}
-            >
-              <LeakList lang={lang} leaks={p.leaks.slice(0, 4)} onOpen={p.onOpen} />
-            </Widget>
-          )}
 
           <Widget
             index={1}

@@ -98,9 +98,9 @@ public/data/            화면이 읽는 JSON (data 브랜치에서 받음, git 
                         topics-recent-core.json + topics-recent-{ko,ja,en}.json(최근 31일 토픽, 첫 화면. 언어와 무관한 부분 + 화면 언어의 제목·요약만 받는다)
                         topics-archive-core.json + topics-archive-{ko,ja,en}.json(그 이전 토픽, 화면이 뜬 뒤에 받음)
                         vulns-core.json(KEV·EPSS, 첫 화면) · cves.json(고위험 CVE, 나중에 받음)
-                        leaks.json(랜섬웨어 유출 사이트 게시·일본, ransomware.live 집계 — 공격 조직의 주장)
                         names-ko.json(일본어 이름의 한국어 읽기) · names-en.json(일본어 이름의 영어 표기)
                         news.json·topics.json·vulns.json(수집기 내부용 전체본, 사이트엔 안 올림)
+visits/                 방문자 수 Worker (Cloudflare). 데스크톱 메뉴 맨 아래 '방문자 · 오늘 · 누적'
 src/pages/t/[id].astro  토픽 공유 페이지 (링크 미리보기에 토픽 제목·요약, 열면 사이트의 그 토픽으로). 일본어는 /ja/t/[id]/, 영어는 /en/t/[id]/
 shared/topic-files.ts   화면용 토픽 파일을 언어별로 나누고 합치기 (수집기·화면·빌드·검사가 같이 씀)
 data/                   내부 상태: state.json(제외·실패·다시 판정 기록), merge-checked.json(토픽 합치기 기록),

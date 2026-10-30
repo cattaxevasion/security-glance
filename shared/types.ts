@@ -167,26 +167,6 @@ export interface RunStats {
   deferred: number;
 }
 
-/**
- * 랜섬웨어 조직이 유출 사이트에 올린 피해 주장 (일본 조직, ransomware.live 집계). 사실 확인 전 정보.
- * 유출 사이트 주소와 AI 생성 설명은 저장하지 않는다.
- */
-export interface LeakPost {
-  id: string;
-  /** 게시된 피해 조직 이름 (대개 영문·도메인) */
-  victim: string;
-  website: string | null;
-  /** 랜섬웨어 조직 */
-  group: string;
-  /** 게시가 처음 확인된 시각 */
-  discovered: string;
-  sector: Sector | null;
-  /** 같은 조직의 피해를 다룬 보도 토픽 */
-  topicIds: string[];
-  /** 보도 연결을 마지막으로 확인한 시각 */
-  checkedAt: string | null;
-}
-
 export interface Meta {
   updatedAt: string;
   lastRun: RunStats | null;

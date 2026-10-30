@@ -184,13 +184,6 @@ const ko = {
   liveNew: (n: number) => `새 소식 ${n}건이 들어왔어요`,
   railSinceBriefing: "브리핑 이후 새로 뜬 주목 토픽",
   railSinceBriefingSub: (time: string) => `${time} 이후`,
-  railLeaks: "랜섬웨어 유출 사이트 게시",
-  railLeaksSub: "일본 · 최근 30일 · 공격 조직의 주장",
-  leaksTitle: "랜섬웨어 유출 사이트 게시 (일본)",
-  leaksNote:
-    "랜섬웨어 조직이 자기 유출 사이트에 '이 조직을 공격했다'고 올린 주장이에요. 사실 확인 전 정보라 실제 피해와 다를 수 있어요. 보도보다 먼저 나오는 경우가 많아 신호로만 보세요. (집계: ransomware.live)",
-  leaksReported: "보도됨",
-  leaksUnreported: "보도 없음",
   showMore: (n: number) => `${n}건 더 보기`,
   showLess: "접기",
   newBadge: "새 소식",
@@ -205,6 +198,9 @@ const ko = {
   enPending: "영어 요약 준비 중",
   vulnEmpty: "조건에 맞는 취약점이 없어요.",
   lastAdded: (ago: string) => `마지막 추가 ${ago}`,
+  visitors: "방문자",
+  visitorsToday: "오늘",
+  visitorsTotal: "누적",
 };
 
 export type Strings = typeof ko;
@@ -381,13 +377,6 @@ const ja: Strings = {
   liveNew: (n: number) => `新着 ${n}件が届きました`,
   railSinceBriefing: "ブリーフィング後に浮上した注目トピック",
   railSinceBriefingSub: (time: string) => `${time}以降`,
-  railLeaks: "ランサムウェアのリークサイト掲載",
-  railLeaksSub: "日本・直近30日・攻撃グループの主張",
-  leaksTitle: "ランサムウェアのリークサイト掲載（日本）",
-  leaksNote:
-    "ランサムウェア攻撃グループが自らのリークサイトに「この組織を攻撃した」と掲載した主張です。事実確認前の情報で、実際の被害とは異なる場合があります。報道より先に出ることが多いため、兆候としてご覧ください。（集計: ransomware.live）",
-  leaksReported: "報道あり",
-  leaksUnreported: "報道なし",
   showMore: (n: number) => `さらに${n}件表示`,
   showLess: "閉じる",
   newBadge: "新着",
@@ -402,6 +391,9 @@ const ja: Strings = {
   enPending: "英語の要約を準備中",
   vulnEmpty: "条件に合う脆弱性はありません。",
   lastAdded: (ago: string) => `最終追加 ${ago}`,
+  visitors: "訪問者",
+  visitorsToday: "今日",
+  visitorsTotal: "累計",
 };
 
 const en: Strings = {
@@ -576,13 +568,6 @@ const en: Strings = {
   liveNew: (n: number) => `${n} new ${n === 1 ? "update" : "updates"}`,
   railSinceBriefing: "Notable topics since the briefing",
   railSinceBriefingSub: (time: string) => `Since ${time}`,
-  railLeaks: "Ransomware leak site posts",
-  railLeaksSub: "Japan · last 30 days · attackers' claims",
-  leaksTitle: "Ransomware leak site posts (Japan)",
-  leaksNote:
-    "Claims posted by ransomware groups on their own leak sites that they attacked an organization. These are unverified and may differ from actual damage. They often appear before news reports, so treat them only as a signal. (Source: ransomware.live)",
-  leaksReported: "Reported",
-  leaksUnreported: "Not reported",
   showMore: (n: number) => `Show ${n} more`,
   showLess: "Show less",
   newBadge: "New",
@@ -597,6 +582,9 @@ const en: Strings = {
   enPending: "English summary in preparation",
   vulnEmpty: "No vulnerabilities match.",
   lastAdded: (ago: string) => `last added ${ago}`,
+  visitors: "Visitors",
+  visitorsToday: "Today",
+  visitorsTotal: "Total",
 };
 
 export const STRINGS: Record<Lang, Strings> = { ko, ja, en };
