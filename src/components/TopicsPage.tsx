@@ -100,6 +100,8 @@ const useStyles = makeStyles({
   dayCount: { fontWeight: tokens.fontWeightRegular, color: tokens.colorNeutralForeground3 },
   row: {
     position: "relative",
+    // 위에 고정된 날짜 머리글에 가려지지 않게 (키보드 이동·j/k로 스크롤할 때)
+    scrollMarginTop: "48px",
     display: "grid",
     gap: "0 14px",
     padding: "14px 12px",
@@ -457,7 +459,9 @@ export function TopicsPage(p: Props) {
               </MenuList>
             </MenuPopover>
           </Menu>
-          <Text className={ps.count}>{t.count(filtered.length)}</Text>
+          <Text className={ps.count} aria-live="polite">
+            {t.count(filtered.length)}
+          </Text>
         </div>
         <div className={ps.commandGroup}>
           <Tooltip content={copied ? t.copied : t.copyLink} relationship="label">
@@ -470,6 +474,7 @@ export function TopicsPage(p: Props) {
         {narrow && (
           <SearchBox
             className={ps.pageSearch}
+            aria-label={t.search}
             placeholder={t.search}
             value={query}
             onChange={(_, d) => p.setQuery(d.value)}

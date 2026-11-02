@@ -180,7 +180,7 @@ export function AppHeader({
       <div className={s.right}>
         <Menu checkedValues={{ lang: [lang] }} onCheckedValueChange={(_, d) => setLang(d.checkedItems[0] as Lang)}>
           <MenuTrigger disableButtonEnhancement>
-            <Tooltip content={t.language} relationship="label">
+            <Tooltip content={t.language} relationship={narrow ? "label" : "description"}>
               <Button appearance="transparent" className={s.onBrand} icon={<LocalLanguageRegular />}>
                 {narrow ? null : LANG_NAMES[lang]}
               </Button>
@@ -208,7 +208,13 @@ export function AppHeader({
                 appearance="transparent"
                 className={s.onBrand}
                 icon={<ArrowSyncRegular />}
-                aria-label={t.navStatus}
+                aria-label={[
+                  t.navStatus,
+                  t.updated(relativeTime(lang, meta.updatedAt)),
+                  failed.length > 0 && t.sourcesFailed(failed.map((x) => sourceLabel(lang, x.name)).join(", ")),
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
               >
                 {narrow ? null : t.updated(relativeTime(lang, meta.updatedAt))}
                 {failed.length > 0 && <span className={s.dot} aria-hidden />}

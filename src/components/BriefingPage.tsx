@@ -195,7 +195,7 @@ const useStyles = makeStyles({
   },
   widgetAccent: { "::before": { backgroundImage: "var(--widget-accent)" } },
   widgetHead: { display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" },
-  widgetTitle: { flex: 1, minWidth: 0, "& .fui-Subtitle2": { fontWeight: tokens.fontWeightBold } },
+  widgetTitle: { flex: 1, minWidth: 0, "& .fui-Subtitle2": { margin: 0, fontWeight: tokens.fontWeightBold } },
   widgetSub: { display: "block", color: tokens.colorNeutralForeground3 },
   wList: { margin: 0, padding: 0, listStyle: "none" },
   // 순서가 있는 목록: 01·02… 회색 번호
@@ -322,7 +322,7 @@ function Widget(p: {
     >
       <div className={s.widgetHead}>
         <div className={s.widgetTitle}>
-          <Subtitle2>{p.title}</Subtitle2>
+          <Subtitle2 as="h2">{p.title}</Subtitle2>
           <Caption1 className={s.widgetSub}>{p.sub}</Caption1>
         </div>
         {p.action && (

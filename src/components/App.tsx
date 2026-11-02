@@ -53,7 +53,19 @@ const useStyles = makeStyles({
   },
   body: { flex: 1, minHeight: 0, display: "flex" },
   // 본문은 한 단계 어두운 캔버스, 내용은 그 위의 흰 카드 (Microsoft 365의 층 구조)
-  main: { flex: 1, minWidth: 0, overflowY: "auto", backgroundColor: tokens.colorNeutralBackground3 },
+  main: { flex: 1, minWidth: 0, overflowY: "auto", backgroundColor: tokens.colorNeutralBackground3, ":focus": { outline: "none" } },
+  skip: {
+    position: "absolute",
+    top: "-100px",
+    left: "8px",
+    zIndex: 1000,
+    padding: "8px 12px",
+    borderRadius: tokens.borderRadiusMedium,
+    backgroundColor: tokens.colorNeutralBackground1,
+    color: tokens.colorBrandForegroundLink,
+    boxShadow: tokens.shadow8,
+    ":focus": { top: "8px" },
+  },
   center: { display: "flex", justifyContent: "center", padding: "96px 0" },
   skeleton: { display: "flex", flexDirection: "column", gap: "12px", padding: "32px", maxWidth: "1040px" },
   skTitle: { width: "220px", height: "32px", marginBottom: "16px" },
@@ -537,7 +549,7 @@ export default function App() {
         // 고른 항목이 보이게 스크롤
         requestAnimationFrame(() =>
           document
-            .querySelector("[aria-current='true'], tr[aria-selected='true']")
+            .querySelector("main [aria-current='true']")
             ?.scrollIntoView({ block: "nearest" }),
         );
       }
@@ -611,6 +623,17 @@ export default function App() {
   return (
     <FluentProvider theme={makeTheme(dark, lang)}>
       <div className={s.root}>
+        {/* 키보드 사용자를 위한 본문 바로가기: Tab을 처음 누를 때만 보인다 */}
+        <a
+          href="#main"
+          className={s.skip}
+          onClick={(e) => {
+            e.preventDefault(); // 주소에 #main을 남기지 않는다 (popstate로 화면 상태를 다시 읽지 않게)
+            document.getElementById("main")?.focus();
+          }}
+        >
+          {t.skipToContent}
+        </a>
         <AppHeader
           lang={lang}
           setLang={setLang}
@@ -640,7 +663,7 @@ export default function App() {
             fresh={fresh}
             dark={dark}
           />
-          <main className={s.main}>
+          <main id="main" tabIndex={-1} className={s.main}>
             {failed.length > 0 && isTopicView(view) && (
               <MessageBar intent="warning" className={s.bar}>
                 <MessageBarBody>{t.sourcesFailed(failed.map((x) => sourceLabel(lang, x.name)).join(", "))}</MessageBarBody>

@@ -1,7 +1,7 @@
 // 속보 띠: 최근 6시간 안에 처음 보도된 사건 헤드라인을 하나씩 돌려 보여준다. 누르면 그 토픽 상세가 열린다.
 // 휴대폰은 헤더 바로 아래 화면 폭 검은 띠(strip), 데스크톱은 브리핑 배너 머리에 붙은 띠(banner).
 import { makeStyles, mergeClasses, tokens } from "@fluentui/react-components";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Topic } from "../../shared/types";
 import { STRINGS, type Lang } from "../i18n";
 import { relativeTime } from "./format";
@@ -110,12 +110,19 @@ export function BreakingBar(p: { lang: Lang; topics: Topic[]; onOpen: (id: strin
   const m = useMotion();
   const t = STRINGS[p.lang];
   const [tick, setTick] = useState(0);
-  // 6초마다 다음 헤드라인. 1분(10틱)마다 다시 골라 6시간이 지난 건 빠지게 한다
+  const [minute, setMinute] = useState(0);
+  // 마우스를 올렸거나 포커스가 있는 동안은 넘기지 않는다 (읽던 헤드라인이 누르는 순간 바뀌지 않게)
+  const hold = useRef(false);
+  // 6초마다 다음 헤드라인 (움직임 줄이기 설정이면 넘기지 않는다). 1분마다 다시 골라 6시간이 지난 건 빠지게 한다
   useEffect(() => {
-    const id = window.setInterval(() => setTick((n) => n + 1), ROTATE_MS);
-    return () => window.clearInterval(id);
+    const still = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const rotate = still ? 0 : window.setInterval(() => !hold.current && setTick((n) => n + 1), ROTATE_MS);
+    const repick = window.setInterval(() => setMinute((n) => n + 1), 60_000);
+    return () => {
+      window.clearInterval(rotate);
+      window.clearInterval(repick);
+    };
   }, []);
-  const minute = Math.floor(tick / 10);
   const items = useMemo(() => breakingTopics(p.topics), [p.topics, minute]); // eslint-disable-line react-hooks/exhaustive-deps
   if (!items.length) return null;
   const i = tick % items.length;
@@ -127,6 +134,10 @@ export function BreakingBar(p: { lang: Lang; topics: Topic[]; onOpen: (id: strin
       type="button"
       className={mergeClasses(s.bar, strip ? s.strip : s.banner)}
       onClick={() => p.onOpen(x.id)}
+      onMouseEnter={() => (hold.current = true)}
+      onMouseLeave={() => (hold.current = false)}
+      onFocus={() => (hold.current = true)}
+      onBlur={() => (hold.current = false)}
       aria-label={`${t.breaking}: ${title}`}
     >
       <span className={s.label}>

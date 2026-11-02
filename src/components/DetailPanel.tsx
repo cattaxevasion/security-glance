@@ -44,6 +44,9 @@ import { nb } from "./NoBreak";
 
 export type Selection = { kind: "topic"; id: string } | { kind: "kev" | "cve"; id: string };
 
+/** 패널 제목 id: 패널(대화 상자)의 이름으로 쓴다. 한 번에 패널 하나만 열린다 */
+const PANEL_TITLE_ID = "sg-panel-title";
+
 const useStyles = makeStyles({
   surface: { boxShadow: tokens.shadow64 },
   // 넓은 화면: 상단 바(48px) 아래부터 열어서 언어 전환·수집 상태 버튼을 가리지 않는다
@@ -135,9 +138,9 @@ const useStyles = makeStyles({
     borderTop: "1px solid rgba(255,255,255,0.2)",
     "@media (max-width: 640px)": { display: "none" },
   },
-  body: { display: "flex", flexDirection: "column", paddingBottom: "16px" },
+  body: { display: "flex", flexDirection: "column", paddingBottom: "16px", overscrollBehavior: "contain" },
   section: { padding: "18px 0", borderTop: `1px solid ${tokens.colorNeutralStroke2}` },
-  sectionTitle: { display: "block", marginBottom: "12px" },
+  sectionTitle: { display: "block", margin: "0 0 12px" },
   summary: {
     margin: 0,
     paddingLeft: "20px",
@@ -248,7 +251,9 @@ function Field({ s, label, children, full }: { s: Styles; label: string; childre
 function Section({ s, title, children }: { s: Styles; title: string; children: ReactNode }) {
   return (
     <section className={s.section}>
-      <Subtitle2 className={s.sectionTitle}>{title}</Subtitle2>
+      <Subtitle2 as="h3" className={s.sectionTitle}>
+        {title}
+      </Subtitle2>
       {children}
     </section>
   );
@@ -364,6 +369,7 @@ export function DetailPanel(p: Props) {
       position="end"
       size={p.narrow ? "full" : "medium"}
       modalType={p.narrow ? "modal" : "non-modal"}
+      aria-labelledby={PANEL_TITLE_ID}
     >
       {inner}
     </OverlayDrawer>
@@ -396,7 +402,7 @@ function topicContent(topic: Topic, p: Props, s: Styles, clip: { copied: boolean
           <Icon />
         </span>
         <div className={s.headText}>
-          <Subtitle1 as="h2" className={s.title}>
+          <Subtitle1 as="h2" id={PANEL_TITLE_ID} className={s.title}>
             {nb(title)}
           </Subtitle1>
           <Caption1 className={s.metaRow}>
@@ -612,7 +618,7 @@ function vulnContent(kind: "kev" | "cve", v: KevEntry | CveEntry, p: Props, s: S
         {kev ? <ShieldErrorRegular /> : <BugRegular />}
       </span>
       <div className={s.headText}>
-        <Subtitle1 as="h2" className={mergeClasses(s.title, s.mono)}>
+        <Subtitle1 as="h2" id={PANEL_TITLE_ID} translate="no" className={mergeClasses(s.title, s.mono)}>
           {id}
         </Subtitle1>
         {kev && (

@@ -181,7 +181,7 @@ export function HeroStat(p: {
     >
       <span className={s.heroText}>
         <Caption1 className={s.heroLabel}>{p.label}</Caption1>
-        <span className={s.heroNum}>{n.toLocaleString()}</span>
+        <span className={s.heroNum}>{n.toLocaleString(LOCALE[p.lang])}</span>
         {p.sub && <Caption1 className={s.heroSub}>{p.sub}</Caption1>}
       </span>
       <span className={s.bars} role="img" aria-label={p.bars.map((b) => `${b.label} ${t.count(b.n)}`).join(", ")}>
