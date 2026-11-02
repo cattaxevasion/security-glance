@@ -242,7 +242,7 @@ export function VulnPage(p: Props) {
   const rowProps = (id: string) => ({
     className: ps.row,
     appearance: (id === p.selectedId ? "brand" : "none") as "brand" | "none",
-    "aria-selected": id === p.selectedId,
+    "aria-current": id === p.selectedId ? ("true" as const) : undefined,
     tabIndex: 0,
     onClick: () => p.onSelect(id),
     onKeyDown: (e: React.KeyboardEvent) => {
@@ -256,7 +256,7 @@ export function VulnPage(p: Props) {
   // 휴대폰 목록 항목 (표 행과 같은 동작)
   const itemProps = (id: string) => ({
     className: mergeClasses(s.mItem, id === p.selectedId && s.mSelected),
-    "aria-selected": id === p.selectedId,
+    "aria-current": id === p.selectedId ? ("true" as const) : undefined,
     role: "button",
     tabIndex: 0,
     onClick: () => p.onSelect(id),
@@ -380,10 +380,13 @@ export function VulnPage(p: Props) {
 
       <div className={ps.command}>
         <span />
-        <Caption1 className={ps.count}>{t.count(count)}</Caption1>
+        <Caption1 className={ps.count} aria-live="polite">
+          {t.count(count)}
+        </Caption1>
         {narrow && (
           <SearchBox
             className={ps.pageSearch}
+            aria-label={t.vulnSearch}
             placeholder={t.vulnSearch}
             value={p.query}
             onChange={(_, d) => p.setQuery(d.value)}
@@ -438,7 +441,9 @@ export function VulnPage(p: Props) {
               ? kevVisible.map((k) => (
                   <li key={k.cveID} {...itemProps(k.cveID)}>
                     <span className={s.mId}>
-                      <Caption1 className={ps.mono}>{k.cveID}</Caption1>
+                      <Caption1 className={ps.mono} translate="no">
+                      {k.cveID}
+                    </Caption1>
                       {k.ransomware && (
                         <Badge size="small" appearance="tint" color="danger">
                           {t.ransomware}
@@ -473,7 +478,9 @@ export function VulnPage(p: Props) {
               : cveVisible.map((c) => (
                   <li key={c.id} {...itemProps(c.id)}>
                     <span className={s.mId}>
-                      <Caption1 className={ps.mono}>{c.id}</Caption1>
+                      <Caption1 className={ps.mono} translate="no">
+                      {c.id}
+                    </Caption1>
                       {c.inKev && (
                         <Badge size="small" appearance="filled" color="danger">
                           KEV
@@ -552,7 +559,9 @@ export function VulnPage(p: Props) {
                     <Caption1>{k.dateAdded}</Caption1>
                   </TableCell>
                   <TableCell>
-                    <Caption1 className={ps.mono}>{k.cveID}</Caption1>
+                    <Caption1 className={ps.mono} translate="no">
+                      {k.cveID}
+                    </Caption1>
                   </TableCell>
                   <TableCell>
                     <Caption1 className={ps.clamp1}>
@@ -611,7 +620,9 @@ export function VulnPage(p: Props) {
               {cveVisible.map((c) => (
                 <TableRow key={c.id} {...rowProps(c.id)}>
                   <TableCell>
-                    <Caption1 className={ps.mono}>{c.id}</Caption1>
+                    <Caption1 className={ps.mono} translate="no">
+                      {c.id}
+                    </Caption1>
                     {c.inKev && (
                       <Badge className={s.ransom} size="small" appearance="filled" color="danger">
                         KEV

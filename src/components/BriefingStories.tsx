@@ -11,7 +11,7 @@ import {
   PlayRegular,
   SparkleFilled,
 } from "@fluentui/react-icons";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Briefing, Topic } from "../../shared/types";
 import { REGION_LABELS, STRINGS, tagLabel, type Lang } from "../i18n";
 import { NATURE_ICON, natureGradient } from "./marks";
@@ -60,7 +60,9 @@ const useStyles = makeStyles({
   bar: { flex: 1, height: "3px", borderRadius: "2px", backgroundColor: "rgba(255,255,255,0.32)", overflow: "hidden" },
   fill: { display: "block", height: "100%", backgroundColor: "#fff", borderRadius: "2px" },
   run: {
-    animationName: { from: { width: "0%" }, to: { width: "100%" } },
+    // 폭 대신 transform으로 늘린다 (레이아웃을 다시 계산하지 않게)
+    transformOrigin: "left",
+    animationName: { from: { transform: "scaleX(0)" }, to: { transform: "scaleX(1)" } },
     animationTimingFunction: "linear",
     animationFillMode: "forwards",
   },
@@ -175,6 +177,9 @@ interface Props {
   onOpen: (topicId: string) => void;
 }
 
+/** 화면에는 안 보이고 화면 읽기 프로그램만 읽는다 */
+const SR_ONLY: CSSProperties = { position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap" };
+
 export function BriefingStories({ lang, briefing, topics, dateLabel, onOpen }: Props) {
   const s = useStyles();
   const t = STRINGS[lang];
@@ -190,7 +195,9 @@ export function BriefingStories({ lang, briefing, topics, dateLabel, onOpen }: P
   const [userPaused, setUserPaused] = useState(prefersReducedMotion);
   const [holding, setHolding] = useState(false);
   const [ended, setEnded] = useState(false);
-  const paused = userPaused || holding || ended;
+  // 키보드로 카드에 들어와 있는 동안은 넘기지 않는다 (탭으로 생긴 포커스는 제외: 휴대폰에서 탭이 멈춤이 되지 않게)
+  const [keyFocus, setKeyFocus] = useState(false);
+  const paused = userPaused || holding || ended || keyFocus;
 
   // 브리핑 날짜가 바뀌면 처음부터
   useEffect(() => {
@@ -265,12 +272,21 @@ export function BriefingStories({ lang, briefing, topics, dateLabel, onOpen }: P
       aria-label={t.storyLabel}
       tabIndex={0}
       onKeyDown={onKey}
+      onFocus={(e) => e.target.matches(":focus-visible") && setKeyFocus(true)}
+      onBlur={(e) => !e.currentTarget.contains(e.relatedTarget as Node | null) && setKeyFocus(false)}
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerCancel}
       onPointerLeave={onPointerCancel}
       onContextMenu={(e) => e.preventDefault()}
     >
+      {/* 화면 읽기 프로그램용 이전·다음 (탭·밀기·화살표 키를 못 쓰는 경우). 화면에는 보이지 않고 Tab으로도 들어가지 않는다 */}
+      <button type="button" tabIndex={-1} style={SR_ONLY} onClick={prev}>
+        {t.storyPrev}
+      </button>
+      <button type="button" tabIndex={-1} style={SR_ONLY} onClick={next}>
+        {t.storyNext}
+      </button>
       <div className={s.bg} style={{ backgroundImage: bg }} aria-hidden />
       <Deco className={s.deco} aria-hidden />
 
@@ -314,16 +330,13 @@ export function BriefingStories({ lang, briefing, topics, dateLabel, onOpen }: P
         </div>
 
         <div key={`${briefing.date}-${idx}`} className={s.content} aria-live={userPaused ? "polite" : "off"}>
-          <span
-            className="sr-only"
-            style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}
-          >
+          <span className="sr-only" style={SR_ONLY}>
             {t.storyPos(idx + 1, slides.length)}
           </span>
           {slide.kind === "cover" ? (
             <>
               <span className={s.coverDate}>{dateLabel}</span>
-              <h2 className={s.coverTitle}>{t.briefingTitle}</h2>
+              <h1 className={s.coverTitle}>{t.briefingTitle}</h1>
               <p className={s.coverText}>{nb(pendingEn(lang, textOf(lang, briefing.headlineKo, briefing.headlineJa, briefing.headlineEn)))}</p>
             </>
           ) : (

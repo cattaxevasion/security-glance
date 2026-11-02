@@ -93,6 +93,9 @@ const description =
       h3 {
         text-wrap: balance;
       }
+      html {
+        touch-action: manipulation;
+      }
       /* 손가락으로 조작하는 기기에서는 누를 수 있는 요소를 44×44px 이상으로 (Fluent 2 웹 터치 최소 크기) */
       @media (pointer: coarse) {
         html .fui-Button,

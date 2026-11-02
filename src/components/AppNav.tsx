@@ -28,7 +28,7 @@ import {
   WeatherSunnyFilled,
   WeatherSunnyRegular,
 } from "@fluentui/react-icons";
-import { REGION_LABELS, STRINGS, type Lang } from "../i18n";
+import { LOCALE, REGION_LABELS, STRINGS, type Lang } from "../i18n";
 import { RegionMonogram } from "./marks";
 import { useVisitors } from "./visitors";
 
@@ -150,7 +150,7 @@ export function AppNav({ lang, view, setView, open, overlay, onClose, counts, fr
       )}
       {counts[v] != null && (
         <span className={fresh[v] ? mergeClasses(s.count, s.freshThenCount) : s.count}>
-          {counts[v]!.toLocaleString()}
+          {counts[v]!.toLocaleString(LOCALE[lang])}
         </span>
       )}
     </span>
@@ -168,7 +168,7 @@ export function AppNav({ lang, view, setView, open, overlay, onClose, counts, fr
         if (overlay) onClose();
       }}
     >
-      <NavDrawerBody className={s.body}>
+      <NavDrawerBody className={s.body} style={{ overscrollBehavior: "contain" }}>
         <NavItem className={item} value="briefing" icon={<Briefing />}>
           {t.navBriefing}
         </NavItem>
@@ -202,13 +202,13 @@ export function AppNav({ lang, view, setView, open, overlay, onClose, counts, fr
           <PeopleRegular className={s.visitorsIcon} aria-hidden />
           <span>{t.visitors}</span>
           <span className={s.visitorsToday}>
-            {t.visitorsToday} <span className={s.visitorsNum}>{visits.today.toLocaleString()}</span>
+            {t.visitorsToday} <span className={s.visitorsNum}>{visits.today.toLocaleString(LOCALE[lang])}</span>
           </span>
           <span className={s.visitorsDot} aria-hidden>
             ·
           </span>
           <span>
-            {t.visitorsTotal} <span className={s.visitorsNum}>{visits.total.toLocaleString()}</span>
+            {t.visitorsTotal} <span className={s.visitorsNum}>{visits.total.toLocaleString(LOCALE[lang])}</span>
           </span>
         </NavDrawerFooter>
       )}

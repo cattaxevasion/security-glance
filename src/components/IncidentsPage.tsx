@@ -324,11 +324,14 @@ export function IncidentsPage(p: Props) {
               </MenuList>
             </MenuPopover>
           </Menu>
-          <Text className={ps.count}>{t.count(list.length)}</Text>
+          <Text className={ps.count} aria-live="polite">
+            {t.count(list.length)}
+          </Text>
         </div>
         {narrow && (
           <SearchBox
             className={ps.pageSearch}
+            aria-label={t.search}
             placeholder={t.search}
             value={p.query}
             onChange={(_, d) => p.setQuery(d.value)}
